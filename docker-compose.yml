@@ -1,0 +1,78 @@
+version: '2'
+
+services:
+
+  front:
+    image: ubiqube/msa2:front-20.0
+    volumes:
+    - "front.certs:/etc/nginx/ssl/"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "514:514/udp"
+    depends_on:
+      - ui
+      - api
+      - camunda
+      - kibana
+
+  api:
+    image: msa2:api-20.0
+    build: ./demo_lab/api
+    volumes:
+    - "repo.entities:/opt/fmc_entities"
+    - "repo.contents:/opt/fmc_repository"
+    - "monitoring:/opt/rrd"
+    - "change-mgt:/opt/svnroot"
+    - "settings:/opt/settings"
+    - "license:/opt/ubiqube/lic"
+    networks:
+      default:
+        ipv4_address: 172.20.0.66
+    hostname: msa
+    ports:
+      - "2223:22"
+    depends_on:
+      - db
+      - es
+
+  db:
+    image: ubiqube/msa2:db-20.0
+    volumes:
+    - "db:/opt/database/9.3/data/"
+
+  es:
+    image: ubiqube/msa2:es-20.0
+    volumes:
+    - "es:/opt/elasticsearch/data/"
+
+  kibana:
+    image: ubiqube/msa2:kibana-20.0
+    volumes:
+    - "kibana:/opt/kibana/"
+
+  ui:
+    image: ubiqube/msa2:ui-20.0
+
+  camunda:
+    image: camunda/camunda-bpm-platform:7.12.0
+
+
+volumes:
+  db:
+  es:
+  kibana:
+  monitoring:
+  change-mgt:
+  repo.entities:
+  repo.contents:
+  front.certs:
+  settings:
+  license:
+
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24

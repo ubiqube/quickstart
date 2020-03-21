@@ -1,0 +1,13 @@
+version: '2'
+  
+services:
+
+  me:
+    image: linux:me
+    build: ./demo_lab/linux.me
+    ports:
+      - "2224:22"
+    networks:
+      default:
+        ipv4_address: 172.20.0.101
+    hostname: msa
