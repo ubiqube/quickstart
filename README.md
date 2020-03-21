@@ -1,7 +1,12 @@
-Install MSA-v2 on your Docker Engine and Get Started
+Quickstart
 ------------------------------------
 
-This quickstart project will help you quickly setup a new mini-lab composed of an MSActivator instance and a Linux based VNF.
+This quickstart project will get you started with the MSActivator orchestration tool.
+
+
+Setting up the tutorial
+To quickly get started with MSA, use Docker Compose to set up an environment to host the Inmanta server and some machines to be managed. Before starting this tutorial, first install Docker on your machine. Next install Docker Compose on your machine.
+
 
 1. check your dockerhub account password - or create a new account
 2. ask for access to private repo: `ubiqube/msa2`
