@@ -4,9 +4,10 @@ Quickstart
 This quickstart project will get you started with the MSActivator orchestration tool.
 
 
-Setting up the tutorial
-To quickly get started with MSA, use Docker Compose to set up an environment to host the Inmanta server and some machines to be managed. Before starting this tutorial, first install Docker on your machine. Next install Docker Compose on your machine.
+# Setting up the tutorial
+To quickly get started with MSA, use Docker Compose to set up an environment to host the MSA server and some entities to be managed. 
 
+Before starting this tutorial, first install [Docker](https://docs.docker.com/install/) on your machine. Next install [Docker Compose](https://docs.docker.com/compose/install/) on your machine.
 
 1. check your dockerhub account password - or create a new account
 2. ask for access to private repo: `ubiqube/msa2`
