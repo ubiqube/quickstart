@@ -15,7 +15,41 @@ echo "--------------------------------------------------"
 
 curl -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/operator/$OPERATOR?name=BladeRunner"
 curl -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer $TOKEN" -XPOST "http://127.0.0.1/ubi-api-rest/customer/$OPERATOR?name=Tyrell&reference=TyrellCorp" -d '{"name":"Tyrell"}'
-curl -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer $TOKEN" -XPOST "http://127.0.0.1/ubi-api-rest/repository/operator?uri=Process/$OPERATOR"
-curl -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer $TOKEN" -XPOST "http://127.0.0.1/ubi-api-rest/repository/operator?uri=CommandDefinition/$OPERATOR"
 
-exit 0
+CUSTLIST=`curl -H "Content-Type:application/json" -H "Authorization: Bearer "$TOKEN -XGET http://127.0.0.1/ubi-api-rest/lookup/customers`
+
+IFS='"' # set delimiter
+read -ra ADDR <<< "$CUSTLIST" # str is read into an array as tokens separated by IFS
+for i in "${ADDR[@]}"; do # access each element of array
+    if [[ $i == BLRA* ]]  
+    then  
+	CUSTID=$i
+    fi
+done
+
+echo $CUSTID
+
+
+echo "--------------------------------------------------"
+echo "ATTACH WORKFLOWS TO CUSTOMER $CUSTID"  
+echo "--------------------------------------------------"
+
+curl -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/$CUSTID/service/attach?uri=Process/$OPERATOR/SelfDemoSetup/SelfDemoSetup.xml"
+curl -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/$CUSTID/service/attach?uri=Process/$OPERATOR/Simple_Firewall/Simple_firewall_manager.xml"
+curl -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/$CUSTID/service/attach?uri=Process/$OPERATOR/IMPORT/Import_microservice.xml"
+
+sleep 4
+
+echo "--------------------------------------------------"
+echo "CREATE DEMO DEVICES"
+echo "--------------------------------------------------"
+
+CUSTIDONLY=${CUSTID//BLRA}
+
+curl -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/$CUSTID/?serviceName=Process/$OPERATOR/SelfDemoSetup/SelfDemoSetup&processName=Process%2FBLR%2FSelfDemoSetup%2FProcess_Setup" -d'{"customer_id":"'$CUSTIDONLY'"}'
+
+sleep 1
+
+#curl -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer $TOKEN" -XPOST "http://127.0.0.1/ubi-api-rest/repository/operator?uri=Process/$OPERATOR"
+#curl -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer $TOKEN" -XPOST "http://127.0.0.1/ubi-api-rest/repository/operator?uri=CommandDefinition/$OPERATOR"
+
