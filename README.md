@@ -12,7 +12,7 @@ Before starting this tutorial, first install [Docker](https://docs.docker.com/in
 1. check your dockerhub account password - or create a new account
 2. ask for access to private repo: `ubiqube/msa2`
 3. check your docker engine has access to dockerhub
-4. clone this repo: `git clone https://github.com/ubiqube/quickstart.git` or download the tarball: https://github.com/ubiqube/quickstart/archive/master.zip
+4. clone this repo: `git clone https://github.com/ubiqube/quickstart.git`
 5. run: `docker login`
 6. run: `docker-compose -f docker-compose.yml -f lab/docker-compose.lab.yml up -d `
 7. browse: https://localhost/
