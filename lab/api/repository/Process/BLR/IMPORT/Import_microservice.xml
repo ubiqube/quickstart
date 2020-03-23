@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ObjectDefinition>  <information>
+    <description/>
+    <displayField>date</displayField>
+    <executionDetailsVisibility>5</executionDetailsVisibility>
+    <group>Discovery|Import</group>
+    <icon>/images/repository/CommandDefinition/icons/fortiwaf_input_validation.png</icon>
+    <name>Top10 Applications</name>
+    <order>10000</order>
+    <readVariableVisibility>5</readVariableVisibility>
+    <showDetailedServiceInstances>false</showDetailedServiceInstances>
+    <showProcessExecConsole>false</showProcessExecConsole>
+    <showVariables>false</showVariables>
+    <visibility>5</visibility>
+  </information>  <variables frozen="0">
+    <variable displayName="DeviceID" displayOrder="0" keepOnImport="true" maxLength="165" name="params.devices.0.id" startIncrement="0" type="Device">
+      <sections>
+        <section>Node</section>
+      </sections>
+    </variable>
+    <variable arrayCanAdd="false" arrayCanEdit="false" arrayCanMove="false" arrayCanRemove="false" displayName="Date" displayOrder="1" isUserLocked="true" maxLength="100" name="params.date" startIncrement="0" type="String" visible="false"/>
+    <variable arrayCanAdd="false" arrayCanEdit="false" arrayCanMove="false" arrayCanRemove="false" displayName="id" displayOrder="2" isUserLocked="true" maxLength="100" name="params.top10.0.id" startIncrement="0" type="String">
+      <sections>
+        <section>Top10</section>
+      </sections>
+    </variable>
+    <variable arrayCanAdd="false" arrayCanEdit="false" arrayCanMove="false" arrayCanRemove="false" displayName="user" displayOrder="3" isUserLocked="true" maxLength="100" name="params.top10.0.user" startIncrement="0" type="String">
+      <sections>
+        <section>Top10</section>
+      </sections>
+    </variable>
+    <variable arrayCanAdd="false" arrayCanEdit="false" arrayCanMove="false" arrayCanRemove="false" displayName="pr" displayOrder="4" isUserLocked="true" maxLength="100" name="params.top10.0.pr" startIncrement="0" type="String">
+      <sections>
+        <section>Top10</section>
+      </sections>
+    </variable>
+    <variable arrayCanAdd="false" arrayCanEdit="false" arrayCanMove="false" arrayCanRemove="false" displayName="ni" displayOrder="5" isUserLocked="true" maxLength="100" name="params.top10.0.ni" startIncrement="0" type="String">
+      <sections>
+        <section>Top10</section>
+      </sections>
+    </variable>
+    <variable arrayCanAdd="false" arrayCanEdit="false" arrayCanMove="false" arrayCanRemove="false" displayName="virt" displayOrder="6" isUserLocked="true" maxLength="100" name="params.top10.0.virt" startIncrement="0" type="String">
+      <sections>
+        <section>Top10</section>
+      </sections>
+    </variable>
+    <variable arrayCanAdd="false" arrayCanEdit="false" arrayCanMove="false" arrayCanRemove="false" displayName="res" displayOrder="7" isUserLocked="true" maxLength="100" name="params.top10.0.res" startIncrement="0" type="String">
+      <sections>
+        <section>Top10</section>
+      </sections>
+    </variable>
+    <variable arrayCanAdd="false" arrayCanEdit="false" arrayCanMove="false" arrayCanRemove="false" displayName="shr" displayOrder="8" isUserLocked="true" maxLength="100" name="params.top10.0.shr" startIncrement="0" type="String">
+      <sections>
+        <section>Top10</section>
+      </sections>
+    </variable>
+    <variable arrayCanAdd="false" arrayCanEdit="false" arrayCanMove="false" arrayCanRemove="false" displayName="s" displayOrder="9" isUserLocked="true" maxLength="100" name="params.top10.0.s" startIncrement="0" type="String">
+      <sections>
+        <section>Top10</section>
+      </sections>
+    </variable>
+    <variable arrayCanAdd="false" arrayCanEdit="false" arrayCanMove="false" arrayCanRemove="false" displayName="cpu" displayOrder="10" isUserLocked="true" maxLength="100" name="params.top10.0.cpu" startIncrement="0" type="String">
+      <sections>
+        <section>Top10</section>
+      </sections>
+    </variable>
+    <variable arrayCanAdd="false" arrayCanEdit="false" arrayCanMove="false" arrayCanRemove="false" displayName="mem" displayOrder="11" isUserLocked="true" maxLength="100" name="params.top10.0.mem" startIncrement="0" type="String">
+      <sections>
+        <section>Top10</section>
+      </sections>
+    </variable>
+    <variable arrayCanAdd="false" arrayCanEdit="false" arrayCanMove="false" arrayCanRemove="false" displayName="time" displayOrder="12" isUserLocked="true" maxLength="100" name="params.top10.0.time" startIncrement="0" type="String">
+      <sections>
+        <section>Top10</section>
+      </sections>
+    </variable>
+    <variable arrayCanAdd="false" arrayCanEdit="false" arrayCanMove="false" arrayCanRemove="false" displayName="command" displayOrder="13" isUserLocked="true" maxLength="100" name="params.top10.0.command" startIncrement="0" type="String">
+      <sections>
+        <section>Top10</section>
+      </sections>
+    </variable>
+  </variables>  <example>    <content>
+      <?php?>
+    </content>  </example>
+  <process name="Process/BLR/IMPORT/Process_Select_Devices">
+    <visibility>5</visibility>
+    <displayName>Select Devices</displayName>
+    <icon/>
+    <allowSchedule>false</allowSchedule>
+    <type>CREATE</type>
+    <task name="/opt/fmc_repository/Process/OpenMSA/Tutorials/Simple_Firewall/Process_Create_Firewall/Tasks/Task_Select_Devices.php">
+      <processPath/>
+      <displayName>Entities selection</displayName>
+    </task>
+  </process>
+  <process name="Process/BLR/IMPORT/Process_Check">
+    <visibility>3</visibility>
+    <displayName>Check</displayName>
+    <icon/>
+    <allowSchedule>true</allowSchedule>
+    <type>UPDATE</type>
+    <task name="Task_Import.php">
+      <processPath>/opt/fmc_repository/Process/BLR/IMPORT/Process_Check/Tasks/</processPath>
+      <displayName>Import</displayName>
+    </task>
+  </process>
+
+<process name="Process/BLR/IMPORT/Process_Delete">
+    <visibility>5</visibility>
+    <displayName>Delete</displayName>
+    <icon/>
+    <allowSchedule>false</allowSchedule>
+    <type>DELETE</type>
+  </process>
+
+
+</ObjectDefinition>

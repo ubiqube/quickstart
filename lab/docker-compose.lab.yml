@@ -4,7 +4,7 @@ services:
 
   me:
     image: linux:me
-    build: ./lab/linux.me
+    build: ./demo_lab/linux.me
     ports:
       - "2224:22"
     networks:
