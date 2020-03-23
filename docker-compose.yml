@@ -18,7 +18,7 @@ services:
 
   api:
     image: msa2:api-20.0
-    build: ./demo_lab/api
+    build: ./lab/api
     volumes:
     - "repo.entities:/opt/fmc_entities"
     - "repo.contents:/opt/fmc_repository"
