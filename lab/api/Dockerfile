@@ -27,6 +27,6 @@ RUN	cd /opt/fmc_repository ; \
 
 COPY create_tenant_customer.sh /usr/bin/
 RUN chmod a+x  /usr/bin/create_tenant_customer.sh 
-RUN  echo /usr/bin/create_tenant_customer.sh >> /etc/rc.local 
+RUN  echo "/usr/bin/create_tenant_customer.sh" >> /etc/rc.local 
 
 CMD [ "/sbin/init" ]
