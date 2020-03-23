@@ -26,13 +26,13 @@ function list_args() {
 
 
 // MSA device creation parameters
-$context['managed_device_name'] = "HQ";
+$context['managed_device_name'] = "linux_me";
 $context['manufacturer_id'] = 14020601;
 $context['model_id'] = 14020601;
-$context['login'] = "root";
-$context['password'] = "OpenMSA";
+$context['login'] = "msa";
+$context['password'] = "ubiqube";
 $context['password_admin'] = "";
-$context['device_ip_address'] = "127.0.0.1";
+$context['device_ip_address'] = "172.20.0.101";
 $context['device_external_reference'] = "";
 $context['managementInterface'] = "eth0";
 $context['snmpCommunity'] = "public";

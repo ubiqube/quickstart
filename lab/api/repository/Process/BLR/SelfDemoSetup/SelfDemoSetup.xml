@@ -81,51 +81,7 @@
     <allowSchedule>false</allowSchedule>
     <type>CREATE</type>
     
-  
-    
-    
-  
-    
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
   <task name="Task_Set_Parameters1.php">
-      <processPath>/opt/fmc_repository/Process/BLR/SelfDemoSetup/Process_Setup/Tasks/</processPath>
-      <displayName>Set Parameters</displayName>
-    </task>
-    <task name="/opt/fmc_repository/Process/BLR/SelfDemoSetup/Process_Setup/Tasks/Task_msa_device_create.php">
-      <processPath/>
-      <displayName>Create ME</displayName>
-    </task>
-    <task name="/opt/fmc_repository/Process/Reference/MSActivator/Device/Task_mark_device_as_provisioned.php">
-      <processPath/>
-      <displayName>Provision ME</displayName>
-    </task>
-    <task name="Task_Set_Parameters2.php">
       <processPath>/opt/fmc_repository/Process/BLR/SelfDemoSetup/Process_Setup/Tasks/</processPath>
       <displayName>Set Parameters</displayName>
     </task>
