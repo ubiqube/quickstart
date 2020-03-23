@@ -4,10 +4,10 @@ services:
 
   me:
     image: linux:me
-    build: ./demo_lab/linux.me
+    build: ./lab/linux.me
     ports:
       - "2224:22"
     networks:
       default:
         ipv4_address: 172.20.0.101
-    hostname: msa
+    hostname: linux_me

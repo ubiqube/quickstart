@@ -14,7 +14,7 @@ Before starting this tutorial, first install [Docker](https://docs.docker.com/in
 3. check your docker engine has access to dockerhub
 4. clone this repo: `git clone git@github.com:ubiqube/quickstart.git`
 5. run: `docker login`
-6. run: `docker-compose -f docker-compose.yml -f demo_lab/docker-compose.lab.yml up -d `
+6. run: `docker-compose -f docker-compose.yml -f lab/docker-compose.lab.yml up -d `
 7. browse: https://localhost/
 
 To get the access to the UBiqube dockerhub private repository please contact us ...
