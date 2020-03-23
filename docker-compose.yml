@@ -35,7 +35,8 @@ services:
     depends_on:
       - db
       - es
-
+  
+  
   db:
     image: ubiqube/msa2:db-20.0
     volumes:
