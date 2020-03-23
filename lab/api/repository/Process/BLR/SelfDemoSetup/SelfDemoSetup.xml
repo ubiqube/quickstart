@@ -1,74 +1,77 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<ObjectDefinition>  <information>
+<?xml version="1.0" encoding="UTF-8"?><ObjectDefinition>  <information>
+    <allowLaunchOnFailedProcess>true</allowLaunchOnFailedProcess>
     <description/>
     <displayField>service_id</displayField>
     <executionDetailsVisibility>5</executionDetailsVisibility>
+    <executionMode>TRANSACTION</executionMode>
     <group/>
     <icon>/images/eclipseIcons/page_obj.gif</icon>
     <name>SelfDemoSetup</name>
     <order>10000</order>
+    <poolId>0</poolId>
     <readVariableVisibility>5</readVariableVisibility>
+    <serviceTaskType>php</serviceTaskType>
     <showDetailedServiceInstances>false</showDetailedServiceInstances>
     <showProcessExecConsole>false</showProcessExecConsole>
     <showVariables>false</showVariables>
     <visibility>5</visibility>
   </information>  <variables frozen="0">
-    <variable displayName="Customer Id" displayOrder="2" maxLength="100" name="params.customer_id" startIncrement="0" type="Integer">
+    <variable default="40" displayName="Customer Id" displayOrder="2" maxLength="100" name="params.customer_id" numberOfRowMax="0" startIncrement="0" type="Integer">
       <sections>
         <section>Set Parameters</section>
       </sections>
     </variable>
-    <variable displayName="Managed Device Name" displayOrder="3" maxLength="100" name="params.managed_device_name" startIncrement="0" type="String">
+    <variable default="linux_me" displayName="Managed Device Name" displayOrder="3" maxLength="100" name="params.managed_device_name" numberOfRowMax="0" startIncrement="0" type="String">
       <sections>
         <section>Set Parameters</section>
       </sections>
     </variable>
-    <variable displayName="Device External Reference" displayOrder="4" maxLength="100" name="params.device_external_reference" startIncrement="0" type="String">
+    <variable displayName="Device External Reference" displayOrder="4" maxLength="100" name="params.device_external_reference" numberOfRowMax="0" startIncrement="0" type="String">
       <sections>
         <section>Set Parameters</section>
       </sections>
     </variable>
-    <variable default="14020601" displayName="Manufacturer Id" displayOrder="5" maxLength="100" name="params.manufacturer_id" startIncrement="0" type="Integer">
+    <variable default="14020601" displayName="Manufacturer Id" displayOrder="5" maxLength="100" name="params.manufacturer_id" numberOfRowMax="0" startIncrement="0" type="Integer">
       <sections>
         <section>Set Parameters</section>
       </sections>
     </variable>
-    <variable default="14020601" displayName="Model Id" displayOrder="6" maxLength="100" name="params.model_id" startIncrement="0" type="Integer">
+    <variable default="14020601" displayName="Model Id" displayOrder="6" maxLength="100" name="params.model_id" numberOfRowMax="0" startIncrement="0" type="Integer">
       <sections>
         <section>Set Parameters</section>
       </sections>
     </variable>
-    <variable displayName="Device Ip Address" displayOrder="7" maxLength="100" name="params.device_ip_address" startIncrement="0" type="IpAddress">
+    <variable default="172.20.0.101" displayName="Device Ip Address" displayOrder="7" maxLength="100" name="params.device_ip_address" numberOfRowMax="0" startIncrement="0" type="IpAddress">
       <sections>
         <section>Set Parameters</section>
       </sections>
     </variable>
-    <variable displayName="Login" displayOrder="8" maxLength="100" name="params.login" startIncrement="0" type="String">
+    <variable default="msa" displayName="Login" displayOrder="8" maxLength="100" name="params.login" numberOfRowMax="0" startIncrement="0" type="String">
       <sections>
         <section>Set Parameters</section>
       </sections>
     </variable>
-    <variable displayName="Password" displayOrder="9" maxLength="100" name="params.password" startIncrement="0" type="Password">
+    <variable default="ubiqube" displayName="Password" displayOrder="9" maxLength="100" name="params.password" numberOfRowMax="0" startIncrement="0" type="Password">
       <sections>
         <section>Set Parameters</section>
       </sections>
     </variable>
-    <variable displayName="Password Admin" displayOrder="10" maxLength="100" name="params.password_admin" startIncrement="0" type="Password">
+    <variable displayName="Password Admin" displayOrder="10" maxLength="100" name="params.password_admin" numberOfRowMax="0" startIncrement="0" type="Password">
       <sections>
         <section>Set Parameters</section>
       </sections>
     </variable>
-    <variable displayName="Managementinterface" displayOrder="39" maxLength="100" name="params.managementInterface" startIncrement="0" type="String">
+    <variable default="eth0" displayName="Management Interface" displayOrder="39" maxLength="100" name="params.managementInterface" numberOfRowMax="0" startIncrement="0" type="String">
       <sections>
         <section>Set Parameters</section>
       </sections>
     </variable>
-    <variable displayName="Snmpcommunity" displayOrder="40" maxLength="100" name="params.snmpCommunity" startIncrement="0" type="String">
+    <variable default="ubiqube" displayName="Snmp Community" displayOrder="40" maxLength="100" name="params.snmpCommunity" numberOfRowMax="0" startIncrement="0" type="String">
       <sections>
         <section>Set Parameters</section>
       </sections>
     </variable>
-    <variable displayName="Device Id" displayOrder="61" maxLength="100" name="params.device_id" startIncrement="0" type="Device">
+    <variable displayName="Device Id" displayOrder="61" maxLength="100" name="params.device_id" numberOfRowMax="0" startIncrement="0" type="Device">
       <sections>
         <section>Provision ME</section>
       </sections>
@@ -113,19 +116,13 @@
     
     
     
+  
+    
+    
+    
+    
+    
   <task name="Task_Set_Parameters1.php">
-      <processPath>/opt/fmc_repository/Process/BLR/SelfDemoSetup/Process_Setup/Tasks/</processPath>
-      <displayName>Set Parameters</displayName>
-    </task>
-    <task name="/opt/fmc_repository/Process/BLR/SelfDemoSetup/Process_Setup/Tasks/Task_msa_device_create.php">
-      <processPath/>
-      <displayName>Create ME</displayName>
-    </task>
-    <task name="/opt/fmc_repository/Process/Reference/MSActivator/Device/Task_mark_device_as_provisioned.php">
-      <processPath/>
-      <displayName>Provision ME</displayName>
-    </task>
-    <task name="Task_Set_Parameters2.php">
       <processPath>/opt/fmc_repository/Process/BLR/SelfDemoSetup/Process_Setup/Tasks/</processPath>
       <displayName>Set Parameters</displayName>
     </task>
