@@ -37,7 +37,7 @@ Creating quickstart_front_1   ... done
 If you get a gateway error, the web server is probably still starting and you may have to wait for 10-20 more seconds before trying again.
 
 To get an interactive shell on the MSA main container (this will ne needed later)
-````
+```
 docker exec -it "inmanta_quickstart_server" bash
 ```
 
