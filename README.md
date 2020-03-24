@@ -38,7 +38,7 @@ If you get a gateway error, the web server is probably still starting and you ma
 
 To get an interactive shell on the MSA main container (this will ne needed later)
 ```
-docker exec -it "inmanta_quickstart_server" bash
+docker exec -it "quickstart_api_1" bash
 ```
 
 # Breaking down/Resetting the quickstart environment
