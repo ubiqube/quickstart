@@ -36,9 +36,7 @@ RUN	cd /opt/fmc_repository ; \
     ln -s ../OpenMSA_MS/OPENSTACK OPENSTACK; ln -s ../OpenMSA_MS/.meta_OPENSTACK .meta_OPENSTACK; \
     ln -s ../OpenMSA_MS/REST REST; ln -s ../OpenMSA_MS/.meta_REST .meta_REST; \
     ln -s ../OpenMSA_MS/Tutorials Tutorials; ln -s ../OpenMSA_MS/.meta_Tutorials .meta_Tutorials; \
-
     chown -R ncuser:ncuser /opt/fmc_repository/; \
-
     :
 
 COPY create_tenant_customer.sh /usr/bin/
