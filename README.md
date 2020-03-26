@@ -13,9 +13,10 @@ Before starting this tutorial, first install [Docker](https://docs.docker.com/in
 2. ask for access to private repo: `ubiqube/msa2`
 3. check your docker engine has access to dockerhub
 4. clone this repo: `git clone https://github.com/ubiqube/quickstart.git`
-5. run: `docker login`
-6. run: `docker-compose -f docker-compose.yml -f lab/docker-compose.lab.yml up -d `
-7. browse: https://localhost/ and connect as username `ncroot`, password `ubiqube
+5. `cd quickstart`
+6. run: `docker login`
+7. run: `docker-compose -f docker-compose.yml -f lab/docker-compose.lab.yml up -d `
+8. browse: https://localhost/ and connect as username `ncroot`, password `ubiqube
 
 Docker Compose will set up the MSA orchestration platform as well as 1 VM like, Linux Centos 6.8 based container to experiement on (this container is defined in lab/linux.me/Dockerfile in this quickstart repository).  
 
