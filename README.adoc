@@ -1,6 +1,6 @@
 = Quickstart
 
-This quickstart project will get you started with the MSActivator(TM)(MSA) orchestration tool.
+This quickstart project will get you started with the MSActivator(TM)(MSA), an Integrated Automation Platform.
 
 == Setting up the tutorial
 To quickly get started with MSA, use Docker Compose to set up an environment to host the MSA server and some entities to be managed. 
@@ -16,11 +16,13 @@ Before starting this tutorial, first install [Docker](https://docs.docker.com/in
 7. run: `docker-compose -f docker-compose.yml -f lab/docker-compose.lab.yml up -d`
 8. browse: https://localhost/ and connect as username `ncroot`, password `ubiqube`
 
-Docker Compose will set up the MSA orchestration platform as well as 1 VM like, Linux Centos 6.8 based container to experiement on (this container is defined in lab/linux.me/Dockerfile in this quickstart repository).  
+NOTE: It might take a few minutes after connecting to https://localhost/ to be able to login.
 
-When Docker Compose is done deploying and the MSA orchestration platform is running, you will be able to open the dashboard at link:https://127.0.0.1[]. 
+Docker Compose will set up MSA as well as one virtual machine such as a Linux Centos 6.8 based container to experiment on (this container is defined in lab/linux.me/Dockerfile in this QuickStart repository).  
 
-When you see the following output, the MSA is ready to be used
+When Docker Compose is done deploying and the MSA platform is running, you will be able to open the dashboard at link:https://127.0.0.1[]. 
+
+When you see the following output, the MSA platform is ready to be used
 
 ```
 Creating quickstart_ui_1      ... done
@@ -35,7 +37,7 @@ Creating quickstart_front_1   ... done
 
 If you get a gateway error, the web server is probably still starting and you may have to wait for 10-20 more seconds before trying again.
 
-To get an interactive shell on the MSA main container (this will ne needed later)
+To get an interactive shell on the MSA main container (this will be needed later)
 ```
 docker-compose exec api bash
 ```
@@ -49,7 +51,7 @@ To fully clean up or reset the environment, run the following commands:
 
 This will give you a clean environment next time you run docker-compose up.
 
-NOTE: To get the access to the UBiqube dockerhub private repository please contact us ...
+NOTE: To get the access to the UBiqube dockerhub private repository please contact us at info@ubiqube.com.
 
 == Requirements on the host machine
 
