@@ -6,6 +6,7 @@ RUN rm -rf /opt/fmc_repository/Process/Cisco_ZTD_service; \
     rm -rf /opt/fmc_repository/CommandDefinition/microservices; \
     :
 
+# install the lab: workflows
 RUN	cd /opt/fmc_repository ; \
     mkdir -p /opt/fmc_repository/Process/ ; \
     mkdir -p /opt/fmc_repository/CommandDefinition/ ; \
@@ -24,6 +25,7 @@ RUN	cd /opt/fmc_repository ; \
     chown -R ncuser:ncuser /opt/fmc_repository/; \
     :
 
+# install some MS from OpenMSA github repo
 RUN	cd /opt/fmc_repository ; \
     rm -rf /opt/fmc_repository/OpenMSA_MS ; \
     git clone https://github.com/openmsa/Microservices OpenMSA_MS; \
@@ -37,6 +39,18 @@ RUN	cd /opt/fmc_repository ; \
     ln -s ../OpenMSA_MS/REST REST; ln -s ../OpenMSA_MS/.meta_REST .meta_REST; \
     ln -s ../OpenMSA_MS/Tutorials Tutorials; ln -s ../OpenMSA_MS/.meta_Tutorials .meta_Tutorials; \
     chown -R ncuser:ncuser /opt/fmc_repository/; \
+    :
+
+# deploy the doc from https://github.com/ubiqube
+RUN cd /root; \
+    curl -s "https://get.sdkman.io" | bash; \
+    source "/root/.sdkman/bin/sdkman-init.sh"; \
+    sdk install gradle 6.3; \
+    git clone https://github.com/ubiqube/docs.git  gh.ubi.docs; \
+    cd gh.ubi.docs; \
+    ln -fs /opt/ses/share/htdocs/ publish.dir; \
+    /root/.sdkman/candidates/gradle/current/bin/gradle asciidoc; \
+    tar c build | tar x -C publish.dir; \
     :
 
 COPY create_tenant_customer.sh /usr/bin/
