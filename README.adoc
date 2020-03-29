@@ -47,7 +47,8 @@ To fully clean up or reset the environment, run the following commands:
 
 1. `docker-compose -f docker-compose.yml -f lab/docker-compose.lab.yml down`
 2. `docker volume prune -f`
-3. `docker ps -a | grep "quickstart" | awk '{print $3}' | xargs docker rmi`
+3. `docker ps -a | grep "ubiqube" | awk '{print $3}' | xargs docker rmi`
+4. `docker images | grep "ubiqube" | awk '{print $3}' | xargs docker rmi`
 
 This will give you a clean environment next time you run docker-compose up.
 
