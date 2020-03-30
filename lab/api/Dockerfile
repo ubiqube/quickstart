@@ -5,6 +5,21 @@ RUN rm -rf /opt/fmc_repository/Process/Cisco_ZTD_service; \
     rm -rf /opt/fmc_repository/Process/Topology; \
     rm -rf /opt/fmc_repository/CommandDefinition/microservices; \
     :
+# install gradle
+RUN cd /root; \
+    curl -s "https://get.sdkman.io" | bash; \
+    source "/root/.sdkman/bin/sdkman-init.sh"; \
+    sdk install gradle 6.3; \
+    :
+
+# install a trial license
+COPY resources/deploy-license.sh /opt/ubiqube/
+RUN  chmod +x /opt/ubiqube/deploy-license.sh
+RUN cd /opt/ubiqube/; \
+    wget  http://demo-2.ubiqube.com/trial_license/MSA2-eval.lic; \
+    cp  /opt/ubiqube/MSA2-eval.lic  /opt/ubiqube/lic/license.lic; \
+    /opt/ubiqube/deploy-license.sh /opt/ubiqube/lic/license.lic /opt/ubiqube/lic/license; \
+    :
 
 # install the lab: workflows
 RUN	cd /opt/fmc_repository ; \
@@ -25,6 +40,12 @@ RUN	cd /opt/fmc_repository ; \
     chown -R ncuser:ncuser /opt/fmc_repository/; \
     :
 
+# install REST Generic Adapter from github repo
+RUN	cd /opt/sms/bin/php ; \
+    git clone https://github.com/openmsa/Adaptors.git OpenMSA_Adapters; \
+    :
+
+
 # install some MS from OpenMSA github repo
 RUN	cd /opt/fmc_repository ; \
     rm -rf /opt/fmc_repository/OpenMSA_MS ; \
@@ -43,9 +64,6 @@ RUN	cd /opt/fmc_repository ; \
 
 # deploy the doc from https://github.com/ubiqube
 RUN cd /root; \
-    curl -s "https://get.sdkman.io" | bash; \
-    source "/root/.sdkman/bin/sdkman-init.sh"; \
-    sdk install gradle 6.3; \
     git clone https://github.com/ubiqube/docs.git  gh.ubi.docs; \
     cd gh.ubi.docs; \
     ln -fs /opt/ses/share/htdocs/ publish.dir; \
@@ -53,7 +71,7 @@ RUN cd /root; \
     tar c build | tar x -C publish.dir; \
     :
 
-COPY create_tenant_customer.sh /usr/bin/
+COPY resources/create_tenant_customer.sh /usr/bin/
 RUN chmod a+x  /usr/bin/create_tenant_customer.sh 
 RUN  echo "/usr/bin/create_tenant_customer.sh" >> /etc/rc.local 
 
