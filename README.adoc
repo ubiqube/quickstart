@@ -2,7 +2,7 @@
 
 This quickstart project will get you started with the MSActivator(TM)(MSA), an Integrated Automation Platform.
 
-== Setting up the tutorial
+== Setting up the quickstart
 To quickly get started with MSA, use Docker Compose to set up an environment to host the MSA server and some entities to be managed. 
 
 Before starting this tutorial, first install [Docker](https://docs.docker.com/install/) on your machine. Next install [Docker Compose](https://docs.docker.com/compose/install/) on your machine.
