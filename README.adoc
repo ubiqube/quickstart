@@ -2,10 +2,17 @@
 
 This quickstart project will get you started with the MSActivator(TM)(MSA), an Integrated Automation Platform.
 
-== Setting up the quickstart
-To quickly get started with MSA, use Docker Compose to set up an environment to host the MSA server and some entities to be managed. 
+== Prerequisites
 
-Before starting this tutorial, first install [Docker](https://docs.docker.com/install/) on your machine. Next install [Docker Compose](https://docs.docker.com/compose/install/) on your machine.
+Before starting this tutorial, first install link:https://docs.docker.com/install/[Docker] on your machine. 
+Next install link:https://docs.docker.com/compose/install/[Docker Compose] on your machine.
+
+== Installing the application
+
+The easiest way to get started with the {product_name} is to follow the link:https://github.com/ubiqube/quickstart[quickstart guide on github].
+
+This quickstart guide will setup a mini-lab composed of the MSA-2 containers as well as a Linux container that you can use for your tests. (see below for mode details)
+
 
 1. check your dockerhub account password - or create a new account
 2. ask for access to private repo: `ubiqube/msa2`
@@ -16,8 +23,12 @@ Before starting this tutorial, first install [Docker](https://docs.docker.com/in
 7. run: `docker-compose -f docker-compose.yml -f lab/docker-compose.lab.yml up -d`
 8. browse: https://localhost/ and connect as username `ncroot`, password `ubiqube`
 
-NOTE: It might take a few minutes after connecting to https://localhost/ to be able to login.
+image:images/connection_page.png[]
 
+NOTE: It might take a few minutes after connecting to https://localhost/ to be able to login.
+NOTE: There might be a pop-up warning of a self-signed cert that needs to be accepted to proceed.
+
+=== 
 Docker Compose will set up MSA as well as one virtual machine such as a Linux Centos 6.8 based container to experiment on (this container is defined in lab/linux.me/Dockerfile in this QuickStart repository).  
 
 When Docker Compose is done deploying and the MSA platform is running, you will be able to open the dashboard at link:https://127.0.0.1[]. 
@@ -58,5 +69,51 @@ NOTE: To get the access to the UBiqube dockerhub private repository please conta
 
 The host machine should have hardware specs similar to that
 of the VM running the .ova flavour of MSA:
+.on a PC
+- 8Go, 2CPU, 100Go
+.on a production environment 
+- minimum 16Go, 4CPU, 100Go
 
-- 8Go, 2CPU, 50Go
+
+=== Docker for Linux (or Linux VM)
+----
+sudo sysctl -w vm.max_map_count=262144
+sudo tee -a /etc/sysctl.conf <<< "vm.max_map_count=262144"
+----
+
+=== Docker for Mac
+
+From the command line, run:
+----
+screen ~/Library/Containers/com.docker.docker/Data/vms/0/tty
+----	
+Press enter and use`sysctl` to configure vm.max_map_count:
+----
+sysctl -w vm.max_map_count=262144
+----	
+To exit the screen session, type Ctrl a d.
+
+=== Docker for Windows
+----
+docker-machine create -d virtualbox  \
+	--virtualbox-cpu-count=2 \
+	--virtualbox-memory=8192 \
+	--virtualbox-disk-size=50000 \
+	default
+----
+
+In the docker VM, do as for Linux host above:
+----
+sudo sysctl -w vm.max_map_count=262144
+sudo tee -a /etc/sysctl.conf <<< "vm.max_map_count=262144"
+----
+
+The docker VM is mapped to a local IP on the Windows host,
+access to the msa is _NOT_ done via `https://localhost`,
+you must lookup the IP with:
+
+```
+$ docker-machine ls
+NAME      ACTIVE   DRIVER       STATE     URL                         SWARM   DOCKER     ERRORS
+default   *        virtualbox   Running   tcp://192.168.99.100:2376           v19.03.5
+```
