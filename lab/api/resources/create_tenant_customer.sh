@@ -5,6 +5,11 @@ USER="ncroot"
 PASSWORD="ubiqube"
 OPERATOR="BLR"
 
+# workaround for  MSA-7371
+service wildfly restart
+service tomcat restart
+sleep 20
+
 RESPONSE=`curl -H 'Content-Type: application/json' -XPOST http://127.0.0.1/ubi-api-rest/auth/token -d '{"username":"ncroot", "password":"ubiqube" }'`
 TOKEN=$(php -r 'echo json_decode($argv[1])->token;' "$RESPONSE")
 echo "$TOKEN" # Use for further processsing

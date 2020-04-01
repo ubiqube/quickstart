@@ -88,7 +88,5 @@ RUN	cd /opt/fmc_repository ; \
 
 COPY resources/create_tenant_customer.sh /usr/bin/
 RUN chmod a+x  /usr/bin/create_tenant_customer.sh 
-RUN  echo "sleep 90" >> /etc/rc.local 
-RUN  echo "/usr/bin/create_tenant_customer.sh  >> /opt/startup/update.log  2>&1" >> /etc/rc.local 
 
 CMD [ "/sbin/init" ]
