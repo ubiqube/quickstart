@@ -26,6 +26,7 @@ services:
     - "change-mgt:/opt/svnroot"
     - "settings:/opt/settings"
     - "license:/opt/ubiqube/lic"
+    - "startup.log:/opt/startup"
     networks:
       default:
         ipv4_address: 172.20.0.66
@@ -53,7 +54,7 @@ services:
     - "kibana:/opt/kibana/"
 
   ui:
-    image: ubiqube/msa2:ui-20.0
+    image: ubiqube/msa2-ui:8b8ea5f93e4a6f18ab8367206a8e3c383b387faa 
 
   camunda:
     image: camunda/camunda-bpm-platform:7.12.0
@@ -70,6 +71,7 @@ volumes:
   front.certs:
   settings:
   license:
+  startup.log:
 
 
 networks:
