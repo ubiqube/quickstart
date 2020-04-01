@@ -21,25 +21,6 @@ RUN cd /opt/ubiqube/; \
     /opt/ubiqube/deploy-license.sh /opt/ubiqube/lic/license.lic /opt/ubiqube/lic/license; \
     :
 
-# install the lab: workflows
-RUN	cd /opt/fmc_repository ; \
-    mkdir -p /opt/fmc_repository/Process/ ; \
-    mkdir -p /opt/fmc_repository/CommandDefinition/ ; \
-    rm -rf /opt/fmc_repository/quickstart ; \
-	git clone https://github.com/ubiqube/quickstart; \
-    rm -rf /opt/fmc_repository/CommandDefinition/BLR ;\
-    rm -rf /opt/fmc_repository/CommandDefinition/.meta_BLR ; \
-    cd /opt/fmc_repository/CommandDefinition/; \
-    ln -fs ../quickstart/lab/api/repository/CommandDefinition/BLR BLR; \
-    ln -fs ../quickstart/lab/api/repository/CommandDefinition/.meta_BLR .meta_BLR; \
-    rm -rf /opt/fmc_repository/Process/BLR ;\
-    rm -rf /opt/fmc_repository/Process/.meta_BLR ; \
-    cd /opt/fmc_repository/Process/; \
-    ln -fs ../quickstart/lab/api/repository/Process/BLR BLR; \
-    ln -fs ../quickstart/lab/api/repository/Process/.meta_BLR .meta_BLR; \
-    chown -R ncuser:ncuser /opt/fmc_repository/; \
-    :
-
 # install REST Generic Adapter from github repo
 RUN	cd /opt/sms/bin/php ; \
     git clone https://github.com/openmsa/Adaptors.git OpenMSA_Adapters; \
@@ -85,8 +66,29 @@ RUN cd /root; \
     tar c build | tar x -C publish.dir; \
     :
 
+# install the lab: workflows
+RUN	cd /opt/fmc_repository ; \
+    mkdir -p /opt/fmc_repository/Process/ ; \
+    mkdir -p /opt/fmc_repository/CommandDefinition/ ; \
+    rm -rf /opt/fmc_repository/quickstart ; \
+	git clone https://github.com/ubiqube/quickstart; \
+    rm -rf /opt/fmc_repository/CommandDefinition/BLR ;\
+    rm -rf /opt/fmc_repository/CommandDefinition/.meta_BLR ; \
+    cd /opt/fmc_repository/CommandDefinition/; \
+    ln -fs ../quickstart/lab/api/repository/CommandDefinition/BLR BLR; \
+    ln -fs ../quickstart/lab/api/repository/CommandDefinition/.meta_BLR .meta_BLR; \
+    rm -rf /opt/fmc_repository/Process/BLR ;\
+    rm -rf /opt/fmc_repository/Process/.meta_BLR ; \
+    cd /opt/fmc_repository/Process/; \
+    ln -fs ../quickstart/lab/api/repository/Process/BLR BLR; \
+    ln -fs ../quickstart/lab/api/repository/Process/.meta_BLR .meta_BLR; \
+    chown -R ncuser:ncuser /opt/fmc_repository/; \
+    :
+
+
 COPY resources/create_tenant_customer.sh /usr/bin/
 RUN chmod a+x  /usr/bin/create_tenant_customer.sh 
-RUN  echo "/usr/bin/create_tenant_customer.sh" >> /etc/rc.local 
+RUN  echo "sleep 90" >> /etc/rc.local 
+RUN  echo "/usr/bin/create_tenant_customer.sh  >> /opt/startup/update.log  2>&1" >> /etc/rc.local 
 
 CMD [ "/sbin/init" ]
