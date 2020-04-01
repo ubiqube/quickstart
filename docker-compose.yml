@@ -54,11 +54,21 @@ services:
     - "kibana:/opt/kibana/"
 
   ui:
-    image: ubiqube/msa2-ui:8b8ea5f93e4a6f18ab8367206a8e3c383b387faa 
+    image: ubiqube/msa2-ui:c81e6aa517b4d3fdb7ca544fb4bac42a89aec849 
 
   camunda:
     image: camunda/camunda-bpm-platform:7.12.0
 
+  linux_me:
+    image: linux:me
+    build: ./lab/linux.me
+    ports:
+      - "2224:22"
+    networks:
+      default:
+        ipv4_address: 172.20.0.101
+    hostname: linux_me
+  
 
 volumes:
   db:

@@ -2,7 +2,7 @@ version: '2'
   
 services:
 
-  me:
+  linux_me:
     image: linux:me
     build: ./lab/linux.me
     ports:
