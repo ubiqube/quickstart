@@ -20,7 +20,7 @@ This quickstart guide will setup a mini-lab composed of the MSA-2 containers as 
 4. clone this repo: `git clone https://github.com/ubiqube/quickstart.git`
 5. `cd quickstart`
 6. run: `docker login`
-7. run: `docker-compose -f docker-compose.yml -f lab/docker-compose.lab.yml up -d`
+7. run: `docker-compose -f docker-compose.yml up -d`
 8. browse: https://localhost/ and connect as username `ncroot`, password `ubiqube`
 
 NOTE: It might take a few minutes after connecting to https://localhost/ to be able to login.
@@ -58,7 +58,7 @@ docker-compose exec api /usr/bin/create_tenant_customer.sh
 == Breaking down/Resetting the quickstart environment
 To fully clean up or reset the environment, run the following commands:
 
-1. `docker-compose -f docker-compose.yml -f lab/docker-compose.lab.yml down`
+1. `docker-compose -f docker-compose.yml down`
 2. `docker volume prune -f`
 3. `docker ps -a | grep "ubiqube" | awk '{print $3}' | xargs docker rmi`
 4. `docker images | grep "ubiqube" | awk '{print $3}' | xargs docker rmi`
