@@ -49,7 +49,12 @@ To get an interactive shell on the MSA main container (this will be needed later
 ```
 docker-compose exec api bash
 ```
+You can start workinh with the MSA nd create tenant, customers and managed entities manually.
+You can also choose to run the script `create_tenant_customer.sh` to automatically create a test environement.
 
+```
+docker-compose exec api /usr/bin/create_tenant_customer.sh  >> /opt/startup/update.log  2>&1
+```
 == Breaking down/Resetting the quickstart environment
 To fully clean up or reset the environment, run the following commands:
 
