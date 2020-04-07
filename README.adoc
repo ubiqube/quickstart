@@ -1,6 +1,8 @@
 = Quickstart
 
-This quickstart project will get you started with the MSActivator(TM) (MSA), an Integrated Automation Platform.
+This quickstart method will get you started with the MSActivator(TM) (MSA), which is a next generation Integrated Automation Platform. By following this quickstart you will be able to test out the full capabilities of the MSA with a limited license.
+
+Empower your business by automating all manner of business processes through tight integration of every entity in your digital landscape.
 
 == Prerequisites
 
@@ -55,7 +57,7 @@ You can also choose to run the script `create_tenant_customer.sh` to automatical
 ```
 docker-compose exec api /usr/bin/create_tenant_customer.sh
 ```
-== Breaking Down/Resetting the QuickStart Environment
+== Breaking Down/Resetting the Quickstart Environment
 To fully clean up or reset the environment, run the following commands:
 
 1. `docker-compose down`
@@ -73,10 +75,10 @@ The host machine should have hardware specs similar to that
 of the VM running the .ova flavour of MSA:
 
 .on a PC
-- minimum 4GB memory, 2CPU, 100GB space
+- minimum 8GB memory, 2CPU, 100GB space
 
 .on a production environment 
-- minimum 16GB memory, 4CPU, 200GB space
+- minimum 16GB memory, 4CPU, 100GB space
 
 
 === Docker for Linux (or Linux VM)
@@ -122,7 +124,7 @@ NAME      ACTIVE   DRIVER       STATE     URL                         SWARM   DO
 default   *        virtualbox   Running   tcp://192.168.99.100:2376           v19.03.5
 ```
 
-The QuickStart method will give you the ability to run a 'lab in a box' locally.  This will allow you to test out a true Integrated Automation Platform, such as the next generation MSActivator(TM).
+The quickstart method will give you the ability to run a 'lab in a box' locally.  This will allow you to test out a true Integrated Automation Platform, such as the next generation MSActivator(TM).
 
 The license on this is a trial which will allow a limited number of entities (or devices) to be connected and will expire in 30 days.
 
