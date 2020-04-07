@@ -1,6 +1,6 @@
 = Quickstart
 
-This quickstart project will get you started with the MSActivator(TM)(MSA), an Integrated Automation Platform.
+This quickstart project will get you started with the MSActivator(TM) (MSA), an Integrated Automation Platform.
 
 == Prerequisites
 
@@ -9,7 +9,7 @@ Next install link:https://docs.docker.com/compose/install/[Docker Compose] on yo
 
 == Installing the application
 
-The easiest way to get started with the {product_name} is to follow the link:https://github.com/ubiqube/quickstart[quickstart guide on github].
+The easiest way to get started with the MSA is to follow the link:https://github.com/ubiqube/quickstart[quickstart guide on github].
 
 This quickstart guide will setup a mini-lab composed of the MSA-2 containers as well as a Linux container that you can use for your tests. (see below for mode details)
 
@@ -23,10 +23,10 @@ This quickstart guide will setup a mini-lab composed of the MSA-2 containers as 
 7. run: `docker-compose up -d`
 8. browse: https://localhost/ and connect as username `ncroot`, password `ubiqube`
 
-NOTE: It might take a few minutes after connecting to https://localhost/ to be able to login.
+NOTE: It might take approximately five minutes after connecting to https://localhost/ to be able to login.
 NOTE: There might be a pop-up warning of a self-signed cert that needs to be accepted to proceed.
 
-Docker Compose will set up MSA as well as one virtual machine such as a Linux Centos 6.8 based container to experiment on (this container is defined in lab/linux.me/Dockerfile in this QuickStart repository).  
+Docker Compose will set up MSA as well as one virtual machine such as a Linux Centos 6.8 container on which to experiment (this container is defined in lab/linux.me/Dockerfile in this QuickStart repository).  
 
 When Docker Compose is done deploying and the MSA platform is running, you will be able to open the dashboard at link:https://127.0.0.1[]. 
 
@@ -45,17 +45,17 @@ Creating quickstart_front_1   ... done
 
 If you get a gateway error, the web server is probably still starting and you may have to wait for 10-20 more seconds before trying again.
 
-To get an interactive shell on the MSA main container (this will be needed later)
+To get an interactive shell on the MSA main container (this will be needed later).
 ```
 docker-compose exec api bash
 ```
-You can start workinh with the MSA nd create tenant, customers and managed entities manually.
+You can start working with the MSA and create tenants, customers and managed entities manually.
 You can also choose to run the script `create_tenant_customer.sh` to automatically create a test environement.
 
 ```
 docker-compose exec api /usr/bin/create_tenant_customer.sh
 ```
-== Breaking down/Resetting the quickstart environment
+== Breaking Down/Resetting the QuickStart Environment
 To fully clean up or reset the environment, run the following commands:
 
 1. `docker-compose down`
@@ -63,18 +63,20 @@ To fully clean up or reset the environment, run the following commands:
 3. `docker ps -a | grep "ubiqube" | awk '{print $3}' | xargs docker rmi`
 4. `docker images | grep "ubiqube" | awk '{print $3}' | xargs docker rmi`
 
-This will give you a clean environment next time you run docker-compose up.
+This will give you a clean environment next time you run `docker-compose up`.
 
-NOTE: To get the access to the UBiqube dockerhub private repository please contact us at info@ubiqube.com.
+NOTE: To get the access to the UBiqube dockerhub private repository, please contact us at info@ubiqube.com.
 
 == Requirements on the host machine
 
 The host machine should have hardware specs similar to that
 of the VM running the .ova flavour of MSA:
+
 .on a PC
-- 8Go, 2CPU, 100Go
+- 8GB memory, 2CPU, 100GB space
+
 .on a production environment 
-- minimum 16Go, 4CPU, 100Go
+- minimum 16GB memory, 4CPU, 100GB space
 
 
 === Docker for Linux (or Linux VM)
@@ -89,7 +91,7 @@ From the command line, run:
 ----
 screen ~/Library/Containers/com.docker.docker/Data/vms/0/tty
 ----	
-Press enter and use`sysctl` to configure vm.max_map_count:
+Press enter and use `sysctl` to configure vm.max_map_count:
 ----
 sysctl -w vm.max_map_count=262144
 ----	
@@ -119,3 +121,10 @@ $ docker-machine ls
 NAME      ACTIVE   DRIVER       STATE     URL                         SWARM   DOCKER     ERRORS
 default   *        virtualbox   Running   tcp://192.168.99.100:2376           v19.03.5
 ```
+
+The QuickStart method will give you the ability to run a 'lab in a box' locally.  This will allow you to test out a true Integrated Automation Platform, such as the next generation MSActivator(TM).
+
+The license on this is a trial which will allow a limited number of entities (or devices) to be connected and will expire in 30 days.
+
+For further information, please contact UBiqube at info@ubiqube.com .
+
