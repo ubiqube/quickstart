@@ -73,10 +73,10 @@ The host machine should have hardware specs similar to that
 of the VM running the .ova flavour of MSA:
 
 .on a PC
-- 8GB memory, 2CPU, 100GB space
+- minimum 4GB memory, 2CPU, 100GB space
 
 .on a production environment 
-- minimum 16GB memory, 4CPU, 100GB space
+- minimum 16GB memory, 4CPU, 200GB space
 
 
 === Docker for Linux (or Linux VM)
