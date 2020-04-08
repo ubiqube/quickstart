@@ -11,7 +11,7 @@ Next install link:https://docs.docker.com/compose/install/[Docker Compose] on yo
 
 == Installing the application
 
-The easiest way to get started with the MSA is to follow the link:https://github.com/ubiqube/quickstart[quickstart guide on github].
+The easiest way to get started with the MSA is to follow this quickstart guide.
 
 This quickstart guide will setup a mini-lab composed of the MSA-2 containers as well as a Linux container that you can use for your tests. (see below for mode details)
 
