@@ -5,10 +5,7 @@ USER="ncroot"
 PASSWORD="ubiqube"
 OPERATOR="BLR"
 
-# workaround for  MSA-7371
-service wildfly restart
-service tomcat restart
-sleep 20
+sleep 10
 
 RESPONSE=`curl -H 'Content-Type: application/json' -XPOST http://127.0.0.1/ubi-api-rest/auth/token -d '{"username":"ncroot", "password":"ubiqube" }'`
 TOKEN=$(php -r 'echo json_decode($argv[1])->token;' "$RESPONSE")
@@ -19,7 +16,7 @@ echo "CREATE $OPERATOR TENANT AND Tyrell CUSTOMER"
 echo "--------------------------------------------------"
 
 curl -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/operator/$OPERATOR?name=BladeRunner"
-curl -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer $TOKEN" -XPOST "http://127.0.0.1/ubi-api-rest/customer/$OPERATOR?name=Tyrell&reference=TyrellCorp" -d '{"name":"Tyrell"}'
+curl -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer $TOKEN" -XPOST "http://127.0.0.1/ubi-api-rest/customer/$OPERATOR?name=Tyrell%20Corporation&reference=TyrellCorp" -d '{"name":"Tyrell Corporation"}'
 
 CUSTLIST=`curl -H "Content-Type:application/json" -H "Authorization: Bearer "$TOKEN -XGET http://127.0.0.1/ubi-api-rest/lookup/customers`
 
@@ -57,4 +54,9 @@ sleep 1
 
 #curl -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer $TOKEN" -XPOST "http://127.0.0.1/ubi-api-rest/repository/operator?uri=Process/$OPERATOR"
 #curl -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer $TOKEN" -XPOST "http://127.0.0.1/ubi-api-rest/repository/operator?uri=CommandDefinition/$OPERATOR"
+echo "--------------------------------------------------"
+echo "CREATE SECOND CUSTOMER                            "
+echo "--------------------------------------------------"
+
+curl -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer $TOKEN" -XPOST "http://127.0.0.1/ubi-api-rest/customer/$OPERATOR?name=Rosen%20Corporation&reference=RosenCorp" -d '{"name":"Rosen Corporation"}'
 
