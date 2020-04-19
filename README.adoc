@@ -10,6 +10,8 @@ Before starting this tutorial, first install link:https://docs.docker.com/instal
 
 Next install link:https://docs.docker.com/compose/install/[Docker Compose] on your machine.
 
+Start docker: `$ sudo systemctl restart docker`
+
 == Installing the application
 
 The easiest way to get started with the MSA is to follow this quickstart guide.
@@ -22,9 +24,9 @@ This quickstart guide will setup a mini-lab composed of the MSA-2 containers as 
 3. check your docker engine has access to dockerhub
 4. clone this repo: `git clone https://github.com/ubiqube/quickstart.git`
 5. `cd quickstart`
-6. run: `docker login`
-7. run: `docker-compose pull` (this will just pull the latest UI code)
-8. run: `docker-compose up -d  --build  --quiet-pull`
+6. run: `sudo docker login`
+7. run: `sudo docker-compose pull` (this will just pull the latest UI code)
+8. run: `sudo docker-compose up -d  --build  --quiet-pull`
 9. browse: https://localhost/ (normally this will be https://127.0.0.1/)
 10. connect as username `ncroot`, password `ubiqube`
 
