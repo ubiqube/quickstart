@@ -3,7 +3,6 @@ FROM ubiqube/msa2:api-20.0
 # clean up some folder
 RUN rm -rf /opt/fmc_repository/Process/Cisco_ZTD_service; \
     rm -rf /opt/fmc_repository/Process/Topology; \
-    rm -rf /opt/fmc_repository/CommandDefinition/microservices; \
     :
 # install gradle
 RUN cd /root; \
@@ -83,7 +82,6 @@ RUN	cd /opt/fmc_repository ; \
     ln -fs ../quickstart/lab/api/repository/Process/.meta_BLR .meta_BLR; \
     chown -R ncuser:ncuser /opt/fmc_repository/; \
     :
-
 
 COPY resources/create_tenant_customer.sh /usr/bin/
 RUN chmod a+x  /usr/bin/create_tenant_customer.sh 
