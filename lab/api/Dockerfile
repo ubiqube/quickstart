@@ -4,12 +4,12 @@ FROM ubiqube/msa2:api-20.0
 RUN rm -rf /opt/fmc_repository/Process/Cisco_ZTD_service; \
     rm -rf /opt/fmc_repository/Process/Topology; \
     :
-# install gradle
-RUN cd /root; \
-    curl -s "https://get.sdkman.io" | bash; \
-    source "/root/.sdkman/bin/sdkman-init.sh"; \
-    sdk install gradle 6.3; \
-    :
+# # install gradle
+# RUN cd /root; \
+#     curl -s "https://get.sdkman.io" | bash; \
+#     source "/root/.sdkman/bin/sdkman-init.sh"; \
+#     sdk install gradle 6.3; \
+#     :
 
 # install a trial license
 COPY resources/deploy-license.sh /opt/ubiqube/
@@ -55,21 +55,21 @@ RUN	cd /opt/fmc_repository ; \
     ln -s ../OpenMSA_MS/Tutorials Tutorials; ln -s ../OpenMSA_MS/.meta_Tutorials .meta_Tutorials; \
     :
 
-# deploy the doc from https://github.com/ubiqube
-RUN cd /root; \
-    git clone https://github.com/ubiqube/docs.git  gh.ubi.docs; \
-    cd gh.ubi.docs; \
-    ln -fs /opt/ses/share/htdocs/ publish.dir; \
-    /root/.sdkman/candidates/gradle/current/bin/gradle asciidoc; \
-    tar c build | tar x -C publish.dir; \
-    :
+# # deploy the doc from https://github.com/ubiqube
+# RUN cd /root; \
+#     git clone https://github.com/ubiqube/docs.git  gh.ubi.docs; \
+#     cd gh.ubi.docs; \
+#     ln -fs /opt/ses/share/htdocs/ publish.dir; \
+#     /root/.sdkman/candidates/gradle/current/bin/gradle asciidoc; \
+#     tar c build | tar x -C publish.dir; \
+#     :
 
 # install the lab: workflows
 RUN	cd /opt/fmc_repository ; \
     mkdir -p /opt/fmc_repository/Process/ ; \
     mkdir -p /opt/fmc_repository/CommandDefinition/ ; \
     rm -rf /opt/fmc_repository/quickstart ; \
-	git clone https://github.com/ubiqube/quickstart; \
+    git clone https://github.com/ubiqube/quickstart; \
     rm -rf /opt/fmc_repository/CommandDefinition/BLR ;\
     rm -rf /opt/fmc_repository/CommandDefinition/.meta_BLR ; \
     cd /opt/fmc_repository/CommandDefinition/; \
