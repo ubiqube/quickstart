@@ -5,8 +5,11 @@ RUN rm -rf /opt/fmc_repository/Process/Cisco_ZTD_service; \
     rm -rf /opt/fmc_repository/Process/Topology; \
     :
 # install gradle
+COPY resources/sdkman.sh /opt/ubiqube/
+RUN  chmod +x /opt/ubiqube/sdkman.sh
 RUN cd /root; \
-    curl -s "https://get.sdkman.io" | bash; \
+#    curl -s "https://get.sdkman.io" | bash; \
+    /opt/ubiqube/sdkman.sh; \
     source "/root/.sdkman/bin/sdkman-init.sh"; \
     sdk install gradle 6.3; \
     :
