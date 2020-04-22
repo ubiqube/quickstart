@@ -25,7 +25,7 @@ This quickstart guide will setup a mini-lab composed of the MSA-2 containers as 
 4. clone this repo: `git clone https://github.com/ubiqube/quickstart.git`
 5. `cd quickstart`
 6. run: `sudo docker login`
-7. run: `sudo docker-compose up -d  --build  --quiet-pull`
+7. run: `sudo docker-compose up -d  --build`
 8. browse: https://localhost/ (normally this will be https://127.0.0.1/)
 9. connect as username `ncroot`, password `ubiqube`
 
@@ -68,7 +68,7 @@ To fully clean up or reset the environment, run the following commands:
 3. `docker ps -a | grep "ubiqube" | awk '{print $3}' | xargs docker rm`
 4. `docker images | grep "ubiqube" | awk '{print $3}' | xargs docker rmi`
 
-This will give you a clean environment next time you run `docker-compose up --build --quiet-pull`.
+This will give you a clean environment next time you run `docker-compose up --build`.
 
 NOTE: To get the access to the UBiqube dockerhub private repository, please contact us at info@ubiqube.com.
 
