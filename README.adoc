@@ -68,7 +68,7 @@ To fully clean up or reset the environment, run the following commands:
 3. `docker ps -a | grep "ubiqube" | awk '{print $3}' | xargs docker rmi`
 4. `docker images | grep "ubiqube" | awk '{print $3}' | xargs docker rmi`
 
-This will give you a clean environment next time you run `docker-compose up`.
+This will give you a clean environment next time you run `docker-compose up --build --quiet-pull`.
 
 NOTE: To get the access to the UBiqube dockerhub private repository, please contact us at info@ubiqube.com.
 
