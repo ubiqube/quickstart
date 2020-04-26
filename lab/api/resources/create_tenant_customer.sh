@@ -16,8 +16,9 @@ echo "CREATE $OPERATOR TENANT AND CUSTOMER Tyrell Corporation"
 echo "-------------------------------------------------------"
 
 curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/operator/$OPERATOR?name=BladeRunner"
+echo
 curl -s -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer $TOKEN" -XPOST "http://127.0.0.1/ubi-api-rest/customer/$OPERATOR?name=Tyrell%20Corporation&reference=TyrellCorp" -d '{"name":"Tyrell Corporation"}'
-
+echo
 CUSTLIST=`curl -s -H "Content-Type:application/json" -H "Authorization: Bearer "$TOKEN -XGET http://127.0.0.1/ubi-api-rest/lookup/customers`
 
 IFS='"' # set delimiter
@@ -37,7 +38,9 @@ echo "ATTACH WORKFLOWS TO CUSTOMER $CUSTID"
 echo "--------------------------------------------------"
 
 curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/$CUSTID/service/attach?uri=Process/$OPERATOR/SelfDemoSetup/SelfDemoSetup.xml"
+echo
 curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/$CUSTID/service/attach?uri=Process/$OPERATOR/Simple_Firewall/Simple_firewall_manager.xml"
+echo
 curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/$CUSTID/service/attach?uri=Process/$OPERATOR/IMPORT/Import_microservice.xml"
 sleep 2
 echo "--------------------------------------------------"
@@ -47,7 +50,7 @@ echo "--------------------------------------------------"
 CUSTIDONLY=${CUSTID//BLRA}
 
 curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/$CUSTID/?serviceName=Process/$OPERATOR/SelfDemoSetup/SelfDemoSetup&processName=Process%2FBLR%2FSelfDemoSetup%2FProcess_Setup" -d'{"customer_id":"'$CUSTIDONLY'"}'
-
+echo
 sleep 2
 
 #curl -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer $TOKEN" -XPOST "http://127.0.0.1/ubi-api-rest/repository/operator?uri=Process/$OPERATOR"
