@@ -17,7 +17,6 @@ services:
       - kibana
 
   api:
-    image: msa2:api-20.0
     build: ./lab/api
     volumes:
       - "repo.entities:/opt/fmc_entities"
