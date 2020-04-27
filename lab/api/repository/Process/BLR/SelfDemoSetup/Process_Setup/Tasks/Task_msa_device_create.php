@@ -66,17 +66,16 @@ $array = array('name' => $device_name,
 			'snmpCommunity' => $snmp_community,
 			'managementInterface' => $managementInterface,
 	);
-	$json = json_encode($array);
-	$msa_rest_api = "device/{$customer_id}";
-	$curl_cmd = create_msa_operation_request(OP_PUT, $msa_rest_api, $json);
-	$response = perform_curl_operation($curl_cmd, "CREATE MANAGED ENTITY");
-	$response = json_decode($response, true);
-	if ($response['wo_status'] !== ENDED) {
-		$response = json_encode($response);
-		return $response;
-	}
-	$response = prepare_json_response(ENDED, ENDED_SUCCESSFULLY, $response['wo_newparams']['response_body']);
-
+$json = json_encode($array);
+$msa_rest_api = "device/{$customer_id}";
+$curl_cmd = create_msa_operation_request(OP_PUT, $msa_rest_api, $json);
+$response = perform_curl_operation($curl_cmd, "CREATE MANAGED ENTITY");
+$response = json_decode($response, true);
+if ($response['wo_status'] !== ENDED) {
+	$response = json_encode($response);
+	return $response;
+}
+$response = prepare_json_response(ENDED, ENDED_SUCCESSFULLY, $response['wo_newparams']['response_body']);
 
 $response = json_decode($response, true);
 if ($response['wo_status'] !== ENDED) {
@@ -87,7 +86,15 @@ if ($response['wo_status'] !== ENDED) {
 $device_id = $response['wo_newparams']['entity']['externalReference'];
 $wo_comment = "Managed Entity External Reference : $device_id";
 logToFile($wo_comment);
-	
+
+$response = _device_do_initial_provisioning_by_id($device_id);
+$response = json_decode($response, true);
+if ($response['wo_status'] !== ENDED) {
+	$response = json_encode($response);
+	echo $response;
+	exit;
+}
+
 $context['device_id'] = $device_id;
 $response = prepare_json_response(ENDED, "Managed entity created successfully.\n$wo_comment", $context, true);
 echo $response;
