@@ -29,6 +29,8 @@ This quickstart guide will setup a mini-lab composed of the MSA-2 containers as 
 8. browse: https://localhost/ (normally this will be https://127.0.0.1/)
 9. connect as username `ncroot`, password `ubiqube`
 
+NOTE: To get the access to the UBiqube dockerhub private repository, please contact us at info@ubiqube.com.
+
 NOTE: It might take approximately five minutes after connecting to https://localhost/ to be able to login. There might be a pop-up warning of a self-signed cert that needs to be accepted to proceed.
 
 Docker Compose will set up MSA as well as one virtual machine such as a Linux Centos 6.8 container on which to experiment (this container is defined in lab/linux.me/Dockerfile in this QuickStart repository).  
@@ -70,7 +72,6 @@ To fully clean up or reset the environment, run the following commands:
 
 This will give you a clean environment next time you run `docker-compose up --build`.
 
-NOTE: To get the access to the UBiqube dockerhub private repository, please contact us at info@ubiqube.com.
 
 == Requirements on the host machine
 
