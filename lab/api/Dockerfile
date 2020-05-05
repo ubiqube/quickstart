@@ -1,5 +1,8 @@
 FROM ubiqube/msa2:api-20.0
 
+# install some useful things
+RUN git config --global alias.lg "log --graph --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(bold blue)<%an>%C(reset) %C(green)(%ar)%C(reset)' --abbrev-commit --date=relative"
+RUN git config --global push.default simple
 # clean up some folder
 RUN rm -rf /opt/fmc_repository/Process/Cisco_ZTD_service; \
     rm -rf /opt/fmc_repository/Process/Topology; \
