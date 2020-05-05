@@ -38,8 +38,8 @@ echo "ATTACH WORKFLOWS TO CUSTOMER $CUSTID"
 echo "--------------------------------------------------"
 
 curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/$CUSTID/service/attach?uri=Process/$OPERATOR/SelfDemoSetup/SelfDemoSetup.xml"
-echo
-curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/$CUSTID/service/attach?uri=Process/$OPERATOR/Simple_Firewall/Simple_firewall_manager.xml"
+#echo
+#curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/$CUSTID/service/attach?uri=Process/$OPERATOR/Simple_Firewall/Simple_firewall_manager.xml"
 echo
 curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/$CUSTID/service/attach?uri=Process/$OPERATOR/IMPORT/Import_microservice.xml"
 sleep 2
