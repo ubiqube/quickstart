@@ -51,7 +51,7 @@ services:
       - "kibana:/opt/kibana/"
 
   ui:
-    image: ubiqube/msa2-ui:14967b17b45ea9afa5d381ae96fefdb258150e5f
+    image: ubiqube/msa2-ui:090c62a7e79bfdcac45ea45e198fbd5b4c39dd95
 
   camunda:
     image: camunda/camunda-bpm-platform:7.12.0
@@ -59,6 +59,8 @@ services:
   linux_me:
     image: linux:me
     build: ./lab/linux.me
+    cap_add:
+      - NET_ADMIN
     ports:
       - "2224:22"
     networks:
