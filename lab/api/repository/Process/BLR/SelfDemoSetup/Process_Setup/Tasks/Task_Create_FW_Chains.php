@@ -14,12 +14,6 @@ function list_args()
 }
 
 
-if ($context['var_name2'] % 2 === 0) {
-	$ret = prepare_json_response(FAILED, 'Task Failed', $context, true);
-	echo "$ret\n";
-	exit;
-}
-
 /**
  * End of the task do not modify after this point
  */
