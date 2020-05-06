@@ -3,6 +3,7 @@ FROM ubiqube/msa2:api-20.0
 # install some useful things
 RUN git config --global alias.lg "log --graph --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(bold blue)<%an>%C(reset) %C(green)(%ar)%C(reset)' --abbrev-commit --date=relative"
 RUN git config --global push.default simple
+
 # clean up some folder
 RUN rm -rf /opt/fmc_repository/Process/Cisco_ZTD_service; \
     rm -rf /opt/fmc_repository/Process/Topology; \
@@ -74,13 +75,13 @@ RUN	cd /opt/fmc_repository ; \
     mkdir -p /opt/fmc_repository/CommandDefinition/ ; \
     rm -rf /opt/fmc_repository/quickstart ; \
     git clone https://github.com/ubiqube/quickstart; \
-    rm -rf /opt/fmc_repository/CommandDefinition/BLR ;\
-    rm -rf /opt/fmc_repository/CommandDefinition/.meta_BLR ; \
-    cd /opt/fmc_repository/CommandDefinition/; \
-    ln -fs ../quickstart/lab/api/repository/CommandDefinition/BLR BLR; \
-    ln -fs ../quickstart/lab/api/repository/CommandDefinition/.meta_BLR .meta_BLR; \
-    rm -rf /opt/fmc_repository/Process/BLR ;\
-    rm -rf /opt/fmc_repository/Process/.meta_BLR ; \
+#    rm -rf /opt/fmc_repository/CommandDefinition/BLR ;\
+#    rm -rf /opt/fmc_repository/CommandDefinition/.meta_BLR ; \
+#    cd /opt/fmc_repository/CommandDefinition/; \
+#    ln -fs ../quickstart/lab/api/repository/CommandDefinition/BLR BLR; \
+#    ln -fs ../quickstart/lab/api/repository/CommandDefinition/.meta_BLR .meta_BLR; \
+#    rm -rf /opt/fmc_repository/Process/BLR ;\
+#    rm -rf /opt/fmc_repository/Process/.meta_BLR ; \
     cd /opt/fmc_repository/Process/; \
     ln -fs ../quickstart/lab/api/repository/Process/BLR BLR; \
     ln -fs ../quickstart/lab/api/repository/Process/.meta_BLR .meta_BLR; \
