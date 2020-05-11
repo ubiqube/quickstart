@@ -70,10 +70,10 @@ To fully clean up or reset the environment, run the following commands:
 
 1. `docker-compose down`
 2. `docker volume prune -f`
-3. `docker ps -a | grep "ubiqube" | awk '{print $3}' | xargs docker rm`
+3. `docker ps -a | grep "ubiqube" | awk '{print $1}' | xargs docker rm`
 4. `docker images | grep "ubiqube" | awk '{print $3}' | xargs docker rmi`
 
-This will give you a clean environment next time you run `docker-compose up --build`.
+This will give you a clean environment next time you can run `docker-compose up -d --build` to recreate it from scratch.
 
 
 == Requirements on the host machine
