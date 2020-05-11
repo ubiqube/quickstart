@@ -5,8 +5,15 @@ RUN git config --global alias.lg "log --graph --pretty=format:'%C(red)%h%C(reset
 RUN git config --global push.default simple
 
 # clean up some folder
-RUN rm -rf /opt/fmc_repository/Process/Cisco_ZTD_service; \
-    rm -rf /opt/fmc_repository/Process/Topology; \
+RUN cd /opt/fmc_repository/Process/; \
+    rm -rf /opt/fmc_repository/Process/Cisco_ZTD_service; rm -rf /opt/fmc_repository/Process/.meta_Cisco_ZTD_service; \
+    rm -rf /opt/fmc_repository/Process/Topology; rm -rf /opt/fmc_repository/Process/.meta_Topology; \
+    rm -rf /opt/fmc_repository/Process/Reference/Device_Data_File; rm -rf /opt/fmc_repository/Process/Reference/.meta_Device_Data_File; \
+    rm -rf /opt/fmc_repository/Process/Reference/Test_Autocommit; rm -rf /opt/fmc_repository/Process/Reference/.meta_Test_Autocommit; \
+    rm -rf /opt/fmc_repository/Process/Reference/Test_Rollback; rm -rf /opt/fmc_repository/Process/Reference/.meta_Test_Rollback; \
+    rm -rf /opt/fmc_repository/Process/Reference/FORTINET; rm -rf /opt/fmc_repository/Process/Reference/.meta_FORTINET; \
+    rm -rf /opt/fmc_repository/Process/Reference/PALOALTO; rm -rf /opt/fmc_repository/Process/Reference/.meta_PALOALTO; \
+    rm -rf /opt/fmc_repository/Process/Reference/VMWARE; rm -rf /opt/fmc_repository/Process/Reference/.meta_VMWARE; \
     mv /opt/fmc_repository/CommandDefinition/Reference/ /opt/fmc_repository/MS_Reference.bck; \
     mv /opt/fmc_repository/CommandDefinition/.meta_Reference /opt/fmc_repository/.meta_MS_Reference.bck; \
     :
@@ -21,8 +28,9 @@ RUN rm -rf /opt/fmc_repository/Process/Cisco_ZTD_service; \
 COPY resources/deploy-license.sh /opt/ubiqube/
 RUN  chmod +x /opt/ubiqube/deploy-license.sh
 RUN cd /opt/ubiqube/; \
+    rm -f  /opt/ubiqube/*.lic  /opt/ubiqube/lic/license; \
     wget  http://demo-2.ubiqube.com/trial_license/MSA2-eval.lic; \
-    cp  /opt/ubiqube/MSA2-eval.lic  /opt/ubiqube/lic/license.lic; \
+    cp -f /opt/ubiqube/MSA2-eval.lic  /opt/ubiqube/lic/license.lic; \
     /opt/ubiqube/deploy-license.sh /opt/ubiqube/lic/license.lic /opt/ubiqube/lic/license; \
     :
 
