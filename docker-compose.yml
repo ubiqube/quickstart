@@ -51,7 +51,7 @@ services:
       - "kibana:/opt/kibana/"
 
   ui:
-    image: ubiqube/msa2-ui:acfa3bfee637a71300d53221c676bf71a328aee6
+    image: ubiqube/msa2-ui:ba4cb454ddbc3be9e830f0042e6f6b8d101bae33
 
   camunda:
     image: camunda/camunda-bpm-platform:7.12.0
