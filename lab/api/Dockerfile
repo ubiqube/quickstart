@@ -99,4 +99,7 @@ RUN	cd /opt/fmc_repository ; \
 COPY resources/create_tenant_customer.sh /usr/bin/
 RUN chmod a+x  /usr/bin/create_tenant_customer.sh 
 
+# activate debug mode for SecEngine configuration
+RUN sed -i -e 's/$UBI_VSOC_DEBUG_LEVEL/15/g' /opt/sms/templates/conf/smsd.conf 
+
 CMD [ "/sbin/init" ]
