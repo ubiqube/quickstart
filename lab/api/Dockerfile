@@ -35,22 +35,26 @@ RUN cd /opt/ubiqube/; \
     :
 
 # install REST Generic Adapter from github repo
-RUN	cd /opt/sms/bin/php ; \
+RUN	cd /opt/settings/ ; \
     git clone https://github.com/openmsa/Adaptors.git OpenMSA_Adapters; \
-    chown -R ncuser:ncuser OpenMSA_Adapters; \
-    ln -s OpenMSA_Adapters/adapters/rest_generic rest_generic; \
-    chown -R ncuser:ncuser rest_generic; \
     cd /opt/sms/templates/devices/; \
     mkdir -p /opt/sms/templates/devices/rest_generic/conf; \
     cd /opt/sms/templates/devices/rest_generic/conf; \
-    ln -s /opt/sms/bin/php/rest_generic/conf/sms_router.conf sms_router.conf; \
+    ln -s /opt/settings/OpenMSA_Adapters/adapters/rest_generic/conf/sms_router.conf sms_router.conf; \
     chown -R ncuser:ncuser /opt/sms/templates/devices/; \
+    cd /opt/sms/bin/php/; \
+    ln -fs /opt/settings/OpenMSA_Adapters/adapters/rest_generic rest_generic; \
+    /opt/settings/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/rest_generic; \
+    chown -R ncuser:ncuser /opt/sms/bin/php/rest_generic; 
+
+RUN mkdir -p /opt/settings/jentreprise/custom; \
+    chown -R ncuser:ncuser /opt/settings/jentreprise; \
+    cp /opt/ubi-jentreprise/resources/templates/conf/device/*.properties /opt/settings/jentreprise/custom/; \
+    #ls -la /opt/settings/jentreprise/custom/; \
     cd /opt/ubi-jentreprise/resources/templates/conf/device/; \
-    mkdir custom; \
-    cp manufacturers.properties custom; \
-    cp models.properties custom; \
-    cd /opt/sms/bin/php/OpenMSA_Adapters/bin/; \
-    ./da_installer install /opt/sms/bin/php/rest_generic; \
+    ln -fs /opt/settings/jentreprise/custom custom; \
+    #ls -l /opt/ubi-jentreprise/resources/templates/conf/device/custom/; \
+    chown -R ncuser:ncuser /opt/ubi-jentreprise/resources/templates/conf/device;\
     /opt/ubi-jentreprise/configure; \
     :
 
