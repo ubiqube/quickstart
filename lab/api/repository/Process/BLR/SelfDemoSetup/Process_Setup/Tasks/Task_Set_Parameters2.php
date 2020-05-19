@@ -18,22 +18,25 @@ function list_args() {
 	create_var_def('login', 'String');
 	create_var_def('password', 'Password');
 	create_var_def('password_admin', 'Password');
-        create_var_def('managementInterface', 'String');
-        create_var_def('snmpCommunity', 'String');
+	create_var_def('managementInterface', 'String');
+	create_var_def('snmpCommunity', 'String');
 }
 
 
+
+
 // MSA device creation parameters
-$context['managed_device_name'] = "Off World";
+$context['managed_device_name'] = "msa_rest_api";
 $context['manufacturer_id'] = 14020601;
 $context['model_id'] = 14020601;
-$context['login'] = "root";
-$context['password'] = "OpenMSA";
+$context['login'] = "ncroot";
+$context['password'] = "ubiqube";
 $context['password_admin'] = "";
-$context['device_ip_address'] = "127.0.0.2";
+$context['device_ip_address'] = "127.0.0.1";
 $context['device_external_reference'] = "";
 $context['managementInterface'] = "eth0";
 $context['snmpCommunity'] = "public";
+
 
 /**
  * End of the task do not modify after this point
