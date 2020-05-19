@@ -27,8 +27,8 @@ function list_args() {
 
 // MSA device creation parameters
 $context['managed_device_name'] = "msa_rest_api";
-$context['manufacturer_id'] = 14020601;
-$context['model_id'] = 14020601;
+$context['manufacturer_id'] = 191119;
+$context['model_id'] = 191119;
 $context['login'] = "ncroot";
 $context['password'] = "ubiqube";
 $context['password_admin'] = "";
