@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+
+  site_a:
+    privileged: true
+    build:
+      context: .
+      dockerfile: site_a.dockerfile
+    ports:
+      - "60022:22"
+    tty: true
+    networks:
+      default:
+        ipv4_address: 172.20.0.121
+    hostname: site_A
+  
+  site_b:
+    privileged: true
+    build:
+      context: .
+      dockerfile: site_b.dockerfile
+    ports:
+      - "60122:22"
+    tty: true
+    networks:
+      default:
+        ipv4_address: 172.20.0.122
+    hostname: site_B
+  
+  site_c:
+    privileged: true
+    build:
+      context: .
+      dockerfile: site_c.dockerfile
+    ports:
+      - "60222:22"
+    tty: true
+    networks:
+      default:
+        ipv4_address: 172.20.0.123
+    hostname: site_C
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
