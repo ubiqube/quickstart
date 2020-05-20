@@ -93,13 +93,9 @@
       <processPath>/opt/fmc_repository/Process/SelfDemoSetup/Process_Setup/Tasks/</processPath>
       <displayName>Set Parameters</displayName>
     </task>
-    <task name="Task_msa_device_create1.php">
+    <task name="Task_msa_device_create.php">
       <processPath>/opt/fmc_repository/Process/SelfDemoSetup/Process_Setup/Tasks/</processPath>
       <displayName>Create ME</displayName>
-    </task>
-    <task name="/opt/fmc_repository/Process/Reference/MSActivator/Device/Task_mark_device_as_provisioned.php">
-      <processPath/>
-      <displayName>Provision ME</displayName>
     </task>
   </process>
   <process name="Process/BLR/SelfDemoSetup/Process_Setup_2">
@@ -112,13 +108,9 @@
       <processPath>/opt/fmc_repository/Process/SelfDemoSetup/Process_Setup/Tasks/</processPath>
       <displayName>Set Parameters</displayName>
     </task>
-    <task name="Task_msa_device_create1.php">
+    <task name="Task_msa_device_create.php">
       <processPath>/opt/fmc_repository/Process/SelfDemoSetup/Process_Setup/Tasks/</processPath>
       <displayName>Create ME</displayName>
-    </task>
-    <task name="/opt/fmc_repository/Process/Reference/MSActivator/Device/Task_mark_device_as_provisioned.php">
-      <processPath/>
-      <displayName>Provision ME</displayName>
     </task>
   </process>
 
