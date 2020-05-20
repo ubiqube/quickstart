@@ -1,94 +1,71 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <ObjectDefinition>
-  <information>
-    <allowLaunchOnFailedProcess>true</allowLaunchOnFailedProcess>
-    <description>Create the mini lab</description>
-    <displayField>service_id</displayField>
-    <executionDetailsVisibility>5</executionDetailsVisibility>
-    <executionMode>TRANSACTION</executionMode>
-    <group></group>
-    <icon>/images/eclipseIcons/page_obj.gif</icon>
-    <name>SelfDemoSetup</name>
-    <order>10000</order>
-    <poolId>0</poolId>
-    <readVariableVisibility>5</readVariableVisibility>
-    <serviceTaskType>php</serviceTaskType>
-    <showDetailedServiceInstances>false</showDetailedServiceInstances>
-    <showProcessExecConsole>false</showProcessExecConsole>
-    <showVariables>false</showVariables>
-    <visibility>5</visibility>
-  </information>
   <variables frozen="0">
-    <variable default="40" displayName="Customer Id" displayOrder="2" maxLength="100" name="params.customer_id" numberOfRowMax="0" startIncrement="0" type="Integer">
+    <variable displayName="Customer Id" name="params.customer_id" startIncrement="0" type="Integer" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="2" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" default="40" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
       <sections>
-        <section>Set Parameters</section>
+        <sections>Set Parameters</sections>
       </sections>
     </variable>
-    <variable default="linux_me" displayName="Managed Device Name" displayOrder="3" maxLength="100" name="params.managed_device_name" numberOfRowMax="0" startIncrement="0" type="String">
+    <variable displayName="Managed Device Name" name="params.managed_device_name" startIncrement="0" type="String" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="3" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" default="linux_me" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
       <sections>
-        <section>Set Parameters</section>
+        <sections>Set Parameters</sections>
       </sections>
     </variable>
-    <variable displayName="Device External Reference" displayOrder="4" maxLength="100" name="params.device_external_reference" numberOfRowMax="0" startIncrement="0" type="String">
+    <variable displayName="Device External Reference" name="params.device_external_reference" startIncrement="0" type="String" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="4" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
       <sections>
-        <section>Set Parameters</section>
+        <sections>Set Parameters</sections>
       </sections>
     </variable>
-    <variable default="14020601" displayName="Manufacturer Id" displayOrder="5" maxLength="100" name="params.manufacturer_id" numberOfRowMax="0" startIncrement="0" type="Integer">
+    <variable displayName="Manufacturer Id" name="params.manufacturer_id" startIncrement="0" type="Integer" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="5" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" default="14020601" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
       <sections>
-        <section>Set Parameters</section>
+        <sections>Set Parameters</sections>
       </sections>
     </variable>
-    <variable default="14020601" displayName="Model Id" displayOrder="6" maxLength="100" name="params.model_id" numberOfRowMax="0" startIncrement="0" type="Integer">
+    <variable displayName="Model Id" name="params.model_id" startIncrement="0" type="Integer" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="6" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" default="14020601" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
       <sections>
-        <section>Set Parameters</section>
+        <sections>Set Parameters</sections>
       </sections>
     </variable>
-    <variable default="172.20.0.101" displayName="Device Ip Address" displayOrder="7" maxLength="100" name="params.device_ip_address" numberOfRowMax="0" startIncrement="0" type="IpAddress">
+    <variable displayName="Device Ip Address" name="params.device_ip_address" startIncrement="0" type="IpAddress" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="7" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" default="172.20.0.101" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
       <sections>
-        <section>Set Parameters</section>
+        <sections>Set Parameters</sections>
       </sections>
     </variable>
-    <variable default="msa" displayName="Login" displayOrder="8" maxLength="100" name="params.login" numberOfRowMax="0" startIncrement="0" type="String">
+    <variable displayName="Login" name="params.login" startIncrement="0" type="String" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="8" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" default="msa" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
       <sections>
-        <section>Set Parameters</section>
+        <sections>Set Parameters</sections>
       </sections>
     </variable>
-    <variable default="ubiqube" displayName="Password" displayOrder="9" maxLength="100" name="params.password" numberOfRowMax="0" startIncrement="0" type="Password">
+    <variable displayName="Password" name="params.password" startIncrement="0" type="Password" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="9" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" default="ubiqube" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
       <sections>
-        <section>Set Parameters</section>
+        <sections>Set Parameters</sections>
       </sections>
     </variable>
-    <variable displayName="Password Admin" displayOrder="10" maxLength="100" name="params.password_admin" numberOfRowMax="0" startIncrement="0" type="Password">
+    <variable displayName="Password Admin" name="params.password_admin" startIncrement="0" type="Password" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="10" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
       <sections>
-        <section>Set Parameters</section>
+        <sections>Set Parameters</sections>
       </sections>
     </variable>
-    <variable default="eth0" displayName="Management Interface" displayOrder="39" maxLength="100" name="params.managementInterface" numberOfRowMax="0" startIncrement="0" type="String">
+    <variable displayName="Management Interface" name="params.managementInterface" startIncrement="0" type="String" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="39" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" default="eth0" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
       <sections>
-        <section>Set Parameters</section>
+        <sections>Set Parameters</sections>
       </sections>
     </variable>
-    <variable default="ubiqube" displayName="Snmp Community" displayOrder="40" maxLength="100" name="params.snmpCommunity" numberOfRowMax="0" startIncrement="0" type="String">
+    <variable displayName="Snmp Community" name="params.snmpCommunity" startIncrement="0" type="String" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="40" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" default="ubiqube" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
       <sections>
-        <section>Set Parameters</section>
+        <sections>Set Parameters</sections>
       </sections>
     </variable>
-    <variable displayName="Device Id" displayOrder="61" maxLength="100" name="params.device_id" numberOfRowMax="0" startIncrement="0" type="Device">
+    <variable displayName="Device Id" name="params.device_id" startIncrement="0" type="Device" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="61" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
       <sections>
-        <section>Provision ME</section>
+        <sections>Provision ME</sections>
       </sections>
     </variable>
   </variables>
-  <example>
-    <content/>
-  </example>
+  <example/>
   <process name="Process/BLR/SelfDemoSetup/Process_Setup">
-    <visibility>5</visibility>
     <displayName>Setup Linux ME</displayName>
-    <icon/>
-    <allowSchedule>false</allowSchedule>
     <type>CREATE</type>
+    <visibility>5</visibility>
     <task name="Task_Set_Parameters1.php">
       <processPath>/opt/fmc_repository/Process/SelfDemoSetup/Process_Setup/Tasks/</processPath>
       <displayName>Set Parameters</displayName>
@@ -99,11 +76,9 @@
     </task>
   </process>
   <process name="Process/BLR/SelfDemoSetup/Process_Setup_2">
-    <visibility>5</visibility>
     <displayName>Setup MSA REST API</displayName>
-    <icon/>
-    <allowSchedule>false</allowSchedule>
     <type>CREATE</type>
+    <visibility>5</visibility>
     <task name="Task_Set_Parameters2.php">
       <processPath>/opt/fmc_repository/Process/SelfDemoSetup/Process_Setup/Tasks/</processPath>
       <displayName>Set Parameters</displayName>
@@ -112,13 +87,24 @@
       <processPath>/opt/fmc_repository/Process/SelfDemoSetup/Process_Setup/Tasks/</processPath>
       <displayName>Create ME</displayName>
     </task>
+    <task name="Setup_MSA_REST_API_Configure_REST_Adapter.php">
+      <processPath>/opt/fmc_repository/Process/SelfDemoSetup</processPath>
+      <displayName>Configure REST Adapter</displayName>
+    </task>
   </process>
-
   <process name="Process/BLR/SelfDemoSetup/Process_Delete">
-    <visibility>5</visibility>
     <displayName>Delete</displayName>
-    <icon/>
-    <allowSchedule>false</allowSchedule>
     <type>DELETE</type>
+    <visibility>5</visibility>
   </process>
+  <information>
+    <icon>/images/eclipseIcons/page_obj.gif</icon>
+    <description>Create the mini lab</description>
+    <displayField>service_id</displayField>
+    <serviceTaskType>php</serviceTaskType>
+    <order>10000</order>
+    <visibility>5</visibility>
+    <name>SelfDemoSetup</name>
+    <group/>
+  </information>
 </ObjectDefinition>
