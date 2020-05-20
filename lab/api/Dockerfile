@@ -6,6 +6,9 @@ RUN git config --global push.default simple
 
 # clean up some folder
 RUN cd /opt/fmc_repository/Process/; \
+    rm -rf /opt/fmc_repository/Process/Test_SubProcess; rm -rf /opt/fmc_repository/Process/.meta_Test_SubProcess; \
+    rm -rf /opt/fmc_repository/Process/Reference/Customer; rm -rf /opt/fmc_repository/Process/Reference/.meta_Customer; \
+    rm -rf /opt/fmc_repository/Process/Reference/Heat; rm -rf /opt/fmc_repository/Process/Reference/.meta_Heat; \
     rm -rf /opt/fmc_repository/Process/Cisco_ZTD_service; rm -rf /opt/fmc_repository/Process/.meta_Cisco_ZTD_service; \
     rm -rf /opt/fmc_repository/Process/Topology; rm -rf /opt/fmc_repository/Process/.meta_Topology; \
     rm -rf /opt/fmc_repository/Process/Reference/Device_Data_File; rm -rf /opt/fmc_repository/Process/Reference/.meta_Device_Data_File; \
@@ -78,23 +81,19 @@ RUN	cd /opt/fmc_repository ; \
 #     :
 
 # install the lab: workflows
-RUN	cd /opt/fmc_repository ; \
-    mkdir -p /opt/fmc_repository/Process/ ; \
-    mkdir -p /opt/fmc_repository/CommandDefinition/ ; \
-    rm -rf /opt/fmc_repository/quickstart ; \
-    git clone https://github.com/ubiqube/quickstart; \
-#    rm -rf /opt/fmc_repository/CommandDefinition/BLR ;\
-#    rm -rf /opt/fmc_repository/CommandDefinition/.meta_BLR ; \
-#    cd /opt/fmc_repository/CommandDefinition/; \
-#    ln -fs ../quickstart/lab/api/repository/CommandDefinition/BLR BLR; \
-#    ln -fs ../quickstart/lab/api/repository/CommandDefinition/.meta_BLR .meta_BLR; \
-#    rm -rf /opt/fmc_repository/Process/BLR ;\
-#    rm -rf /opt/fmc_repository/Process/.meta_BLR ; \
-    cd /opt/fmc_repository/Process/; \
-    ln -fs ../quickstart/lab/api/repository/Process/BLR BLR; \
-    ln -fs ../quickstart/lab/api/repository/Process/.meta_BLR .meta_BLR; \
-    chown -R ncuser:ncuser /opt/fmc_repository/; \
+RUN	mkdir -p /opt/fmc_repository/Process/ ; 
+RUN mkdir -p /opt/fmc_repository/CommandDefinition/ ;
+
+RUN git clone https://github.com/ubiqube/quickstart /opt/fmc_repository/quickstart; 
+RUN chown -R ncuser:ncuser /opt/fmc_repository/quickstart/; 
+
+RUN cd /opt/fmc_repository/Process/; \
+    ln -fs ../quickstart/lab/api/repository/Process/BLR/SelfDemoSetup SelfDemoSetup; \
+    ln -fs ../quickstart/lab/api/repository/Process/BLR/.meta_SelfDemoSetup .meta_SelfDemoSetup; \
     :
+RUN chown -R ncuser:ncuser /opt/fmc_repository/; 
+RUN chown -R ncuser:ncuser /opt/fmc_repository/Process/*; 
+RUN chown -R ncuser:ncuser /opt/fmc_repository/Process/.meta_*; 
 
 COPY resources/create_tenant_customer.sh /usr/bin/
 RUN chmod a+x  /usr/bin/create_tenant_customer.sh 

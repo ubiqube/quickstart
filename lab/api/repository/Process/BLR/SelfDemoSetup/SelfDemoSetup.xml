@@ -62,7 +62,7 @@
     </variable>
   </variables>
   <example/>
-  <process name="Process/BLR/SelfDemoSetup/Process_Setup">
+  <process name="Process/BLR/SelfDemoSetup/Process_Setup_Linux_ME">
     <displayName>Setup Linux ME</displayName>
     <type>CREATE</type>
     <visibility>5</visibility>
@@ -75,8 +75,8 @@
       <displayName>Create ME</displayName>
     </task>
   </process>
-  <process name="Process/BLR/SelfDemoSetup/Process_Setup_2">
-    <displayName>Setup MSA REST API</displayName>
+  <process name="Process/BLR/SelfDemoSetup/Process_Setup_REST_ME">
+    <displayName>Setup REST API ME</displayName>
     <type>CREATE</type>
     <visibility>5</visibility>
     <task name="Task_Set_Parameters2.php">
@@ -87,8 +87,8 @@
       <processPath>/opt/fmc_repository/Process/SelfDemoSetup/Process_Setup/Tasks/</processPath>
       <displayName>Create ME</displayName>
     </task>
-    <task name="Setup_MSA_REST_API_Configure_REST_Adapter.php">
-      <processPath>/opt/fmc_repository/Process/SelfDemoSetup</processPath>
+    <task name="Task_Configure_REST_Adapter.php">
+      <processPath>/opt/fmc_repository/Process/SelfDemoSetup/Process_Setup/Tasks/</processPath>
       <displayName>Configure REST Adapter</displayName>
     </task>
   </process>
