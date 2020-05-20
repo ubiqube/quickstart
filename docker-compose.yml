@@ -1,4 +1,4 @@
-version: '2'
+version: "3.8"
 
 services:
 
@@ -51,7 +51,7 @@ services:
       - "kibana:/opt/kibana/"
 
   ui:
-    image: ubiqube/msa2-ui:dc73816c5385ca628e36781d78fde4e4d0cd149e
+    image: ubiqube/msa2-ui:f8aba9115b352778b4de05b4aea1dd2a93c85a3c
 
   camunda:
     image: camunda/camunda-bpm-platform:7.12.0
