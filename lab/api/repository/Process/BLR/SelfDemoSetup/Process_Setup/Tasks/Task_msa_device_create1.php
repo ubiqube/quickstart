@@ -24,8 +24,19 @@ check_mandatory_param('model_id');
 check_mandatory_param('login');
 check_mandatory_param('password');
 
+$PROCESSINSTANCEID = $context['PROCESSINSTANCEID'];
+$EXECNUMBER = $context['EXECNUMBER'];
+$TASKID = $context['TASKID'];
+$process_params = array('PROCESSINSTANCEID' => $PROCESSINSTANCEID,
+						'EXECNUMBER' => $EXECNUMBER,
+						'TASKID' => $TASKID);
+
+$context['customer_id'] = $context['UBIQUBEID'];
+
+
 // MSA device creation parameters
 $customer_id = $context['customer_id'];
+$customer_db_id = substr($customer_id,4);
 $device_name = $context['managed_device_name'];
 $manufacturer_id = $context['manufacturer_id'];
 $model_id = $context['model_id'];
@@ -42,40 +53,8 @@ $snmp_community = $context['snmpCommunity'];
 $managementInterface = $context['managementInterface'];
 
 
-if (array_key_exists('device_external_reference', $context)) {
-	$device_external_reference = $context['device_external_reference'];
-}
-
-//$response = _device_create($customer_id, $managed_device_name, $manufacturer_id,
-//							$model_id, $login, $password, $password_admin, 
-// $device_ip_address, $device_external_reference);
-
-
-$array = array('name' => $device_name,
-			'manufacturerId' => $manufacturer_id,
-			'modelId' => $model_id,
-			'login' => $login,
-			'password' => $password,
-			'passwordAdmin' => $password_admin,
-			'logEnabled' => $log_enabled,
-			'logMoreEnabled' => $log_more_enabled,
-			'mailAlerting' => $mail_alerting,
-			'reporting' => $reporting,
-			'managementAddress' => $management_address,
-			'externalReference' => $device_external_reference,
-			'snmpCommunity' => $snmp_community,
-			'managementInterface' => $managementInterface,
-	);
-$json = json_encode($array);
-$msa_rest_api = "device/{$customer_id}";
-$curl_cmd = create_msa_operation_request(OP_PUT, $msa_rest_api, $json);
-$response = perform_curl_operation($curl_cmd, "CREATE MANAGED ENTITY");
-$response = json_decode($response, true);
-if ($response['wo_status'] !== ENDED) {
-	$response = json_encode($response);
-	return $response;
-}
-$response = prepare_json_response(ENDED, ENDED_SUCCESSFULLY, $response['wo_newparams']['response_body']);
+$response = _device_create($customer_db_id, $device_name, $manufacturer_id,
+							$model_id, $login, $password, $password_admin, $management_address, $device_external_reference, $log_enabled = "true", $log_more_enabled = "true",$mail_alerting = "true", $reporting = "true", $snmp_community);
 
 $response = json_decode($response, true);
 if ($response['wo_status'] !== ENDED) {
@@ -84,16 +63,10 @@ if ($response['wo_status'] !== ENDED) {
 	exit;
 }
 $device_id = $response['wo_newparams']['entity']['externalReference'];
-$wo_comment = "Managed Entity External Reference : $device_id";
-logToFile($wo_comment);
+$wo_comment = "Device External Reference : $device_id";
 
-$response = _device_do_initial_provisioning_by_id($device_id);
-$response = json_decode($response, true);
-if ($response['wo_status'] !== ENDED) {
-	$response = json_encode($response);
-	echo $response;
-	exit;
-}
+
+_device_do_initial_provisioning_by_id($device_id);
 
 $context['device_id'] = $device_id;
 $response = prepare_json_response(ENDED, "Managed entity created successfully.\n$wo_comment", $context, true);
