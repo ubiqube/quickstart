@@ -43,6 +43,5 @@ services:
 
 networks:
   default:
-    ipam:
-      config:
-        - subnet: 172.20.0.0/24
+    external:
+      name: quickstart_default
