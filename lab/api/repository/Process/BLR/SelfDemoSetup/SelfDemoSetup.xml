@@ -6,7 +6,7 @@
     <displayField>service_id</displayField>
     <executionDetailsVisibility>5</executionDetailsVisibility>
     <executionMode>TRANSACTION</executionMode>
-    <group>mini lab</group>
+    <group></group>
     <icon>/images/eclipseIcons/page_obj.gif</icon>
     <name>SelfDemoSetup</name>
     <order>10000</order>
