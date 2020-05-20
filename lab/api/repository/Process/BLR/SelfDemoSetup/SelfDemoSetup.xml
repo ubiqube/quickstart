@@ -2,11 +2,11 @@
 <ObjectDefinition>
   <information>
     <allowLaunchOnFailedProcess>true</allowLaunchOnFailedProcess>
-    <description/>
+    <description>Create the mini lab</description>
     <displayField>service_id</displayField>
     <executionDetailsVisibility>5</executionDetailsVisibility>
     <executionMode>TRANSACTION</executionMode>
-    <group/>
+    <group>mini lab</group>
     <icon>/images/eclipseIcons/page_obj.gif</icon>
     <name>SelfDemoSetup</name>
     <order>10000</order>
