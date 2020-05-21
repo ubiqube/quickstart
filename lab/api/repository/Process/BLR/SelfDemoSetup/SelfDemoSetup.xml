@@ -62,7 +62,7 @@
     </variable>
   </variables>
   <example/>
-  <process name="Process/BLR/SelfDemoSetup/Process_Setup">
+  <process name="Process/SelfDemoSetup/Process_Setup">
     <displayName>Setup Linux ME</displayName>
     <type>CREATE</type>
     <visibility>5</visibility>
@@ -75,7 +75,7 @@
       <displayName>Create ME</displayName>
     </task>
   </process>
-  <process name="Process/BLR/SelfDemoSetup/Process_Setup_2">
+  <process name="Process/SelfDemoSetup/Process_Setup_2">
     <displayName>Setup MSA REST API</displayName>
     <type>CREATE</type>
     <visibility>5</visibility>
@@ -92,7 +92,7 @@
       <displayName>Configure REST DA</displayName>
     </task>
   </process>
-  <process name="Process/BLR/SelfDemoSetup/Process_Delete">
+  <process name="Process/SelfDemoSetup/Process_Delete">
     <displayName>Delete</displayName>
     <type>DELETE</type>
     <visibility>5</visibility>

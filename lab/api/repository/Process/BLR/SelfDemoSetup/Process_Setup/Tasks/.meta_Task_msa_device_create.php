@@ -2,20 +2,30 @@
 <metadata>
     <map>
         <entry>
+            <key>DATE_MODIFICATION</key>
+            <value>1590087246591</value>
+        </entry>
+        <entry>
+            <key>REPOSITORY</key>
+            <value>Process</value>
+        </entry>
+        <entry>
+            <key>DATE_CREATION</key>
+            <value>1590087246578</value>
+        </entry>
+        <entry>
+            <key>TAG</key>
+        </entry>
+        <entry>
             <key>FILE_TYPE</key>
             <value>text</value>
         </entry>
         <entry>
-            <key>DATE_MODIFICATION</key>
-            <value>1569246557489</value>
-        </entry>
-        <entry>
-            <key>DATE_CREATION</key>
-            <value>1569245590810</value>
-        </entry>
-        <entry>
             <key>TYPE</key>
-            <value>FILE</value>
+            <value>UPLOAD</value>
+        </entry>
+        <entry>
+            <key>COMMENT</key>
         </entry>
     </map>
 </metadata>
