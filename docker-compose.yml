@@ -17,7 +17,7 @@ services:
       - kibana
 
   api:
-    build: ./lab/api
+    image:  ubiqube/msa2:api-2.1.0rc1
     volumes:
       - "repo.entities:/opt/fmc_entities"
       - "repo.contents:/opt/fmc_repository"
@@ -52,6 +52,8 @@ services:
 
   ui:
     image: ubiqube/msa2-ui:e2ab28355b8d4e72f111def8ad44dac810468e69
+    environment:
+      - FEATURE_ADMIN=false
 
   camunda:
     image: camunda/camunda-bpm-platform:7.12.0
