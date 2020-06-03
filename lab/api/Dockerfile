@@ -56,13 +56,13 @@ RUN	cd /opt/fmc_repository ; \
     rm -rf /opt/fmc_repository/OpenMSA_MS ; \
     git clone https://github.com/openmsa/Microservices OpenMSA_MS; \
     cd /opt/fmc_repository/CommandDefinition/; \
-    ln -s ../OpenMSA_MS/AWS AWS; ln -s ../OpenMSA_MS/.meta_AWS .meta_AWS; \
     ln -s ../OpenMSA_MS/LINUX LINUX; ln -s ../OpenMSA_MS/.meta_LINUX .meta_LINUX; \
-    ln -s ../OpenMSA_MS/CISCO CISCO; ln -s ../OpenMSA_MS/.meta_CISCO .meta_CISCO; \
-    ln -s ../OpenMSA_MS/FORTINET FORTINET; ln -s ../OpenMSA_MS/.meta_FORTINET .meta_FORTINET; \
-    ln -s ../OpenMSA_MS/PALOALTO PALOALTO; ln -s ../OpenMSA_MS/.meta_PALOALTO .meta_PALOALTO; \
-    ln -s ../OpenMSA_MS/OPENSTACK OPENSTACK; ln -s ../OpenMSA_MS/.meta_OPENSTACK .meta_OPENSTACK; \
-    ln -s ../OpenMSA_MS/REST REST; ln -s ../OpenMSA_MS/.meta_REST .meta_REST; \
+#    ln -s ../OpenMSA_MS/AWS AWS; ln -s ../OpenMSA_MS/.meta_AWS .meta_AWS; \
+#   ln -s ../OpenMSA_MS/CISCO CISCO; ln -s ../OpenMSA_MS/.meta_CISCO .meta_CISCO; \
+#    ln -s ../OpenMSA_MS/FORTINET FORTINET; ln -s ../OpenMSA_MS/.meta_FORTINET .meta_FORTINET; \
+#    ln -s ../OpenMSA_MS/PALOALTO PALOALTO; ln -s ../OpenMSA_MS/.meta_PALOALTO .meta_PALOALTO; \
+#    ln -s ../OpenMSA_MS/OPENSTACK OPENSTACK; ln -s ../OpenMSA_MS/.meta_OPENSTACK .meta_OPENSTACK; \
+#    ln -s ../OpenMSA_MS/REST REST; ln -s ../OpenMSA_MS/.meta_REST .meta_REST; \
     :
 
 # install the lab: workflows
@@ -80,8 +80,8 @@ RUN chown -R ncuser:ncuser /opt/fmc_repository/;
 RUN chown -R ncuser:ncuser /opt/fmc_repository/Process/*; 
 RUN chown -R ncuser:ncuser /opt/fmc_repository/Process/.meta_*; 
 
-COPY resources/create_tenant_customer.sh /usr/bin/
-RUN chmod a+x  /usr/bin/create_tenant_customer.sh 
+COPY resources/create_mini_lab.sh /usr/bin/
+RUN chmod a+x  /usr/bin/create_mini_lab.sh 
 
 # activate debug mode for SecEngine configuration
 RUN sed -i -e 's/$UBI_VSOC_DEBUG_LEVEL/15/g' /opt/sms/templates/conf/smsd.conf 
