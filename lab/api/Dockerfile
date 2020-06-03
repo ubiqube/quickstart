@@ -20,12 +20,6 @@ RUN cd /opt/fmc_repository/Process/; \
     mv /opt/fmc_repository/CommandDefinition/Reference/ /opt/fmc_repository/MS_Reference.bck; \
     mv /opt/fmc_repository/CommandDefinition/.meta_Reference /opt/fmc_repository/.meta_MS_Reference.bck; \
     :
-# # install gradle
-# RUN cd /root; \
-#     curl -s "https://get.sdkman.io" | bash; \
-#     source "/root/.sdkman/bin/sdkman-init.sh"; \
-#     sdk install gradle 6.3; \
-#     :
 
 # install a trial license
 COPY resources/deploy-license.sh /opt/ubiqube/
@@ -70,15 +64,6 @@ RUN	cd /opt/fmc_repository ; \
     ln -s ../OpenMSA_MS/OPENSTACK OPENSTACK; ln -s ../OpenMSA_MS/.meta_OPENSTACK .meta_OPENSTACK; \
     ln -s ../OpenMSA_MS/REST REST; ln -s ../OpenMSA_MS/.meta_REST .meta_REST; \
     :
-
-# # deploy the doc from https://github.com/ubiqube
-# RUN cd /root; \
-#     git clone https://github.com/ubiqube/docs.git  gh.ubi.docs; \
-#     cd gh.ubi.docs; \
-#     ln -fs /opt/ses/share/htdocs/ publish.dir; \
-#     /root/.sdkman/candidates/gradle/current/bin/gradle asciidoc; \
-#     tar c build | tar x -C publish.dir; \
-#     :
 
 # install the lab: workflows
 RUN	mkdir -p /opt/fmc_repository/Process/ ; 
