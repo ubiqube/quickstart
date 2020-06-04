@@ -48,10 +48,10 @@ echo
 curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FProcess_Setup_2" -d'{"customer_id":"'$CUSTIDONLY'"}'
 echo
 
-echo "--------------------------------------------------"
-echo "CREATE SECOND CUSTOMER Rosen Corporation          "
-echo "--------------------------------------------------"
+#echo "--------------------------------------------------"
+#echo "CREATE SECOND CUSTOMER Rosen Corporation          "
+#echo "--------------------------------------------------"
 
-curl -s -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer $TOKEN" -XPOST "http://127.0.0.1/ubi-api-rest/customer/$OPERATOR?name=Rosen%20Corporation&reference=RosenCorp" -d '{"name":"Rosen Corporation"}'
-echo
+#curl -s -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer $TOKEN" -XPOST "http://127.0.0.1/ubi-api-rest/customer/$OPERATOR?name=Rosen%20Corporation&reference=RosenCorp" -d '{"name":"Rosen Corporation"}'
+#echo
 
