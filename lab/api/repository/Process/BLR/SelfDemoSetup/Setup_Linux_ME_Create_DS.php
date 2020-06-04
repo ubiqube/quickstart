@@ -9,8 +9,8 @@ function list_args()
 {
   
 }
-
-$device_id_long = substr($context['device_id'], 3);
+$device_id = $context['device_id'];
+$device_id_long = substr($device_id, 3);
 
 $customer_id_long = substr($context['customer_id'], 4);
 
@@ -33,19 +33,12 @@ $response = _profile_attach_to_device_by_reference ($context["ds_reference"], $c
 $response = json_decode($response, true);
 
 // CommandDefinition/LINUX/SYSTEM/user.xml
-/*
-$files = array( "0" => "CommandDefinition/LINUX/SYSTEM/user.xml");
-debug_dump($files, "URIs");
-$response = _profile_configuration_attach_files ($ds_id, $files, "AUTO");
-if ($response['wo_status'] !== ENDED) {
-	$response = json_encode($response);
-	echo $response;
-	exit;
-}
 
-$response = prepare_json_response(ENDED, "Task OK: DS $ds_ref associated to ME $device_id_long", $context, true);
-echo $response;
-*/
-task_exit(ENDED, "Task OK: DS $ds_ref associated to ME ".$context['device_id']);
+$files = array();
+$files = json_decode('[{"uri" : "CommandDefinition/LINUX/SYSTEM/user.xml" }]', true);
+debug_dump($files, "URIs");
+_profile_configuration_attach_files ($ds_id, $files, "AUTO");
+
+task_exit(ENDED, "DS $ds_ref associated to ME ".$device_id);
 
 ?>
