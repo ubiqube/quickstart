@@ -35,7 +35,7 @@ $response = json_decode($response, true);
 // CommandDefinition/LINUX/SYSTEM/user.xml
 
 $files = array();
-$files = json_decode('[{"uri" : "CommandDefinition/LINUX/SYSTEM/user.xml" }]', true);
+$files = json_decode('[{"uri" : "CommandDefinition/LINUX/SYSTEM/user.xml" }, {"uri" : "CommandDefinition/LINUX/Orchestration/simple_firewall.xml"}]', true);
 debug_dump($files, "URIs");
 _profile_configuration_attach_files ($ds_id, $files, "AUTO");
 
