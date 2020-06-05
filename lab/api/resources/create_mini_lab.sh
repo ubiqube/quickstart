@@ -37,7 +37,10 @@ echo "ATTACH WORKFLOWS TO CUSTOMER $CUSTID"
 echo "--------------------------------------------------"
 
 curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/$CUSTID/service/attach?uri=Process/SelfDemoSetup/SelfDemoSetup.xml"
-sleep 2
+sleep 1
+curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/$CUSTID/service/attach?uri=Process/Tutorials/python/Simple_Firewall/Simple_Firewall.xml"
+sleep 1
+
 
 echo "--------------------------------------------------"
 echo "CREATE DEMO DEVICES"
@@ -45,8 +48,8 @@ echo "--------------------------------------------------"
 CUSTIDONLY=${CUSTID//BLRA}
 curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FProcess_Setup" -d'{"customer_id":"'$CUSTIDONLY'"}'
 echo
-curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FProcess_Setup_2" -d'{"customer_id":"'$CUSTIDONLY'"}'
-echo
+#curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FProcess_Setup_2" -d'{"customer_id":"'$CUSTIDONLY'"}'
+#echo
 
 #echo "--------------------------------------------------"
 #echo "CREATE SECOND CUSTOMER Rosen Corporation          "
