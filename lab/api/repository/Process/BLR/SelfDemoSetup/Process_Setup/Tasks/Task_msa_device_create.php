@@ -63,8 +63,9 @@ if ($response['wo_status'] !== ENDED) {
 }
 $device_id = $response['wo_newparams']['entity']['externalReference'];
 $context['device_id'] = $device_id;
+$device_id_long = substr($device_id, 3);
 
-_device_do_initial_provisioning_by_id($device_id);
+_device_do_initial_provisioning_by_id($device_id_long);
 
 $wo_comment = "ID  : $device_id";
 $response = prepare_json_response(ENDED, "Managed entity created successfully.\n$wo_comment", $context, true);
