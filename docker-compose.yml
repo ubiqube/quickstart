@@ -51,7 +51,7 @@ services:
       - "kibana:/opt/kibana/"
 
   ui:
-    image: ubiqube/msa2-ui:01ecfb0941dea7b51a5cb98ac7c9e19fbe8fcf7d
+    image: ubiqube/msa2-ui:8eddb698dffcdfb4ac6918110d4564e346cfb127
     environment:
       - FEATURE_ADMIN=false
   camunda:
