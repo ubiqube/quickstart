@@ -18,6 +18,7 @@ $device_id_long = substr($context['device_id'], 3);
 _configuration_variable_create ($device_id_long, "AUTH_HEADER", "Authorization: Bearer");
 _configuration_variable_create ($device_id_long, "AUTH_MODE", "token");
 _configuration_variable_create ($device_id_long, "SIGNIN_REQ_PATH", "/ubi-api-rest/auth/token ");
+_configuration_variable_create ($device_id_long, "MANAGEMENT_PORT", "443");
 
 task_success('Task OK');
 ?>
