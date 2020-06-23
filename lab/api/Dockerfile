@@ -33,7 +33,7 @@ RUN cd /opt/ubiqube/; \
 
 # install REST Generic Adapter from github repo
 RUN	cd /opt/sms/bin/php ; \
-    git clone https://github.com/openmsa/Adaptors.git OpenMSA_Adapters; \
+    git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters; \
     chown -R ncuser:ncuser OpenMSA_Adapters; \
     ln -s OpenMSA_Adapters/adapters/rest_generic rest_generic; \
     chown -R ncuser:ncuser rest_generic; \
