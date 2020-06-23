@@ -26,14 +26,15 @@ COPY resources/deploy-license.sh /opt/ubiqube/
 RUN  chmod +x /opt/ubiqube/deploy-license.sh
 RUN cd /opt/ubiqube/; \
     rm -f  /opt/ubiqube/*.lic  /opt/ubiqube/lic/license; \
-    wget  http://demo-2.ubiqube.com/trial_license/MSA2-eval.lic; \
+    # wget  http://demo-2.ubiqube.com/trial_license/MSA2-eval.lic; \
+    wget --no-check-certificate https://repository.ubiqube.com/share/license/MSA2-eval.lic; \
     cp -f /opt/ubiqube/MSA2-eval.lic  /opt/ubiqube/lic/license.lic; \
     /opt/ubiqube/deploy-license.sh /opt/ubiqube/lic/license.lic /opt/ubiqube/lic/license; \
     :
 
 # install REST Generic Adapter from github repo
 RUN	cd /opt/sms/bin/php ; \
-    git clone https://github.com/openmsa/Adaptors.git OpenMSA_Adapters; \
+    git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters; \
     chown -R ncuser:ncuser OpenMSA_Adapters; \
     ln -s OpenMSA_Adapters/adapters/rest_generic rest_generic; \
     chown -R ncuser:ncuser rest_generic; \

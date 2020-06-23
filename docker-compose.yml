@@ -44,16 +44,22 @@ services:
     image: ubiqube/msa2:es-20.0
     volumes:
       - "es:/opt/elasticsearch/data/"
+    ports:
+      - "9000:9000"
+      - "9200:9200"
 
   kibana:
     image: ubiqube/msa2:kibana-20.0
     volumes:
       - "kibana:/opt/kibana/"
+    ports:
+      - "5601:5601"
 
   ui:
-    image: ubiqube/msa2-ui:8eddb698dffcdfb4ac6918110d4564e346cfb127
+    image: ubiqube/msa2-ui:1ff1334a6d507c8c45e3f84ff026f5a14eceb954
     environment:
-      - FEATURE_ADMIN=false
+      - FEATURE_ADMIN=true
+      - FEATURE_LICENCE=true
   camunda:
     image: camunda/camunda-bpm-platform:7.12.0
 
