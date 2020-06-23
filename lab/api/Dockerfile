@@ -26,7 +26,6 @@ COPY resources/deploy-license.sh /opt/ubiqube/
 RUN  chmod +x /opt/ubiqube/deploy-license.sh
 RUN cd /opt/ubiqube/; \
     rm -f  /opt/ubiqube/*.lic  /opt/ubiqube/lic/license; \
-    # wget  http://demo-2.ubiqube.com/trial_license/MSA2-eval.lic; \
     wget --no-check-certificate https://repository.ubiqube.com/share/license/MSA2-eval.lic; \
     cp -f /opt/ubiqube/MSA2-eval.lic  /opt/ubiqube/lic/license.lic; \
     /opt/ubiqube/deploy-license.sh /opt/ubiqube/lic/license.lic /opt/ubiqube/lic/license; \
@@ -109,5 +108,12 @@ RUN chmod a+x  /usr/bin/create_mini_lab.sh
 
 # activate debug mode for SecEngine configuration
 RUN sed -i -e 's/$UBI_VSOC_DEBUG_LEVEL/15/g' /opt/sms/templates/conf/smsd.conf 
+
+RUN echo "sleep 10" >> /etc/rc.local
+RUN echo "service tomcat stop" >> /etc/rc.local
+RUN echo "httpd -f /opt/ses/httpd/httpd.conf -DSSL -k stop"  >> /etc/rc.local
+RUN echo "sleep 10" >> /etc/rc.local
+RUN echo "service ubi-ses stop" >> /etc/rc.local
+RUN chkconfig tomcat off 
 
 CMD [ "/sbin/init" ]
