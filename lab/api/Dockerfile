@@ -26,7 +26,7 @@ COPY resources/deploy-license.sh /opt/ubiqube/
 RUN  chmod +x /opt/ubiqube/deploy-license.sh
 RUN cd /opt/ubiqube/; \
     rm -f  /opt/ubiqube/*.lic  /opt/ubiqube/lic/license; \
-    wget  http://demo-2.ubiqube.com/trial_license/MSA2-eval.lic; \
+    wget -q --no-check-certificate https://repository.ubiqube.com/share/license/MSA2-eval.lic; \
     cp -f /opt/ubiqube/MSA2-eval.lic  /opt/ubiqube/lic/license.lic; \
     /opt/ubiqube/deploy-license.sh /opt/ubiqube/lic/license.lic /opt/ubiqube/lic/license; \
     :
