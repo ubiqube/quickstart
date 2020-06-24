@@ -55,6 +55,6 @@ echo
 #echo "CREATE SECOND CUSTOMER Rosen Corporation          "
 #echo "--------------------------------------------------"
 
-#curl -s -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer $TOKEN" -XPOST "http://127.0.0.1/ubi-api-rest/customer/$OPERATOR?name=Rosen%20Corporation&reference=RosenCorp" -d '{"name":"Rosen Corporation"}'
-#echo
+curl -s -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer $TOKEN" -XPOST "http://127.0.0.1/ubi-api-rest/customer/$OPERATOR?name=Rosen%20Corporation&reference=Biosh" -d '{"name":"Biosh"}'
+echo
 
