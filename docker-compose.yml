@@ -3,7 +3,7 @@ version: "2"
 services:
 
   front:
-    image: ubiqube/msa2:front-20.0
+    build: ./lab/front
     volumes:
       - "front.certs:/etc/nginx/ssl/"
     ports:
@@ -14,7 +14,7 @@ services:
       - ui
       - api
       - camunda
-      - kibana
+ #     - kibana
 
   api:
     build: ./lab/api
@@ -27,7 +27,7 @@ services:
       - "license:/opt/ubiqube/lic"
     networks:
       default:
-        ipv4_address: 172.20.0.66
+        ipv4_address: 172.30.0.66
     hostname: msa
     ports:
       - "2223:22"
@@ -48,18 +48,19 @@ services:
       - "9000:9000"
       - "9200:9200"
 
-  kibana:
-    image: ubiqube/msa2:kibana-20.0
-    volumes:
-      - "kibana:/opt/kibana/"
-    ports:
-      - "5601:5601"
+#  kibana:
+#    image: ubiqube/msa2:kibana-20.0
+#    volumes:
+#      - "kibana:/opt/kibana/"
+#    ports:
+#      - "5601:5601"
 
   ui:
-    image: ubiqube/msa2-ui:1ff1334a6d507c8c45e3f84ff026f5a14eceb954
+    image: ubiqube/msa2-ui:222669248a52d7fd78641f460ad8be66ae538137
     environment:
       - FEATURE_ADMIN=true
       - FEATURE_LICENCE=true
+
   camunda:
     image: camunda/camunda-bpm-platform:7.12.0
 
@@ -72,13 +73,13 @@ services:
       - "2224:22"
     networks:
       default:
-        ipv4_address: 172.20.0.101
+        ipv4_address: 172.30.0.101
     hostname: linux_me
   
 volumes:
   db:
   es:
-  kibana:
+#  kibana:
   monitoring:
   change-mgt:
   repo.entities:
@@ -91,4 +92,4 @@ networks:
   default:
     ipam:
       config:
-        - subnet: 172.20.0.0/24
+        - subnet: 172.30.0.0/24

@@ -63,6 +63,7 @@ RUN	cd /opt/fmc_repository ; \
 #   ln -s ../OpenMSA_MS/FORTINET FORTINET; ln -s ../OpenMSA_MS/.meta_FORTINET .meta_FORTINET; \
 #   ln -s ../OpenMSA_MS/PALOALTO PALOALTO; ln -s ../OpenMSA_MS/.meta_PALOALTO .meta_PALOALTO; \
 #   ln -s ../OpenMSA_MS/OPENSTACK OPENSTACK; ln -s ../OpenMSA_MS/.meta_OPENSTACK .meta_OPENSTACK; \
+    chown -R ncuser.ncuser /opt/fmc_repository/CommandDefinition; \
     :
 
 # install some WF from OpenMSA github repo
@@ -115,5 +116,34 @@ RUN echo "httpd -f /opt/ses/httpd/httpd.conf -DSSL -k stop"  >> /etc/rc.local
 RUN echo "sleep 10" >> /etc/rc.local
 RUN echo "service ubi-ses stop" >> /etc/rc.local
 RUN chkconfig tomcat off 
+
+###### ADDITIONAL CUSTO ########
+# install REDFISH MS/WF/DA from OpenMSA github repo
+RUN	cd /opt/fmc_repository/CommandDefinition ; \
+    ln -s ../OpenMSA_MS/REDFISHAPI REDFISHAPI; ln -s ../OpenMSA_MS/.meta_REDFISHAPI .meta_REDFISHAPI; \
+    chown -R ncuser.ncuser /opt/fmc_repository/CommandDefinition/REDFISHAPI/; \
+    cd /opt/fmc_repository/Process/; \
+    ln -fs ../OpenMSA_WF/BIOS_Automation BIOS_Automation; \
+    ln -fs ../OpenMSA_WF/.meta_BIOS_Automation .meta_BIOS_Automation; \
+    chown -R ncuser.ncuser BIOS_Automation; \
+    chown -R ncuser.ncuser .meta_BIOS_Automation; \
+    cd /opt/sms/bin/php ; \
+    ln -fs OpenMSA_Adapters/adapters/redfish_generic redfish_generic; \
+    chown -R ncuser:ncuser redfish_generic; \
+    cd /opt/sms/templates/devices/; \
+    mkdir -p /opt/sms/templates/devices/redfish_generic/conf; \
+    cd /opt/sms/templates/devices/redfish_generic/conf; \
+    ln -s /opt/sms/bin/php/redfish_generic/conf/sms_router.conf sms_router.conf; \
+    chown -R ncuser:ncuser /opt/sms/templates/devices/; \
+    mkdir -p /opt/ubi-jentreprise/resources/templates/conf/device/custom; \
+    /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/redfish_generic; \
+    /opt/ubi-jentreprise/configure; \
+    :
+
+# install ONEACCESS MS from OpenMSA github repo
+RUN	cd /opt/fmc_repository/CommandDefinition ; \
+    ln -s ../OpenMSA_MS/ONEACCESS ONEACCESS; ln -s ../OpenMSA_MS/.meta_ONEACCESS .meta_ONEACCESS; \
+    chown -R ncuser.ncuser /opt/fmc_repository/CommandDefinition/ONEACCESS/; \
+    :
 
 CMD [ "/sbin/init" ]
