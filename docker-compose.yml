@@ -27,7 +27,7 @@ services:
       - "license:/opt/ubiqube/lic"
     networks:
       default:
-        ipv4_address: 172.30.0.66
+        ipv4_address: 172.20.0.66
     hostname: msa
     ports:
       - "2223:22"
@@ -73,7 +73,7 @@ services:
       - "2224:22"
     networks:
       default:
-        ipv4_address: 172.30.0.101
+        ipv4_address: 172.20.0.101
     hostname: linux_me
   
 volumes:
@@ -92,4 +92,4 @@ networks:
   default:
     ipam:
       config:
-        - subnet: 172.30.0.0/24
+        - subnet: 172.20.0.0/24
