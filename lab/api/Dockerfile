@@ -32,7 +32,7 @@ RUN cd /opt/ubiqube/; \
     :
 
 # install REST Generic Adapter from github repo
-RUN	cd /opt/sms/bin/php ; \
+RUN cd /opt/sms/bin/php ; \
     git clone https://github.com/openmsa/Adaptors.git OpenMSA_Adapters; \
     chown -R ncuser:ncuser OpenMSA_Adapters; \
     ln -s OpenMSA_Adapters/adapters/rest_generic rest_generic; \
@@ -41,11 +41,41 @@ RUN	cd /opt/sms/bin/php ; \
     mkdir -p /opt/sms/templates/devices/rest_generic/conf; \
     cd /opt/sms/templates/devices/rest_generic/conf; \
     ln -s /opt/sms/bin/php/rest_generic/conf/sms_router.conf sms_router.conf; \
-    chown -R ncuser:ncuser /opt/sms/templates/devices/; \
+    :
+# install Netconf Generic Adapter Adapter from github repo to add the netconf da bugfixes from Openmsa github
+RUN cd /opt/sms/bin/php ; \
+    rm -rf netconf_generic;\
+    ln -s OpenMSA_Adapters/adapters/netconf_generic netconf_generic; \
+    chown -R ncuser:ncuser netconf_generic; \
+    cd /opt/sms/templates/devices/; \
+    mkdir -p /opt/sms/templates/devices/netconf_generic/conf; \
+    cd /opt/sms/templates/devices/netconf_generic/conf; \
+    rm -f sms_router.conf;\
+    ln -s /opt/sms/bin/php/netconf_generic/conf/sms_router.conf sms_router.conf; \
+    :
+# install OneAccess Netconf Adapter from github repo to add the sms_router.conf file for the new model id for OneAccess-Netconf
+RUN cd /opt/sms/bin/php ; \
+    rm -rf oneaccess_lbb;\
+    ln -s OpenMSA_Adapters/adapters/oneaccess_lbb oneaccess_lbb; \
+    chown -R ncuser:ncuser oneaccess_lbb; \
+    cd /opt/sms/templates/devices/; \
+    mkdir -p /opt/sms/templates/devices/oneaccess_lbb/conf; \
+    cd /opt/sms/templates/devices/oneaccess_lbb/conf; \
+    rm -f sms_router.conf;\
+    ln -s /opt/sms/bin/php/oneaccess_lbb/conf/sms_router.conf sms_router.conf; \
+    :
+
+# Configure properties files from openmsa github repo into custom folder
+RUN chown -R ncuser:ncuser /opt/sms/templates/devices/; \
     cd /opt/ubi-jentreprise/resources/templates/conf/device/; \
-    mkdir custom; \
+    mkdir -p custom; \
+#Using properties file from OpenMSA github for the custom versions
+    rm -f /opt/ubi-jentreprise/resources/templates/conf/device/custom/models.properties;\
+    ln -s /opt/sms/bin/php/OpenMSA_Adapters/conf/models.properties /opt/ubi-jentreprise/resources/templates/conf/device/custom/models.properties;\
+    chown -R ncuser:ncuser /opt/ubi-jentreprise/resources/templates/conf/device;\
+    rm -f /opt/ses/properties/specifics/server_ALL/sdExtendedInfo.properties;\
+    cp /opt/sms/bin/php/OpenMSA_Adapters/conf/sdExtendedInfo.properties /opt/ses/properties/specifics/server_ALL/sdExtendedInfo.properties;\
     cp manufacturers.properties custom; \
-    cp models.properties custom; \
     cd /opt/sms/bin/php/OpenMSA_Adapters/bin/; \
     ./da_installer install /opt/sms/bin/php/rest_generic; \
     /opt/ubi-jentreprise/configure; \
@@ -65,6 +95,12 @@ RUN	cd /opt/fmc_repository ; \
 #   ln -s ../OpenMSA_MS/OPENSTACK OPENSTACK; ln -s ../OpenMSA_MS/.meta_OPENSTACK .meta_OPENSTACK; \
     :
 
+    # install ONEACCESS MS from OpenMSA github repo
+RUN	cd /opt/fmc_repository/CommandDefinition ; \
+    ln -s ../OpenMSA_MS/ONEACCESS ONEACCESS; ln -s ../OpenMSA_MS/.meta_ONEACCESS .meta_ONEACCESS; \
+    chown -R ncuser.ncuser /opt/fmc_repository/CommandDefinition/ONEACCESS/; \
+    :
+
 # install some WF from OpenMSA github repo
 RUN	cd /opt/fmc_repository ; \
     rm -rf /opt/fmc_repository/OpenMSA_WF ; \
@@ -80,6 +116,8 @@ RUN rm -rf /opt/fmc_repository/OpenMSA_MS/REST/Generic/DOCKER /opt/fmc_repositor
 RUN rm -rf /opt/fmc_repository/OpenMSA_MS/REST/Generic/ENEA /opt/fmc_repository/OpenMSA_MS/REST/Generic/.meta_ENEA; 
 RUN rm -rf /opt/fmc_repository/OpenMSA_MS/REST/Generic/JIRA /opt/fmc_repository/OpenMSA_MS/REST/Generic/.meta_JIRA; 
 RUN rm -rf /opt/fmc_repository/OpenMSA_MS/REST/Generic/JUN-NORTHSTAR /opt/fmc_repository/OpenMSA_MS/REST/Generic/.meta_JUN-NORTHSTAR; 
+# Removing MS defintions containing advanced variable types
+RUN rm -rf /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/Advanced /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/.meta_Advanced
 
 
  # install a custom asset script for Linux
