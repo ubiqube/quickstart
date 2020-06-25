@@ -17,11 +17,14 @@ fi ;
 cd /opt/fmc_repository ; 
 if [ -d OpenMSA_MS ]; 
 then  
-    cd OpenMSA_MS; git checkout master; git pull; cd -; 
+    cd OpenMSA_MS; 
+    git checkout master; 
+    git pull; 
 else 
     git clone https://github.com/openmsa/Microservices.git OpenMSA_MS; 
 fi;
 ### WF ###
+cd /opt/fmc_repository ; 
 if [ -d OpenMSA_WF ]; 
 then 
     cd OpenMSA_WF; 
@@ -32,21 +35,21 @@ else
     git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; 
 fi ; 
 ### Quickstart ###
+cd /opt/fmc_repository ; 
 if [ -d /opt/fmc_repository/quickstart ]; 
 then 
     cd /opt/fmc_repository/quickstart; 
-    git checkout -v master; 
+    git checkout master; 
     git pull; 
     cd -; 
 else 
     cd /opt/fmc_repository/; 
-    git clone -v https://github.com/ubiqube/quickstart.git quickstart; 
+    git clone https://github.com/ubiqube/quickstart.git quickstart; 
 fi ;
     
 
 echo "install REST Generic Adapter from github repo"
 cd /opt/sms/bin/php ; 
-ls -la; 
 ln -fs OpenMSA_Adapters/adapters/rest_generic rest_generic; 
 cd /opt/sms/templates/devices/; 
 mkdir -p /opt/sms/templates/devices/rest_generic/conf; 
