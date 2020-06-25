@@ -1,8 +1,9 @@
 FROM ubiqube/msa2:api-2.1.0rc1
 
 # install some useful things
-RUN git config --global alias.lg "log --graph --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(bold blue)<%an>%C(reset) %C(green)(%ar)%C(reset)' --abbrev-commit --date=relative"
-RUN git config --global push.default simple
+RUN git config --global alias.lg "log --graph --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(bold blue)<%an>%C(reset) %C(green)(%ar)%C(reset)' --abbrev-commit --date=relative"; \
+    git config --global push.default simple; \
+    :
 
 # clean up some folder
 RUN cd /opt/fmc_repository/Process/; \
@@ -23,8 +24,8 @@ RUN cd /opt/fmc_repository/Process/; \
 
 # install a trial license
 COPY resources/deploy-license.sh /opt/ubiqube/
-RUN  chmod +x /opt/ubiqube/deploy-license.sh
-RUN cd /opt/ubiqube/; \
+RUN chmod +x /opt/ubiqube/deploy-license.sh; \
+    cd /opt/ubiqube/; \
     rm -f  /opt/ubiqube/*.lic  /opt/ubiqube/lic/license; \
     wget -q --no-check-certificate https://repository.ubiqube.com/share/license/MSA2-eval.lic; \
     cp -f /opt/ubiqube/MSA2-eval.lic  /opt/ubiqube/lic/license.lic; \
@@ -35,17 +36,17 @@ RUN cd /opt/ubiqube/; \
 RUN cd /opt/sms/bin/php ; \
     if [ -d OpenMSA_Adapters ]; then cd OpenMSA_Adapters; git checkout conf/models.properties; git pull; cd ..; else git clone https://github.com/openmsa/Adaptors.git OpenMSA_Adapters; fi ;\
     chown -R ncuser:ncuser OpenMSA_Adapters; \
-    ln -s OpenMSA_Adapters/adapters/rest_generic rest_generic; \
+    ln -fs OpenMSA_Adapters/adapters/rest_generic rest_generic; \
     chown -R ncuser:ncuser rest_generic; \
     cd /opt/sms/templates/devices/; \
     mkdir -p /opt/sms/templates/devices/rest_generic/conf; \
     cd /opt/sms/templates/devices/rest_generic/conf; \
-    ln -s /opt/sms/bin/php/rest_generic/conf/sms_router.conf sms_router.conf; \
+    ln -fs /opt/sms/bin/php/rest_generic/conf/sms_router.conf sms_router.conf; \
     :
 # install Netconf Generic Adapter Adapter from github repo to add the netconf da bugfixes from Openmsa github
 RUN cd /opt/sms/bin/php ; \
     rm -rf netconf_generic;\
-    ln -s OpenMSA_Adapters/adapters/netconf_generic netconf_generic; \
+    ln -fs OpenMSA_Adapters/adapters/netconf_generic netconf_generic; \
     chown -R ncuser:ncuser netconf_generic; \
     cd /opt/sms/templates/devices/; \
     mkdir -p /opt/sms/templates/devices/netconf_generic/conf; \
@@ -56,7 +57,7 @@ RUN cd /opt/sms/bin/php ; \
 # install OneAccess Netconf Adapter from github repo to add the sms_router.conf file for the new model id for OneAccess-Netconf
 RUN cd /opt/sms/bin/php ; \
     rm -rf oneaccess_lbb;\
-    ln -s OpenMSA_Adapters/adapters/oneaccess_lbb oneaccess_lbb; \
+    ln -fs OpenMSA_Adapters/adapters/oneaccess_lbb oneaccess_lbb; \
     chown -R ncuser:ncuser oneaccess_lbb; \
     cd /opt/sms/templates/devices/; \
     mkdir -p /opt/sms/templates/devices/oneaccess_lbb/conf; \
@@ -71,7 +72,7 @@ RUN chown -R ncuser:ncuser /opt/sms/templates/devices/; \
     mkdir -p custom; \
 #Using properties file from OpenMSA github for the custom versions
     rm -f /opt/ubi-jentreprise/resources/templates/conf/device/custom/models.properties;\
-    ln -s /opt/sms/bin/php/OpenMSA_Adapters/conf/models.properties /opt/ubi-jentreprise/resources/templates/conf/device/custom/models.properties;\
+    ln -fs /opt/sms/bin/php/OpenMSA_Adapters/conf/models.properties /opt/ubi-jentreprise/resources/templates/conf/device/custom/models.properties;\
     chown -R ncuser:ncuser /opt/ubi-jentreprise/resources/templates/conf/device;\
     rm -f /opt/ses/properties/specifics/server_ALL/sdExtendedInfo.properties;\
     cp /opt/sms/bin/php/OpenMSA_Adapters/conf/sdExtendedInfo.properties /opt/ses/properties/specifics/server_ALL/sdExtendedInfo.properties;\
@@ -84,21 +85,17 @@ RUN chown -R ncuser:ncuser /opt/sms/templates/devices/; \
 # install some MS from OpenMSA github repo
 RUN	cd /opt/fmc_repository ; \
     rm -rf /opt/fmc_repository/OpenMSA_MS ; \
+    if [ -d OpenMSA_MS ]; then cd OpenMSA_MS; git pull; cd ..; else git clone https://github.com/openmsa/Adaptors.git OpenMSA_Adapters; fi ;\
     git clone https://github.com/openmsa/Microservices OpenMSA_MS; \
     cd /opt/fmc_repository/CommandDefinition/; \
     ln -s ../OpenMSA_MS/LINUX LINUX; ln -s ../OpenMSA_MS/.meta_LINUX .meta_LINUX; \
     ln -s ../OpenMSA_MS/REST REST; ln -s ../OpenMSA_MS/.meta_REST .meta_REST; \
-#   ln -s ../OpenMSA_MS/AWS AWS; ln -s ../OpenMSA_MS/.meta_AWS .meta_AWS; \
-#   ln -s ../OpenMSA_MS/CISCO CISCO; ln -s ../OpenMSA_MS/.meta_CISCO .meta_CISCO; \
-#   ln -s ../OpenMSA_MS/FORTINET FORTINET; ln -s ../OpenMSA_MS/.meta_FORTINET .meta_FORTINET; \
-#   ln -s ../OpenMSA_MS/PALOALTO PALOALTO; ln -s ../OpenMSA_MS/.meta_PALOALTO .meta_PALOALTO; \
-#   ln -s ../OpenMSA_MS/OPENSTACK OPENSTACK; ln -s ../OpenMSA_MS/.meta_OPENSTACK .meta_OPENSTACK; \
-    :
-
-    # install ONEACCESS MS from OpenMSA github repo
-RUN	cd /opt/fmc_repository/CommandDefinition ; \
+    ln -s ../OpenMSA_MS/AWS AWS; ln -s ../OpenMSA_MS/.meta_AWS .meta_AWS; \
+    ln -s ../OpenMSA_MS/CISCO CISCO; ln -s ../OpenMSA_MS/.meta_CISCO .meta_CISCO; \
+    ln -s ../OpenMSA_MS/FORTINET FORTINET; ln -s ../OpenMSA_MS/.meta_FORTINET .meta_FORTINET; \
+    ln -s ../OpenMSA_MS/PALOALTO PALOALTO; ln -s ../OpenMSA_MS/.meta_PALOALTO .meta_PALOALTO; \
+    ln -s ../OpenMSA_MS/OPENSTACK OPENSTACK; ln -s ../OpenMSA_MS/.meta_OPENSTACK .meta_OPENSTACK; \
     ln -s ../OpenMSA_MS/ONEACCESS ONEACCESS; ln -s ../OpenMSA_MS/.meta_ONEACCESS .meta_ONEACCESS; \
-    chown -R ncuser.ncuser /opt/fmc_repository/CommandDefinition/ONEACCESS/; \
     :
 
 # install some WF from OpenMSA github repo
@@ -108,14 +105,12 @@ RUN	cd /opt/fmc_repository ; \
     cd /opt/fmc_repository/Process/; \
     ln -fs ../OpenMSA_WF/Tutorials Tutorials ; \
     ln -fs ../OpenMSA_WF/.meta_Tutorials .meta_Tutorials; \
-    chown -R ncuser.ncuser Tutorials; \
-    chown -R ncuser.ncuser .meta_Tutorials; \
     :
 
-RUN rm -rf /opt/fmc_repository/OpenMSA_MS/REST/Generic/DOCKER /opt/fmc_repository/OpenMSA_MS/REST/Generic/.meta_DOCKER; 
-RUN rm -rf /opt/fmc_repository/OpenMSA_MS/REST/Generic/ENEA /opt/fmc_repository/OpenMSA_MS/REST/Generic/.meta_ENEA; 
-RUN rm -rf /opt/fmc_repository/OpenMSA_MS/REST/Generic/JIRA /opt/fmc_repository/OpenMSA_MS/REST/Generic/.meta_JIRA; 
-RUN rm -rf /opt/fmc_repository/OpenMSA_MS/REST/Generic/JUN-NORTHSTAR /opt/fmc_repository/OpenMSA_MS/REST/Generic/.meta_JUN-NORTHSTAR; 
+#RUN rm -rf /opt/fmc_repository/OpenMSA_MS/REST/Generic/DOCKER /opt/fmc_repository/OpenMSA_MS/REST/Generic/.meta_DOCKER; 
+#RUN rm -rf /opt/fmc_repository/OpenMSA_MS/REST/Generic/ENEA /opt/fmc_repository/OpenMSA_MS/REST/Generic/.meta_ENEA; 
+#RUN rm -rf /opt/fmc_repository/OpenMSA_MS/REST/Generic/JIRA /opt/fmc_repository/OpenMSA_MS/REST/Generic/.meta_JIRA; 
+#RUN rm -rf /opt/fmc_repository/OpenMSA_MS/REST/Generic/JUN-NORTHSTAR /opt/fmc_repository/OpenMSA_MS/REST/Generic/.meta_JUN-NORTHSTAR; 
 # Removing MS defintions containing advanced variable types
 RUN rm -rf /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/Advanced /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/.meta_Advanced
 
@@ -123,26 +118,34 @@ RUN rm -rf /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/Advanced /opt/fmc_re
  # install a custom asset script for Linux
 RUN	mkdir -p /opt/sms/bin/php/polld/custom
 COPY resources/opt/sms/bin/php/polld/custom/linux_generic_mgmt.php  /opt/sms/bin/php/polld/custom/
-RUN chown -R ncuser:ncuser /opt/sms/bin/php/polld/custom
 
 
 # install the lab: workflows
-RUN	mkdir -p /opt/fmc_repository/Process/ 
-RUN mkdir -p /opt/fmc_repository/CommandDefinition/ 
-
-RUN git clone https://github.com/ubiqube/quickstart /opt/fmc_repository/quickstart
-RUN chown -R ncuser:ncuser /opt/fmc_repository/quickstart/
-
-RUN cd /opt/fmc_repository/Process/; \
+RUN	mkdir -p /opt/fmc_repository/Process/; \
+    mkdir -p /opt/fmc_repository/CommandDefinition/; \ 
+    cd /opt/fmc_repository/; \
+    if [ -d quickstart ]; then cd quickstart; git pull; cd ..; else git clone https://github.com/ubiqube/quickstart.git quickstart; fi ;\
+    cd /opt/fmc_repository/Process/; \
     ln -fs ../quickstart/lab/api/repository/Process/BLR/SelfDemoSetup SelfDemoSetup; \
     ln -fs ../quickstart/lab/api/repository/Process/BLR/.meta_SelfDemoSetup .meta_SelfDemoSetup; \
-    :
-RUN chown -R ncuser:ncuser /opt/fmc_repository/
-RUN chown -R ncuser:ncuser /opt/fmc_repository/Process/*
-RUN chown -R ncuser:ncuser /opt/fmc_repository/Process/.meta_* 
-
+    :    
 COPY resources/create_mini_lab.sh /usr/bin/
 RUN chmod a+x  /usr/bin/create_mini_lab.sh 
+
+ #   chown -R ncuser:ncuser /opt/fmc_repository/Process/*; \
+ #   chown -R ncuser:ncuser /opt/fmc_repository/Process/.meta_* ; \
+ #   chown -R ncuser:ncuser /opt/fmc_repository/quickstart/; \
+ #   chown -R ncuser.ncuser /opt/fmc_repository/OpenMSA_WF/Tutorials; \
+ #   chown -R ncuser.ncuser /opt/fmc_repository/OpenMSA_WF/.meta_Tutorials; \
+ #   chown -R ncuser.ncuser /opt/fmc_repository/CommandDefinition/*; \
+ #   chown -R ncuser.ncuser /opt/fmc_repository/CommandDefinition/.meta_*; \
+
+
+
+RUN chown -R ncuser:ncuser /opt/fmc_repository/*; \
+    chown -R ncuser:ncuser /opt/fmc_repository/.meta_*; \
+    chown -R ncuser:ncuser /opt/sms/bin/php/polld/*; \
+    :
 
 # activate debug mode for SecEngine configuration
 RUN sed -i -e 's/$UBI_VSOC_DEBUG_LEVEL/15/g' /opt/sms/templates/conf/smsd.conf 
