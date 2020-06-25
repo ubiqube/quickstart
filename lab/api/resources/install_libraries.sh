@@ -8,7 +8,8 @@ if [ -d OpenMSA_Adapters ];
 then 
     cd OpenMSA_Adapters; 
     git checkout conf/models.properties; 
-    git pull; 
+    git stash;
+    git pull origin master; 
     cd -; 
 else 
     git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters; 
@@ -19,7 +20,8 @@ if [ -d OpenMSA_MS ];
 then  
     cd OpenMSA_MS; 
     git checkout master; 
-    git pull; 
+    git stash;
+    git pull origin master; 
 else 
     git clone https://github.com/openmsa/Microservices.git OpenMSA_MS; 
 fi;
@@ -29,7 +31,8 @@ if [ -d OpenMSA_WF ];
 then 
     cd OpenMSA_WF; 
     git checkout master; 
-    git pull; 
+    git stash;
+    git pull origin master; 
     cd -; 
 else 
     git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; 
