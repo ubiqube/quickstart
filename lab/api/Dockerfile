@@ -71,7 +71,7 @@ RUN	cd /opt/fmc_repository/Process/; \
     ln -fs ../quickstart/lab/api/repository/Process/BLR/.meta_SelfDemoSetup .meta_SelfDemoSetup; \
     :    
 COPY resources/create_mini_lab.sh /usr/bin/
-COPY resources/install_librairies.sh /usr/bin/
+COPY resources/install_libraries.sh /usr/bin/
 RUN chmod a+x  /usr/bin/create_mini_lab.sh; \
     chmod a+x  /usr/bin/install_librairies.sh: \
     :
