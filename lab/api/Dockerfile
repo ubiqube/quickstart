@@ -73,7 +73,7 @@ RUN	cd /opt/fmc_repository/Process/; \
 COPY resources/create_mini_lab.sh /usr/bin/
 COPY resources/install_libraries.sh /usr/bin/
 RUN chmod a+x  /usr/bin/create_mini_lab.sh; \
-    chmod a+x  /usr/bin/install_libraries.sh: \
+    chmod a+x  /usr/bin/install_libraries.sh; \
     :
 
 RUN chown -R ncuser:ncuser /opt/fmc_repository/*; \
