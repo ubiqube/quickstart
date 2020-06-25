@@ -53,8 +53,9 @@ services:
   ui:
     image: ubiqube/msa2-ui:222669248a52d7fd78641f460ad8be66ae538137
     environment:
-      - FEATURE_ADMIN=false
-      
+      - FEATURE_ADMIN=true
+      - FEATURE_LICENCE=true
+
   camunda:
     image: camunda/camunda-bpm-platform:7.12.0
 
