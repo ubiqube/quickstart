@@ -46,12 +46,12 @@ RUN cd /opt/sms/bin/php ; \
  	### DA ###
     git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters; \
     cd OpenMSA_Adapters; \
-    git checkout -b msa_dev; \
+    git checkout -b local_dev_branch_do_not_push; \
   	### MS ###
     cd /opt/fmc_repository ; \
     git clone https://github.com/openmsa/Microservices.git OpenMSA_MS; \
     cd OpenMSA_MS; \
-    git checkout -b msa_dev; \
+    git checkout -b local_dev_branch_do_not_push; \
  	### WF ###
     cd /opt/fmc_repository ; \
     git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; \
@@ -60,7 +60,7 @@ RUN cd /opt/sms/bin/php ; \
     cd /opt/fmc_repository/; \
     git clone -v https://github.com/ubiqube/quickstart.git quickstart; \
     cd quickstart; \
-    git checkout -b msa_dev; \
+    git checkout -b local_dev_branch_do_not_push; \
     :
 
  # install a custom asset script for Linux
