@@ -66,8 +66,8 @@ RUN cd /opt/sms/bin/php ; \
  # tweak adapter config to use the file from github.com/openmsa/conf
 RUN cd /opt/ubi-jentreprise/resources/templates/conf/device/; \
     mkdir -p /opt/ubi-jentreprise/resources/templates/conf/device/custom; \
-    mv ./custom/models.properties ./custom/models.properties.bak; \
-    mv ./custom/manufacturers.properties ./custom/manufacturers.properties.bak; \
+    if [ -f ./custom/models.properties ]; then mv ./custom/models.properties ./custom/models.properties.bak; fi; \
+    if [ -f ./custom/manufacturers.properties ]; then mv ./custom/manufacturers.properties ./custom/manufacturers.properties.bak; fi; \
     cp /opt/sms/bin/php/OpenMSA_Adapters/conf/models.properties /opt/ubi-jentreprise/resources/templates/conf/device/custom/; \
     cp /opt/sms/bin/php/OpenMSA_Adapters/conf/manufacturers.properties /opt/ubi-jentreprise/resources/templates/conf/device/custom/; \
     cd /opt/ses/properties/specifics/server_ALL/; \
