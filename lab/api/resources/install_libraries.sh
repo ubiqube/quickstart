@@ -2,9 +2,10 @@
 set -x
 
 echo "-------------------------------------------------------------------------------"
-echo "update the github repositories "
+echo " Update the github repositories "
 echo "-------------------------------------------------------------------------------"
 cd /opt/sms/bin/php ; 
+echo " https://github.com/openmsa/Adapters.git "
 ### DA ###
 if [ -d OpenMSA_Adapters ]; 
 then 
@@ -20,6 +21,7 @@ else
 fi ;
 cd -; 
   	### MS ###
+echo " https://github.com/openmsa/Microservices.git "
 cd /opt/fmc_repository ; 
 if [ -d OpenMSA_MS ]; 
 then  
@@ -34,6 +36,7 @@ else
 fi;
 cd -; 
 ### WF ###
+echo " https://github.com/openmsa/Workflows.git "
 cd /opt/fmc_repository ; 
 if [ -d OpenMSA_WF ]; 
 then 
@@ -47,7 +50,7 @@ else
     git checkout -b local_dev_branch_do_not_push;
 fi ; 
 cd -; 
-### Quickstart ###
+echo " Install the quickstart from https://github.com/ubiqube/quickstart.git"
 cd /opt/fmc_repository ; 
 if [ -d /opt/fmc_repository/quickstart ]; 
 then 
@@ -62,7 +65,7 @@ cd -;
 
 
 echo "-------------------------------------------------------------------------------"
-echo "install REST Generic adapter source code from github repo"
+echo " Install REST Generic adapter source code from github repo"
 echo "-------------------------------------------------------------------------------"
 cd /opt/sms/bin/php ; 
 ln -fs OpenMSA_Adapters/adapters/rest_generic rest_generic; 
@@ -72,7 +75,7 @@ cd /opt/sms/templates/devices/rest_generic/conf;
 ln -fs /opt/sms/bin/php/rest_generic/conf/sms_router.conf sms_router.conf; 
 
 echo "-------------------------------------------------------------------------------"
-echo "install ADVA NC adapter source code from github repo"
+echo " Install ADVA NC adapter source code from github repo"
 echo "-------------------------------------------------------------------------------"
 cd /opt/sms/bin/php ; 
 ln -fs OpenMSA_Adapters/adapters/adva_nc rest_generic; 
@@ -83,7 +86,8 @@ ln -fs /opt/sms/bin/php/adva_nc/conf/sms_router.conf sms_router.conf;
 
 
 echo "-------------------------------------------------------------------------------"
-echo "install Netconf Generic adapter from github repo to add the netconf da bugfixes from Openmsa github"
+echo " Install Netconf Generic adapter from github repo"
+echo " Add the netconf da bugfixes from Openmsa github"
 echo "-------------------------------------------------------------------------------"
 cd /opt/sms/bin/php ; 
 rm -rf netconf_generic;
@@ -95,8 +99,8 @@ rm -f sms_router.conf;
 ln -s /opt/sms/bin/php/netconf_generic/conf/sms_router.conf sms_router.conf; 
 
 echo "-------------------------------------------------------------------------------"
-echo "install OneAccess Netconf Adapter from github repo" 
-echo "add the sms_router.conf file for the new model id for OneAccess-Netconf"
+echo " Install OneAccess Netconf Adapter from github repo " 
+echo " Add the sms_router.conf file for the new model id for OneAccess-Netconf"
 echo "-------------------------------------------------------------------------------"
 cd /opt/sms/bin/php ; 
 rm -rf oneaccess_lbb;
@@ -108,7 +112,7 @@ rm -f sms_router.conf;
 ln -s /opt/sms/bin/php/oneaccess_lbb/conf/sms_router.conf sms_router.conf; 
 
 echo "-------------------------------------------------------------------------------"
-echo  "Configure properties files from openmsa github repo into custom folder"
+echo " Configure properties files from openmsa github repo into custom folder"
 echo "-------------------------------------------------------------------------------"
 cd /opt/ubi-jentreprise/resources/templates/conf/device/; 
 mkdir -p /opt/ubi-jentreprise/resources/templates/conf/device/custom; 
@@ -120,14 +124,14 @@ cp /opt/sms/bin/php/OpenMSA_Adapters/conf/sdExtendedInfo.properties /opt/ses/pro
 cp /opt/ubi-jentreprise/resources/templates/conf/device/manufacturers.properties /opt/ubi-jentreprise/resources/templates/conf/device/custom/; 
 
 echo "-------------------------------------------------------------------------------"
-echo "enable the adapters"
+echo " Enable the adapters"
 echo "-------------------------------------------------------------------------------"
 /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/rest_generic; 
 /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/adva_nc; 
 
 
 echo "-------------------------------------------------------------------------------"
-echo  "install some MS from OpenMSA github repo"
+echo " Install some MS from OpenMSA github repo"
 echo "-------------------------------------------------------------------------------"
 cd /opt/fmc_repository/CommandDefinition/; 
 ln -fs ../OpenMSA_MS/ADVA ADVA; ln -fs ../OpenMSA_MS/.meta_ADVA .meta_ADVA; 
@@ -141,14 +145,14 @@ ln -fs ../OpenMSA_MS/PALOALTO PALOALTO; ln -fs ../OpenMSA_MS/.meta_PALOALTO .met
 ln -fs ../OpenMSA_MS/REST REST; ln -fs ../OpenMSA_MS/.meta_REST .meta_REST; 
 
 echo "-------------------------------------------------------------------------------"
-echo "install some WF from OpenMSA github repo"
+echo " Install some WF from OpenMSA github repo"
 echo "-------------------------------------------------------------------------------"
 cd /opt/fmc_repository/Process/; 
 ln -fs ../OpenMSA_WF/Tutorials Tutorials ; 
 ln -fs ../OpenMSA_WF/.meta_Tutorials .meta_Tutorials; 
 
 echo "-------------------------------------------------------------------------------"
-echo "Removing OneAccess Netconf MS defintions containing advanced variable types"
+echo " Removing OneAccess Netconf MS defintions containing advanced variable types"
 echo "-------------------------------------------------------------------------------"
 rm -rf /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/Advanced /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/.meta_Advanced
 
