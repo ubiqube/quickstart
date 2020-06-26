@@ -74,46 +74,37 @@ echo "--------------------------------------------------------------------------
 cd /opt/sms/bin/php ; 
 ln -fs OpenMSA_Adapters/adapters/rest_generic rest_generic; 
 cd /opt/sms/templates/devices/; 
-mkdir -p /opt/sms/templates/devices/rest_generic/conf; 
-cd /opt/sms/templates/devices/rest_generic/conf; 
-ln -fs /opt/sms/bin/php/rest_generic/conf/sms_router.conf sms_router.conf; 
+ln -fs OpenMSA_Adapters/adapters/rest_generic rest_generic; 
 
 echo "-------------------------------------------------------------------------------"
 echo " Install ADVA NC adapter source code from github repo"
 echo "-------------------------------------------------------------------------------"
 cd /opt/sms/bin/php ; 
-ln -fs OpenMSA_Adapters/adapters/adva_nc rest_generic; 
+ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/adva_nc adva_nc; 
 cd /opt/sms/templates/devices/; 
-mkdir -p /opt/sms/templates/devices/adva_nc/conf; 
-cd /opt/sms/templates/devices/adva_nc/conf; 
-ln -fs /opt/sms/bin/php/adva_nc/conf/sms_router.conf sms_router.conf; 
-
+ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/adva_nc adva_nc; 
 
 echo "-------------------------------------------------------------------------------"
 echo " Install Netconf Generic adapter from github repo"
 echo " Add the netconf da bugfixes from Openmsa github"
 echo "-------------------------------------------------------------------------------"
 cd /opt/sms/bin/php ; 
-rm -rf netconf_generic;
-ln -fs OpenMSA_Adapters/adapters/netconf_generic netconf_generic; 
+mv netconf_generic netconf_generic.bak;
+ln -fs /opt/sms/bin/phpOpenMSA_Adapters/adapters/netconf_generic netconf_generic; 
 cd /opt/sms/templates/devices/; 
-mkdir -p /opt/sms/templates/devices/netconf_generic/conf; 
-cd /opt/sms/templates/devices/netconf_generic/conf; 
-rm -f sms_router.conf; 
-ln -s /opt/sms/bin/php/netconf_generic/conf/sms_router.conf sms_router.conf; 
+mv netconf_generic netconf_generic.bak;
+ln -fs /opt/sms/bin/phpOpenMSA_Adapters/adapters/netconf_generic netconf_generic; 
 
 echo "-------------------------------------------------------------------------------"
 echo " Install OneAccess Netconf Adapter from github repo " 
 echo " Add the sms_router.conf file for the new model id for OneAccess-Netconf"
 echo "-------------------------------------------------------------------------------"
 cd /opt/sms/bin/php ; 
-rm -rf oneaccess_lbb;
-ln -fs OpenMSA_Adapters/adapters/oneaccess_lbb oneaccess_lbb; 
+mv oneaccess_lbb oneaccess_lbb.bak;
+ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/oneaccess_lbb oneaccess_lbb; 
 cd /opt/sms/templates/devices/; 
-mkdir -p /opt/sms/templates/devices/oneaccess_lbb/conf; 
-cd /opt/sms/templates/devices/oneaccess_lbb/conf; 
-rm -f sms_router.conf;
-ln -s /opt/sms/bin/php/oneaccess_lbb/conf/sms_router.conf sms_router.conf; 
+mv oneaccess_lbb oneaccess_lbb.bak;
+ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/oneaccess_lbb oneaccess_lbb; 
 
 echo "-------------------------------------------------------------------------------"
 echo " Configure properties files from openmsa github repo into custom folder"
@@ -160,5 +151,13 @@ echo " Removing OneAccess Netconf MS defintions containing advanced variable typ
 echo "-------------------------------------------------------------------------------"
 rm -rf /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/Advanced /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/.meta_Advanced
 
+chown -R ncuser:ncuser /opt/fmc_repository/*; \
+chown -R ncuser:ncuser /opt/fmc_repository/.meta_*; \
+chown -R ncuser:ncuser /opt/sms/bin/php/*; \
+chown -R ncuser:ncuser /opt/sms/templates/devices/; \
+chown -R ncuser:ncuser /opt/ubi-jentreprise/resources/templates/conf/device;\
+ 
+
 /opt/ubi-jentreprise/configure; 
+/opt/sms/configure;
 service ubi-sms restart; 
