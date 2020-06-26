@@ -71,7 +71,7 @@ RUN cd /opt/ubi-jentreprise/resources/templates/conf/device/; \
     cp /opt/sms/bin/php/OpenMSA_Adapters/conf/models.properties /opt/ubi-jentreprise/resources/templates/conf/device/custom/; \
     cp /opt/sms/bin/php/OpenMSA_Adapters/conf/manufacturers.properties /opt/ubi-jentreprise/resources/templates/conf/device/custom/; \
     cd /opt/ses/properties/specifics/server_ALL/; \
-    mv sdExtendedInfo.properties sdExtendedInfo.properties.bak; \
+    if [ -f sdExtendedInfo.properties ]; then mv sdExtendedInfo.properties sdExtendedInfo.properties.bak; fi; \
     cp /opt/sms/bin/php/OpenMSA_Adapters/conf/sdExtendedInfo.properties .;
    
 
