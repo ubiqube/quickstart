@@ -72,9 +72,9 @@ echo "--------------------------------------------------------------------------
 echo " Install REST Generic adapter source code from github repo"
 echo "-------------------------------------------------------------------------------"
 cd /opt/sms/bin/php ; 
-ln -fs OpenMSA_Adapters/adapters/rest_generic rest_generic; 
+ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/rest_generic rest_generic; 
 cd /opt/sms/templates/devices/; 
-ln -fs OpenMSA_Adapters/adapters/rest_generic rest_generic; 
+ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/rest_generic rest_generic; 
 
 echo "-------------------------------------------------------------------------------"
 echo " Install ADVA NC adapter source code from github repo"
@@ -90,10 +90,10 @@ echo " Add the netconf da bugfixes from Openmsa github"
 echo "-------------------------------------------------------------------------------"
 cd /opt/sms/bin/php ; 
 mv netconf_generic netconf_generic.bak;
-ln -fs /opt/sms/bin/phpOpenMSA_Adapters/adapters/netconf_generic netconf_generic; 
+ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/netconf_generic netconf_generic; 
 cd /opt/sms/templates/devices/; 
 mv netconf_generic netconf_generic.bak;
-ln -fs /opt/sms/bin/phpOpenMSA_Adapters/adapters/netconf_generic netconf_generic; 
+ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/netconf_generic netconf_generic; 
 
 echo "-------------------------------------------------------------------------------"
 echo " Install OneAccess Netconf Adapter from github repo " 
