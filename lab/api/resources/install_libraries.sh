@@ -52,7 +52,7 @@ then
     cd quickstart; 
     git stash;
     git checkout master; 
-    git pull origin master; ; 
+    git pull origin master;
 else 
     git clone https://github.com/ubiqube/quickstart.git quickstart; 
 fi ;
