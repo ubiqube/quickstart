@@ -161,3 +161,4 @@ chown -R ncuser:ncuser /opt/ubi-jentreprise/resources/templates/conf/device;\
 /opt/ubi-jentreprise/configure; 
 /opt/sms/configure;
 service ubi-sms restart; 
+service ubi-sms status; 

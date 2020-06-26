@@ -42,7 +42,6 @@ RUN chmod +x /opt/ubiqube/deploy-license.sh; \
 
 # install the github repositories
 RUN cd /opt/sms/bin/php ; \
-    ls -la; \
  	### DA ###
     git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters; \
     cd OpenMSA_Adapters; \
