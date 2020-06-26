@@ -59,7 +59,7 @@ fi ;
 cd -; 
 
 
-echo "install REST Generic Adapter from github repo"
+echo "install REST Generic adapter from github repo"
 cd /opt/sms/bin/php ; 
 ln -fs OpenMSA_Adapters/adapters/rest_generic rest_generic; 
 cd /opt/sms/templates/devices/; 
@@ -67,7 +67,16 @@ mkdir -p /opt/sms/templates/devices/rest_generic/conf;
 cd /opt/sms/templates/devices/rest_generic/conf; 
 ln -fs /opt/sms/bin/php/rest_generic/conf/sms_router.conf sms_router.conf; 
 
-echo "install Netconf Generic Adapter Adapter from github repo to add the netconf da bugfixes from Openmsa github"
+echo "install ADVA NC adapter from github repo"
+cd /opt/sms/bin/php ; 
+ln -fs OpenMSA_Adapters/adapters/adva_nc rest_generic; 
+cd /opt/sms/templates/devices/; 
+mkdir -p /opt/sms/templates/devices/adva_nc/conf; 
+cd /opt/sms/templates/devices/adva_nc/conf; 
+ln -fs /opt/sms/bin/php/adva_nc/conf/sms_router.conf sms_router.conf; 
+
+
+echo "install Netconf Generic adapter from github repo to add the netconf da bugfixes from Openmsa github"
 cd /opt/sms/bin/php ; 
 rm -rf netconf_generic;
 ln -fs OpenMSA_Adapters/adapters/netconf_generic netconf_generic; 
@@ -120,3 +129,4 @@ echo "Removing OneAccess Netconf MS defintions containing advanced variable type
 rm -rf /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/Advanced /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/.meta_Advanced
 
 /opt/ubi-jentreprise/configure; 
+service ubi-sms restart; 
