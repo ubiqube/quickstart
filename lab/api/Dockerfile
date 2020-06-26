@@ -62,6 +62,19 @@ RUN cd /opt/sms/bin/php ; \
     git checkout -b local_dev_branch_do_not_push; \
     :
 
+
+ # tweak adapter config to use the file from github.com/openmsa/conf
+RUN cd /opt/ubi-jentreprise/resources/templates/conf/device/; \
+    mkdir -p /opt/ubi-jentreprise/resources/templates/conf/device/custom; \
+    mv ./custom/models.properties ./custom/models.properties.bak; \
+    mv ./custom/manufacturers.properties ./custom/manufacturers.properties.bak; \
+    cp /opt/sms/bin/php/OpenMSA_Adapters/conf/models.properties /opt/ubi-jentreprise/resources/templates/conf/device/custom/; \
+    cp /opt/sms/bin/php/OpenMSA_Adapters/conf/manufacturers.properties /opt/ubi-jentreprise/resources/templates/conf/device/custom/; \
+    cd /opt/ses/properties/specifics/server_ALL/; \
+    mv sdExtendedInfo.properties sdExtendedInfo.properties.bak; \
+    cp /opt/sms/bin/php/OpenMSA_Adapters/conf/sdExtendedInfo.properties .;
+   
+
  # install a custom asset script for Linux
 RUN	mkdir -p /opt/sms/bin/php/polld/custom
 COPY resources/opt/sms/bin/php/polld/custom/linux_generic_mgmt.php  /opt/sms/bin/php/polld/custom/

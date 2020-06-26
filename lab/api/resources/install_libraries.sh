@@ -72,6 +72,7 @@ echo "--------------------------------------------------------------------------
 echo " Install REST Generic adapter source code from github repo"
 echo "-------------------------------------------------------------------------------"
 cd /opt/sms/bin/php ; 
+if [ -L rest_generic ]; then rm -f rest_generic; fi;
 ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/rest_generic rest_generic; 
 cd /opt/sms/templates/devices/; 
 ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/rest_generic rest_generic; 
@@ -80,6 +81,7 @@ echo "--------------------------------------------------------------------------
 echo " Install ADVA NC adapter source code from github repo"
 echo "-------------------------------------------------------------------------------"
 cd /opt/sms/bin/php ; 
+if [ -L adva_nc ]; then rm -f adva_nc; fi;
 ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/adva_nc adva_nc; 
 cd /opt/sms/templates/devices/; 
 ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/adva_nc adva_nc; 
