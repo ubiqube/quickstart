@@ -72,18 +72,20 @@ echo "--------------------------------------------------------------------------
 echo " Install REST Generic adapter source code from github repo"
 echo "-------------------------------------------------------------------------------"
 cd /opt/sms/bin/php ; 
-if [ -L rest_generic ]; then rm -f rest_generic; fi;
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/rest_generic rest_generic; 
+rm -f rest_generic;
+ln -fs ../OpenMSA_Adapters/adapters/rest_generic rest_generic; 
 cd /opt/sms/templates/devices/; 
+rm -f rest_generic;
 ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/rest_generic rest_generic; 
 
 echo "-------------------------------------------------------------------------------"
 echo " Install ADVA NC adapter source code from github repo"
 echo "-------------------------------------------------------------------------------"
 cd /opt/sms/bin/php ; 
-if [ -L adva_nc ]; then rm -f adva_nc; fi;
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/adva_nc adva_nc; 
+rm -f adva_nc; 
+ln -fs ../OpenMSA_Adapters/adapters/adva_nc adva_nc; 
 cd /opt/sms/templates/devices/; 
+rm -f adva_nc;
 ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/adva_nc adva_nc; 
 
 echo "-------------------------------------------------------------------------------"
@@ -162,6 +164,7 @@ chown -R ncuser:ncuser /opt/ubi-jentreprise/resources/templates/conf/device;\
 
 /opt/ubi-jentreprise/configure; 
 service wildfly restart; 
+service wildfly status; 
 
 /opt/sms/configure;
 service ubi-sms restart; 
