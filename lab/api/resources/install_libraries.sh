@@ -7,24 +7,30 @@ cd /opt/sms/bin/php ;
 if [ -d OpenMSA_Adapters ]; 
 then 
     cd OpenMSA_Adapters; 
-    git checkout conf/models.properties; 
+    #git checkout conf/models.properties; 
     git stash;
+    git checkout master; 
     git pull origin master; 
-    cd -; 
 else 
     git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters; 
+    cd OpenMSA_Adapters; 
+    git checkout -b local_dev_branch_do_not_push;
 fi ;
+cd -; 
   	### MS ###
 cd /opt/fmc_repository ; 
 if [ -d OpenMSA_MS ]; 
 then  
     cd OpenMSA_MS; 
-    git checkout master; 
     git stash;
+    git checkout master; 
     git pull origin master; 
 else 
     git clone https://github.com/openmsa/Microservices.git OpenMSA_MS; 
+    cd OpenMSA_MS; 
+    git checkout -b local_dev_branch_do_not_push;
 fi;
+cd -; 
 ### WF ###
 cd /opt/fmc_repository ; 
 if [ -d OpenMSA_WF ]; 
@@ -33,23 +39,25 @@ then
     git checkout master; 
     git stash;
     git pull origin master; 
-    cd -; 
 else 
     git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; 
+    cd OpenMSA_MS; 
+    git checkout -b local_dev_branch_do_not_push;
 fi ; 
+cd -; 
 ### Quickstart ###
 cd /opt/fmc_repository ; 
 if [ -d /opt/fmc_repository/quickstart ]; 
 then 
-    cd /opt/fmc_repository/quickstart; 
+    cd quickstart; 
+    git stash;
     git checkout master; 
-    git pull; 
-    cd -; 
+    git pull origin master; ; 
 else 
-    cd /opt/fmc_repository/; 
     git clone https://github.com/ubiqube/quickstart.git quickstart; 
 fi ;
-    
+cd -; 
+
 
 echo "install REST Generic Adapter from github repo"
 cd /opt/sms/bin/php ; 
