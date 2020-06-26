@@ -163,6 +163,7 @@ chown -R ncuser:ncuser /opt/ubi-jentreprise/resources/templates/conf/device;\
  
 
 /opt/ubi-jentreprise/configure; 
+service wildfly start; 
 service wildfly status; 
 
 /opt/sms/configure;
