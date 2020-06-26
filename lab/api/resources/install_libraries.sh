@@ -73,7 +73,7 @@ echo " Install REST Generic adapter source code from github repo"
 echo "-------------------------------------------------------------------------------"
 cd /opt/sms/bin/php ; 
 rm -rf rest_generic;
-ln -f /opt/sms/bin/php//OpenMSA_Adapters/adapters/rest_generic rest_generic; 
+ln -fs /opt/sms/bin/php//OpenMSA_Adapters/adapters/rest_generic rest_generic; 
 cd /opt/sms/templates/devices/; 
 rm -rf rest_generic;
 ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/rest_generic rest_generic; 
