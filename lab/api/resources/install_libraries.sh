@@ -11,6 +11,7 @@ if [ -d OpenMSA_Adapters ];
 then 
     cd OpenMSA_Adapters; 
     #git checkout conf/models.properties; 
+    git status;
     git stash;
     git checkout master; 
     git pull origin master; 
@@ -26,6 +27,7 @@ cd /opt/fmc_repository ;
 if [ -d OpenMSA_MS ]; 
 then  
     cd OpenMSA_MS; 
+    git status;
     git stash;
     git checkout master; 
     git pull origin master; 
@@ -41,8 +43,9 @@ cd /opt/fmc_repository ;
 if [ -d OpenMSA_WF ]; 
 then 
     cd OpenMSA_WF; 
-    git checkout master; 
+    git status;
     git stash;
+    git checkout master; 
     git pull origin master; 
 else 
     git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; 
@@ -55,6 +58,7 @@ cd /opt/fmc_repository ;
 if [ -d /opt/fmc_repository/quickstart ]; 
 then 
     cd quickstart; 
+    git status;
     git stash;
     git checkout master; 
     git pull origin master;
