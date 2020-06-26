@@ -59,7 +59,7 @@ fi ;
 cd -; 
 
 
-echo "install REST Generic adapter from github repo"
+echo "install REST Generic adapter source code from github repo"
 cd /opt/sms/bin/php ; 
 ln -fs OpenMSA_Adapters/adapters/rest_generic rest_generic; 
 cd /opt/sms/templates/devices/; 
@@ -67,7 +67,7 @@ mkdir -p /opt/sms/templates/devices/rest_generic/conf;
 cd /opt/sms/templates/devices/rest_generic/conf; 
 ln -fs /opt/sms/bin/php/rest_generic/conf/sms_router.conf sms_router.conf; 
 
-echo "install ADVA NC adapter from github repo"
+echo "install ADVA NC adapter source code from github repo"
 cd /opt/sms/bin/php ; 
 ln -fs OpenMSA_Adapters/adapters/adva_nc rest_generic; 
 cd /opt/sms/templates/devices/; 
@@ -105,7 +105,10 @@ ln -fs /opt/sms/bin/php/OpenMSA_Adapters/conf/models.properties /opt/ubi-jentrep
 rm -f /opt/ses/properties/specifics/server_ALL/sdExtendedInfo.properties;
 cp /opt/sms/bin/php/OpenMSA_Adapters/conf/sdExtendedInfo.properties /opt/ses/properties/specifics/server_ALL/sdExtendedInfo.properties;
 cp /opt/ubi-jentreprise/resources/templates/conf/device/manufacturers.properties /opt/ubi-jentreprise/resources/templates/conf/device/custom/; 
-/opt/sms/bin/php/OpenMSA_Adapters/bin//da_installer install /opt/sms/bin/php/rest_generic; 
+
+echo "enable the adapters"
+/opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/rest_generic; 
+/opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/adva_nc; 
 
 
 echo  "install some MS from OpenMSA github repo"
