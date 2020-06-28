@@ -1,6 +1,6 @@
 <ObjectDefinition>
   <variables frozen="0">
-    <variable displayName="Customer Id" name="params.customer_id" startIncrement="0" type="Integer" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="2" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" default="40" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
+    <variable displayName="Customer Id" name="params.customer_id" startIncrement="0" type="Integer" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="2" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" default="" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
       <sections>
         <sections>Set Parameters</sections>
       </sections>
@@ -65,7 +65,7 @@
   <process name="Process/SelfDemoSetup/Process_Setup">
     <displayName>Setup Linux ME</displayName>
     <type>CREATE</type>
-    <visibility>0</visibility>
+    <visibility>5</visibility>
     <task name="Task_Set_Parameters1.php">
       <processPath>/opt/fmc_repository/Process/SelfDemoSetup/Process_Setup/Tasks/</processPath>
       <displayName>Set Parameters</displayName>
@@ -82,7 +82,7 @@
   <process name="Process/SelfDemoSetup/Process_Setup_2">
     <displayName>Setup MSA REST API</displayName>
     <type>CREATE</type>
-    <visibility>0</visibility>
+    <visibility>5</visibility>
     <task name="Task_Set_Parameters2.php">
       <processPath>/opt/fmc_repository/Process/SelfDemoSetup/Process_Setup/Tasks/</processPath>
       <displayName>Set Parameters</displayName>
@@ -99,7 +99,7 @@
   <process name="Process/SelfDemoSetup/Process_Delete">
     <displayName>Delete</displayName>
     <type>DELETE</type>
-    <visibility>0</visibility>
+    <visibility>5</visibility>
     <task name="Delete_delete.php">
       <processPath>/opt/fmc_repository/Process/SelfDemoSetup</processPath>
       <displayName>delete</displayName>
@@ -111,7 +111,7 @@
     <displayField>service_id</displayField>
     <serviceTaskType>php</serviceTaskType>
     <order>10000</order>
-    <visibility>0</visibility>
+    <visibility>5</visibility>
     <name>SelfDemoSetup</name>
     <group/>
   </information>
