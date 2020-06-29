@@ -58,140 +58,36 @@ else
     git clone https://github.com/ubiqube/quickstart.git quickstart; 
 fi ;
 
-echo "-------------------------------------------------------------------------------"
-echo " Install Linux Generic adapter source code from github repo"
-echo "-------------------------------------------------------------------------------"
-cd /opt/sms/bin/php ; 
-rm -rf linux_generic;
-ln -fs /opt/sms/bin/php//OpenMSA_Adapters/adapters/linux_generic linux_generic; 
-cd /opt/sms/templates/devices/; 
-rm -rf linux_generic;
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/linux_generic linux_generic; 
+install_adapter() {
+    echo "-------------------------------------------------------------------------------"
+    echo " Install $0 adapter source code from github repo "
+    echo "-------------------------------------------------------------------------------"
+
+    cd /opt/sms/bin/php ; 
+    [[ -d linux_generic ]] && rm -rf $0;
+    ln -fs /opt/sms/bin/php//OpenMSA_Adapters/adapters/$0 $0; 
+    cd /opt/sms/templates/devices/; 
+    [[ -d $0 ]] && rm -rf $0;
+    ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/$0 $0; 
+
+    /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/$0; 
+
+}
 
 
-echo "-------------------------------------------------------------------------------"
-echo " Install REST Generic adapter source code from github repo"
-echo "-------------------------------------------------------------------------------"
-cd /opt/sms/bin/php ; 
-rm -rf rest_generic;
-ln -fs /opt/sms/bin/php//OpenMSA_Adapters/adapters/rest_generic rest_generic; 
-cd /opt/sms/templates/devices/; 
-rm -rf rest_generic;
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/rest_generic rest_generic; 
+install_adapter("linux_generic");
 
-echo "-------------------------------------------------------------------------------"
-echo " Install AWS Generic adapter source code from github repo"
-echo "-------------------------------------------------------------------------------"
-cd /opt/sms/bin/php ; 
-rm -rf aws_generic; 
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/aws_generic aws_generic; 
-cd /opt/sms/templates/devices/; 
-rm -rf aws_generic;
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/aws_generic aws_generic; 
+#install_adapter("rest_generic");
+#install_adapter("aws_generic");
+#install_adapter("stormshield");
+#install_adapter("adva_nc");
+#install_adapter("f5_bigip");
+#install_adapter("a10_thunder");
+#install_adapter("virtuora_nc");
+#install_adapter("oneaccess_netconf");
+#install_adapter("oneaccess_lbb");
+#install_adapter("oneaccess_whitebox");
 
-echo "-------------------------------------------------------------------------------"
-echo " Install Stormshield Generic adapter source code from github repo"
-echo "-------------------------------------------------------------------------------"
-cd /opt/sms/bin/php ; 
-rm -rf stormshield; 
-rm -rf netasq; 
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/stormshield stormshield; 
-cd /opt/sms/templates/devices/; 
-rm -rf stormshield;
-rm -rf netasq; 
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/stormshield stormshield; 
-
-echo "-------------------------------------------------------------------------------"
-echo " Install ADVA NC adapter source code from github repo"
-echo "-------------------------------------------------------------------------------"
-cd /opt/sms/bin/php ; 
-rm -rf adva_nc; 
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/adva_nc adva_nc; 
-cd /opt/sms/templates/devices/; 
-rm -rf adva_nc;
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/adva_nc adva_nc; 
-
-echo "-------------------------------------------------------------------------------"
-echo " Install F5 BIGIP adapter source code from github repo"
-echo "-------------------------------------------------------------------------------"
-cd /opt/sms/bin/php ; 
-rm -rf f5_bigip; 
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/f5_bigip f5_bigip; 
-cd /opt/sms/templates/devices/; 
-rm -rf f5_bigip;
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/f5_bigip f5_bigip; 
-
-echo "-------------------------------------------------------------------------------"
-echo " Install A10 Thunder adapter source code from github repo"
-echo "-------------------------------------------------------------------------------"
-cd /opt/sms/bin/php ; 
-rm -rf a10_thunder; 
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/a10_thunder a10_thunder; 
-cd /opt/sms/templates/devices/; 
-rm -rf a10_thunder;
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/a10_thunder a10_thunder; 
-
-
-echo "-------------------------------------------------------------------------------"
-echo " Install Virtuora NC adapter source code from github repo"
-echo "-------------------------------------------------------------------------------"
-cd /opt/sms/bin/php ; 
-rm -rf virtuora_nc; 
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/virtuora_nc virtuora_nc; 
-cd /opt/sms/templates/devices/; 
-rm -rf virtuora_nc;
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/virtuora_nc virtuora_nc; 
-
-echo "-------------------------------------------------------------------------------"
-echo " Install OneAccess Netconf Adapter from github repo " 
-echo " Add the sms_router.conf file for the new model id for OneAccess-Netconf"
-echo "-------------------------------------------------------------------------------"
-cd /opt/sms/bin/php ; 
-mv oneaccess_netconf oneaccess_netconf.bak;
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/oneaccess_netconf oneaccess_netconf; 
-cd /opt/sms/templates/devices/; 
-mv oneaccess_netconf oneaccess_netconf.bak;
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/oneaccess_netconf oneaccess_netconf; 
-
-echo "-------------------------------------------------------------------------------"
-echo " Install OneAccess Generic Adapter from github repo " 
-echo " Add the sms_router.conf file for the new model id for OneAccess-Netconf"
-echo "-------------------------------------------------------------------------------"
-cd /opt/sms/bin/php ; 
-mv oneaccess_lbb oneaccess_lbb.bak;
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/oneaccess_lbb oneaccess_lbb; 
-cd /opt/sms/templates/devices/; 
-mv oneaccess_lbb oneaccess_lbb.bak;
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/oneaccess_lbb oneaccess_lbb; 
-
-echo "-------------------------------------------------------------------------------"
-echo " Install OneAccess Whitebox Adapter from github repo " 
-echo " Add the sms_router.conf file for the new model id for OneAccess-Netconf"
-echo "-------------------------------------------------------------------------------"
-cd /opt/sms/bin/php ; 
-mv oneaccess_whitebox oneaccess_whitebox.bak;
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/oneaccess_whitebox oneaccess_whitebox; 
-cd /opt/sms/templates/devices/; 
-mv oneaccess_whitebox oneaccess_whitebox.bak;
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/oneaccess_whitebox oneaccess_whitebox; 
-
-
-
-echo "-------------------------------------------------------------------------------"
-echo " Enable the adapters"
-echo "-------------------------------------------------------------------------------"
-/opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/rest_generic; 
-/opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/adva_nc; 
-/opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/virtuora_nc; 
-/opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/f5_bigip; 
-/opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/aws_generic; 
-/opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/oneaccess_netconf; 
-/opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/oneaccess_lbb; 
-/opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/oneaccess_whitebox; 
-/opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/linux_generic; 
-
-# A10 Thunder requires the admin password which is not yet supported by the UI
-#/opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/a10_thunder; 
 
 
 echo "-------------------------------------------------------------------------------"

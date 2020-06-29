@@ -56,7 +56,7 @@ RUN cd /opt/sms/bin/php ; \
 
  # tweak adapter config to use the file from github.com/openmsa/conf
 RUN cd /opt/ubi-jentreprise/resources/templates/conf/device/; \
-    #rm -f  models.properties manufacturers.properties; \
+    rm -f  models.properties manufacturers.properties; \
     #rm -f /opt/ses/templates/server_ALL/sdExtendedInfo.properties; \
     :
    
