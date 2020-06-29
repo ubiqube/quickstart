@@ -79,6 +79,16 @@ rm -rf rest_generic;
 ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/rest_generic rest_generic; 
 
 echo "-------------------------------------------------------------------------------"
+echo " Install AWS Generic adapter source code from github repo"
+echo "-------------------------------------------------------------------------------"
+cd /opt/sms/bin/php ; 
+rm -rf aws_generic; 
+ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/aws_generic aws_generic; 
+cd /opt/sms/templates/devices/; 
+rm -rf aws_generic;
+ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/aws_generic aws_generic; 
+
+echo "-------------------------------------------------------------------------------"
 echo " Install ADVA NC adapter source code from github repo"
 echo "-------------------------------------------------------------------------------"
 cd /opt/sms/bin/php ; 
@@ -160,7 +170,9 @@ echo "--------------------------------------------------------------------------
 /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/adva_nc; 
 /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/virtuora_nc; 
 /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/f5_bigip; 
-/opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/a10_thunder; 
+/opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/aws_generic; 
+# A10 Thunder requires the admin password which is not yet supported by the UI
+#/opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/a10_thunder; 
 
 
 echo "-------------------------------------------------------------------------------"
