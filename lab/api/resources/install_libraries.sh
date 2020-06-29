@@ -1,5 +1,5 @@
 #!/bin/bash
-#set -x
+set -x
 
 echo "-------------------------------------------------------------------------------"
 echo " Update the github repositories "
@@ -89,6 +89,16 @@ rm -rf adva_nc;
 ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/adva_nc adva_nc; 
 
 echo "-------------------------------------------------------------------------------"
+echo " Install Virtuora NC adapter source code from github repo"
+echo "-------------------------------------------------------------------------------"
+cd /opt/sms/bin/php ; 
+rm -rf adva_nc; 
+ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/virtuora_nc virtuora_nc; 
+cd /opt/sms/templates/devices/; 
+rm -rf adva_nc;
+ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/virtuora_nc virtuora_nc; 
+
+echo "-------------------------------------------------------------------------------"
 echo " Install Netconf Generic adapter from github repo"
 echo " Add the netconf da bugfixes from Openmsa github"
 echo "-------------------------------------------------------------------------------"
@@ -127,6 +137,7 @@ echo " Enable the adapters"
 echo "-------------------------------------------------------------------------------"
 /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/rest_generic; 
 /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/adva_nc; 
+/opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/virtuora_nc; 
 
 
 echo "-------------------------------------------------------------------------------"
