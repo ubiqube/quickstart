@@ -154,14 +154,28 @@ ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/oneaccess_lbb oneaccess_lbb;
 echo "-------------------------------------------------------------------------------"
 echo " Configure properties files from openmsa github repo into custom folder"
 echo "-------------------------------------------------------------------------------"
-cd /opt/ubi-jentreprise/resources/templates/conf/device/; 
 mkdir -p /opt/ubi-jentreprise/resources/templates/conf/device/custom; 
+cd /opt/ubi-jentreprise/resources/templates/conf/device/custom;
 #Using properties file from OpenMSA github for the custom versions
-rm -f /opt/ubi-jentreprise/resources/templates/conf/device/custom/models.properties;
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/conf/models.properties /opt/ubi-jentreprise/resources/templates/conf/device/custom/models.properties;
-rm -f /opt/ses/properties/specifics/server_ALL/sdExtendedInfo.properties;
-cp /opt/sms/bin/php/OpenMSA_Adapters/conf/sdExtendedInfo.properties /opt/ses/properties/specifics/server_ALL/sdExtendedInfo.properties;
-cp /opt/ubi-jentreprise/resources/templates/conf/device/manufacturers.properties /opt/ubi-jentreprise/resources/templates/conf/device/custom/; 
+if [ ! -f models.properties & ! -L models.properties ]; then 
+   ln -fs /opt/sms/bin/php/OpenMSA_Adapters/conf/models.properties models.properties;
+else if [  -f models.properties  ]; then 
+    rm -f models.properties;
+    ln -fs /opt/sms/bin/php/OpenMSA_Adapters/conf/models.properties models.properties;
+fi;
+if [ ! -f  manufacturers.properties & ! -L  manufacturers.properties ]; then 
+   ln -fs  /opt/ubi-jentreprise/resources/templates/conf/device/manufacturers.properties manufacturers.properties; 
+else if [  -f manufacturers.properties  ]; then 
+    rm -f manufacturers.properties;
+    ln -fs /opt/sms/bin/php/OpenMSA_Adapters/conf/manufacturers.properties manufacturers.properties;
+fi;
+cd /opt/ses/properties/specifics/server_ALL/
+if [ ! -f  sdExtendedInfo.properties & ! -L  sdExtendedInfo.properties ]; then 
+   ln -fs /opt/sms/bin/php/OpenMSA_Adapters/conf/sdExtendedInfo.properties sdExtendedInfo.properties;
+else if [  -f sdExtendedInfo.properties  ]; then 
+    rm -f sdExtendedInfo.properties;
+    ln -fs /opt/sms/bin/php/OpenMSA_Adapters/conf/sdExtendedInfo.properties sdExtendedInfo.properties;
+fi;
 
 echo "-------------------------------------------------------------------------------"
 echo " Enable the adapters"
