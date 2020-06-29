@@ -58,6 +58,16 @@ else
     git clone https://github.com/ubiqube/quickstart.git quickstart; 
 fi ;
 
+echo "-------------------------------------------------------------------------------"
+echo " Install Linux Generic adapter source code from github repo"
+echo "-------------------------------------------------------------------------------"
+cd /opt/sms/bin/php ; 
+rm -rf linux_generic;
+ln -fs /opt/sms/bin/php//OpenMSA_Adapters/adapters/linux_generic linux_generic; 
+cd /opt/sms/templates/devices/; 
+rm -rf linux_generic;
+ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/linux_generic linux_generic; 
+
 
 echo "-------------------------------------------------------------------------------"
 echo " Install REST Generic adapter source code from github repo"
@@ -178,6 +188,7 @@ echo "--------------------------------------------------------------------------
 /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/oneaccess_netconf; 
 /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/oneaccess_lbb; 
 /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/oneaccess_whitebox; 
+/opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/linux_generic; 
 
 # A10 Thunder requires the admin password which is not yet supported by the UI
 #/opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/a10_thunder; 
