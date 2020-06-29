@@ -59,7 +59,7 @@ RUN cd /opt/ubi-jentreprise/resources/templates/conf/device/; \
     mkdir -p /opt/ubi-jentreprise/resources/templates/conf/device/custom; \
     if [ -f ./custom/models.properties ]; then mv ./custom/models.properties ./custom/models.properties.bak; fi; \
     if [ -f ./custom/manufacturers.properties ]; then mv ./custom/manufacturers.properties ./custom/manufacturers.properties.bak; fi; \
-    cp /opt/ubi-jentreprise/resources/templates/conf/device/* /opt/ubi-jentreprise/resources/templates/conf/device/custom/; \
+    cp /opt/ubi-jentreprise/resources/templates/conf/device/*.properties /opt/ubi-jentreprise/resources/templates/conf/device/custom/; \
     cd /opt/ses/properties/specifics/server_ALL/; \
     if [ -f sdExtendedInfo.properties ]; then mv sdExtendedInfo.properties sdExtendedInfo.properties.bak; fi; \
     cp /opt/ses/templates/server_ALL/sdExtendedInfo.properties .;
