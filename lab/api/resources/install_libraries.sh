@@ -60,17 +60,17 @@ fi ;
 
 install_adapter() {
     echo "-------------------------------------------------------------------------------"
-    echo " Install $0 adapter source code from github repo "
+    echo " Install $1 adapter source code from github repo "
     echo "-------------------------------------------------------------------------------"
 
     cd /opt/sms/bin/php ; 
-    [[ -d linux_generic ]] && rm -rf $0;
-    ln -fs /opt/sms/bin/php//OpenMSA_Adapters/adapters/$0 $0; 
+    [[ -d linux_generic ]] && rm -rf $1;
+    ln -fs /opt/sms/bin/php//OpenMSA_Adapters/adapters/$1 $1; 
     cd /opt/sms/templates/devices/; 
-    [[ -d $0 ]] && rm -rf $0;
-    ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/$0 $0; 
+    [[ -d $1 ]] && rm -rf $1;
+    ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1 $1; 
 
-    /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/$0; 
+    /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/$1; 
 
 }
 
