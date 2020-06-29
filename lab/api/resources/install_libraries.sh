@@ -60,11 +60,11 @@ fi ;
 
 install_adapter() {
     echo "-------------------------------------------------------------------------------"
-    echo " Install $1 adapter source code from github repo "
+    echo " Install $0 - $1 - $2 adapter source code from github repo "
     echo "-------------------------------------------------------------------------------"
 
     cd /opt/sms/bin/php ; 
-    [[ -d linux_generic ]] && rm -rf $1;
+    [[ -d $1 ]] && rm -rf $1;
     ln -fs /opt/sms/bin/php//OpenMSA_Adapters/adapters/$1 $1; 
     cd /opt/sms/templates/devices/; 
     [[ -d $1 ]] && rm -rf $1;
