@@ -89,13 +89,24 @@ rm -rf adva_nc;
 ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/adva_nc adva_nc; 
 
 echo "-------------------------------------------------------------------------------"
+echo " Install F5 BIGIP adapter source code from github repo"
+echo "-------------------------------------------------------------------------------"
+cd /opt/sms/bin/php ; 
+rm -rf f5_bigip; 
+ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/f5_bigip f5_bigip; 
+cd /opt/sms/templates/devices/; 
+rm -rf f5_bigip;
+ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/f5_bigip f5_bigip; 
+
+
+echo "-------------------------------------------------------------------------------"
 echo " Install Virtuora NC adapter source code from github repo"
 echo "-------------------------------------------------------------------------------"
 cd /opt/sms/bin/php ; 
-rm -rf adva_nc; 
+rm -rf virtuora_nc; 
 ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/virtuora_nc virtuora_nc; 
 cd /opt/sms/templates/devices/; 
-rm -rf adva_nc;
+rm -rf virtuora_nc;
 ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/virtuora_nc virtuora_nc; 
 
 echo "-------------------------------------------------------------------------------"
@@ -138,6 +149,7 @@ echo "--------------------------------------------------------------------------
 /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/rest_generic; 
 /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/adva_nc; 
 /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/virtuora_nc; 
+/opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/f5_bigip; 
 
 
 echo "-------------------------------------------------------------------------------"
