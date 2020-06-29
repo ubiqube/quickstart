@@ -10,8 +10,11 @@ echo " https://github.com/openmsa/Adapters.git "
 if [ -d OpenMSA_Adapters ]; 
 then 
     cd OpenMSA_Adapters; 
-    #git checkout conf/models.properties; 
-    git pull;
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ### TODO REMOVE BEFORE PR MERGE
+    git checkout openmsa_lib_packaging;
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   git pull;
 else 
     git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters; 
     cd OpenMSA_Adapters; 
@@ -46,6 +49,10 @@ cd /opt/fmc_repository ;
 if [ -d /opt/fmc_repository/quickstart ]; 
 then 
     cd quickstart; 
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ### TODO REMOVE BEFORE PR MERGE
+    git checkout openmsa_lib_packaging;
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     git pull;
 else 
     git clone https://github.com/ubiqube/quickstart.git quickstart; 
@@ -71,6 +78,18 @@ ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/aws_generic aws_generic;
 cd /opt/sms/templates/devices/; 
 rm -rf aws_generic;
 ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/aws_generic aws_generic; 
+
+echo "-------------------------------------------------------------------------------"
+echo " Install Stormshield Generic adapter source code from github repo"
+echo "-------------------------------------------------------------------------------"
+cd /opt/sms/bin/php ; 
+rm -rf stormshield; 
+rm -rf netasq; 
+ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/stormshield stormshield; 
+cd /opt/sms/templates/devices/; 
+rm -rf stormshield;
+rm -rf netasq; 
+ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/stormshield stormshield; 
 
 echo "-------------------------------------------------------------------------------"
 echo " Install ADVA NC adapter source code from github repo"
