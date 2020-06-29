@@ -126,6 +126,7 @@ chown -R ncuser:ncuser /opt/ubi-jentreprise/resources/templates/conf/device;\
 /opt/ubi-jentreprise/configure; 
 service wildfly restart; 
 service wildfly status; 
+service tomcat restart; 
 
 /opt/sms/configure;
 service ubi-sms status; 
