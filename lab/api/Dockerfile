@@ -52,7 +52,18 @@ RUN cd /opt/sms/bin/php ; \
     ### Quickstart ###
     cd /opt/fmc_repository ; \
     if [ -d /opt/fmc_repository/quickstart ]; then cd quickstart; git pull ; else git clone https://github.com/ubiqube/quickstart.git quickstart; fi ; \
-    : 
+    :
+
+ # tweak adapter config to use the file from github.com/openmsa/conf
+RUN cd /opt/ubi-jentreprise/resources/templates/conf/device/; \
+    mkdir -p /opt/ubi-jentreprise/resources/templates/conf/device/custom; \
+    if [ -f ./custom/models.properties ]; then mv ./custom/models.properties ./custom/models.properties.bak; fi; \
+    if [ -f ./custom/manufacturers.properties ]; then mv ./custom/manufacturers.properties ./custom/manufacturers.properties.bak; fi; \
+    cp /opt/ubi-jentreprise/resources/templates/conf/device/* /opt/ubi-jentreprise/resources/templates/conf/device/custom/; \
+    cd /opt/ses/properties/specifics/server_ALL/; \
+    if [ -f sdExtendedInfo.properties ]; then mv sdExtendedInfo.properties sdExtendedInfo.properties.bak; fi; \
+    cp /opt/ses/templates/server_ALL/sdExtendedInfo.properties .;
+   
 
  # install a custom asset script for Linux
 RUN	mkdir -p /opt/sms/bin/php/polld/custom
