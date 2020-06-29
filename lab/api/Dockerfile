@@ -40,28 +40,66 @@ RUN chmod +x /opt/ubiqube/deploy-license.sh; \
     :
 
 
-# install the github repositories
 RUN cd /opt/sms/bin/php ; \
- 	### DA ###
+    echo " https://github.com/openmsa/Adapters.git "; \
+### DA ### 
+if [ -d OpenMSA_Adapters ]; \
+then ; \
+    cd OpenMSA_Adapters; \
+    #git checkout conf/models.properties; 
+    git status; \
+    git stash; \
+    git checkout master; \
+    git pull origin master; \ 
+else ; \
     git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters; \
     cd OpenMSA_Adapters; \
-    git checkout -b local_dev_branch_do_not_push; \
+fi ; \
+cd -; \
   	### MS ###
-    cd /opt/fmc_repository ; \
+echo " https://github.com/openmsa/Microservices.git "; \
+cd /opt/fmc_repository ; \
+if [ -d OpenMSA_MS ]; \
+then  ; \
+    cd OpenMSA_MS; \
+    git status; \
+    git stash; \
+    git checkout master; \
+    git pull origin master; \
+else ; \
     git clone https://github.com/openmsa/Microservices.git OpenMSA_MS; \
     cd OpenMSA_MS; \
-    git checkout -b local_dev_branch_do_not_push; \
- 	### WF ###
-    cd /opt/fmc_repository ; \
-    git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; \
+fi; \
+cd -; \ 
+### WF ###
+echo " https://github.com/openmsa/Workflows.git "; \
+cd /opt/fmc_repository ; \
+if [ -d OpenMSA_WF ]; \
+then ; \
     cd OpenMSA_WF; \
- 	### Quickstart ###
-    cd /opt/fmc_repository/; \
-    git clone -v https://github.com/ubiqube/quickstart.git quickstart; \
+    git status; \
+    git stash; \
+    git checkout master; \
+    git pull origin master; \
+else ; \
+    git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; \
+    cd OpenMSA_MS; \
+fi ; \
+cd -; \
+echo " Install the quickstart from https://github.com/ubiqube/quickstart.git"; \
+cd /opt/fmc_repository ; \
+if [ -d /opt/fmc_repository/quickstart ]; \
+then ; \
     cd quickstart; \
-    git checkout -b local_dev_branch_do_not_push; \
-    :
-
+    git status; \
+    git stash; \
+    git checkout master; \
+    git pull origin master; \
+else ; \
+    git clone https://github.com/ubiqube/quickstart.git quickstart; \
+fi ; \
+cd -; \
+:
 
  # tweak adapter config to use the file from github.com/openmsa/conf
 RUN cd /opt/ubi-jentreprise/resources/templates/conf/device/; \
