@@ -133,18 +133,18 @@ rm -rf virtuora_nc;
 ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/virtuora_nc virtuora_nc; 
 
 echo "-------------------------------------------------------------------------------"
-echo " Install Netconf Generic adapter from github repo"
-echo " Add the netconf da bugfixes from Openmsa github"
+echo " Install OneAccess Netconf Adapter from github repo " 
+echo " Add the sms_router.conf file for the new model id for OneAccess-Netconf"
 echo "-------------------------------------------------------------------------------"
 cd /opt/sms/bin/php ; 
-mv netconf_generic netconf_generic.bak;
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/netconf_generic netconf_generic; 
+mv oneaccess_netconf oneaccess_netconf.bak;
+ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/oneaccess_netconf oneaccess_netconf; 
 cd /opt/sms/templates/devices/; 
-mv netconf_generic netconf_generic.bak;
-ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/netconf_generic netconf_generic; 
+mv oneaccess_netconf oneaccess_netconf.bak;
+ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/oneaccess_netconf oneaccess_netconf; 
 
 echo "-------------------------------------------------------------------------------"
-echo " Install OneAccess Netconf Adapter from github repo " 
+echo " Install OneAccess Generic Adapter from github repo " 
 echo " Add the sms_router.conf file for the new model id for OneAccess-Netconf"
 echo "-------------------------------------------------------------------------------"
 cd /opt/sms/bin/php ; 
@@ -153,6 +153,17 @@ ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/oneaccess_lbb oneaccess_lbb;
 cd /opt/sms/templates/devices/; 
 mv oneaccess_lbb oneaccess_lbb.bak;
 ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/oneaccess_lbb oneaccess_lbb; 
+
+echo "-------------------------------------------------------------------------------"
+echo " Install OneAccess Whitebox Adapter from github repo " 
+echo " Add the sms_router.conf file for the new model id for OneAccess-Netconf"
+echo "-------------------------------------------------------------------------------"
+cd /opt/sms/bin/php ; 
+mv oneaccess_whitebox oneaccess_whitebox.bak;
+ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/oneaccess_whitebox oneaccess_whitebox; 
+cd /opt/sms/templates/devices/; 
+mv oneaccess_whitebox oneaccess_whitebox.bak;
+ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/oneaccess_whitebox oneaccess_whitebox; 
 
 
 
@@ -164,6 +175,10 @@ echo "--------------------------------------------------------------------------
 /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/virtuora_nc; 
 /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/f5_bigip; 
 /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/aws_generic; 
+/opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/oneaccess_netconf; 
+/opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/oneaccess_lbb; 
+/opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/oneaccess_whitebox; 
+
 # A10 Thunder requires the admin password which is not yet supported by the UI
 #/opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/a10_thunder; 
 
