@@ -98,6 +98,16 @@ cd /opt/sms/templates/devices/;
 rm -rf f5_bigip;
 ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/f5_bigip f5_bigip; 
 
+echo "-------------------------------------------------------------------------------"
+echo " Install A10 Thunder adapter source code from github repo"
+echo "-------------------------------------------------------------------------------"
+cd /opt/sms/bin/php ; 
+rm -rf a10_thunder; 
+ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/a10_thunder a10_thunder; 
+cd /opt/sms/templates/devices/; 
+rm -rf a10_thunder;
+ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/a10_thunder a10_thunder; 
+
 
 echo "-------------------------------------------------------------------------------"
 echo " Install Virtuora NC adapter source code from github repo"
@@ -150,6 +160,7 @@ echo "--------------------------------------------------------------------------
 /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/adva_nc; 
 /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/virtuora_nc; 
 /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/f5_bigip; 
+/opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/a10_thunder; 
 
 
 echo "-------------------------------------------------------------------------------"
