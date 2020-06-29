@@ -98,7 +98,6 @@ then ; \
 else ; \
     git clone https://github.com/ubiqube/quickstart.git quickstart; \
 fi ; \
-cd -; \
 :
 
  # tweak adapter config to use the file from github.com/openmsa/conf
