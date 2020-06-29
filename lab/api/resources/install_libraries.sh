@@ -75,7 +75,7 @@ install_adapter() {
 }
 
 
-install_adapter("linux_generic");
+install_adapter linux_generic;
 
 #install_adapter("rest_generic");
 #install_adapter("aws_generic");
