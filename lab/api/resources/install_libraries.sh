@@ -157,20 +157,20 @@ echo "--------------------------------------------------------------------------
 mkdir -p /opt/ubi-jentreprise/resources/templates/conf/device/custom; 
 cd /opt/ubi-jentreprise/resources/templates/conf/device/custom;
 #Using properties file from OpenMSA github for the custom versions
-if [ ! -f models.properties & ! -L models.properties ]; then 
+if [ ! -f models.properties && ! -L models.properties ]; then 
     ln -fs /opt/sms/bin/php/OpenMSA_Adapters/conf/models.properties models.properties;
 elif [  -f models.properties  ]; then 
     rm -f models.properties;
     ln -fs /opt/sms/bin/php/OpenMSA_Adapters/conf/models.properties models.properties;
 fi;
-if [ ! -f  manufacturers.properties & ! -L  manufacturers.properties ]; then 
+if [ ! -f  manufacturers.properties && ! -L  manufacturers.properties ]; then 
     ln -fs  /opt/ubi-jentreprise/resources/templates/conf/device/manufacturers.properties manufacturers.properties; 
 elif [  -f manufacturers.properties  ]; then 
     rm -f manufacturers.properties;
     ln -fs /opt/sms/bin/php/OpenMSA_Adapters/conf/manufacturers.properties manufacturers.properties;
 fi;
 cd /opt/ses/properties/specifics/server_ALL/
-if [ ! -f  sdExtendedInfo.properties & ! -L  sdExtendedInfo.properties ]; then 
+if [ ! -f  sdExtendedInfo.properties && ! -L  sdExtendedInfo.properties ]; then 
     ln -fs /opt/sms/bin/php/OpenMSA_Adapters/conf/sdExtendedInfo.properties sdExtendedInfo.properties;
 elif [  -f sdExtendedInfo.properties  ]; then 
     rm -f sdExtendedInfo.properties;
