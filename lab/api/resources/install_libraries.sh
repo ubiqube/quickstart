@@ -154,7 +154,7 @@ chown -R ncuser:ncuser /opt/ubi-jentreprise/resources/templates/conf/device;\
 service wildfly restart  >> install.log  2>&1; 
 /opt/ses/configure >> install.log  2>&1; 
 service tomcat restart >> install.log  2>&1; 
-/opt/sms/configure >> install.log  2>&1; ;
+/opt/sms/configure >> install.log  2>&1;
 
 service ubi-sms status; 
 service wildfly status; 
