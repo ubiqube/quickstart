@@ -152,7 +152,7 @@ install_workflows;
 
 
 echo "-------------------------------------------------------------------------------"
-echo " Removing OneAccess Netconf MS defintions containing advanced variable types"
+echo " Removing OneAccess Netconf MS definition with advanced variable types"
 echo "-------------------------------------------------------------------------------"
 rm -rf /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/Advanced /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/.meta_Advanced
 
