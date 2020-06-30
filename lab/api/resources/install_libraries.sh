@@ -90,7 +90,7 @@ install_adapter() {
     [[ $2 = DEV_MODE ]] &&  ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1 $1; 
     [[ $2 = USER_MODE ]] &&  cp -r /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1 .; 
 
-    bash +x /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1; 
+    bash -x /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1; 
 
 }
 
