@@ -59,17 +59,17 @@ services:
   camunda:
     image: camunda/camunda-bpm-platform:7.12.0
 
-  linux_me:
-    image: linux:me
-    build: ./lab/linux.me
-    cap_add:
-      - NET_ADMIN
-    ports:
-      - "2224:22"
-    networks:
-      default:
-        ipv4_address: 172.20.0.101
-    hostname: linux_me
+  #linux_me:
+  #  image: linux:me
+  #  build: ./lab/linux.me
+  #  cap_add:
+  #    - NET_ADMIN
+  #  ports:
+  #    - "2224:22"
+  #  networks:
+  #    default:
+  #      ipv4_address: 172.20.0.101
+  #  hostname: linux_me
   
 volumes:
   db:
