@@ -71,6 +71,19 @@ update_github_repo() {
     fi ;
 
 }
+
+cleanup_adapter() {
+    cd /opt/sms/bin/php 
+    
+    [[ -L $1 ]] && rm -rf $1;
+    [[ -d $1 ]] && rm -rf $1;
+
+    cd /opt/sms/templates/devices/; 
+    [[ -L $1 ]] && rm -rf $1;
+    [[ -d $1 ]] && mv $1 $1.bak;
+
+}
+
 #
 # $1 : adapter folder name as in /opt/sms/bin/php
 # $2 : installation mode: DEV_MODE = create symlink / USER_MODE = copy code
@@ -136,6 +149,8 @@ install_workflows() {
 
 update_github_repo
 
+cleanup_adapter netasq
+
 #install_adapter checkpoint_r80 USER_MODE
 #install_adapter rest_generic USER_MODE
 #install_adapter aws_generic  USER_MODE
@@ -146,10 +161,10 @@ install_adapter linux_generic USER_MODE
 #install_adapter oneaccess_lbb USER_MODE
 #install_adapter oneaccess_whitebox USER_MODE
 install_adapter stormshield USER_MODE
-#install_adapter adva_nc USER_MODE
-#install_adapter f5_bigip USER_MODE
-#install_adapter a10_thunder USER_MODE
-#install_adapter virtuora_nc USER_MODE
+install_adapter adva_nc USER_MODE
+install_adapter f5_bigip USER_MODE
+install_adapter a10_thunder USER_MODE
+install_adapter virtuora_nc USER_MODE
 
 install_microservices;
 install_workflows;
