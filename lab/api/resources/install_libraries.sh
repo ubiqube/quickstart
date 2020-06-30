@@ -135,17 +135,17 @@ install_workflows() {
 
 update_github_repo
 
-install_adapter linux_generic USER_MODE;
-install_adapter rest_generic USER_MODE;
-#install_adapter("aws_generic");
-#install_adapter("stormshield");
-#install_adapter("adva_nc");
-#install_adapter("f5_bigip");
-#install_adapter("a10_thunder");
-#install_adapter("virtuora_nc");
-#install_adapter("oneaccess_netconf");
-#install_adapter("oneaccess_lbb");
-#install_adapter("oneaccess_whitebox");
+install_adapter linux_generic USER_MODE
+install_adapter rest_generic USER_MODE
+install_adapter aws_generic  USER_MODE
+#install_adapter stormshield USER_MODE
+#install_adapter adva_nc USER_MODE
+#install_adapter f5_bigip USER_MODE
+#install_adapter a10_thunder USER_MODE
+#install_adapter virtuora_nc USER_MODE
+#install_adapter oneaccess_netconf USER_MODE
+#install_adapter oneaccess_lbb USER_MODE
+#install_adapter oneaccess_whitebox USER_MODE
 
 install_microservices;
 install_workflows;
