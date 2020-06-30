@@ -122,7 +122,7 @@ install_workflows() {
 
 update_github_repo
 
-install_adapter linux_generic USER_MODE;
+#install_adapter linux_generic USER_MODE;
 #install_adapter("rest_generic");
 #install_adapter("aws_generic");
 #install_adapter("stormshield");
