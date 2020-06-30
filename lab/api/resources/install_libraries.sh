@@ -13,11 +13,15 @@ update_github_repo() {
     if [ -d OpenMSA_Adapters ]; 
     then 
         cd OpenMSA_Adapters; 
+        git stash;
+        git checkout master;
+        git pull;
+        git stash pop;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         ### TODO REMOVE BEFORE PR MERGE
         git checkout openmsa_lib_packaging;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    git pull;
+        git pull;
     else 
         git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters; 
         cd OpenMSA_Adapters; 
@@ -52,6 +56,10 @@ update_github_repo() {
     if [ -d /opt/fmc_repository/quickstart ]; 
     then 
         cd quickstart; 
+        git stash;
+        git checkout master;
+        git pull;
+        git stash pop;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         ### TODO REMOVE BEFORE PR MERGE
         git checkout openmsa_lib_packaging;
