@@ -135,17 +135,20 @@ install_workflows() {
 
 update_github_repo
 
+install_adapter checkpoint_r80 USER_MODE
+
+
 install_adapter linux_generic USER_MODE
-install_adapter rest_generic USER_MODE
-install_adapter aws_generic  USER_MODE
+#install_adapter rest_generic USER_MODE
+#install_adapter aws_generic  USER_MODE
+#install_adapter oneaccess_netconf USER_MODE
+#install_adapter oneaccess_lbb USER_MODE
+#install_adapter oneaccess_whitebox USER_MODE
 #install_adapter stormshield USER_MODE
 #install_adapter adva_nc USER_MODE
 #install_adapter f5_bigip USER_MODE
 #install_adapter a10_thunder USER_MODE
 #install_adapter virtuora_nc USER_MODE
-#install_adapter oneaccess_netconf USER_MODE
-#install_adapter oneaccess_lbb USER_MODE
-#install_adapter oneaccess_whitebox USER_MODE
 
 install_microservices;
 install_workflows;
