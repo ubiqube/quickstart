@@ -1,6 +1,7 @@
 #!/bin/bash
 set -x
 
+rpm -Uvh /root/ubi-jentreprise-20.0.0-50.42.el6.x86_64.rpm
 
 update_github_repo() {
 
