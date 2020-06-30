@@ -112,6 +112,8 @@ install_workflows() {
     ln -fs ../OpenMSA_WF/.meta_Tutorials .meta_Tutorials; 
 }
 
+update_github_repo
+
 install_adapter linux_generic USER_MODE;
 #install_adapter("rest_generic");
 #install_adapter("aws_generic");
@@ -125,7 +127,6 @@ install_adapter linux_generic USER_MODE;
 #install_adapter("oneaccess_whitebox");
 
 install_microservices;
-update_github_repo
 install_workflows;
 
 
