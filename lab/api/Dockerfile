@@ -80,7 +80,7 @@ RUN chown -R ncuser:ncuser /opt/fmc_repository/*; \
     chown -R ncuser:ncuser /opt/fmc_repository/.meta_*; \
     chown -R ncuser:ncuser /opt/sms/bin/php/*; \
     chown -R ncuser:ncuser /opt/sms/templates/devices/; \
-    chown -R ncuser:ncuser /opt/ubi-jentreprise/resources/templates/conf/device;\
+    #chown -R ncuser:ncuser /opt/ubi-jentreprise/resources/templates/conf/device;\
     :
 # activate debug mode for SecEngine configuration
 RUN sed -i -e 's/$UBI_VSOC_DEBUG_LEVEL/15/g' /opt/sms/templates/conf/smsd.conf 

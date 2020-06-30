@@ -79,18 +79,31 @@ install_adapter() {
     echo " Install $1 adapter source code from github repo "
     echo "-------------------------------------------------------------------------------"
 
-    cd /opt/sms/bin/php ; 
-    [[ -d $1 ]] && rm -rf $1;
-    [[ $2 = DEV_MODE ]] &&  ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1 $1; 
-    [[ $2 = USER_MODE ]] &&  cp -r /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1 .; 
+    cd /opt/sms/bin/php 
+    
+    [[ -L $1 ]] && rm -rf $1;
+    [[ -d $1 ]] && mv $1 $1.bak;
+    if [[ $2 = DEV_MODE ]]; then 
+        ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1 $1 
+    elif [[ $2 = USER_MODE ]]; then
+        rm -rf /opt/sms/bin/php/$1
+        cp -r /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1 .
+    fi
     chown -R ncuser.ncuser /opt/sms/bin/php/$1;
     
     cd /opt/sms/templates/devices/; 
-    [[ -d $1 ]] && rm -rf $1;
-    [[ $2 = DEV_MODE ]] &&  ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1 $1; 
-    [[ $2 = USER_MODE ]] &&  cp -r /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1 .; 
+    [[ -L $1 ]] && rm -rf $1;
+    [[ -d $1 ]] && mv $1 $1.bak;
 
-    bash -x /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1; 
+    if [[ $2 = DEV_MODE ]]; then
+        ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1 $1
+    elif [[ $2 = USER_MODE ]]; then  
+        rm -rf /opt/sms/templates/devices/$1
+        mkdir -p /opt/sms/templates/devices/$1/conf
+        cp -r /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1/conf/* /opt/sms/templates/devices/$1/conf/
+    fi
+
+    bash -x /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1
 
 }
 
@@ -147,7 +160,7 @@ chown -R ncuser:ncuser /opt/fmc_repository/*; \
 chown -R ncuser:ncuser /opt/fmc_repository/.meta_*; \
 chown -R ncuser:ncuser /opt/sms/bin/php/*; \
 chown -R ncuser:ncuser /opt/sms/templates/devices/; \
-chown -R ncuser:ncuser /opt/ubi-jentreprise/resources/templates/conf/device;\
+#chown -R ncuser:ncuser /opt/ubi-jentreprise/resources/templates/conf/device;\
  
 
 /opt/ubi-jentreprise/configure >> /var/log/quickstart_install.log  2>&1; 
