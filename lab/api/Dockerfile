@@ -85,4 +85,10 @@ RUN chown -R ncuser:ncuser /opt/fmc_repository/*; \
 # activate debug mode for SecEngine configuration
 RUN sed -i -e 's/$UBI_VSOC_DEBUG_LEVEL/15/g' /opt/sms/templates/conf/smsd.conf 
 
+# TO DO REMOVE
+COPY resources/ubi-jentreprise-20.0.0-50.42.el6.x86_64.rpm /root
+RUN rpm -Uvh /root/ubi-jentreprise-20.0.0-50.42.el6.x86_64.rpm
+
+
+
 CMD [ "/sbin/init" ]
