@@ -136,7 +136,7 @@ install_workflows() {
 update_github_repo
 
 install_adapter linux_generic USER_MODE;
-#install_adapter("rest_generic");
+install_adapter rest_generic USER_MODE;
 #install_adapter("aws_generic");
 #install_adapter("stormshield");
 #install_adapter("adva_nc");
