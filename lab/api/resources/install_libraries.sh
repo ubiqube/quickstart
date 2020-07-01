@@ -136,6 +136,7 @@ install_adapter adva_nc
 install_adapter f5_bigip 
 #install_adapter a10_thunder 
 install_adapter virtuora_nc 
+install_adapter pfsense_fw
 
 install_microservices;
 install_workflows;
