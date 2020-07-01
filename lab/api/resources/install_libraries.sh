@@ -126,7 +126,8 @@ update_github_repo
 
 
 install_adapter linux_generic 
-#install_adapter checkpoint_r80
+install_adapter pfsense_fw
+install_adapter checkpoint_r80
 #install_adapter rest_generic 
 #install_adapter aws_generic  
 #install_adapter oneaccess_lbb conf_netconf USER_MODE
@@ -137,7 +138,6 @@ install_adapter linux_generic
 #install_adapter f5_bigip 
 #install_adapter a10_thunder 
 #install_adapter virtuora_nc 
-install_adapter pfsense_fw
 
 install_microservices;
 install_workflows;
