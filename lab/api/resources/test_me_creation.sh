@@ -48,5 +48,6 @@ echo "--------------------------------------------------"
 echo "CREATE DEMO DEVICES"
 echo "--------------------------------------------------"
 CUSTIDONLY=${CUSTID//BLRA}
-curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FProcess_Setup" -d'{"customer_id":"'$CUSTIDONLY'"}'
+curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FProcess_Setup" \
+    -d '{"managed_device_name":"PFSENSE", "manufacturer_id":"200425", "model_id":"200425"}'
 echo
