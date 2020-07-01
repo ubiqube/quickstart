@@ -29,6 +29,21 @@ RUN cd /opt/fmc_repository/Process/; \
     mv /opt/fmc_repository/CommandDefinition/.meta_Reference /opt/fmc_repository/.meta_MS_Reference.bck; \
     :
 
+RUN cd /opt/sms/bin/php ; \
+    ### DA ### 
+    if [ -d OpenMSA_Adapters ]; then cd OpenMSA_Adapters; git pull; else git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters; fi; \
+  	### MS ###
+    cd /opt/fmc_repository ; \
+    if [ -d OpenMSA_MS ]; then  cd OpenMSA_MS; git pull; else git clone https://github.com/openmsa/Microservices.git OpenMSA_MS; fi; \
+    ### WF ###
+    cd /opt/fmc_repository ; \
+    if [ -d OpenMSA_WF ]; then cd OpenMSA_WF;  git pull ; else  git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; fi ; \
+    ### Quickstart ###
+    cd /opt/fmc_repository ; \
+    if [ -d /opt/fmc_repository/quickstart ]; then cd quickstart; git pull ; else git clone https://github.com/ubiqube/quickstart.git quickstart; fi ; \
+    :
+
+
 # install a trial license
 COPY resources/deploy-license.sh /opt/ubiqube/
 RUN chmod +x /opt/ubiqube/deploy-license.sh; \
@@ -54,13 +69,6 @@ RUN cd /opt/sms/bin/php ; \
     if [ -d /opt/fmc_repository/quickstart ]; then cd quickstart; git pull ; else git clone https://github.com/ubiqube/quickstart.git quickstart; fi ; \
     :
 
- # tweak adapter config to use the file from github.com/openmsa/conf
-RUN cd /opt/ubi-jentreprise/resources/templates/conf/device/; \
-    #rm -f  models.properties manufacturers.properties; \
-    #rm -f /opt/ses/templates/server_ALL/sdExtendedInfo.properties; \
-    :
-   
-
  # install a custom asset script for Linux
 RUN	mkdir -p /opt/sms/bin/php/polld/custom
 COPY resources/opt/sms/bin/php/polld/custom/linux_generic_mgmt.php  /opt/sms/bin/php/polld/custom/
@@ -69,11 +77,20 @@ COPY resources/opt/sms/bin/php/polld/custom/linux_generic_mgmt.php  /opt/sms/bin
 RUN	cd /opt/fmc_repository/Process/; \
     ln -fs ../quickstart/lab/api/repository/Process/BLR/SelfDemoSetup SelfDemoSetup; \
     ln -fs ../quickstart/lab/api/repository/Process/BLR/.meta_SelfDemoSetup .meta_SelfDemoSetup; \
-    :    
+    cd /opt/fmc_repository/Process/; \
+    ln -fs ../OpenMSA_WF/Tutorials Tutorials; \
+    ln -fs ../OpenMSA_WF/.meta_Tutorials .meta_Tutorials; \
+    cd /opt/fmc_repository/CommandDefinition/; \
+    ln -fs ../OpenMSA_MS/LINUX LINUX; ln -fs ../OpenMSA_MS/.meta_LINUX .meta_LINUX; \
+    :
+
 COPY resources/create_mini_lab.sh /usr/bin/
 COPY resources/install_libraries.sh /usr/bin/
+COPY resources/test_me_creation.sh /usr/bin/
+
 RUN chmod a+x  /usr/bin/create_mini_lab.sh; \
     chmod a+x  /usr/bin/install_libraries.sh; \
+    chmod a+x  /usr/bin/test_me_creation.sh; \
     :
 
 RUN chown -R ncuser:ncuser /opt/fmc_repository/*; \
