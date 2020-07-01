@@ -72,7 +72,7 @@ update_github_repo() {
 
 }
 
-cleanup_adapter() {
+uninstall_adapter() {
     cd /opt/sms/bin/php 
     
     [[ -L $1 ]] && rm -rf $1;
@@ -81,6 +81,9 @@ cleanup_adapter() {
     cd /opt/sms/templates/devices/; 
     [[ -L $1 ]] && rm -rf $1;
     [[ -d $1 ]] && mv $1 $1.bak;
+
+    bash -x /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer uninstall /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1
+
 
 }
 
@@ -93,31 +96,7 @@ install_adapter() {
     echo " Install $1 adapter source code from github repo "
     echo "-------------------------------------------------------------------------------"
 
-    cd /opt/sms/bin/php 
-    
-    [[ -L $1 ]] && rm -rf $1;
-    [[ -d $1 ]] && mv $1 $1.bak;
-    if [[ $2 = DEV_MODE ]]; then 
-        ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1 $1 
-    elif [[ $2 = USER_MODE ]]; then
-        rm -rf /opt/sms/bin/php/$1
-        cp -r /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1 .
-    fi
-    chown -R ncuser.ncuser /opt/sms/bin/php/$1;
-    
-    cd /opt/sms/templates/devices/; 
-    [[ -L $1 ]] && rm -rf $1;
-    [[ -d $1 ]] && mv $1 $1.bak;
-
-    if [[ $2 = DEV_MODE ]]; then
-        ln -fs /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1 $1
-    elif [[ $2 = USER_MODE ]]; then  
-        rm -rf /opt/sms/templates/devices/$1
-        mkdir -p /opt/sms/templates/devices/$1/conf
-        cp -r /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1/conf/* /opt/sms/templates/devices/$1/conf/
-    fi
-
-    bash -x /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1
+    bash -x /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1 $2
 
 }
 
@@ -149,22 +128,22 @@ install_workflows() {
 
 update_github_repo
 
-cleanup_adapter netasq
+uninstall_adapter netasq
 
-#install_adapter checkpoint_r80 USER_MODE
-#install_adapter rest_generic USER_MODE
-#install_adapter aws_generic  USER_MODE
+#install_adapter checkpoint_r80
+#install_adapter rest_generic 
+#install_adapter aws_generic  
 
 
-install_adapter linux_generic USER_MODE
-#install_adapter oneaccess_netconf USER_MODE
-#install_adapter oneaccess_lbb USER_MODE
-#install_adapter oneaccess_whitebox USER_MODE
-install_adapter stormshield USER_MODE
-install_adapter adva_nc USER_MODE
-install_adapter f5_bigip USER_MODE
-install_adapter a10_thunder USER_MODE
-install_adapter virtuora_nc USER_MODE
+install_adapter linux_generic 
+install_adapter oneaccess_lbb netconf USER_MODE
+install_adapter oneaccess_lbb generic USER_MODE
+install_adapter oneaccess_lbb whitebox USER_MODE
+install_adapter stormshield 
+install_adapter adva_nc 
+install_adapter f5_bigip 
+install_adapter a10_thunder 
+install_adapter virtuora_nc 
 
 install_microservices;
 install_workflows;
