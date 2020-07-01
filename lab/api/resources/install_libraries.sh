@@ -73,18 +73,10 @@ update_github_repo() {
 }
 
 uninstall_adapter() {
-    cd /opt/sms/bin/php 
-    
-    [[ -L $1 ]] && rm -rf $1;
-    [[ -d $1 ]] && rm -rf $1;
-
-    cd /opt/sms/templates/devices/; 
-    [[ -L $1 ]] && rm -rf $1;
-    [[ -d $1 ]] && mv $1 $1.bak;
-
-    bash -x /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer uninstall /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1
-
-
+    echo "-------------------------------------------------------------------------------"
+    echo " Uninstall $1 adapter source code from github repo "
+    echo "-------------------------------------------------------------------------------"
+    /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer uninstall /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1
 }
 
 #
@@ -128,7 +120,7 @@ install_workflows() {
 
 update_github_repo
 
-uninstall_adapter netasq
+#uninstall_adapter netasq
 
 #install_adapter checkpoint_r80
 #install_adapter rest_generic 
