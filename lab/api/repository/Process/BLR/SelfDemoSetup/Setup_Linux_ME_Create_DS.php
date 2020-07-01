@@ -13,8 +13,9 @@ $device_id = $context['device_id'];
 $device_id_long = substr($device_id, 3);
 
 $customer_id_long = substr($context['customer_id'], 4);
+$ds_name = $context['managed_device_name']."_ds";
 
-$response = _profile_configuration_create ($customer_id_long, "linux_ds", $reference = "", $comment = "", $manufacturer_id = "14020601", $model_id = "14020601");
+$response = _profile_configuration_create ($customer_id_long, $ds_name, $reference = "", $comment = "", $manufacturer_id = "14020601", $model_id = "14020601");
 
 $response = json_decode($response, true);
 if ($response['wo_status'] !== ENDED) {
