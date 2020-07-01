@@ -26,17 +26,36 @@ function list_args() {
 
 
 // MSA device creation parameters
-$context['managed_device_name'] = "linux_me";
-$context['manufacturer_id'] = 14020601;
-$context['model_id'] = 14020601;
-$context['login'] = "msa";
-$context['password'] = "ubiqube";
-$context['password_admin'] = "";
-$context['device_ip_address'] = "172.20.0.101";
-$context['device_external_reference'] = "";
-$context['managementInterface'] = "eth0";
-$context['snmpCommunity'] = "public";
-
+if (!isset($context['managed_device_name'])) {
+	$context['managed_device_name'] = "linux_me";
+}
+if (!isset($context['manufacturer_id'])) {
+	$context['manufacturer_id'] = 14020601;
+}
+if (!isset($context['model_id'])) {
+	$context['model_id'] = 14020601;
+}
+if (!isset($context['login'])) {
+	$context['login'] = "msa";
+}
+if (!isset($context['password'])) {
+	$context['password'] = "ubiqube";
+}
+if (!isset($context['password_admin'])) {
+	$context['password_admin'] = "";
+}
+if (!isset($context['device_ip_address'])) {
+	$context['device_ip_address'] = "172.20.0.101";
+}
+if (!isset($context['device_external_reference'])) {
+	$context['device_external_reference'] = "";
+}
+if (!isset($context['managementInterface'])) {
+	$context['managementInterface'] = "eth0";
+}  
+if (!isset($context['snmpCommunity'])) {
+	$context['snmpCommunity'] = "public";
+}
 
 /**
  * End of the task do not modify after this point
