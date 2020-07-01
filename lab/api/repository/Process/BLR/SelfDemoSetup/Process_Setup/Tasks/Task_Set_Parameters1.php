@@ -9,7 +9,6 @@ require_once '/opt/fmc_repository/Process/Reference/Common/common.php';
  * List all the parameters required by the task
  */
 function list_args() {
-	create_var_def('customer_id', 'Integer');
 	create_var_def('managed_device_name', 'String');
 	create_var_def('device_external_reference', 'String');
 	create_var_def('manufacturer_id', 'Integer');
@@ -22,6 +21,14 @@ function list_args() {
 	create_var_def('snmpCommunity', 'String');
 }
 
+$PROCESSINSTANCEID = $context['PROCESSINSTANCEID'];
+$EXECNUMBER = $context['EXECNUMBER'];
+$TASKID = $context['TASKID'];
+$process_params = array('PROCESSINSTANCEID' => $PROCESSINSTANCEID,
+						'EXECNUMBER' => $EXECNUMBER,
+						'TASKID' => $TASKID);
+
+$context['customer_id'] = $context['UBIQUBEID'];
 
 
 
@@ -42,13 +49,13 @@ if (!isset($context['password'])) {
 	$context['password'] = "ubiqube";
 }
 if (!isset($context['password_admin'])) {
-	$context['password_admin'] = "";
+	$context['password_admin'] = "____";
 }
 if (!isset($context['device_ip_address'])) {
 	$context['device_ip_address'] = "172.20.0.101";
 }
 if (!isset($context['device_external_reference'])) {
-	$context['device_external_reference'] = "";
+	$context['device_external_reference'] = "____";
 }
 if (!isset($context['managementInterface'])) {
 	$context['managementInterface'] = "eth0";
