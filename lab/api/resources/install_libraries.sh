@@ -158,8 +158,8 @@ chown -R ncuser:ncuser /opt/sms/templates/devices/; \
 /opt/ubi-jentreprise/configure >> /var/log/quickstart_install.log  2>&1; 
 service wildfly restart  >> /var/log/quickstart_install.log  2>&1; 
 /opt/ses/configure >> /var/log/quickstart_install.log  2>&1; 
-service tomcat restart >> /var/log/quickstart_install.log  2>&1; 
-/opt/sms/configure >> /var/log/quickstart_install.log  2>&1;
+#service tomcat restart >> /var/log/quickstart_install.log  2>&1; 
+#/opt/sms/configure >> /var/log/quickstart_install.log  2>&1;
 
 service ubi-sms status; 
 service wildfly status; 
