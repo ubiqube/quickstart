@@ -51,10 +51,13 @@ services:
       - "kibana:/opt/kibana/"
 
   ui:
-    image: ubiqube/msa2-ui:222669248a52d7fd78641f460ad8be66ae538137
+    image: ubiqube/msa2-ui:3180468800695bc890edbdec9edcbc8187df3b47
     environment:
       - FEATURE_ADMIN=true
       - FEATURE_LICENCE=true
+      - FEATURE_ALARMS=false
+
+
 
   camunda:
     image: camunda/camunda-bpm-platform:7.12.0
