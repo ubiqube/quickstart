@@ -1,10 +1,8 @@
-FROM ubiqube/msa2:api-2.1.0rc1
+FROM ubiqube/msa2:api-2.1.0rc2
 
 # install some useful things
 RUN git config --global alias.lg "log --graph --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(bold blue)<%an>%C(reset) %C(green)(%ar)%C(reset)' --abbrev-commit --date=relative"; \
     git config --global push.default simple; \
-    git config --global user.email "antoine.brun@ubiqube.com"; \
-    git config --global user.name "Antoine BRUN"; \
     :
 
 RUN	mkdir -p /opt/fmc_repository/Process/; \
@@ -43,28 +41,14 @@ RUN cd /opt/sms/bin/php ; \
     if [ -d /opt/fmc_repository/quickstart ]; then cd quickstart; git pull ; else git clone https://github.com/ubiqube/quickstart.git quickstart; fi ; \
     :
 
-
 # install a trial license
-#COPY resources/deploy-license.sh /opt/ubiqube/
-#RUN chmod +x /opt/ubiqube/deploy-license.sh; \
-#    cd /opt/ubiqube/; \
-#    rm -f  /opt/ubiqube/*.lic  /opt/ubiqube/lic/license; \
-#    wget --timeout=20 -q --no-check-certificate https://repository.ubiqube.com/share/license/MSA2-eval.lic; \
-#    cp -f /opt/ubiqube/MSA2-eval.lic  /opt/ubiqube/lic/license.lic; \
-#    /opt/ubiqube/deploy-license.sh /opt/ubiqube/lic/license.lic /opt/ubiqube/lic/license; \
-#    :
-
-### TODO remove that !!!!!!!
 COPY resources/deploy-license.sh /opt/ubiqube/
-COPY MSA2-eval.lic /opt/ubiqube/lic/license.lic
 RUN chmod +x /opt/ubiqube/deploy-license.sh; \
     cd /opt/ubiqube/; \
     rm -f  /opt/ubiqube/*.lic  /opt/ubiqube/lic/license; \
-#    wget --timeout=20 -q --no-check-certificate https://repository.ubiqube.com/share/license/MSA2-eval.lic; \
-    cp -f /opt/ubiqube/MSA2-eval.lic  /opt/ubiqube/lic/license.lic; \
-    /opt/ubiqube/deploy-license.sh /opt/ubiqube/lic/license.lic /opt/ubiqube/lic/license; \
+    wget --timeout=20 -q --no-check-certificate https://repository.ubiqube.com/share/license/MSA2-eval.lic; \
+    cp -f /opt/ubiqube/MSA2-eval.lic  /opt/ubiqube/lic/license.lic; \#    /opt/ubiqube/deploy-license.sh /opt/ubiqube/lic/license.lic /opt/ubiqube/lic/license; \
     :
-
 
 RUN cd /opt/sms/bin/php ; \
     ### DA ### 
@@ -108,14 +92,9 @@ RUN chown -R ncuser:ncuser /opt/fmc_repository/*; \
     chown -R ncuser:ncuser /opt/fmc_repository/.meta_*; \
     chown -R ncuser:ncuser /opt/sms/bin/php/*; \
     chown -R ncuser:ncuser /opt/sms/templates/devices/; \
-    #chown -R ncuser:ncuser /opt/ubi-jentreprise/resources/templates/conf/device;\
     :
+
 # activate debug mode for SecEngine configuration
 RUN sed -i -e 's/$UBI_VSOC_DEBUG_LEVEL/15/g' /opt/sms/templates/conf/smsd.conf 
-
-# TO DO REMOVE
-#COPY resources/ubi-jentreprise-20.0.0-50.42.el6.x86_64.rpm /root
-
-
 
 CMD [ "/sbin/init" ]
