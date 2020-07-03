@@ -123,5 +123,21 @@ echo "#### Rancher CMP"
 curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/status/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FCreate_ME" \
     -d '{ "managed_device_name": "Rancher CMP",  "model_id": "18081001", "manufacturer_id": "18081001",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",  "device_ip_address": "192.168.1.1",  "login": "msa"}'
 
+echo "#### HP5900"
+curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/status/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FCreate_ME" \
+    -d '{ "managed_device_name": "HP5900",  "model_id": "17071302", "manufacturer_id": "17071301",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",  "device_ip_address": "192.168.1.1",  "login": "msa"}'
+
+echo "#### HP2530"
+curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/status/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FCreate_ME" \
+    -d '{ "managed_device_name": "HP2530",  "model_id": "17071301", "manufacturer_id": "17071301",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",  "device_ip_address": "192.168.1.1",  "login": "msa"}'
+
+echo "#### NEC_IX"
+curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/status/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FCreate_ME" \
+    -d '{ "managed_device_name": "NEC_IX",  "model_id": "18120401", "manufacturer_id": "70000",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",  "device_ip_address": "192.168.1.1",  "login": "msa"}'
+
+echo "#### NEC_NFA"
+curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/status/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FCreate_ME" \
+    -d '{ "managed_device_name": "NEC_NFA",  "model_id": "17111602", "manufacturer_id": "70000",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",  "device_ip_address": "192.168.1.1",  "login": "msa"}'
+
 
 echo
