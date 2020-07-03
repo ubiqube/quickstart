@@ -130,14 +130,16 @@ install_adapter pfsense_fw
 install_adapter checkpoint_r80
 install_adapter rest_generic 
 install_adapter aws_generic  
+install_adapter adva_nc 
+install_adapter f5_bigip 
+install_adapter virtuora_nc 
+install_adapter wsa 
+
 #install_adapter oneaccess_lbb conf_netconf USER_MODE
 #install_adapter oneaccess_lbb conf_generic USER_MODE
 #install_adapter oneaccess_lbb conf_whitebox USER_MODE
 #install_adapter stormshield 
-#install_adapter adva_nc 
-#install_adapter f5_bigip 
 #install_adapter a10_thunder 
-#install_adapter virtuora_nc 
 
 install_microservices;
 install_workflows;
