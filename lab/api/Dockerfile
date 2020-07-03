@@ -45,11 +45,22 @@ RUN cd /opt/sms/bin/php ; \
 
 
 # install a trial license
+#COPY resources/deploy-license.sh /opt/ubiqube/
+#RUN chmod +x /opt/ubiqube/deploy-license.sh; \
+#    cd /opt/ubiqube/; \
+#    rm -f  /opt/ubiqube/*.lic  /opt/ubiqube/lic/license; \
+#    wget --timeout=20 -q --no-check-certificate https://repository.ubiqube.com/share/license/MSA2-eval.lic; \
+#    cp -f /opt/ubiqube/MSA2-eval.lic  /opt/ubiqube/lic/license.lic; \
+#    /opt/ubiqube/deploy-license.sh /opt/ubiqube/lic/license.lic /opt/ubiqube/lic/license; \
+#    :
+
+### TODO remove that !!!!!!!
 COPY resources/deploy-license.sh /opt/ubiqube/
+COPY MSA2-eval.lic /opt/ubiqube/lic/license.lic
 RUN chmod +x /opt/ubiqube/deploy-license.sh; \
     cd /opt/ubiqube/; \
     rm -f  /opt/ubiqube/*.lic  /opt/ubiqube/lic/license; \
-    wget --timeout=20 -q --no-check-certificate https://repository.ubiqube.com/share/license/MSA2-eval.lic; \
+#    wget --timeout=20 -q --no-check-certificate https://repository.ubiqube.com/share/license/MSA2-eval.lic; \
     cp -f /opt/ubiqube/MSA2-eval.lic  /opt/ubiqube/lic/license.lic; \
     /opt/ubiqube/deploy-license.sh /opt/ubiqube/lic/license.lic /opt/ubiqube/lic/license; \
     :
