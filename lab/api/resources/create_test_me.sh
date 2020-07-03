@@ -107,5 +107,9 @@ echo "#### Cisco ISR"
 curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/status/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FCreate_ME" \
     -d '{ "managed_device_name": "Cisco_ISR",  "model_id": "113", "manufacturer_id": "1",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",  "device_ip_address": "192.168.1.1",  "login": "msa"}'
 
+echo "#### Cisco ASA"
+curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/status/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FCreate_ME" \
+    -d '{ "managed_device_name": "Cisco_ASA",  "model_id": "15010202", "manufacturer_id": "1",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",  "device_ip_address": "192.168.1.1",  "login": "msa"}'
+
 
 echo
