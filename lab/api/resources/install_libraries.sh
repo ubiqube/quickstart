@@ -129,7 +129,7 @@ install_adapter linux_generic
 install_adapter pfsense_fw
 install_adapter checkpoint_r80
 install_adapter rest_generic 
-#install_adapter aws_generic  
+install_adapter aws_generic  
 #install_adapter oneaccess_lbb conf_netconf USER_MODE
 #install_adapter oneaccess_lbb conf_generic USER_MODE
 #install_adapter oneaccess_lbb conf_whitebox USER_MODE
