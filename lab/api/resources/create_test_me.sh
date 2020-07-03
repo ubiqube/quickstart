@@ -75,6 +75,10 @@ curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -X
     -d '{ "managed_device_name": "Virtuora_NC",  "model_id": "18100100", "manufacturer_id": "18100100",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",  "device_ip_address": "192.168.1.1",  "login": "msa", }'
 
 
+#### Cisco AWS
+curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FProcess_Setup" \
+    -d '{ "managed_device_name": "Cisco_AWS",  "model_id": "95", "manufacturer_id": "1",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",  "device_ip_address": "192.168.1.1",  "login": "msa", }'
+
 
 
 echo
