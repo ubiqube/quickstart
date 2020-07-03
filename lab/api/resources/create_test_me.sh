@@ -17,6 +17,11 @@ ME_NAME=$3
 
 
 RESPONSE=`curl -s -H 'Content-Type: application/json' -XPOST http://127.0.0.1/ubi-api-rest/auth/token -d '{"username":"ncroot", "password":"ubiqube" }'`
+if [ -z "$RESPONSE" ]
+then
+      echo "Authentication API error"
+      exit 1
+fi
 TOKEN=$(php -r 'echo json_decode($argv[1])->token;' "$RESPONSE")
 
 echo "-------------------------------------------------------"
