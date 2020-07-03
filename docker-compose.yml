@@ -14,7 +14,6 @@ services:
       - ui
       - api
       - camunda
-      - kibana
 
   api:
     build: ./lab/api
@@ -45,11 +44,6 @@ services:
     volumes:
       - "es:/opt/elasticsearch/data/"
 
-  kibana:
-    image: ubiqube/msa2:kibana-20.0
-    volumes:
-      - "kibana:/opt/kibana/"
-
   ui:
     image: ubiqube/msa2-ui:3180468800695bc890edbdec9edcbc8187df3b47
     environment:
@@ -74,7 +68,6 @@ services:
 volumes:
   db:
   es:
-  kibana:
   monitoring:
   change-mgt:
   repo.entities:
