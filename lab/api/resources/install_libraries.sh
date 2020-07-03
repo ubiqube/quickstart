@@ -136,7 +136,7 @@ install_adapter virtuora_nc
 install_adapter wsa 
 install_adapter catalyst_ios 
 install_adapter cisco_apic  
-
+install_adapter cisco_nexus9000
 #install_adapter oneaccess_lbb conf_netconf USER_MODE
 #install_adapter oneaccess_lbb conf_generic USER_MODE
 #install_adapter oneaccess_lbb conf_whitebox USER_MODE
