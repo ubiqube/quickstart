@@ -139,6 +139,8 @@ install_adapter cisco_apic
 install_adapter cisco_nexus9000
 install_adapter cisco_isr
 install_adapter cisco_asa_generic
+install_adapter esa
+install_adapter fortinet_generic
 
 #install_adapter oneaccess_lbb conf_netconf USER_MODE
 #install_adapter oneaccess_lbb conf_generic USER_MODE
