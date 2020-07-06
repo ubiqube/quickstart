@@ -1,7 +1,5 @@
 #!/bin/bash
-set -x
-
-#rpm -Uvh /root/ubi-jentreprise-20.0.0-50.42.el6.x86_64.rpm
+#set -x
 
 update_github_repo() {
 
@@ -20,7 +18,7 @@ update_github_repo() {
         git stash pop;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         ### TODO REMOVE BEFORE PR MERGE
-        git checkout openmsa_lib_packaging;
+        #git checkout openmsa_lib_packaging;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         git pull;
     else 
@@ -63,7 +61,7 @@ update_github_repo() {
         git stash pop;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         ### TODO REMOVE BEFORE PR MERGE
-        git checkout openmsa_lib_packaging;
+        #git checkout openmsa_lib_packaging;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         git pull;
     else 
