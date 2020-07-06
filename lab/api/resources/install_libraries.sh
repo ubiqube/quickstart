@@ -145,11 +145,13 @@ update_github_repo
 #install_adapter hp2530
 #install_adapter nec_ix
 #install_adapter nec_nfa
+#install_adapter oneaccess_lbb 
+#install_adapter oneaccess_whitebox
+#install_adapter oneaccess_netconf
+install_adapter fortigate
+install_adapter fortiwaf
 
 
-install_adapter oneaccess_lbb 
-install_adapter oneaccess_whitebox
-install_adapter oneaccess_netconf
 #install_adapter stormshield 
 #install_adapter a10_thunder 
 
