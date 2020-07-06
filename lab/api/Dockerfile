@@ -94,9 +94,7 @@ COPY resources/create_test_me.sh /usr/bin/
 RUN chmod a+x  /usr/bin/create_mini_lab.sh; \
     chmod a+x  /usr/bin/install_libraries.sh; \
     chmod a+x  /usr/bin/create_test_me.sh; \
-    :
-
-RUN chown -R ncuser:ncuser /opt/fmc_repository/*; \
+    chown -R ncuser:ncuser /opt/fmc_repository/*; \
     chown -R ncuser:ncuser /opt/fmc_repository/.meta_*; \
     chown -R ncuser:ncuser /opt/sms/bin/php/*; \
     chown -R ncuser:ncuser /opt/sms/templates/devices/; \
