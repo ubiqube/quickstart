@@ -60,6 +60,11 @@ echo "--------------------------------------------------"
 CUSTIDONLY=${CUSTID//BLRA}
 
 
+
+echo "### Netconf Generic "
+curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/status/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FCreate_ME" \
+    -d '{  "managed_device_name": "Netconf Generic",  "model_id": "18072500", "manufacturer_id": "18072500",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",    "device_ip_address": "192.168.1.1",  "login": "msa" }'
+
 echo "### PaloAlto VA "
 curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/status/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FCreate_ME" \
     -d '{  "managed_device_name": "PaloAltoVA",  "model_id": "134", "manufacturer_id": "28",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",    "device_ip_address": "192.168.1.1",  "login": "msa" }'

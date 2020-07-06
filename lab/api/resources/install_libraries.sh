@@ -154,6 +154,7 @@ install_adapter paloalto_chassis
 install_adapter paloalto_generic
 install_adapter paloalto_vsys
 
+install_adapter netconf_generic
 
 #install_adapter stormshield 
 #install_adapter a10_thunder 
