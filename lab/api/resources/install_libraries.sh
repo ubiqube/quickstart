@@ -105,6 +105,7 @@ install_microservices () {
     ln -fs ../OpenMSA_MS/ONEACCESS ONEACCESS; ln -fs ../OpenMSA_MS/.meta_ONEACCESS .meta_ONEACCESS; 
     ln -fs ../OpenMSA_MS/PALOALTO PALOALTO; ln -fs ../OpenMSA_MS/.meta_PALOALTO .meta_PALOALTO; 
     ln -fs ../OpenMSA_MS/REST REST; ln -fs ../OpenMSA_MS/.meta_REST .meta_REST; 
+    ln -fs ../OpenMSA_MS/REDFISHAPI REDFISHAPI; ln -fs ../OpenMSA_MS/.meta_REDFISHAPI .meta_REDFISHAPI; 
 }
 
 install_workflows() {
@@ -114,6 +115,9 @@ install_workflows() {
     cd /opt/fmc_repository/Process/; 
     ln -fs ../OpenMSA_WF/Tutorials Tutorials ; 
     ln -fs ../OpenMSA_WF/.meta_Tutorials .meta_Tutorials; 
+
+    ln -fs ../OpenMSA_WF/BIOS_Automation BIOS_Automation
+    ln -fs ../OpenMSA_WF/.meta_BIOS_Automation .meta_BIOS_Automation
 }
 
 update_github_repo
@@ -151,10 +155,9 @@ install_adapter fortiwaf
 install_adapter paloalto_chassis
 install_adapter paloalto_generic
 install_adapter paloalto_vsys
-
 install_adapter netconf_generic
 install_adapter juniper_srx
-
+install_adapter redfish_generic
 #install_adapter stormshield 
 #install_adapter a10_thunder 
 
