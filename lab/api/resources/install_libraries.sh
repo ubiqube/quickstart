@@ -169,7 +169,8 @@ install_workflows;
 echo "-------------------------------------------------------------------------------"
 echo " Removing OneAccess Netconf MS definition with advanced variable types"
 echo "-------------------------------------------------------------------------------"
-rm -rf /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/Advanced /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/.meta_Advanced
+rm -rf /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/Advanced 
+rm -rf /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/.meta_Advanced
 
 chown -R ncuser:ncuser /opt/fmc_repository/*; \
 chown -R ncuser:ncuser /opt/fmc_repository/.meta_*; \
@@ -180,10 +181,10 @@ chown -R ncuser:ncuser /opt/sms/templates/devices/; \
 
 /opt/ubi-jentreprise/configure >> /var/log/quickstart_install.log  2>&1; 
 service wildfly restart  >> /var/log/quickstart_install.log  2>&1; 
-/opt/ses/configure >> /var/log/quickstart_install.log  2>&1; 
+#/opt/ses/configure >> /var/log/quickstart_install.log  2>&1; 
 #service tomcat restart >> /var/log/quickstart_install.log  2>&1; 
 #/opt/sms/configure >> /var/log/quickstart_install.log  2>&1;
-
+sleep 4
 service ubi-sms status; 
 service wildfly status; 
 
