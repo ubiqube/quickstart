@@ -125,31 +125,31 @@ update_github_repo
 
 
 
-install_adapter linux_generic 
-install_adapter pfsense_fw
-install_adapter checkpoint_r80
-install_adapter rest_generic 
-install_adapter aws_generic  
-install_adapter adva_nc 
-install_adapter f5_bigip 
-install_adapter virtuora_nc 
-install_adapter wsa 
-install_adapter catalyst_ios 
-install_adapter cisco_apic  
-install_adapter cisco_nexus9000
-install_adapter cisco_isr
-install_adapter cisco_asa_generic
-install_adapter esa
-install_adapter rancher_cmp
-install_adapter hp5900
-install_adapter hp2530
-install_adapter nec_ix
-install_adapter nec_nfa
+#install_adapter linux_generic 
+#install_adapter pfsense_fw
+#install_adapter checkpoint_r80
+#install_adapter rest_generic 
+#install_adapter aws_generic  
+#install_adapter adva_nc 
+#install_adapter f5_bigip 
+#install_adapter virtuora_nc 
+#install_adapter wsa 
+#install_adapter catalyst_ios 
+#install_adapter cisco_apic  
+#install_adapter cisco_nexus9000
+#install_adapter cisco_isr
+#install_adapter cisco_asa_generic
+#install_adapter esa
+#install_adapter rancher_cmp
+#install_adapter hp5900
+#install_adapter hp2530
+#install_adapter nec_ix
+#install_adapter nec_nfa
 
 
-#install_adapter oneaccess_lbb conf_netconf USER_MODE
-#install_adapter oneaccess_lbb conf_generic USER_MODE
-#install_adapter oneaccess_lbb conf_whitebox USER_MODE
+install_adapter oneaccess_lbb conf_netconf 
+install_adapter oneaccess_lbb conf_generic 
+install_adapter oneaccess_lbb conf_whitebox 
 #install_adapter stormshield 
 #install_adapter a10_thunder 
 
