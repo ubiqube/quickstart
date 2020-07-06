@@ -86,7 +86,7 @@ install_adapter() {
     echo " Install $1 adapter source code from github repo "
     echo "-------------------------------------------------------------------------------"
 
-    bash -x /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1 $2
+    /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1 $2
 
 }
 
