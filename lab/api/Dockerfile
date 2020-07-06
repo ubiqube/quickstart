@@ -65,6 +65,12 @@ RUN cd /opt/sms/bin/php ; \
     if [ -d /opt/fmc_repository/quickstart ]; then cd quickstart; git pull ; else git clone https://github.com/ubiqube/quickstart.git quickstart; fi ; \
     :
 
+RUN cd /opt/ubi-jentreprise/resources/templates/conf/device/; \
+    mkdir -p /opt/ubi-jentreprise/resources/templates/conf/device/custom; \
+    if [ -f models.properties ]; then mv models.properties models.properties.bak; fi; \
+    if [ -f manufacturers.properties ]; then mv manufacturers.properties manufacturers.properties.bak; fi; \
+    :
+
  # install a custom asset script for Linux
 RUN	mkdir -p /opt/sms/bin/php/polld/custom
 COPY resources/opt/sms/bin/php/polld/custom/linux_generic_mgmt.php  /opt/sms/bin/php/polld/custom/
