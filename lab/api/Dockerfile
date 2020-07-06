@@ -65,6 +65,7 @@ RUN cd /opt/sms/bin/php ; \
     if [ -d /opt/fmc_repository/quickstart ]; then cd quickstart; git pull ; else git clone https://github.com/ubiqube/quickstart.git quickstart; fi ; \
     :
 
+# remove all adapter config from code base
 RUN cd /opt/ubi-jentreprise/resources/templates/conf/device/; \
     mkdir -p /opt/ubi-jentreprise/resources/templates/conf/device/custom; \
     if [ -f models.properties ]; then mv models.properties models.properties.bak; fi; \
