@@ -14,6 +14,7 @@ services:
       - ui
       - api
       - camunda
+      - kibana
 
   api:
     build: ./lab/api
@@ -33,7 +34,12 @@ services:
     depends_on:
       - db
       - es
-  
+
+  kibana:
+    image: ubiqube/msa2:kibana-20.0
+    volumes:
+      - "kibana:/opt/kibana/"
+
   db:
     image: ubiqube/msa2:db-20.0
     volumes:
@@ -68,6 +74,7 @@ services:
 volumes:
   db:
   es:
+  kibana:
   monitoring:
   change-mgt:
   repo.entities:
