@@ -59,6 +59,23 @@ echo "CREATE DEMO DEVICES"
 echo "--------------------------------------------------"
 CUSTIDONLY=${CUSTID//BLRA}
 
+
+echo "### PaloAlto VA "
+curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/status/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FCreate_ME" \
+    -d '{  "managed_device_name": "PaloAltoVA",  "model_id": "134", "manufacturer_id": "28",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",    "device_ip_address": "192.168.1.1",  "login": "msa" }'
+
+echo "### PaloAlto Chassis "
+curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/status/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FCreate_ME" \
+    -d '{  "managed_device_name": "PaloAltoChassis,  "model_id": "135", "manufacturer_id": "28",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",    "device_ip_address": "192.168.1.1",  "login": "msa" }'
+
+echo "### PaloAlto Vsys "
+curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/status/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FCreate_ME" \
+    -d '{  "managed_device_name": "PaloAltoVsys,  "model_id": "136", "manufacturer_id": "28",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",    "device_ip_address": "192.168.1.1",  "login": "msa" }'
+
+
+exit 0
+
+
 echo "### Fortigate "
 curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/status/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FCreate_ME" \
     -d '{  "managed_device_name": "Fortigate",  "model_id": "15102617", "manufacturer_id": "17",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",    "device_ip_address": "192.168.1.1",  "login": "msa" }'
@@ -68,7 +85,6 @@ curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -X
     -d '{  "managed_device_name": "Fortiwaf",  "model_id": "15031001", "manufacturer_id": "17",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",    "device_ip_address": "192.168.1.1",  "login": "msa" }'
 
 
-exit 0
 
 echo "### OneAccess Netconf"
 curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/status/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FCreate_ME" \
