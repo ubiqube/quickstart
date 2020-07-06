@@ -24,15 +24,6 @@ check_mandatory_param('model_id');
 check_mandatory_param('login');
 check_mandatory_param('password');
 
-$PROCESSINSTANCEID = $context['PROCESSINSTANCEID'];
-$EXECNUMBER = $context['EXECNUMBER'];
-$TASKID = $context['TASKID'];
-$process_params = array('PROCESSINSTANCEID' => $PROCESSINSTANCEID,
-						'EXECNUMBER' => $EXECNUMBER,
-						'TASKID' => $TASKID);
-
-$context['customer_id'] = $context['UBIQUBEID'];
-
 
 // MSA device creation parameters
 $customer_id = $context['customer_id'];

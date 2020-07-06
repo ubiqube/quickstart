@@ -1,10 +1,8 @@
-FROM ubiqube/msa2:api-2.1.0rc1
+FROM ubiqube/msa2:api-2.1.0rc2
 
 # install some useful things
 RUN git config --global alias.lg "log --graph --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(bold blue)<%an>%C(reset) %C(green)(%ar)%C(reset)' --abbrev-commit --date=relative"; \
     git config --global push.default simple; \
-    git config --global user.email "msa2-trial@ubiqube.com"; \
-    git config --global user.name "msa2-trial"; \
     :
 
 RUN	mkdir -p /opt/fmc_repository/Process/; \
@@ -29,51 +27,50 @@ RUN cd /opt/fmc_repository/Process/; \
     mv /opt/fmc_repository/CommandDefinition/.meta_Reference /opt/fmc_repository/.meta_MS_Reference.bck; \
     :
 
+RUN cd /opt/sms/bin/php ; \
+    ### DA ### 
+    if [ -d OpenMSA_Adapters ]; then cd OpenMSA_Adapters; git pull; else git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters; fi; \
+  	### MS ###
+    cd /opt/fmc_repository ; \
+    if [ -d OpenMSA_MS ]; then  cd OpenMSA_MS; git pull; else git clone https://github.com/openmsa/Microservices.git OpenMSA_MS; fi; \
+    ### WF ###
+    cd /opt/fmc_repository ; \
+    if [ -d OpenMSA_WF ]; then cd OpenMSA_WF;  git pull ; else  git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; fi ; \
+    ### Quickstart ###
+    cd /opt/fmc_repository ; \
+    if [ -d /opt/fmc_repository/quickstart ]; then cd quickstart; git pull ; else git clone https://github.com/ubiqube/quickstart.git quickstart; fi ; \
+    :
+
 # install a trial license
 COPY resources/deploy-license.sh /opt/ubiqube/
 RUN chmod +x /opt/ubiqube/deploy-license.sh; \
     cd /opt/ubiqube/; \
     rm -f  /opt/ubiqube/*.lic  /opt/ubiqube/lic/license; \
-    wget -q --no-check-certificate https://repository.ubiqube.com/share/license/MSA2-eval.lic; \
+    wget --timeout=20 -q --no-check-certificate https://repository.ubiqube.com/share/license/MSA2-eval.lic; \
     cp -f /opt/ubiqube/MSA2-eval.lic  /opt/ubiqube/lic/license.lic; \
     /opt/ubiqube/deploy-license.sh /opt/ubiqube/lic/license.lic /opt/ubiqube/lic/license; \
     :
 
-
-# install the github repositories
 RUN cd /opt/sms/bin/php ; \
- 	### DA ###
-    git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters; \
-    cd OpenMSA_Adapters; \
-    git checkout -b local_dev_branch_do_not_push; \
+    ### DA ### 
+    if [ -d OpenMSA_Adapters ]; then cd OpenMSA_Adapters; git pull; else git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters; fi; \
   	### MS ###
     cd /opt/fmc_repository ; \
-    git clone https://github.com/openmsa/Microservices.git OpenMSA_MS; \
-    cd OpenMSA_MS; \
-    git checkout -b local_dev_branch_do_not_push; \
- 	### WF ###
+    if [ -d OpenMSA_MS ]; then  cd OpenMSA_MS; git pull; else git clone https://github.com/openmsa/Microservices.git OpenMSA_MS; fi; \
+    ### WF ###
     cd /opt/fmc_repository ; \
-    git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; \
-    cd OpenMSA_WF; \
- 	### Quickstart ###
-    cd /opt/fmc_repository/; \
-    git clone -v https://github.com/ubiqube/quickstart.git quickstart; \
-    cd quickstart; \
-    git checkout -b local_dev_branch_do_not_push; \
+    if [ -d OpenMSA_WF ]; then cd OpenMSA_WF;  git pull ; else  git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; fi ; \
+    ### Quickstart ###
+    cd /opt/fmc_repository ; \
+    if [ -d /opt/fmc_repository/quickstart ]; then cd quickstart; git pull ; else git clone https://github.com/ubiqube/quickstart.git quickstart; fi ; \
     :
 
-
- # tweak adapter config to use the file from github.com/openmsa/conf
+# remove all adapter config from code base
 RUN cd /opt/ubi-jentreprise/resources/templates/conf/device/; \
     mkdir -p /opt/ubi-jentreprise/resources/templates/conf/device/custom; \
-    if [ -f ./custom/models.properties ]; then mv ./custom/models.properties ./custom/models.properties.bak; fi; \
-    if [ -f ./custom/manufacturers.properties ]; then mv ./custom/manufacturers.properties ./custom/manufacturers.properties.bak; fi; \
-    cp /opt/sms/bin/php/OpenMSA_Adapters/conf/models.properties /opt/ubi-jentreprise/resources/templates/conf/device/custom/; \
-    cp /opt/sms/bin/php/OpenMSA_Adapters/conf/manufacturers.properties /opt/ubi-jentreprise/resources/templates/conf/device/custom/; \
-    cd /opt/ses/properties/specifics/server_ALL/; \
-    if [ -f sdExtendedInfo.properties ]; then mv sdExtendedInfo.properties sdExtendedInfo.properties.bak; fi; \
-    cp /opt/sms/bin/php/OpenMSA_Adapters/conf/sdExtendedInfo.properties .;
-   
+    if [ -f models.properties ]; then mv models.properties models.properties.bak; fi; \
+    if [ -f manufacturers.properties ]; then mv manufacturers.properties manufacturers.properties.bak; fi; \
+    :
 
  # install a custom asset script for Linux
 RUN	mkdir -p /opt/sms/bin/php/polld/custom
@@ -83,19 +80,28 @@ COPY resources/opt/sms/bin/php/polld/custom/linux_generic_mgmt.php  /opt/sms/bin
 RUN	cd /opt/fmc_repository/Process/; \
     ln -fs ../quickstart/lab/api/repository/Process/BLR/SelfDemoSetup SelfDemoSetup; \
     ln -fs ../quickstart/lab/api/repository/Process/BLR/.meta_SelfDemoSetup .meta_SelfDemoSetup; \
-    :    
+    cd /opt/fmc_repository/Process/; \
+    ln -fs ../OpenMSA_WF/Tutorials Tutorials; \
+    ln -fs ../OpenMSA_WF/.meta_Tutorials .meta_Tutorials; \
+    cd /opt/fmc_repository/CommandDefinition/; \
+    ln -fs ../OpenMSA_MS/LINUX LINUX; ln -fs ../OpenMSA_MS/.meta_LINUX .meta_LINUX; \
+    :
+
 COPY resources/create_mini_lab.sh /usr/bin/
 COPY resources/install_libraries.sh /usr/bin/
+COPY resources/create_test_me.sh /usr/bin/
+
 RUN chmod a+x  /usr/bin/create_mini_lab.sh; \
     chmod a+x  /usr/bin/install_libraries.sh; \
+    chmod a+x  /usr/bin/create_test_me.sh; \
     :
 
 RUN chown -R ncuser:ncuser /opt/fmc_repository/*; \
     chown -R ncuser:ncuser /opt/fmc_repository/.meta_*; \
     chown -R ncuser:ncuser /opt/sms/bin/php/*; \
     chown -R ncuser:ncuser /opt/sms/templates/devices/; \
-    chown -R ncuser:ncuser /opt/ubi-jentreprise/resources/templates/conf/device;\
     :
+
 # activate debug mode for SecEngine configuration
 RUN sed -i -e 's/$UBI_VSOC_DEBUG_LEVEL/15/g' /opt/sms/templates/conf/smsd.conf 
 
