@@ -135,6 +135,7 @@ install_adapter catalyst_ios
 install_adapter cisco_apic  
 install_adapter cisco_nexus9000
 install_adapter cisco_isr
+install_adapter cisco_asr
 install_adapter cisco_asa_generic
 install_adapter esa
 install_adapter wsa 
