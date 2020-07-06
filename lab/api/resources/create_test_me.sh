@@ -59,6 +59,17 @@ echo "CREATE DEMO DEVICES"
 echo "--------------------------------------------------"
 CUSTIDONLY=${CUSTID//BLRA}
 
+echo "### Fortigate "
+curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/status/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FCreate_ME" \
+    -d '{  "managed_device_name": "OneFortigateAccess_Netconf",  "model_id": "15102617", "manufacturer_id": "17",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",    "device_ip_address": "192.168.1.1",  "login": "msa" }'
+
+echo "### Fortiwaf"
+curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/status/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FCreate_ME" \
+    -d '{  "managed_device_name": "Fortiwaf",  "model_id": "15031001", "manufacturer_id": "17",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",    "device_ip_address": "192.168.1.1",  "login": "msa" }'
+
+
+exit 0
+
 echo "### OneAccess Netconf"
 curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/status/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FCreate_ME" \
     -d '{  "managed_device_name": "OneAccess_Netconf",  "model_id": "16010411", "manufacturer_id": "25",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",    "device_ip_address": "192.168.1.1",  "login": "msa" }'
@@ -72,7 +83,6 @@ curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -X
     -d '{  "managed_device_name": "OneAccess_Netconf",  "model_id": "110", "manufacturer_id": "25",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",    "device_ip_address": "192.168.1.1",  "login": "msa" }'
 
 
-exit 0
 
 echo "### pfSense"
 curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://127.0.0.1/ubi-api-rest/orchestration/service/execute/status/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FCreate_ME" \
