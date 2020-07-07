@@ -56,6 +56,7 @@ services:
     environment:
       - FEATURE_ADMIN=true
       - FEATURE_LICENCE=true
+      - FEATURE_ALARMS=false
 
   camunda:
     image: camunda/camunda-bpm-platform:7.12.0
