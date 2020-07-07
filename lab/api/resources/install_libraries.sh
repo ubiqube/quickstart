@@ -116,9 +116,6 @@ install_workflows() {
     echo " Install some WF from OpenMSA github repo"
     echo "-------------------------------------------------------------------------------"
     cd /opt/fmc_repository/Process/; 
-    ln -fs ../OpenMSA_WF/Tutorials Tutorials ; 
-    ln -fs ../OpenMSA_WF/.meta_Tutorials .meta_Tutorials; 
-
     ln -fs ../OpenMSA_WF/BIOS_Automation BIOS_Automation
     ln -fs ../OpenMSA_WF/.meta_BIOS_Automation .meta_BIOS_Automation
     echo "DONE"
