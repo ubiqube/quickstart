@@ -87,6 +87,7 @@ install_adapter() {
     echo "-------------------------------------------------------------------------------"
 
     /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1 $2
+    echo "DONE"
 
 }
 
@@ -106,6 +107,8 @@ install_microservices () {
     ln -fs ../OpenMSA_MS/PALOALTO PALOALTO; ln -fs ../OpenMSA_MS/.meta_PALOALTO .meta_PALOALTO; 
     ln -fs ../OpenMSA_MS/REST REST; ln -fs ../OpenMSA_MS/.meta_REST .meta_REST; 
     ln -fs ../OpenMSA_MS/REDFISHAPI REDFISHAPI; ln -fs ../OpenMSA_MS/.meta_REDFISHAPI .meta_REDFISHAPI; 
+    echo "DONE"
+
 }
 
 install_workflows() {
@@ -118,6 +121,8 @@ install_workflows() {
 
     ln -fs ../OpenMSA_WF/BIOS_Automation BIOS_Automation
     ln -fs ../OpenMSA_WF/.meta_BIOS_Automation .meta_BIOS_Automation
+    echo "DONE"
+
 }
 
 update_github_repo
@@ -171,14 +176,21 @@ echo " Removing OneAccess Netconf MS definition with advanced variable types"
 echo "-------------------------------------------------------------------------------"
 rm -rf /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/Advanced 
 rm -rf /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/.meta_Advanced
+echo "DONE"
 
+echo "-------------------------------------------------------------------------------"
+echo " update file ownwer to ncuser.ncuser"
+echo "-------------------------------------------------------------------------------"
 chown -R ncuser:ncuser /opt/fmc_repository/*; \
 chown -R ncuser:ncuser /opt/fmc_repository/.meta_*; \
 chown -R ncuser:ncuser /opt/sms/bin/php/*; \
 chown -R ncuser:ncuser /opt/sms/templates/devices/; \
 #chown -R ncuser:ncuser /opt/ubi-jentreprise/resources/templates/conf/device;\
- 
+echo "DONE"
 
+echo "-------------------------------------------------------------------------------"
+echo " service restart"
+echo "-------------------------------------------------------------------------------"
 /opt/ubi-jentreprise/configure >> /var/log/quickstart_install.log  2>&1; 
 service wildfly restart  >> /var/log/quickstart_install.log  2>&1; 
 #/opt/ses/configure >> /var/log/quickstart_install.log  2>&1; 
@@ -187,4 +199,5 @@ service wildfly restart  >> /var/log/quickstart_install.log  2>&1;
 sleep 4
 service ubi-sms status; 
 service wildfly status; 
+echo "DONE"
 
