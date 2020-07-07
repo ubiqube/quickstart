@@ -18,7 +18,7 @@ update_github_repo() {
         git stash pop;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         ### TODO REMOVE BEFORE PR MERGE
-        git checkout config_remaining_adapters;
+        #git checkout config_remaining_adapters;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         git pull;
     else 
@@ -61,7 +61,7 @@ update_github_repo() {
         git stash pop;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         ### TODO REMOVE BEFORE PR MERGE
-        git checkout config_remaining_adapters;
+        #git checkout config_remaining_adapters;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         git pull;
     else 
