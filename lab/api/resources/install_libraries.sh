@@ -18,7 +18,7 @@ update_github_repo() {
         git stash pop;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         ### TODO REMOVE BEFORE PR MERGE
-        #git checkout openmsa_lib_packaging;
+        git checkout config_remaining_adapters;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         git pull;
     else 
@@ -61,7 +61,7 @@ update_github_repo() {
         git stash pop;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         ### TODO REMOVE BEFORE PR MERGE
-        #git checkout openmsa_lib_packaging;
+        git checkout config_remaining_adapters;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         git pull;
     else 
@@ -158,12 +158,22 @@ install_adapter oneaccess_whitebox
 install_adapter oneaccess_netconf
 install_adapter fortigate
 install_adapter fortiwaf
+install_adapter fortinet_fortimanager
+install_adapter fortinet_fortianalyzer
+install_adapter fortinet_jsonapi
 install_adapter paloalto_chassis
 install_adapter paloalto_generic
 install_adapter paloalto_vsys
 install_adapter netconf_generic
 install_adapter juniper_srx
 install_adapter redfish_generic
+install_adapter veex_rtu
+install_adapter vmware_vsphere
+install_adapter mon_cisco_ios
+install_adapter mon_cisco_asa
+install_adapter mon_generic
+install_adapter mon_checkpoint_fw
+install_adapter mon_fortinet_fortigate
 #install_adapter stormshield 
 #install_adapter a10_thunder 
 
@@ -179,7 +189,7 @@ rm -rf /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/.meta_Advanced
 echo "DONE"
 
 echo "-------------------------------------------------------------------------------"
-echo " update file ownwer to ncuser.ncuser"
+echo " update file owner to ncuser.ncuser"
 echo "-------------------------------------------------------------------------------"
 chown -R ncuser:ncuser /opt/fmc_repository/*; \
 chown -R ncuser:ncuser /opt/fmc_repository/.meta_*; \
