@@ -82,14 +82,15 @@ COPY resources/opt/sms/bin/php/polld/custom/linux_generic_mgmt.php  /opt/sms/bin
 RUN	cd /opt/fmc_repository/Process/; \
     ln -fs ../quickstart/lab/api/repository/Process/BLR/SelfDemoSetup SelfDemoSetup; \
     ln -fs ../quickstart/lab/api/repository/Process/BLR/.meta_SelfDemoSetup .meta_SelfDemoSetup; \
-    cd /opt/fmc_repository/Process/; \
     ln -fs ../OpenMSA_WF/Tutorials Tutorials; \
     ln -fs ../OpenMSA_WF/.meta_Tutorials .meta_Tutorials; \
     cd /opt/fmc_repository/CommandDefinition/; \
     ln -fs ../OpenMSA_MS/LINUX LINUX; ln -fs ../OpenMSA_MS/.meta_LINUX .meta_LINUX; \
     :
 
-COPY resources/create_test_me.sh resources/create_mini_lab.sh resources/install_libraries.sh /usr/bin/
+COPY resources/create_test_me.sh /usr/bin/
+COPY resources/create_mini_lab.sh /usr/bin/
+COPY resources/install_libraries.sh /usr/bin/
 
 RUN chmod a+x  /usr/bin/create_mini_lab.sh; \
     chmod a+x  /usr/bin/install_libraries.sh; \
