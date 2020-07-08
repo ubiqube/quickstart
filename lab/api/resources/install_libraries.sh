@@ -50,6 +50,18 @@ update_github_repo() {
         cd OpenMSA_MS; 
     fi ; 
     cd -; 
+    ### Etsi-Mano ###
+    echo " https://github.com/openmsa/etsi-mano.git "
+    cd /opt/fmc_repository ; 
+    if [ -d OpenMSA_MANO ]; 
+    then 
+        cd OpenMSA_MANO; 
+        git pull; 
+    else 
+        git clone https://github.com/openmsa/etsi-mano.git OpenMSA_MANO; 
+        cd OpenMSA_MANO; 
+    fi ; 
+    cd -; 
     echo " Install the quickstart from https://github.com/ubiqube/quickstart.git"
     cd /opt/fmc_repository ; 
     if [ -d /opt/fmc_repository/quickstart ]; 
@@ -116,6 +128,7 @@ install_workflows() {
     echo " Install some WF from OpenMSA github repo"
     echo "-------------------------------------------------------------------------------"
     cd /opt/fmc_repository/Process/; 
+    echo ">> BIOS_Automation"
     ln -fs ../OpenMSA_WF/BIOS_Automation BIOS_Automation
     ln -fs ../OpenMSA_WF/.meta_BIOS_Automation .meta_BIOS_Automation
     echo "DONE"
@@ -139,9 +152,9 @@ install_adapter f5_bigip
 install_adapter virtuora_nc 
 install_adapter catalyst_ios 
 install_adapter cisco_apic  
-install_adapter cisco_nexus9000
+#install_adapter cisco_nexus9000
 install_adapter cisco_isr
-install_adapter cisco_asr
+#install_adapter cisco_asr
 install_adapter cisco_asa_generic
 install_adapter esa
 install_adapter wsa 
