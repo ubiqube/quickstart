@@ -163,6 +163,7 @@ install_adapter paloalto_generic
 install_adapter paloalto_vsys
 install_adapter netconf_generic
 install_adapter juniper_srx
+install_adapter juniper_contrail
 install_adapter redfish_generic
 install_adapter veex_rtu
 install_adapter vmware_vsphere
@@ -174,7 +175,7 @@ install_adapter mon_fortinet_fortigate
 
 install_adapter kubernetes_generic
 install_adapter nfvo_generic
-install_adapter vnfm_generic
+install_adapter vnfm_generic    
 
 #install_adapter stormshield 
 #install_adapter a10_thunder 
