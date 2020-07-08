@@ -128,6 +128,10 @@ install_microservices () {
     ln -fs ../OpenMSA_MS/REST REST; ln -fs ../OpenMSA_MS/.meta_REST .meta_REST; 
     echo "  >> REDFISHAPI"
     ln -fs ../OpenMSA_MS/REDFISHAPI REDFISHAPI; ln -fs ../OpenMSA_MS/.meta_REDFISHAPI .meta_REDFISHAPI; 
+    echo "  >> ETSI-MANO"
+    ln -fs ../OpenMSA_MS/NFVO NFVO;  ln -fs ../OpenMSA_MS/.meta_NFVO .meta_NFVO
+    ln -fs ../OpenMSA_MS/VNFM VNFM; ln -fs ../OpenMSA_MS/.meta_VNFM .meta_VNFM
+    ln -fs ../OpenMSA_MS/KUBERNETES KUBERNETES; ln -fs ../OpenMSA_MS/.meta_KUBERNETES .meta_KUBERNETES
     echo "DONE"
 
 }
@@ -148,12 +152,7 @@ install_workflows() {
 }
 
 update_github_repo
-
 #uninstall_adapter netasq
-
-
-
-
 install_adapter linux_generic 
 install_adapter pfsense_fw
 install_adapter checkpoint_r80
