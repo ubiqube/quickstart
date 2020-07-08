@@ -155,9 +155,9 @@ install_adapter oneaccess_whitebox
 install_adapter oneaccess_netconf
 install_adapter fortigate
 install_adapter fortiwaf
-install_adapter fortinet_fortimanager
-install_adapter fortinet_fortianalyzer
-install_adapter fortinet_jsonapi
+#install_adapter fortinet_fortimanager
+#install_adapter fortinet_fortianalyzer
+#install_adapter fortinet_jsonapi
 install_adapter paloalto_chassis
 install_adapter paloalto_generic
 install_adapter paloalto_vsys
