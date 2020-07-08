@@ -162,8 +162,8 @@ install_adapter paloalto_chassis
 install_adapter paloalto_generic
 install_adapter paloalto_vsys
 install_adapter netconf_generic
-install_adapter juniper_srx
-install_adapter juniper_contrail
+#install_adapter juniper_srx
+#install_adapter juniper_contrail
 install_adapter redfish_generic
 install_adapter veex_rtu
 install_adapter vmware_vsphere
