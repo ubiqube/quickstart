@@ -109,15 +109,25 @@ install_microservices () {
     echo " Install some MS from OpenMSA github repo"
     echo "-------------------------------------------------------------------------------"
     cd /opt/fmc_repository/CommandDefinition/; 
+    echo "  >> ADVA"
     ln -fs ../OpenMSA_MS/ADVA ADVA; ln -fs ../OpenMSA_MS/.meta_ADVA .meta_ADVA; 
+    echo "  >> AWS"
     ln -fs ../OpenMSA_MS/AWS AWS; ln -fs ../OpenMSA_MS/.meta_AWS .meta_AWS; 
+    echo "  >> CISCO"
     ln -fs ../OpenMSA_MS/CISCO CISCO; ln -fs ../OpenMSA_MS/.meta_CISCO .meta_CISCO; 
+    echo "  >> FORTINET"
     ln -fs ../OpenMSA_MS/FORTINET FORTINET; ln -fs ../OpenMSA_MS/.meta_FORTINET .meta_FORTINET; 
+    echo "  >> LINUX"
     ln -fs ../OpenMSA_MS/LINUX LINUX; ln -fs ../OpenMSA_MS/.meta_LINUX .meta_LINUX; 
+    echo "  >> OPENSTACK"
     ln -fs ../OpenMSA_MS/OPENSTACK OPENSTACK; ln -fs ../OpenMSA_MS/.meta_OPENSTACK .meta_OPENSTACK; 
+    echo "  >> ONEACCESS"
     ln -fs ../OpenMSA_MS/ONEACCESS ONEACCESS; ln -fs ../OpenMSA_MS/.meta_ONEACCESS .meta_ONEACCESS; 
+    echo "  >> PALOALTO"
     ln -fs ../OpenMSA_MS/PALOALTO PALOALTO; ln -fs ../OpenMSA_MS/.meta_PALOALTO .meta_PALOALTO; 
+    echo "  >> REST"
     ln -fs ../OpenMSA_MS/REST REST; ln -fs ../OpenMSA_MS/.meta_REST .meta_REST; 
+    echo "  >> REDFISHAPI"
     ln -fs ../OpenMSA_MS/REDFISHAPI REDFISHAPI; ln -fs ../OpenMSA_MS/.meta_REDFISHAPI .meta_REDFISHAPI; 
     echo "DONE"
 
@@ -128,9 +138,12 @@ install_workflows() {
     echo " Install some WF from OpenMSA github repo"
     echo "-------------------------------------------------------------------------------"
     cd /opt/fmc_repository/Process/; 
-    echo ">> BIOS_Automation"
+    echo "  >> BIOS_Automation"
     ln -fs ../OpenMSA_WF/BIOS_Automation BIOS_Automation
     ln -fs ../OpenMSA_WF/.meta_BIOS_Automation .meta_BIOS_Automation
+    echo "  >> ETSI-MANO"
+    ln -fs ../OpenMSA_MANO/WORKFLOWS/ETSI-MANO ETSI-MANO
+    ln -fs ../OpenMSA_MANO/WORKFLOWS/.meta_ETSI-MANO .meta_ETSI-MANO
     echo "DONE"
 
 }
