@@ -7,8 +7,7 @@ update_github_repo() {
     echo " Update the github repositories "
     echo "-------------------------------------------------------------------------------"
     cd /opt/sms/bin/php ; 
-    echo " https://github.com/openmsa/Adapters.git "
-    ### DA ###
+    echo "  >> https://github.com/openmsa/Adapters.git "
     if [ -d OpenMSA_Adapters ]; 
     then 
         cd OpenMSA_Adapters; 
@@ -27,7 +26,7 @@ update_github_repo() {
     fi ;
     cd -; 
         ### MS ###
-    echo " https://github.com/openmsa/Microservices.git "
+    echo "  >> https://github.com/openmsa/Microservices.git "
     cd /opt/fmc_repository ; 
     if [ -d OpenMSA_MS ]; 
     then  
@@ -39,7 +38,7 @@ update_github_repo() {
     fi;
     cd -; 
     ### WF ###
-    echo " https://github.com/openmsa/Workflows.git "
+    echo "  >> https://github.com/openmsa/Workflows.git "
     cd /opt/fmc_repository ; 
     if [ -d OpenMSA_WF ]; 
     then 
@@ -51,7 +50,7 @@ update_github_repo() {
     fi ; 
     cd -; 
     ### Etsi-Mano ###
-    echo " https://github.com/openmsa/etsi-mano.git "
+    echo "  >> https://github.com/openmsa/etsi-mano.git "
     cd /opt/fmc_repository ; 
     if [ -d OpenMSA_MANO ]; 
     then 
@@ -62,7 +61,7 @@ update_github_repo() {
         cd OpenMSA_MANO; 
     fi ; 
     cd -; 
-    echo " Install the quickstart from https://github.com/ubiqube/quickstart.git"
+    echo "  >> Install the quickstart from https://github.com/ubiqube/quickstart.git"
     cd /opt/fmc_repository ; 
     if [ -d /opt/fmc_repository/quickstart ]; 
     then 
