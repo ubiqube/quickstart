@@ -132,6 +132,9 @@ install_microservices () {
     ln -fs ../OpenMSA_MS/NFVO NFVO;  ln -fs ../OpenMSA_MS/.meta_NFVO .meta_NFVO
     ln -fs ../OpenMSA_MS/VNFM VNFM; ln -fs ../OpenMSA_MS/.meta_VNFM .meta_VNFM
     ln -fs ../OpenMSA_MS/KUBERNETES KUBERNETES; ln -fs ../OpenMSA_MS/.meta_KUBERNETES .meta_KUBERNETES
+    echo "  >> ANSIBLE"
+    ln -fs ../OpenMSA_MS/ANSIBLE ANSIBLE; ln -fs ../OpenMSA_MS/.meta_ANSIBLE .meta_ANSIBLE; 
+ 
     echo "DONE"
 
 }
@@ -147,6 +150,9 @@ install_workflows() {
     echo "  >> ETSI-MANO"
     ln -fs ../OpenMSA_MANO/WORKFLOWS/ETSI-MANO ETSI-MANO
     ln -fs ../OpenMSA_MANO/WORKFLOWS/.meta_ETSI-MANO .meta_ETSI-MANO
+    echo "  >> Private Cloud - Openstack"
+    ln -fs ../OpenMSA_WF/Private_Cloud Private_Cloud
+    ln -fs ../OpenMSA_WF/.meta_Private_Cloud .meta_Private_Cloud
     echo "DONE"
 
 }
@@ -178,7 +184,7 @@ install_adapter oneaccess_lbb
 install_adapter oneaccess_whitebox
 install_adapter oneaccess_netconf
 install_adapter fortigate
-install_adapter fortiwaf
+install_adapter fortiweb
 #install_adapter fortinet_fortimanager
 #install_adapter fortinet_fortianalyzer
 #install_adapter fortinet_jsonapi
