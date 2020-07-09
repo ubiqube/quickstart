@@ -4,7 +4,7 @@ require_once '/opt/fmc_repository/Process/Reference/Common/common.php';
 //require_once '/opt/fmc_repository/Process/BLR/SelfDemoSetup/Process_Setup/Tasks/device_rest.php';
 
 function list_args() {
-	create_var_def('customer_id', 'Integer');
+	create_var_def('customer_id', 'String');
 	create_var_def('managed_device_name', 'String');
 	create_var_def('device_external_reference', 'String');
 	create_var_def('manufacturer_id', 'Integer');
