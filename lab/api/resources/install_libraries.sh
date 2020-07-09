@@ -202,10 +202,11 @@ install_adapter mon_cisco_asa
 install_adapter mon_generic
 install_adapter mon_checkpoint_fw
 install_adapter mon_fortinet_fortigate
-
 install_adapter kubernetes_generic
 install_adapter nfvo_generic
 install_adapter vnfm_generic    
+install_adapter huawei_generic
+install_adapter citrix_adc
 
 #install_adapter stormshield 
 #install_adapter a10_thunder 
