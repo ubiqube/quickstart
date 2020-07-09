@@ -110,12 +110,23 @@ install_microservices () {
     cd /opt/fmc_repository/CommandDefinition/; 
     echo "  >> ADVA"
     ln -fs ../OpenMSA_MS/ADVA ADVA; ln -fs ../OpenMSA_MS/.meta_ADVA .meta_ADVA; 
+    echo "  >> ANSIBLE"
+    ln -fs ../OpenMSA_MS/ANSIBLE ANSIBLE; ln -fs ../OpenMSA_MS/.meta_ANSIBLE .meta_ANSIBLE; 
     echo "  >> AWS"
     ln -fs ../OpenMSA_MS/AWS AWS; ln -fs ../OpenMSA_MS/.meta_AWS .meta_AWS; 
+    echo "  >> CHECKPOINT"
+    ln -fs ../OpenMSA_MS/CHECKPOINT CHECKPOINT; ln -fs ../OpenMSA_MS/.meta_CHECKPOINT .meta_CHECKPOINT; 
     echo "  >> CISCO"
     ln -fs ../OpenMSA_MS/CISCO CISCO; ln -fs ../OpenMSA_MS/.meta_CISCO .meta_CISCO; 
+    echo "  >> CITRIX"
+    ln -fs ../OpenMSA_MS/CITRIX CITRIX; ln -fs ../OpenMSA_MS/.meta_CITRIX .meta_CITRIX; 
+    echo "  >> FLEXIWAN"
+    ln -fs ../OpenMSA_MS/FLEXIWAN FLEXIWAN; ln -fs ../OpenMSA_MS/.meta_FLEXIWAN .meta_FLEXIWAN; 
     echo "  >> FORTINET"
     ln -fs ../OpenMSA_MS/FORTINET FORTINET; ln -fs ../OpenMSA_MS/.meta_FORTINET .meta_FORTINET; 
+    echo "  >> JUNIPER"
+    ln -fs ../OpenMSA_MS/JUNIPER JUNIPER; ln -fs ../OpenMSA_MS/.meta_JUNIPER .meta_JUNIPER;
+    rm -rf  JUNIPER/SSG
     echo "  >> LINUX"
     ln -fs ../OpenMSA_MS/LINUX LINUX; ln -fs ../OpenMSA_MS/.meta_LINUX .meta_LINUX; 
     echo "  >> OPENSTACK"
@@ -124,16 +135,16 @@ install_microservices () {
     ln -fs ../OpenMSA_MS/ONEACCESS ONEACCESS; ln -fs ../OpenMSA_MS/.meta_ONEACCESS .meta_ONEACCESS; 
     echo "  >> PALOALTO"
     ln -fs ../OpenMSA_MS/PALOALTO PALOALTO; ln -fs ../OpenMSA_MS/.meta_PALOALTO .meta_PALOALTO; 
-    echo "  >> REST"
-    ln -fs ../OpenMSA_MS/REST REST; ln -fs ../OpenMSA_MS/.meta_REST .meta_REST; 
+    echo "  >> PFSENSE"
+    ln -fs ../OpenMSA_MS/PFSENSE PFSENSE; ln -fs ../OpenMSA_MS/.meta_PFSENSE .meta_PFSENSE; 
     echo "  >> REDFISHAPI"
     ln -fs ../OpenMSA_MS/REDFISHAPI REDFISHAPI; ln -fs ../OpenMSA_MS/.meta_REDFISHAPI .meta_REDFISHAPI; 
+    echo "  >> REST"
+    ln -fs ../OpenMSA_MS/REST REST; ln -fs ../OpenMSA_MS/.meta_REST .meta_REST; 
     echo "  >> ETSI-MANO"
     ln -fs ../OpenMSA_MS/NFVO NFVO;  ln -fs ../OpenMSA_MS/.meta_NFVO .meta_NFVO
     ln -fs ../OpenMSA_MS/VNFM VNFM; ln -fs ../OpenMSA_MS/.meta_VNFM .meta_VNFM
     ln -fs ../OpenMSA_MS/KUBERNETES KUBERNETES; ln -fs ../OpenMSA_MS/.meta_KUBERNETES .meta_KUBERNETES
-    echo "  >> ANSIBLE"
-    ln -fs ../OpenMSA_MS/ANSIBLE ANSIBLE; ln -fs ../OpenMSA_MS/.meta_ANSIBLE .meta_ANSIBLE; 
  
     echo "DONE"
 
