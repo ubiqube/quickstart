@@ -54,8 +54,8 @@ RUN chmod +x /opt/ubiqube/deploy-license.sh; \
 # remove all adapter config from code base
 RUN cd /opt/ubi-jentreprise/resources/templates/conf/device/; \
     mkdir -p /opt/ubi-jentreprise/resources/templates/conf/device/custom; \
-    if [ -f models.properties ]; then mv models.properties models.properties.bak; fi; \
-    if [ -f manufacturers.properties ]; then mv manufacturers.properties manufacturers.properties.bak; fi; \
+    if [ -f models.properties ]; then rm -f  models.properties; fi; \
+    if [ -f manufacturers.properties ]; then rm -f manufacturers.properties; fi; \
     :
 
  # install a custom asset script for Linux
