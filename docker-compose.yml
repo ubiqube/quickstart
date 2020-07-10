@@ -52,7 +52,7 @@ services:
       - "es:/opt/elasticsearch/data/"
 
   ui:
-    image: ubiqube/msa2-ui:3180468800695bc890edbdec9edcbc8187df3b47
+    image: ubiqube/msa2-ui:dbdcfc3add4745759acf0f40e247e00fa84ffb6b
     environment:
       - FEATURE_ADMIN=true
       - FEATURE_LICENCE=true
