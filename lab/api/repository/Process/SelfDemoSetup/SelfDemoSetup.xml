@@ -114,6 +114,6 @@
     <order>10000</order>
     <visibility>0</visibility>
     <name>SelfDemoSetup</name>
-    <group/>
+    <group>MINILAB</group>
   </information>
 </ObjectDefinition>
