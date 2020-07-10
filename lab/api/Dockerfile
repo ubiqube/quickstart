@@ -51,20 +51,6 @@ RUN chmod +x /opt/ubiqube/deploy-license.sh; \
     /opt/ubiqube/deploy-license.sh /opt/ubiqube/lic/license.lic /opt/ubiqube/lic/license; \
     :
 
-RUN cd /opt/sms/bin/php ; \
-    ### DA ### 
-    if [ -d OpenMSA_Adapters ]; then cd OpenMSA_Adapters; git pull; else git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters; fi; \
-  	### MS ###
-    cd /opt/fmc_repository ; \
-    if [ -d OpenMSA_MS ]; then  cd OpenMSA_MS; git pull; else git clone https://github.com/openmsa/Microservices.git OpenMSA_MS; fi; \
-    ### WF ###
-    cd /opt/fmc_repository ; \
-    if [ -d OpenMSA_WF ]; then cd OpenMSA_WF;  git pull ; else  git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; fi ; \
-    ### Quickstart ###
-    cd /opt/fmc_repository ; \
-    if [ -d /opt/fmc_repository/quickstart ]; then cd quickstart; git pull ; else git clone https://github.com/ubiqube/quickstart.git quickstart; fi ; \
-    :
-
 # remove all adapter config from code base
 RUN cd /opt/ubi-jentreprise/resources/templates/conf/device/; \
     mkdir -p /opt/ubi-jentreprise/resources/templates/conf/device/custom; \
@@ -77,13 +63,14 @@ RUN	mkdir -p /opt/sms/bin/php/polld/custom
 COPY resources/opt/sms/bin/php/polld/custom/linux_generic_mgmt.php  /opt/sms/bin/php/polld/custom/
 
 # install the lab: workflows
-RUN	cd /opt/fmc_repository/Process/; \
-    ln -fs /opt/fmc_repository/quickstart/lab/api/repository/Process/SelfDemoSetup SelfDemoSetup; \
-    ln -fs /opt/fmc_repository/quickstart/lab/api/repository/Process/.meta_SelfDemoSetup .meta_SelfDemoSetup; \
-    ln -fs /opt/fmc_repository/OpenMSA_WF/Tutorials Tutorials; \
-    ln -fs /opt/fmc_repository/OpenMSA_WF/.meta_Tutorials .meta_Tutorials; \
+RUN	cd /opt/fmc_repository/Process; \
+    ln -fs ../quickstart/lab/api/repository/Process/SelfDemoSetup SelfDemoSetup; \
+    ln -fs ../quickstart/lab/api/repository/Process/.meta_SelfDemoSetup .meta_SelfDemoSetup; \
+    ln -fs ../OpenMSA_WF/Tutorials Tutorials; \
+    ln -fs ../OpenMSA_WF/.meta_Tutorials .meta_Tutorials; \
     cd /opt/fmc_repository/CommandDefinition/; \
     ln -fs /opt/fmc_repository/OpenMSA_MS/LINUX LINUX; ln -fs ../OpenMSA_MS/.meta_LINUX .meta_LINUX; \
+    /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/OpenMSA_Adapters/adapters/linux_generic;\
     :
 
 COPY resources/create_test_me.sh /usr/bin/
