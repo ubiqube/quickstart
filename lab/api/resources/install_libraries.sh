@@ -254,6 +254,7 @@ echo "  >> Wildfly  / API restart"
 service wildfly restart  >> /var/log/quickstart_install.log  2>&1; 
 echo "  >> CoreEngine configure & restart"
 /opt/sms/configure >> /var/log/quickstart_install.log  2>&1;
+service ubi-sms restart; 
 sleep 4
 service ubi-sms status; 
 service wildfly status; 
