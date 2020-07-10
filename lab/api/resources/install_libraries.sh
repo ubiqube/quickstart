@@ -253,7 +253,7 @@ echo "--------------------------------------------------------------------------
 service wildfly restart  >> /var/log/quickstart_install.log  2>&1; 
 #/opt/ses/configure >> /var/log/quickstart_install.log  2>&1; 
 #service tomcat restart >> /var/log/quickstart_install.log  2>&1; 
-#/opt/sms/configure >> /var/log/quickstart_install.log  2>&1;
+/opt/sms/configure >> /var/log/quickstart_install.log  2>&1;
 sleep 4
 service ubi-sms status; 
 service wildfly status; 
