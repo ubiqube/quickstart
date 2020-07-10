@@ -78,12 +78,12 @@ COPY resources/opt/sms/bin/php/polld/custom/linux_generic_mgmt.php  /opt/sms/bin
 
 # install the lab: workflows
 RUN	cd /opt/fmc_repository/Process/; \
-    ln -fs ../quickstart/lab/api/repository/Process/SelfDemoSetup SelfDemoSetup; \
-    ln -fs ../quickstart/lab/api/repository/Process/.meta_SelfDemoSetup .meta_SelfDemoSetup; \
-    ln -fs ../OpenMSA_WF/Tutorials Tutorials; \
-    ln -fs ../OpenMSA_WF/.meta_Tutorials .meta_Tutorials; \
+    ln -fs /opt/fmc_repository/quickstart/lab/api/repository/Process/SelfDemoSetup SelfDemoSetup; \
+    ln -fs /opt/fmc_repository/quickstart/lab/api/repository/Process/.meta_SelfDemoSetup .meta_SelfDemoSetup; \
+    ln -fs /opt/fmc_repository/OpenMSA_WF/Tutorials Tutorials; \
+    ln -fs /opt/fmc_repository/OpenMSA_WF/.meta_Tutorials .meta_Tutorials; \
     cd /opt/fmc_repository/CommandDefinition/; \
-    ln -fs ../OpenMSA_MS/LINUX LINUX; ln -fs ../OpenMSA_MS/.meta_LINUX .meta_LINUX; \
+    ln -fs /opt/fmc_repository/OpenMSA_MS/LINUX LINUX; ln -fs ../OpenMSA_MS/.meta_LINUX .meta_LINUX; \
     :
 
 COPY resources/create_test_me.sh /usr/bin/
