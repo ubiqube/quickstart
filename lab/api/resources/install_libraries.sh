@@ -158,12 +158,15 @@ install_workflows() {
     echo "  >> BIOS_Automation"
     ln -fs ../OpenMSA_WF/BIOS_Automation BIOS_Automation
     ln -fs ../OpenMSA_WF/.meta_BIOS_Automation .meta_BIOS_Automation
-    echo "  >> ETSI-MANO"
-    ln -fs ../OpenMSA_MANO/WORKFLOWS/ETSI-MANO ETSI-MANO
-    ln -fs ../OpenMSA_MANO/WORKFLOWS/.meta_ETSI-MANO .meta_ETSI-MANO
+ #   echo "  >> ETSI-MANO"
+ #   ln -fs ../OpenMSA_MANO/WORKFLOWS/ETSI-MANO ETSI-MANO
+ #   ln -fs ../OpenMSA_MANO/WORKFLOWS/.meta_ETSI-MANO .meta_ETSI-MANO
     echo "  >> Private Cloud - Openstack"
     ln -fs ../OpenMSA_WF/Private_Cloud Private_Cloud
     ln -fs ../OpenMSA_WF/.meta_Private_Cloud .meta_Private_Cloud
+    echo "  >> Ansible"
+    ln -fs ../OpenMSA_WF/Ansible Ansible
+    ln -fs ../OpenMSA_WF/.meta_Ansible .meta_Ansible
     echo "DONE"
 
 }
