@@ -250,9 +250,9 @@ echo "--------------------------------------------------------------------------
 echo " service restart"
 echo "-------------------------------------------------------------------------------"
 /opt/ubi-jentreprise/configure >> /var/log/quickstart_install.log  2>&1; 
+echo "  >> Wildfly  / API restart"
 service wildfly restart  >> /var/log/quickstart_install.log  2>&1; 
-#/opt/ses/configure >> /var/log/quickstart_install.log  2>&1; 
-#service tomcat restart >> /var/log/quickstart_install.log  2>&1; 
+echo "  >> CoreEngine configure & restart"
 /opt/sms/configure >> /var/log/quickstart_install.log  2>&1;
 sleep 4
 service ubi-sms status; 
