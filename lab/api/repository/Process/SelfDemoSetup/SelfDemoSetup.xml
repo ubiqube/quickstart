@@ -57,7 +57,7 @@
   <process name="Process/SelfDemoSetup/Process_Setup">
     <displayName>Setup Linux ME</displayName>
     <type>CREATE</type>
-    <visibility>0</visibility>
+    <visibility>5</visibility>
     <task name="Task_Set_Parameters1.php">
       <processPath>/opt/fmc_repository/Process/SelfDemoSetup/Process_Setup/Tasks/</processPath>
       <displayName>Set Parameters</displayName>
@@ -74,7 +74,7 @@
   <process name="Process/SelfDemoSetup/Process_Setup_2">
     <displayName>Setup MSA REST API</displayName>
     <type>CREATE</type>
-    <visibility>0</visibility>
+    <visibility>5</visibility>
     <task name="Task_Set_Parameters2.php">
       <processPath>/opt/fmc_repository/Process/SelfDemoSetup/Process_Setup/Tasks/</processPath>
       <displayName>Set Parameters</displayName>
@@ -91,7 +91,7 @@
   <process name="Process/SelfDemoSetup/Process_Delete">
     <displayName>Delete</displayName>
     <type>DELETE</type>
-    <visibility>0</visibility>
+    <visibility>5</visibility>
     <task name="Delete_delete.php">
       <processPath>/opt/fmc_repository/Process/SelfDemoSetup</processPath>
       <displayName>delete</displayName>
