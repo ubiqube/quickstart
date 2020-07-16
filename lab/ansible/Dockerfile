@@ -19,4 +19,10 @@ RUN echo 'msa  ALL=(ALL:ALL) NOPASSWD: ALL' >> /etc/sudoers
 RUN chkconfig iptables on
 RUN chkconfig sshd on
 
+# install Ansible lab playbook
+RUN mkdir -p /opt/playbooks/
+COPY resources/playbooks/linux_firewall_creation.yml /opt/playbooks/
+RUN mv /etc/ansible/hosts /etc/ansible/hosts.quickstart.back
+COPY resources/hosts /etc/ansible/
+RUN chmod a+r /etc/ansible/hosts
 CMD [ "/sbin/init" ]
