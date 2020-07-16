@@ -73,6 +73,8 @@ services:
     image: ubiqube/msa2-sms:9f9f30ff2ee6320e0bcf8badc94f1b0fba70b3d7
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+      - "msa_entities:/opt/fmc_entities"
+      - "msa_repository:/opt/fmc_repository"
     privileged: true
 
   msa_bud:
