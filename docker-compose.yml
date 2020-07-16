@@ -54,7 +54,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:a6e2841638ecbe799ade5bead485212fe9c5607c
+    image: ubiqube/msa2-ui:d4ea6545e76ed5d87dfe1051d2e80de1a03030e7
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -118,3 +118,4 @@ networks:
     ipam:
       config:
         - subnet: 172.20.0.0/24
+
