@@ -103,7 +103,7 @@ services:
       - "9000:9000"
 
   msa_dev:
-    build: ./lab/api
+    build: ./lab/msa_dev
     volumes:
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
