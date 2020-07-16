@@ -36,6 +36,7 @@ services:
     depends_on:
       - db
       - msa_es
+      - msa_dev
     image: ubiqube/msa-api:660e15a7bf4df3736d2e620d0a52064ab10d1754
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
@@ -50,6 +51,7 @@ services:
     volumes:
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
+      - "msa_api:/opt/ubi-jentreprise/resources/templates"
 
   msa_ui:
     depends_on:
@@ -70,11 +72,15 @@ services:
     depends_on:
       - db
       - msa_es
+      - msa_dev
     image: ubiqube/msa2-sms:9f9f30ff2ee6320e0bcf8badc94f1b0fba70b3d7
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
+      - "msa_sms:/opt/sms/bin/php"
+      - "msa_sms:/opt/sms/templates"
+
     privileged: true
 
   msa_bud:
@@ -96,6 +102,16 @@ services:
     ports:
       - "9000:9000"
 
+  msa_dev:
+    build: ./lab/api
+    volumes:
+      - "msa_entities:/opt/fmc_entities"
+      - "msa_repository:/opt/fmc_repository"
+      - "msa_sms:/opt/sms/bin/php"
+      - "msa_sms:/opt/sms/templates"
+      - "msa_api:/opt/ubi-jentreprise/resources/templates"
+    privileged: true
+
   linux_me:
     image: linux:me
     build: ./lab/linux.me
@@ -112,6 +128,8 @@ volumes:
   msa_db:
   msa_entities:
   msa_repository:
+  msa_sms:
+  msa_api:
 
 networks:
   default:
