@@ -25,4 +25,6 @@ COPY resources/playbooks/linux_firewall_creation.yml /opt/playbooks/
 RUN mv /etc/ansible/hosts /etc/ansible/hosts.quickstart.back
 COPY resources/hosts /etc/ansible/
 RUN chmod a+r /etc/ansible/hosts
+RUN echo "[defaults]" >> /etc/ansible/ansible.cfg
+RUN echo "host_key_checking = False" >> /etc/ansible/ansible.cfg
 CMD [ "/sbin/init" ]
