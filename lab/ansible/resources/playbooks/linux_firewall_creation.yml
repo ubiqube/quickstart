@@ -1,0 +1,14 @@
+---
+- hosts: linux_me
+  gather_facts: false
+  vars_prompt:
+    - name: dport
+      prompt: What port do you want to block?
+    - name: ip
+      prompt: What IP do you want to block?
+  tasks:
+  # create a new FW rule
+  - name: create the new rule
+    command: sudo iptables -A INPUT -p tcp --dport {{dport}} -s {{ip}} -j DROP
+  - name: create the new rule
+    command: sudo iptables -A FORWARD -p tcp --dport {{dport}} -s {{ip}} -j DROP
