@@ -221,6 +221,7 @@ install_adapter nfvo_generic
 install_adapter vnfm_generic    
 install_adapter huawei_generic
 install_adapter citrix_adc
+install_adapter openstack_keystone_v3
 
 #install_adapter stormshield 
 #install_adapter a10_thunder 
