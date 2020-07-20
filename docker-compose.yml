@@ -33,7 +33,7 @@ services:
       - "msa_db:/var/lib/postgresql/data"
 
   msa_api:
-    build: ./lab/msa_api
+    image: ubiqube/msa-api:81bf40b259d46d5e8eccfaf7f2829c6e8d675c64
     depends_on:
       - db
       - msa_es
@@ -56,7 +56,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:5d896272f89bc28f2876bfe91154c6028ff6410e
+    image: ubiqube/msa2-ui:6a31c60ecd079b805407b6cffb6a70eee2ea36eb
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -81,12 +81,13 @@ services:
       - "msa_sms:/opt/sms/bin/php"
       - "msa_sms:/opt/sms/templates"
       - "msa_config:/opt/configurator"
+      - "msa_dev:/opt/devops/"
     privileged: true
 
   msa_bud:
     depends_on:
       - db
-    image: ubiqube/msa2-bud:afb789f49b377e4a0f90394f485c6d4047c57afd
+    image: ubiqube/msa2-bud:9c28dd1e3b47a52994533c7cd3a5171c340a4a44
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
     privileged: true
@@ -109,9 +110,11 @@ services:
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "msa_sms:/opt/sms/bin/php"
-      - "msa_sms:/opt/sms/templates"
+      - "msa_sms:/opt/sms/devices"
       - "msa_api:/opt/ubi-jentreprise/resources/templates"
       - "msa_config:/opt/configurator"
+      - "msa_dev:/opt/devops/"
+
     privileged: true
 
   linux_me:
@@ -133,6 +136,7 @@ volumes:
   msa_sms:
   msa_api:
   msa_config:
+  msa_dev:
 
 networks:
   default:
