@@ -1,7 +1,7 @@
-FROM centos:6.8
+FROM centos:7
 
-RUN yum -y install http://opensource.wandisco.com/centos/6/git/x86_64/wandisco-git-release-6-1.noarch.rpm
-RUN yum install -y git 
+RUN yum -y install https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.7-1.x86_64.rpm
+RUN yum install -y git php
 
 RUN adduser ncuser
 
@@ -10,15 +10,13 @@ RUN git config --global alias.lg "log --graph --pretty=format:'%C(red)%h%C(reset
     git config --global push.default simple; \
     :
 
-RUN	mkdir -p /opt/fmc_repository/Process/; \
-    mkdir -p /opt/fmc_repository/CommandDefinition/; \ 
-    mkdir -p /opt/fmc_repository/Configuration/; \ 
-    mkdir -p /opt/fmc_repository/Datafiles/; \ 
-    mkdir -p /opt/fmc_repository/Firmware/; \ 
-    mkdir -p /opt/fmc_repository/Documentation/; \ 
-    mkdir -p /opt/fmc_repository/Pki/; \ 
-    mkdir -p /opt/fmc_repository/Reports/; \ 
-    :
+RUN	mkdir -p /opt
+#ADD --chown=ncuser:ncuser resources/opt /
+COPY --chown=ncuser:ncuser resources/opt/ /opt/
+
+#ADD --chown=ncuser:ncuser resources/opt/fmc_repository/.meta_* /opt/fmc_repository/
+RUN ls -la /opt/fmc_repository/
+
 # clean up some folder
 #RUN cd /opt/fmc_repository/Process/; \
 #    rm -rf /opt/fmc_repository/Process/Test_SubProcess; rm -rf /opt/fmc_repository/Process/.meta_Test_SubProcess; \
@@ -68,12 +66,13 @@ RUN mkdir -p /opt/ubi-jentreprise/resources/templates/conf/device/custom; \
 
  # install a custom asset script for Linux
 RUN	mkdir -p /opt/sms/bin/php/polld/custom
+RUN mkdir -p /opt/sms/devices/
 COPY resources/opt/sms/bin/php/polld/custom/linux_generic_mgmt.php  /opt/sms/bin/php/polld/custom/
 
 # install the lab: workflows
 RUN	cd /opt/fmc_repository/Process; \
-    ln -fs ../quickstart/lab/api/repository/Process/SelfDemoSetup SelfDemoSetup; \
-    ln -fs ../quickstart/lab/api/repository/Process/.meta_SelfDemoSetup .meta_SelfDemoSetup; \
+    ln -fs ../quickstart/lab/msa_dev/libraries/Process/SelfDemoSetup SelfDemoSetup; \
+    ln -fs ../quickstart/lab/msa_dev/libraries/Process/.meta_SelfDemoSetup .meta_SelfDemoSetup; \
     ln -fs ../OpenMSA_WF/Tutorials Tutorials; \
     ln -fs ../OpenMSA_WF/.meta_Tutorials .meta_Tutorials; \
     cd /opt/fmc_repository/CommandDefinition/; \
@@ -81,15 +80,14 @@ RUN	cd /opt/fmc_repository/Process; \
     /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/OpenMSA_Adapters/adapters/linux_generic;\
     :
 
-COPY resources/create_test_me.sh /usr/bin/
-COPY resources/create_mini_lab.sh /usr/bin/
-COPY resources/install_libraries.sh /usr/bin/
+COPY resources/scripts/create_test_me.sh /usr/bin/
+COPY resources/scripts/create_mini_lab.sh /usr/bin/
+COPY resources/scripts/install_libraries.sh /usr/bin/
 
 RUN chmod a+x /usr/bin/create_mini_lab.sh; \
     chmod a+x /usr/bin/install_libraries.sh; \
     chmod a+x /usr/bin/create_test_me.sh; \
     chown -R ncuser:ncuser /opt/fmc_repository/*; \
-    chown -R ncuser:ncuser /opt/fmc_repository/.meta_*; \
     chown -R ncuser:ncuser /opt/sms/bin/php/*; \
     chown -R ncuser:ncuser /opt/sms/templates/devices/; \
     :
