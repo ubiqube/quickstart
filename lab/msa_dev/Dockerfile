@@ -101,7 +101,5 @@ RUN chmod a+x /usr/bin/create_mini_lab.sh; \
     chown -R ncuser:ncuser /opt/sms/templates/devices/; \
     :
 
-# activate debug mode for SecEngine configuration
-RUN sed -i -e 's/$UBI_VSOC_DEBUG_LEVEL/15/g' /opt/sms/templates/conf/smsd.conf 
 
 CMD [ "/sbin/init" ]

@@ -69,11 +69,11 @@ services:
       - "script.painless.regex.enabled=true"
 
   msa_sms:
+    build: ./lab/msa_sms
     depends_on:
       - db
       - msa_es
       - msa_dev
-    image: ubiqube/msa2-sms:b18113c298e5aaa10a8653bb17b3aa16fa2d094f
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
