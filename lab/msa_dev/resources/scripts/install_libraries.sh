@@ -6,7 +6,7 @@ update_github_repo() {
     echo "-------------------------------------------------------------------------------"
     echo " Update the github repositories "
     echo "-------------------------------------------------------------------------------"
-    cd /opt/sms/bin/php ; 
+    cd /opt/devops ; 
     echo "  >> https://github.com/openmsa/Adapters.git "
     if [ -d OpenMSA_Adapters ]; 
     then 
@@ -85,7 +85,7 @@ uninstall_adapter() {
     echo "-------------------------------------------------------------------------------"
     echo " Uninstall $1 adapter source code from github repo "
     echo "-------------------------------------------------------------------------------"
-    /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer uninstall /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1
+    /opt/devops/OpenMSA_Adapters/bin/da_installer uninstall /opt/devops/OpenMSA_Adapters/adapters/$1
 }
 
 #
@@ -97,7 +97,7 @@ install_adapter() {
     echo " Install $1 adapter source code from github repo "
     echo "-------------------------------------------------------------------------------"
 
-    /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1 $2
+    /opt/devops/OpenMSA_Adapters/bin/da_installer install /opt/devops/OpenMSA_Adapters/adapters/$1 $2
     echo "DONE"
 
 }
@@ -241,22 +241,16 @@ echo " update file owner to ncuser.ncuser"
 echo "-------------------------------------------------------------------------------"
 chown -R ncuser:ncuser /opt/fmc_repository/*; \
 chown -R ncuser:ncuser /opt/fmc_repository/.meta_*; \
+chown -R ncuser:ncuser /opt/devops/*; \
 chown -R ncuser:ncuser /opt/sms/bin/php/*; \
-chown -R ncuser:ncuser /opt/sms/templates/devices/; \
+chown -R ncuser:ncuser /opt/sms/devices/; \
 #chown -R ncuser:ncuser /opt/ubi-jentreprise/resources/templates/conf/device;\
 echo "DONE"
 
 echo "-------------------------------------------------------------------------------"
 echo " service restart"
 echo "-------------------------------------------------------------------------------"
-/opt/ubi-jentreprise/configure >> /var/log/quickstart_install.log  2>&1; 
-echo "  >> Wildfly  / API restart"
-service wildfly restart  >> /var/log/quickstart_install.log  2>&1; 
-echo "  >> CoreEngine configure & restart"
-/opt/sms/configure >> /var/log/quickstart_install.log  2>&1;
-service ubi-sms restart; 
-sleep 4
-service ubi-sms status; 
-service wildfly status; 
+echo "  >> execute [sudo docker-compose restart msa_api] to restart the API service"
+echo "  >> execute [sudo docker-compose restart msa_sms] to restart the CoreEngine service"
 echo "DONE"
 
