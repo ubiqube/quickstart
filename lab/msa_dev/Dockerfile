@@ -71,8 +71,8 @@ COPY resources/opt/sms/bin/php/polld/custom/linux_generic_mgmt.php  /opt/sms/bin
 
 # install the lab: workflows
 RUN	cd /opt/fmc_repository/Process; \
-    ln -fs ../quickstart/lab/msa_dev/libraries/Process/SelfDemoSetup SelfDemoSetup; \
-    ln -fs ../quickstart/lab/msa_dev/libraries/Process/.meta_SelfDemoSetup .meta_SelfDemoSetup; \
+    ln -fs ../quickstart/lab/msa_dev/resources/libraries/Process/SelfDemoSetup SelfDemoSetup; \
+    ln -fs ../quickstart/lab/msa_dev/resources/libraries/Process/.meta_SelfDemoSetup .meta_SelfDemoSetup; \
     ln -fs ../OpenMSA_WF/Tutorials Tutorials; \
     ln -fs ../OpenMSA_WF/.meta_Tutorials .meta_Tutorials; \
     cd /opt/fmc_repository/CommandDefinition/; \
