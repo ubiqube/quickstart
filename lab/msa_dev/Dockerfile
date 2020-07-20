@@ -10,8 +10,15 @@ RUN git config --global alias.lg "log --graph --pretty=format:'%C(red)%h%C(reset
     git config --global push.default simple; \
     :
 
-RUN	mkdir -p /opt
-#ADD --chown=ncuser:ncuser resources/opt /
+RUN	mkdir -p /opt; \
+    mkdir -p /opt/CommandDefinition; \
+    mkdir -p /opt/Configuration; \
+    mkdir -p /opt/Datafiles; \
+    mkdir -p /opt/Documentation; \
+    mkdir -p /opt/Firmware; \
+    mkdir -p /opt/License; \
+    mkdir -p /opt/Process; \
+    :
 COPY --chown=ncuser:ncuser resources/opt/ /opt/
 
 #ADD --chown=ncuser:ncuser resources/opt/fmc_repository/.meta_* /opt/fmc_repository/
@@ -56,6 +63,7 @@ RUN mkdir -p /opt/sms/bin/php; \
     cd /opt/fmc_repository/quickstart ; git checkout 2.1.0GA; \
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
     :
+RUN ls -la /opt/fmc_repository/
 
 # remove all adapter config from code base
 RUN mkdir -p /opt/ubi-jentreprise/resources/templates/conf/device/custom; \
@@ -79,6 +87,7 @@ RUN	cd /opt/fmc_repository/Process; \
     ln -fs /opt/fmc_repository/OpenMSA_MS/LINUX LINUX; ln -fs ../OpenMSA_MS/.meta_LINUX .meta_LINUX; \
     /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/OpenMSA_Adapters/adapters/linux_generic;\
     :
+RUN ls -la /opt/fmc_repository/
 
 COPY resources/scripts/create_test_me.sh /usr/bin/
 COPY resources/scripts/create_mini_lab.sh /usr/bin/
@@ -93,6 +102,6 @@ RUN chmod a+x /usr/bin/create_mini_lab.sh; \
     :
 
 # activate debug mode for SecEngine configuration
-#RUN sed -i -e 's/$UBI_VSOC_DEBUG_LEVEL/15/g' /opt/sms/templates/conf/smsd.conf 
+RUN sed -i -e 's/$UBI_VSOC_DEBUG_LEVEL/15/g' /opt/sms/templates/conf/smsd.conf 
 
 CMD [ "/sbin/init" ]
