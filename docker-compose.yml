@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.8"
 
 services:
   msa_front:
@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:74e52c480d40d29f4b9f6d92c7a0271c55e13900
+    image: ubiqube/msa2-front:eaf9d4f948c0f2b33da0503d3b971da23f7c3b8a
     ports:
       - target: 80
         published: 80
@@ -25,7 +25,7 @@ services:
     image: camunda/camunda-bpm-platform
 
   db:
-    image: ubiqube/msa2-db:2d85a6d93725e546555c92a68f1194a044813c82
+    image: ubiqube/msa2-db:2b7c486764c882abe1a720094ec5159d3bd75389
     environment:
       POSTGRES_PASSWORD: my_db_password
       POSTGRES_DB: POSTGRESQL
@@ -33,11 +33,11 @@ services:
       - "msa_db:/var/lib/postgresql/data"
 
   msa_api:
+    build: ./lab/msa_api
     depends_on:
       - db
       - msa_es
       - msa_dev
-    image: ubiqube/msa-api:660e15a7bf4df3736d2e620d0a52064ab10d1754
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b
@@ -56,7 +56,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:d4ea6545e76ed5d87dfe1051d2e80de1a03030e7
+    image: ubiqube/msa2-ui:f913792731d879eea261ef26ba423e95c32f4763
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -73,14 +73,14 @@ services:
       - db
       - msa_es
       - msa_dev
-    image: ubiqube/msa2-sms:9f9f30ff2ee6320e0bcf8badc94f1b0fba70b3d7
+    image: ubiqube/msa2-sms:d21ca1bef36c5333549c61d7a8de19567466ab75
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "msa_sms:/opt/sms/bin/php"
       - "msa_sms:/opt/sms/templates"
-
+      - "msa_config:/opt/configurator"
     privileged: true
 
   msa_bud:
@@ -103,13 +103,15 @@ services:
       - "9000:9000"
 
   msa_dev:
-    build: ./lab/msa_dev
+    build: 
+      context: ./lab/msa_dev
     volumes:
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "msa_sms:/opt/sms/bin/php"
       - "msa_sms:/opt/sms/templates"
       - "msa_api:/opt/ubi-jentreprise/resources/templates"
+      - "msa_config:/opt/configurator"
     privileged: true
 
   linux_me:
@@ -130,6 +132,7 @@ volumes:
   msa_repository:
   msa_sms:
   msa_api:
+  msa_config:
 
 networks:
   default:
