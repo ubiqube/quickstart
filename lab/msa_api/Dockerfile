@@ -1,4 +1,4 @@
-FROM ubiqube/msa-api:6c4c63cc1f72fed115b6737aa0973183f49d836a
+FROM ubiqube/msa-api:f4c57065c9c57791308f5893c6dae31e6869d5a1
 
 COPY resources/update_custom_properties.sh /opt/jboss
 #RUN chmod +x /opt/jboss/update_custom_properties.sh
