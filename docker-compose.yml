@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:eaf9d4f948c0f2b33da0503d3b971da23f7c3b8a
+    image: ubiqube/msa2-front:009bf0a92ed5f06727a7e08687ab1ad2c43a3213
     ports:
       - target: 80
         published: 80
@@ -56,7 +56,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:f913792731d879eea261ef26ba423e95c32f4763
+    image: ubiqube/msa2-ui:5d896272f89bc28f2876bfe91154c6028ff6410e
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -73,7 +73,7 @@ services:
       - db
       - msa_es
       - msa_dev
-    image: ubiqube/msa2-sms:d21ca1bef36c5333549c61d7a8de19567466ab75
+    image: ubiqube/msa2-sms:b18113c298e5aaa10a8653bb17b3aa16fa2d094f
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
