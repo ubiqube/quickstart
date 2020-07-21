@@ -44,6 +44,9 @@ RUN mkdir -p /opt/devops/; \
     ### TODO REMOVE BEFORE PR MERGE
     cd /opt/fmc_repository/OpenMSA_WF ; git checkout 2.1.0GA; \
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+    ### MANO ###
+    cd /opt/fmc_repository ; \
+    if [ -d OpenMSA_MANO ]; then cd OpenMSA_MANO;  git pull ; else  git clone https://github.com/openmsa/etsi-mano.git OpenMSA_MANO; cd OpenMSA_MANO; fi ; \
     ### Quickstart ###
     cd /opt/fmc_repository ; \
     if [ -d /opt/fmc_repository/quickstart ]; then cd quickstart; git pull ; else git clone https://github.com/ubiqube/quickstart.git quickstart; fi ; \
@@ -55,13 +58,15 @@ RUN mkdir -p /opt/devops/; \
 RUN ls -la /opt/fmc_repository/
 
 # remove all adapter config from code base
-RUN mkdir -p /opt/ubi-jentreprise/resources/templates/conf/device/custom;
+RUN mkdir -p /opt/ubi-jentreprise/generated/conf/device/custom/;
 
  # install a custom asset script for Linux
 COPY resources/opt/sms/bin/php/polld/custom/linux_generic_mgmt.php  /opt/sms/bin/php/polld/custom/
 
 # install the lab: workflows
 RUN	cd /opt/fmc_repository/Process; \
+    cp -r ../OpenMSA_WF/Reference .; \
+    cp ../OpenMSA_WF/.meta_Reference .; \
     ln -fs ../quickstart/lab/msa_dev/resources/libraries/workflows/SelfDemoSetup SelfDemoSetup; \
     ln -fs ../quickstart/lab/msa_dev/resources/libraries/workflows/.meta_SelfDemoSetup .meta_SelfDemoSetup; \
     ln -fs ../OpenMSA_WF/Tutorials Tutorials; \
