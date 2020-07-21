@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:009bf0a92ed5f06727a7e08687ab1ad2c43a3213
+    image: ubiqube/msa2-front:e57892a5a40cbc473960720596fdba62d096de5a
     ports:
       - target: 80
         published: 80
@@ -31,9 +31,9 @@ services:
       POSTGRES_DB: POSTGRESQL
     volumes:
       - "msa_db:/var/lib/postgresql/data"
-
+      
   msa_api:
-    image: ubiqube/msa-api:81bf40b259d46d5e8eccfaf7f2829c6e8d675c64
+    image: ubiqube/msa-api:fe4ebd8d6e9001b598c23b1b7e33555c9725b8e1
     depends_on:
       - db
       - msa_es
@@ -51,16 +51,18 @@ services:
     volumes:
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
-      - "msa_api:/opt/ubi-jentreprise/resources/templates"
+      - "msa_api:/opt/ubi-jentreprise/generated/conf"
+      - "msa_config:/opt/configurator"
 
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:6a31c60ecd079b805407b6cffb6a70eee2ea36eb
+    image: ubiqube/msa2-ui:817b5462a779347d1fc6522610d938e8bfede13f
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
     - FEATURE_ALARMS=true
+    - FEATURE_LICENCE=true
 
   msa_es:
     image: elasticsearch:7.2.1
@@ -111,7 +113,7 @@ services:
       - "msa_repository:/opt/fmc_repository"
       - "msa_sms:/opt/sms/bin/php"
       - "msa_sms:/opt/sms/devices"
-      - "msa_api:/opt/ubi-jentreprise/resources/templates"
+      - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_config:/opt/configurator"
       - "msa_dev:/opt/devops/"
 
