@@ -250,7 +250,6 @@ echo "DONE"
 echo "-------------------------------------------------------------------------------"
 echo " service restart"
 echo "-------------------------------------------------------------------------------"
-echo "  >> execute [sudo docker-compose restart msa_api] to restart the API service"
 echo "  >> execute [sudo docker-compose restart msa_sms] to restart the CoreEngine service"
 echo "DONE"
 
