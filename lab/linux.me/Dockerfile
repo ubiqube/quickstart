@@ -1,4 +1,4 @@
-FROM centos:6.8
+FROM centos:6.8 as linux_me
 
 # for msa asset info
 RUN yum install -y redhat-lsb-core dmidecode
