@@ -31,6 +31,10 @@ RUN mkdir -p /opt/devops/; \
  	### MS ###
     cd /opt/fmc_repository ; \
     if [ -d OpenMSA_MS ]; then  cd OpenMSA_MS; git pull; else git clone https://github.com/openmsa/Microservices.git OpenMSA_MS; fi; \
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ### TODO REMOVE BEFORE PR MERGE
+    cd /opt/fmc_repository/OpenMSA_MS ; git checkout 2.1.0GA; \
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
     ### WF ###
     cd /opt/fmc_repository ; \
     if [ -d OpenMSA_WF ]; then cd OpenMSA_WF;  git pull ; else  git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; cd OpenMSA_WF; fi ; \
