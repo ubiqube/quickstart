@@ -84,6 +84,8 @@ services:
       - "msa_sms:/opt/sms/templates"
       - "msa_config:/opt/configurator"
       - "msa_dev:/opt/devops/"
+      - "msa_sms:/opt/sms/devices"
+
     privileged: true
 
   msa_bud:
@@ -121,9 +123,6 @@ services:
 
   linux_me:
     build: ./lab/linux.me
-    depends_on:
-      - msa_api
-      - msa_sms
     cap_add:
       - NET_ADMIN
     ports:
