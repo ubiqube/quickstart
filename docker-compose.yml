@@ -57,7 +57,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:817b5462a779347d1fc6522610d938e8bfede13f
+    image: ubiqube/msa2-ui:df2792867d190b108a5cd37ebaa3b7618f8b9eeb
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -89,7 +89,7 @@ services:
   msa_bud:
     depends_on:
       - db
-    image: ubiqube/msa2-bud:9c28dd1e3b47a52994533c7cd3a5171c340a4a44
+    image: ubiqube/msa2-bud:5e55e804fc5eb647a9258c743d7eacf93e33decb
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
     privileged: true
@@ -120,8 +120,10 @@ services:
     privileged: true
 
   linux_me:
-    image: linux:me
     build: ./lab/linux.me
+    depends_on:
+      - msa_api
+      - msa_sms
     cap_add:
       - NET_ADMIN
     ports:
@@ -142,6 +144,7 @@ volumes:
 
 networks:
   default:
+    name: quickstart_default
     ipam:
       config:
         - subnet: 172.20.0.0/24
