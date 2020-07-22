@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+#set -x
 USER="ncroot"
 PASSWORD="ubiqube"
 OPERATOR="BLR"
