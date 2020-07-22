@@ -24,7 +24,7 @@ Command to check available networks:
 $ sudo docker network ls
 ```
 
-then run sdwan lab:
+then run SD-WAN lab:
 ```sh
 $ sudo docker-compose -f ./lab/sdwan/docker-compose.yml up -d
 ```
