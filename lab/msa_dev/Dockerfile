@@ -10,13 +10,13 @@ RUN git config --global alias.lg "log --graph --pretty=format:'%C(red)%h%C(reset
 
 RUN	mkdir -p /opt/devops; \
 	mkdir -p /opt/devops/sms/bin/php/polld/custom; \
-    mkdir -p /opt/CommandDefinition; \
-    mkdir -p /opt/Configuration; \
-    mkdir -p /opt/Datafiles; \
-    mkdir -p /opt/Documentation; \
-    mkdir -p /opt/Firmware; \
-    mkdir -p /opt/License; \
-    mkdir -p /opt/Process; \
+    mkdir -p /opt/fmc_repository/CommandDefinition; \
+    mkdir -p /opt/fmc_repository/Configuration; \
+    mkdir -p /opt/fmc_repository/Datafiles; \
+    mkdir -p /opt/fmc_repository/Documentation; \
+    mkdir -p /opt/fmc_repository/Firmware; \
+    mkdir -p /opt/fmc_repository/License; \
+    mkdir -p /opt/fmc_repository/Process; \
     :
 COPY --chown=ncuser:ncuser resources/opt/ /opt/
 
