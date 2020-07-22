@@ -31,7 +31,15 @@ update_github_repo() {
     if [ -d OpenMSA_MS ]; 
     then  
         cd OpenMSA_MS; 
-        git pull; 
+        git stash;
+        git checkout master;
+        git pull;
+        git stash pop;
+        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ### TODO REMOVE BEFORE PR MERGE
+        git checkout 2.1.0GA;
+        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        git pull;
     else 
         git clone https://github.com/openmsa/Microservices.git OpenMSA_MS; 
         cd OpenMSA_MS; 
@@ -221,6 +229,7 @@ install_adapter nfvo_generic
 install_adapter vnfm_generic    
 install_adapter huawei_generic
 install_adapter citrix_adc
+install_adapter ansible_generic
 
 #install_adapter stormshield 
 #install_adapter a10_thunder 
