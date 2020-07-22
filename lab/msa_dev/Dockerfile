@@ -1,8 +1,6 @@
 FROM centos:7
 
-RUN yum -y install https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.7-1.x86_64.rpm
-RUN yum install -y git php
-
+RUN yum -y install https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.7-1.x86_64.rpm && yum install -y git php
 RUN adduser ncuser
 
 # install some useful things
@@ -21,10 +19,6 @@ RUN	mkdir -p /opt/devops; \
     mkdir -p /opt/Process; \
     :
 COPY --chown=ncuser:ncuser resources/opt/ /opt/
-
-#ADD --chown=ncuser:ncuser resources/opt/fmc_repository/.meta_* /opt/fmc_repository/
-RUN ls -la /opt/fmc_repository/
-
 
 RUN mkdir -p /opt/devops/; \
     cd /opt/devops/; \
@@ -55,7 +49,6 @@ RUN mkdir -p /opt/devops/; \
     cd /opt/fmc_repository/quickstart ; git checkout 2.1.0GA; \
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
     :
-RUN ls -la /opt/fmc_repository/
 
 # remove all adapter config from code base
 RUN mkdir -p /opt/ubi-jentreprise/generated/conf/device/custom/;
@@ -74,7 +67,6 @@ RUN	cd /opt/fmc_repository/Process; \
     cd /opt/fmc_repository/CommandDefinition/; \
     ln -fs /opt/fmc_repository/OpenMSA_MS/LINUX LINUX; ln -fs ../OpenMSA_MS/.meta_LINUX .meta_LINUX; \
     :
-RUN ls -la /opt/fmc_repository/
 
 COPY resources/scripts/create_test_me.sh /usr/bin/
 COPY resources/scripts/create_mini_lab.sh /usr/bin/
@@ -86,6 +78,5 @@ RUN chmod a+x /usr/bin/create_mini_lab.sh; \
     chown -R ncuser:ncuser /opt/fmc_repository/*; \
     chown -R ncuser:ncuser /opt/devops/*; \
     :
-
 
 CMD [ "/sbin/init" ]
