@@ -3,7 +3,6 @@ version: "3.8"
 services:
 
   ansible_me:
-    image: ansible:me 
     build: ./lab/ansible
     cap_add:
       - NET_ADMIN
@@ -13,7 +12,7 @@ services:
       default:
         ipv4_address: 172.20.0.102
     hostname: ansible_me
-
+ 
 networks:
   default:
     external:
