@@ -1,17 +1,9 @@
-FROM centos:6.8
+FROM centos:6.8 as ansible_me
 
-# 3rd party repo (EPEL) 
-RUN yum -y install epel-release
-
-# for msa asset info
-RUN yum install -y redhat-lsb-core dmidecode
-
-# for msa asset access
-RUN yum install -y openssh-server openssh-clients sudo 
-
-# Ansible
-RUN yum install -y ansible
-
+# 3rd party repo (EPEL) , ansible, SSH,...
+RUN yum install -y epel-release 
+RUN yum install -y redhat-lsb-core dmidecode openssh-server openssh-clients sudo ansible python-pip
+RUN pip install shyaml
 RUN useradd msa
 RUN passwd --stdin msa <<< "ubiqube"
 RUN echo 'msa  ALL=(ALL:ALL) NOPASSWD: ALL' >> /etc/sudoers
