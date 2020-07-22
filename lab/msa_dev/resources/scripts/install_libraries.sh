@@ -137,6 +137,8 @@ install_microservices () {
     rm -rf  JUNIPER/SSG
     echo "  >> LINUX"
     ln -fs ../OpenMSA_MS/LINUX LINUX; ln -fs ../OpenMSA_MS/.meta_LINUX .meta_LINUX; 
+    echo "  >> MIKROTIK"
+    ln -fs ../OpenMSA_MS/MIKROTIK MIKROTIK; ln -fs ../OpenMSA_MS/.meta_MIKROTIK .meta_MIKROTIK; 
     echo "  >> OPENSTACK"
     ln -fs ../OpenMSA_MS/OPENSTACK OPENSTACK; ln -fs ../OpenMSA_MS/.meta_OPENSTACK .meta_OPENSTACK; 
     echo "  >> ONEACCESS"
@@ -230,6 +232,8 @@ install_adapter vnfm_generic
 install_adapter huawei_generic
 install_adapter citrix_adc
 install_adapter ansible_generic
+install_adapter mikrotik_generic
+
 
 #install_adapter stormshield 
 #install_adapter a10_thunder 
