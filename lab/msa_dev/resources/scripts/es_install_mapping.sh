@@ -10,7 +10,8 @@ resp=$(curl -s -w %{http_code} -o /dev/null  msa_es:9200/_template/$i)
 if [ $resp != "200" ]
 then
 	echo "install mapping "$i" from /etc/elasticsearch/templates/$i.json"
-	curl --connect-timeout 1 --max-time 2 -XPUT http://msa_es:9200/_template/$i?include_type_name=true -H "Content-Type: application/json" --data-binary "@/etc/elasticsearch/templates/$i.json"
+	curl --connect-timeout 1 --max-time 2 -XPUT http://msa_es:9200/_template/$i?include_type_name=true -H "Content-Type: application/json" --data-binary "@/opt/devops/elasticsearch/templates/$i.json"
+	echo ""
 else
 	echo "install mapping failed: "$i" already installed"
 fi

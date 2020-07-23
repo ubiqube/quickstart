@@ -60,6 +60,11 @@ RUN mkdir -p /opt/ubi-jentreprise/generated/conf/device/custom/;
  # install a custom asset script for Linux
 COPY resources/opt/sms/bin/php/polld/custom/linux_generic_mgmt.php  /opt/sms/bin/php/polld/custom/
 
+# elasticsearch config
+RUN mkdir -p /usr/share/elasticsearch/config/
+RUN mkdir -p /opt/devops/elasticsearch/templates/;
+COPY resources/etc/elasticsearch/templates/* /opt/devops/elasticsearch/templates/
+
 # install the lab: workflows
 RUN	cd /opt/fmc_repository/Process; \
     cp -r ../OpenMSA_WF/Reference .; \
@@ -75,10 +80,14 @@ RUN	cd /opt/fmc_repository/Process; \
 COPY resources/scripts/create_test_me.sh /usr/bin/
 COPY resources/scripts/create_mini_lab.sh /usr/bin/
 COPY resources/scripts/install_libraries.sh /usr/bin/
+COPY resources/scripts/es_install_mapping.sh /usr/bin/
+COPY resources/scripts/es_cluster_settings.sh /usr/bin/
 
 RUN chmod a+x /usr/bin/create_mini_lab.sh; \
     chmod a+x /usr/bin/install_libraries.sh; \
     chmod a+x /usr/bin/create_test_me.sh; \
+    chmod a+x /usr/bin/es_install_mapping.sh; \
+    chmod a+x /usr/bin/es_cluster_settings.sh; \
     chown -R ncuser:ncuser /opt/fmc_repository/*; \
     chown -R ncuser:ncuser /opt/devops/*; \
     :
