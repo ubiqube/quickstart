@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:34ef91173e33249c9323f431e19adac19e39d4ce
+    image: ubiqube/msa2-front:100aa90de671029d01bbcb0744657502a58df7a7
     ports:
       - target: 80
         published: 80
@@ -52,12 +52,13 @@ services:
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "msa_api:/opt/ubi-jentreprise/generated/conf"
-      - "msa_config:/opt/configurator"
+#      - "msa_config:/opt/configurator"
+      - "rrd_repository:/opt/rrd"
 
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:12eee82875bfba8750e9019150b2b8f97c6214fe
+    image: ubiqube/msa2-ui:8b079cea738bd7fc71a2430f7b3f4f39345646b3
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -69,6 +70,15 @@ services:
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes: 
+      - "msa_es:/usr/share/elasticsearch/config"
+      - "msa_es:/usr/share/elasticsearch/data"
+      - "msa_es:/etc/elasticsearch"
 
   msa_sms:
     build: ./lab/msa_sms
@@ -81,12 +91,10 @@ services:
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "msa_sms:/opt/sms/bin/php"
-      - "msa_sms:/opt/sms/templates"
       - "msa_config:/opt/configurator"
       - "msa_dev:/opt/devops/"
       - "msa_sms:/opt/sms/devices"
-    ports:
-      - "28169:28169"
+      - "rrd_repository:/opt/rrd"
     privileged: true
 
   msa_bud:
@@ -111,6 +119,8 @@ services:
   msa_dev:
     build: 
       context: ./lab/msa_dev
+    depends_on:
+      - msa_es
     volumes:
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
@@ -119,7 +129,8 @@ services:
       - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_config:/opt/configurator"
       - "msa_dev:/opt/devops/"
-
+      - "msa_es:/usr/share/elasticsearch/config"
+      - "msa_es:/etc/elasticsearch"
     privileged: true
 
   linux_me:
@@ -141,6 +152,8 @@ volumes:
   msa_api:
   msa_config:
   msa_dev:
+  rrd_repository:
+  msa_es:
 
 networks:
   default:
