@@ -18,7 +18,7 @@ RUN mkdir -p /opt/devops/sms/bin/php/polld/custom/; \
     mkdir -p /opt/fmc_repository/License; \
     mkdir -p /opt/fmc_repository/Process; \
     :
-    
+
 COPY --chown=ncuser:ncuser resources/opt/ /opt/
 
 RUN cd /opt/devops/; \
@@ -58,7 +58,7 @@ RUN cd /opt/devops/; \
 RUN mkdir -p /opt/ubi-jentreprise/generated/conf/device/custom/;
 
  # install a custom asset script for Linux
-COPY resources/opt/sms/bin/php/polld/custom/linux_generic_mgmt.php  /opt/devops/sms/bin/php/polld/custom/
+#COPY resources/opt/sms/bin/php/polld/custom/linux_generic_mgmt.php  /opt/devops/sms/bin/php/polld/custom/
 
 # elasticsearch config
 RUN mkdir -p /usr/share/elasticsearch/config/
