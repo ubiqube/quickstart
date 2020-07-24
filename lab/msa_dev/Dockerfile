@@ -8,8 +8,8 @@ RUN git config --global alias.lg "log --graph --pretty=format:'%C(red)%h%C(reset
     git config --global push.default simple; \
     :
 
-RUN	mkdir -p /opt/devops; \
-	mkdir -p /opt/devops/sms/bin/php/polld/custom; \
+RUN	mkdir -p /opt/sms/bin/php; \
+	mkdir -p /opt/sms/bin/php/polld/custom; \
     mkdir -p /opt/fmc_repository/CommandDefinition; \
     mkdir -p /opt/fmc_repository/Configuration; \
     mkdir -p /opt/fmc_repository/Datafiles; \
@@ -20,13 +20,13 @@ RUN	mkdir -p /opt/devops; \
     :
 COPY --chown=ncuser:ncuser resources/opt/ /opt/
 
-RUN mkdir -p /opt/devops/; \
-    cd /opt/devops/; \
+RUN mkdir -p /opt/sms/bin/php/; \
+    cd /opt/sms/bin/php/; \
     ### DA ### 
     if [ -d OpenMSA_Adapters ]; then cd OpenMSA_Adapters; git pull; else git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters; fi; \
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ### TODO REMOVE BEFORE PR MERGE
-    cd /opt/devops/OpenMSA_Adapters ; git checkout 2.1.0GA; \
+    cd /opt/sms/bin/php/OpenMSA_Adapters ; git checkout 2.1.0GA; \
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
  	### MS ###
     cd /opt/fmc_repository ; \
@@ -62,8 +62,8 @@ COPY resources/opt/sms/bin/php/polld/custom/linux_generic_mgmt.php  /opt/sms/bin
 
 # elasticsearch config
 RUN mkdir -p /usr/share/elasticsearch/config/
-RUN mkdir -p /opt/devops/elasticsearch/templates/;
-COPY resources/etc/elasticsearch/templates/* /opt/devops/elasticsearch/templates/
+RUN mkdir -p /opt/sms/bin/php/elasticsearch/templates/;
+COPY resources/etc/elasticsearch/templates/* /opt/sms/bin/php/elasticsearch/templates/
 
 # install the lab: workflows
 RUN	cd /opt/fmc_repository/Process; \
@@ -89,7 +89,7 @@ RUN chmod a+x /usr/bin/create_mini_lab.sh; \
     chmod a+x /usr/bin/es_install_mapping.sh; \
     chmod a+x /usr/bin/es_cluster_settings.sh; \
     chown -R ncuser:ncuser /opt/fmc_repository/*; \
-    chown -R ncuser:ncuser /opt/devops/*; \
+    chown -R ncuser:ncuser /opt/sms/bin/php/*; \
     :
 
 CMD [ "/sbin/init" ]
