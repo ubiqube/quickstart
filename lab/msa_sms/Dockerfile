@@ -1,5 +1,4 @@
-FROM ubiqube/msa2-sms:48a165db0cee78a68c923c6cb6d3f7556feeab93
-#FROM yvesdumarest/msa2-sms:2.1.5
+FROM ubiqube/msa2-sms:a69b3ff5933ebbc15fc762c8336f95adc4a62bd9
 
 RUN rm -rf /opt/sms/devices/*
 
