@@ -1,12 +1,14 @@
 #!/bin/bash
 #set -x
 
+PROG=$(basename $0)
+
 update_github_repo() {
 
     echo "-------------------------------------------------------------------------------"
     echo " Update the github repositories "
     echo "-------------------------------------------------------------------------------"
-    cd /opt/sms/bin/php ; 
+    cd /opt/devops ; 
     echo "  >> https://github.com/openmsa/Adapters.git "
     if [ -d OpenMSA_Adapters ]; 
     then 
@@ -93,7 +95,7 @@ uninstall_adapter() {
     echo "-------------------------------------------------------------------------------"
     echo " Uninstall $1 adapter source code from github repo "
     echo "-------------------------------------------------------------------------------"
-    /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer uninstall /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1
+    /opt/devops/OpenMSA_Adapters/bin/da_installer uninstall /opt/devops/OpenMSA_Adapters/adapters/$1
 }
 
 #
@@ -105,7 +107,7 @@ install_adapter() {
     echo " Install $1 adapter source code from github repo "
     echo "-------------------------------------------------------------------------------"
 
-    /opt/sms/bin/php/OpenMSA_Adapters/bin/da_installer install /opt/sms/bin/php/OpenMSA_Adapters/adapters/$1 $2
+    /opt/devops/OpenMSA_Adapters/bin/da_installer install /opt/devops/OpenMSA_Adapters/adapters/$1 $2
     echo "DONE"
 
 }
@@ -181,88 +183,134 @@ install_workflows() {
 
 }
 
-update_github_repo
-#uninstall_adapter netasq
-install_adapter linux_generic 
-install_adapter pfsense_fw
-install_adapter checkpoint_r80
-install_adapter rest_generic 
-install_adapter aws_generic  
-install_adapter adva_nc 
-install_adapter f5_bigip 
-install_adapter virtuora_nc 
-install_adapter catalyst_ios 
-install_adapter cisco_apic  
-#install_adapter cisco_nexus9000
-install_adapter cisco_isr
-#install_adapter cisco_asr
-install_adapter cisco_asa_generic
-install_adapter esa
-install_adapter wsa 
-install_adapter rancher_cmp
-install_adapter hp5900
-install_adapter hp2530
-install_adapter nec_ix
-install_adapter nec_nfa
-install_adapter oneaccess_lbb 
-install_adapter oneaccess_whitebox
-install_adapter oneaccess_netconf
-install_adapter fortigate
-install_adapter fortiweb
-#install_adapter fortinet_fortimanager
-#install_adapter fortinet_fortianalyzer
-#install_adapter fortinet_jsonapi
-install_adapter paloalto_chassis
-install_adapter paloalto_generic
-install_adapter paloalto_vsys
-install_adapter netconf_generic
-#install_adapter juniper_srx
-#install_adapter juniper_contrail
-install_adapter redfish_generic
-install_adapter veex_rtu
-install_adapter vmware_vsphere
-install_adapter mon_cisco_ios
-install_adapter mon_cisco_asa
-install_adapter mon_generic
-install_adapter mon_checkpoint_fw
-install_adapter mon_fortinet_fortigate
-install_adapter kubernetes_generic
-install_adapter nfvo_generic
-install_adapter vnfm_generic    
-install_adapter huawei_generic
-install_adapter citrix_adc
-install_adapter ansible_generic
-install_adapter mikrotik_generic
+
+install_adapter() {
+    #uninstall_adapter netasq
+    install_adapter linux_generic 
+    install_adapter pfsense_fw
+    install_adapter checkpoint_r80
+    install_adapter rest_generic 
+    install_adapter aws_generic  
+    install_adapter adva_nc 
+    install_adapter f5_bigip 
+    install_adapter virtuora_nc 
+    install_adapter catalyst_ios 
+    install_adapter cisco_apic  
+    #install_adapter cisco_nexus9000
+    install_adapter cisco_isr
+    #install_adapter cisco_asr
+    install_adapter cisco_asa_generic
+    install_adapter esa
+    install_adapter wsa 
+    install_adapter rancher_cmp
+    install_adapter hp5900
+    install_adapter hp2530
+    install_adapter nec_ix
+    install_adapter nec_nfa
+    install_adapter oneaccess_lbb 
+    install_adapter oneaccess_whitebox
+    install_adapter oneaccess_netconf
+    install_adapter fortigate
+    install_adapter fortiweb
+    #install_adapter fortinet_fortimanager
+    #install_adapter fortinet_fortianalyzer
+    #install_adapter fortinet_jsonapi
+    install_adapter paloalto_chassis
+    install_adapter paloalto_generic
+    install_adapter paloalto_vsys
+    install_adapter netconf_generic
+    #install_adapter juniper_srx
+    #install_adapter juniper_contrail
+    install_adapter redfish_generic
+    install_adapter veex_rtu
+    install_adapter vmware_vsphere
+    install_adapter mon_cisco_ios
+    install_adapter mon_cisco_asa
+    install_adapter mon_generic
+    install_adapter mon_checkpoint_fw
+    install_adapter mon_fortinet_fortigate
+    install_adapter kubernetes_generic
+    install_adapter nfvo_generic
+    install_adapter vnfm_generic    
+    install_adapter huawei_generic
+    install_adapter citrix_adc
+    install_adapter ansible_generic
+    install_adapter mikrotik_generic
 
 
-#install_adapter stormshield 
-#install_adapter a10_thunder 
+    #install_adapter stormshield 
+    #install_adapter a10_thunder 
+}
 
-install_microservices;
-install_workflows;
+finalize_install() {
+    echo "-------------------------------------------------------------------------------"
+    echo " Removing OneAccess Netconf MS definition with advanced variable types"
+    echo "-------------------------------------------------------------------------------"
+    rm -rf /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/Advanced 
+    rm -rf /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/.meta_Advanced
+    echo "DONE"
+
+    echo "-------------------------------------------------------------------------------"
+    echo " update file owner to ncuser.ncuser"
+    echo "-------------------------------------------------------------------------------"
+    chown -R ncuser:ncuser /opt/fmc_repository/*; \
+    chown -R ncuser:ncuser /opt/fmc_repository/.meta_*; \
+    chown -R ncuser:ncuser /opt/sms/bin/php/*; \
+    chown -R ncuser:ncuser /opt/sms/devices/; \
+    #chown -R ncuser:ncuser /opt/ubi-jentreprise/resources/templates/conf/device;\
+    echo "DONE"
+
+    echo "-------------------------------------------------------------------------------"
+    echo " service restart"
+    echo "-------------------------------------------------------------------------------"
+    echo "  >> execute [sudo docker-compose restart msa_api] to restart the API service"
+    echo "  >> execute [sudo docker-compose restart msa_sms] to restart the CoreEngine service"
+    echo "DONE"
+}
+
+usage() {
+	echo "usage: $PROG [all|ms|wf|da]"
+    echo "this script installs some librairies available @github.com/openmsa"
+	echo
+	echo "all (default): install everyting: worflows, microservices and adapters"
+	echo "ms: install the microservices from https://github.com/openmsa/Microservices"
+	echo "wf: install the worflows from https://github.com/openmsa/Workflows"
+	echo "da: install the adapters from https://github.com/openmsa/Adapters"
+    exit 0
+}
+
+main() {
 
 
-echo "-------------------------------------------------------------------------------"
-echo " Removing OneAccess Netconf MS definition with advanced variable types"
-echo "-------------------------------------------------------------------------------"
-rm -rf /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/Advanced 
-rm -rf /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/.meta_Advanced
-echo "DONE"
+	cmd=$1
+	shift
+	case $cmd in
+		""|all)
+            update_github_repo
+            install_microservices;
+            install_workflows;
+            install_adapter;
+			;;
+		ms)
+            update_github_repo
+			install_microservices 
+			;;
+		wf)
+            update_github_repo
+			install_workflows 
+			;;
+		da)
+            update_github_repo
+			install_adapter
+			;;
 
-echo "-------------------------------------------------------------------------------"
-echo " update file owner to ncuser.ncuser"
-echo "-------------------------------------------------------------------------------"
-chown -R ncuser:ncuser /opt/fmc_repository/*; \
-chown -R ncuser:ncuser /opt/fmc_repository/.meta_*; \
-chown -R ncuser:ncuser /opt/sms/bin/php/*; \
-chown -R ncuser:ncuser /opt/sms/devices/; \
-#chown -R ncuser:ncuser /opt/ubi-jentreprise/resources/templates/conf/device;\
-echo "DONE"
+		*)
+			fatal "unknown command: $1"
+            usage
+			;;
+	esac
+    finalize_install
+}
 
-echo "-------------------------------------------------------------------------------"
-echo " service restart"
-echo "-------------------------------------------------------------------------------"
-echo "  >> execute [sudo docker-compose restart msa_api] to restart the API service"
-echo "  >> execute [sudo docker-compose restart msa_sms] to restart the CoreEngine service"
-echo "DONE"
 
+main "$@"
