@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:1b435c462b1d0c93151bb318bd1584bb204a40cb
+    image: ubiqube/msa2-front:6b1aa31d18f4fe7aa6ccc3cd56b0d35c9e17f82c
     ports:
       - target: 80
         published: 80
@@ -52,13 +52,12 @@ services:
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "msa_api:/opt/ubi-jentreprise/generated/conf"
-#      - "msa_config:/opt/configurator"
       - "rrd_repository:/opt/rrd"
 
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:44b731e079e6e5a8494408f11f4f90abbf38666b
+    image: ubiqube/msa2-ui:87a98c91c61c9b226fd29ca8235be9007445ed29
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -71,10 +70,6 @@ services:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
       - bootstrap.memory_lock=true
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
     volumes: 
       - "msa_es:/usr/share/elasticsearch/config"
       - "msa_es:/usr/share/elasticsearch/data"
@@ -117,8 +112,7 @@ services:
       - "9000:9000"
 
   msa_dev:
-    build: 
-      context: ./lab/msa_dev
+    build: ./lab/msa_dev
     depends_on:
       - msa_es
     volumes:
@@ -131,7 +125,6 @@ services:
       - "msa_dev:/opt/devops/"
       - "msa_es:/usr/share/elasticsearch/config"
       - "msa_es:/etc/elasticsearch"
-    privileged: true
 
   linux_me:
     build: ./lab/linux.me
