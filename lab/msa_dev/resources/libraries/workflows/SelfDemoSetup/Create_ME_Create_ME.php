@@ -64,6 +64,11 @@ if (!isset($context['snmpCommunity'])) {
 	$context['snmpCommunity'] = "public";
 }
 
+if (!isset($context['management_port'])) {
+	$context['management_port'] = 22;
+}
+
+
 
 check_mandatory_param('customer_id');
 check_mandatory_param('managed_device_name');
@@ -90,9 +95,13 @@ $mail_alerting = "true";
 $reporting = "false";
 $snmp_community = $context['snmpCommunity'];
 $managementInterface = $context['managementInterface'];
+$management_port = $context['management_port'];
 
 $response = _device_create($customer_db_id, $device_name, $manufacturer_id,
-							$model_id, $login, $password, $password_admin, $management_address, $device_external_reference, $log_enabled = "true", $log_more_enabled = "true",$mail_alerting = "true", $reporting = "true", $snmp_community);
+							$model_id, $login, $password, $password_admin, 
+							$management_address, $device_external_reference, $log_enabled = "true", 
+							$log_more_enabled = "true",$mail_alerting = "true", $reporting = "true", 
+							$snmp_community, $hostname ="", $management_port);
 
 $response = json_decode($response, true);
 if ($response['wo_status'] !== ENDED) {

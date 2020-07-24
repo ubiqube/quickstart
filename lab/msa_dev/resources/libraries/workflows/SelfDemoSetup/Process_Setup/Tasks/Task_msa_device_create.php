@@ -13,8 +13,10 @@ function list_args() {
 	create_var_def('login', 'String');
 	create_var_def('password', 'Password');
 	create_var_def('password_admin', 'Password');
-        create_var_def('managementInterface', 'String');
-        create_var_def('snmpCommunity', 'String');
+    create_var_def('managementInterface', 'String');
+    create_var_def('snmpCommunity', 'String');
+    create_var_def('hostname', 'String');
+	create_var_def('management_port', 'Integer');
 }
 
 check_mandatory_param('customer_id');
@@ -42,9 +44,15 @@ $mail_alerting = "true";
 $reporting = "false";
 $snmp_community = $context['snmpCommunity'];
 $managementInterface = $context['managementInterface'];
+$hostname = $context['hostname'];
+$management_port = $context['management_port'];
 
 $response = _device_create($customer_db_id, $device_name, $manufacturer_id,
-							$model_id, $login, $password, $password_admin, $management_address, $device_external_reference, $log_enabled = "true", $log_more_enabled = "true",$mail_alerting = "true", $reporting = "true", $snmp_community);
+							$model_id, $login, $password, $password_admin, 
+							$management_address, $device_external_reference, 
+							$log_enabled = "true", $log_more_enabled = "true",
+							$mail_alerting = "true", $reporting = "true", $snmp_community, 
+							$hostname, $management_port);
 
 $response = json_decode($response, true);
 if ($response['wo_status'] !== ENDED) {

@@ -20,10 +20,9 @@ function list_args() {
 	create_var_def('password_admin', 'Password');
 	create_var_def('managementInterface', 'String');
 	create_var_def('snmpCommunity', 'String');
+    create_var_def('hostname', 'String');
+	create_var_def('management_port', 'Integer');
 }
-
-
-
 
 // MSA device creation parameters
 $context['managed_device_name'] = "msa_rest_api";
@@ -36,6 +35,8 @@ $context['device_ip_address'] = "127.0.0.1";
 $context['device_external_reference'] = "";
 $context['managementInterface'] = "eth0";
 $context['snmpCommunity'] = "public";
+$context['hostname'] = "rest-me";
+$context['management_port'] = 443;
 
 
 /**

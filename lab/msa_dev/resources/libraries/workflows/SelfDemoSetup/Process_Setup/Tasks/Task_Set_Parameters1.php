@@ -19,6 +19,8 @@ function list_args() {
 	create_var_def('password_admin', 'Password');
 	create_var_def('managementInterface', 'String');
 	create_var_def('snmpCommunity', 'String');
+    create_var_def('hostname', 'String');
+	create_var_def('management_port', 'Integer');
 }
 
 $PROCESSINSTANCEID = $context['PROCESSINSTANCEID'];
@@ -62,6 +64,12 @@ if (!isset($context['managementInterface'])) {
 }  
 if (!isset($context['snmpCommunity'])) {
 	$context['snmpCommunity'] = "public";
+}
+if (!isset($context['hostname'])) {
+	$context['hostname'] = "linux-me";
+}
+if (!isset($context['management_port'])) {
+	$context['management_port'] = 22;
 }
 
 /**
