@@ -92,10 +92,11 @@ update_github_repo() {
 }
 
 uninstall_adapter() {
+    DEVICE_DIR=$1
     echo "-------------------------------------------------------------------------------"
-    echo " Uninstall $1 adapter source code from github repo "
+    echo " Uninstall $DEVICE_DIR adapter source code from github repo "
     echo "-------------------------------------------------------------------------------"
-    /opt/devops/OpenMSA_Adapters/bin/da_installer uninstall /opt/devops/OpenMSA_Adapters/adapters/$1
+    /opt/devops/OpenMSA_Adapters/bin/da_installer uninstall /opt/devops/OpenMSA_Adapters/adapters/$DEVICE_DIR
 }
 
 #
@@ -103,11 +104,13 @@ uninstall_adapter() {
 # $2 : installation mode: DEV_MODE = create symlink / USER_MODE = copy code
 #
 install_adapter() {
+    DEVICE_DIR=$1
+    MODE=$2
     echo "-------------------------------------------------------------------------------"
-    echo " Install $1 adapter source code from github repo "
+    echo " Install $DEVICE_DIR adapter source code from github repo "
     echo "-------------------------------------------------------------------------------"
 
-    /opt/devops/OpenMSA_Adapters/bin/da_installer install /opt/devops/OpenMSA_Adapters/adapters/$1 $2
+    /opt/devops/OpenMSA_Adapters/bin/da_installer install /opt/devops/OpenMSA_Adapters/adapters/$DEVICE_DIR $MODE
     echo "DONE"
 
 }
@@ -184,7 +187,7 @@ install_workflows() {
 }
 
 
-install_adapter() {
+install_adapters() {
     #uninstall_adapter netasq
     install_adapter linux_generic 
     install_adapter pfsense_fw
@@ -289,7 +292,7 @@ main() {
             update_github_repo
             install_microservices;
             install_workflows;
-            install_adapter;
+            install_adapters;
 			;;
 		ms)
             update_github_repo
