@@ -80,8 +80,6 @@ RUN	cd /opt/fmc_repository/Process; \
 COPY resources/scripts/create_test_me.sh /usr/bin/
 COPY resources/scripts/create_mini_lab.sh /usr/bin/
 COPY resources/scripts/install_libraries.sh /usr/bin/
-COPY resources/scripts/es_install_mapping.sh /usr/bin/
-COPY resources/scripts/es_cluster_settings.sh /usr/bin/
 
 RUN chmod a+x /usr/bin/create_mini_lab.sh; \
     chmod a+x /usr/bin/install_libraries.sh; \
