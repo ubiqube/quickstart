@@ -46,8 +46,6 @@ services:
       - 0.0.0.0
       - -c
       - ubiqube.xml
-    ports:
-      - "8480:8480"
     volumes:
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
