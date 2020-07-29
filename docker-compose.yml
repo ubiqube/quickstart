@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:8b5667ce73bc80d99b6f6180ae2f27a6877537f1
+    image: ubiqube/msa2-front:2cb3a6b1c9e9d52977bc2b23c2533b8a2c2817ac
     ports:
       - target: 80
         published: 80
@@ -33,7 +33,7 @@ services:
       - "msa_db:/var/lib/postgresql/data"
       
   msa_api:
-    image: ubiqube/msa-api:ab3b36dd0d06e73ceec498cea47c469e7b025f9f
+    image: ubiqube/msa-api:46101dc8570597bbe91088b23432c757b23d642b
     depends_on:
       - db
       - msa_es
@@ -55,7 +55,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:840a775086418898f1f8a01c5e02468d7cc9a2d0
+    image: ubiqube/msa2-ui:ed640073414b7f3ed20e9fbd45dde4f3547f4240
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -88,15 +88,13 @@ services:
       - "msa_dev:/opt/devops/"
       - "msa_sms:/opt/sms/devices"
       - "rrd_repository:/opt/rrd"
-    privileged: true
 
   msa_bud:
     depends_on:
       - db
-    image: ubiqube/msa2-bud:5e55e804fc5eb647a9258c743d7eacf93e33decb
+    image: ubiqube/msa2-bud:42951df0800592a00a651717ab4a13573562e63c
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-    privileged: true
 
 
   msa_cerebro:
