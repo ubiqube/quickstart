@@ -65,7 +65,7 @@ services:
     - FEATURE_LICENCE=true
 
   msa_es:
-    image: elasticsearch:7.2.1
+    image: ubiqube/msa2:es-2.1
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
