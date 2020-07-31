@@ -79,10 +79,10 @@ COPY resources/scripts/install_libraries.sh /usr/bin/
 RUN chmod a+x /usr/bin/create_mini_lab.sh; \
     chmod a+x /usr/bin/install_libraries.sh; \
     chmod a+x /usr/bin/create_test_me.sh; \
-    chmod a+x /usr/bin/es_install_mapping.sh; \
-    chmod a+x /usr/bin/es_cluster_settings.sh; \
     chown -R ncuser:ncuser /opt/fmc_repository/*; \
     chown -R ncuser:ncuser /opt/fmc_entities/; \
 #    chown -R ncuser:ncuser /opt/sms/bin/php/*; \
+    chown -R ncuser:ncuser /opt/devops/*; \
+    :
 
 CMD [ "/sbin/init" ]
