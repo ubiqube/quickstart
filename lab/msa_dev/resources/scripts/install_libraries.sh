@@ -52,7 +52,15 @@ update_github_repo() {
     cd /opt/fmc_repository ; 
     if [ -d OpenMSA_WF ]; 
     then 
-        cd OpenMSA_WF; 
+        cd OpenMSA_WF;
+	git stash;
+        git checkout master;
+        git pull;
+        git stash pop;
+        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ### TODO REMOVE BEFORE PR MERGE
+        git checkout 2.1.0GA;
+        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         git pull; 
     else 
         git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; 
