@@ -60,11 +60,6 @@ RUN mkdir -p /opt/ubi-jentreprise/generated/conf/device/custom/;
  # install a custom asset script for Linux
 #COPY resources/opt/sms/bin/php/polld/custom/linux_generic_mgmt.php  /opt/devops/sms/bin/php/polld/custom/
 
-# elasticsearch config
-RUN mkdir -p /usr/share/elasticsearch/config/
-RUN mkdir -p /opt/devops/elasticsearch/templates/;
-COPY resources/etc/elasticsearch/templates/* /opt/devops/elasticsearch/templates/
-
 # install the lab: workflows
 RUN	cd /opt/fmc_repository/Process; \
     cp -r ../OpenMSA_WF/Reference .; \
@@ -89,7 +84,5 @@ RUN chmod a+x /usr/bin/create_mini_lab.sh; \
     chown -R ncuser:ncuser /opt/fmc_repository/*; \
     chown -R ncuser:ncuser /opt/fmc_entities/; \
 #    chown -R ncuser:ncuser /opt/sms/bin/php/*; \
-    chown -R ncuser:ncuser /opt/devops/*; \
-    :
 
 CMD [ "/sbin/init" ]
