@@ -68,10 +68,8 @@ services:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
       - bootstrap.memory_lock=true
-    volumes: 
-      - "msa_es:/usr/share/elasticsearch/config"
+    volumes:
       - "msa_es:/usr/share/elasticsearch/data"
-      - "msa_es:/etc/elasticsearch"
 
   msa_sms:
     build: ./lab/msa_sms
@@ -101,7 +99,7 @@ services:
     image: lmenezes/cerebro
     entrypoint:
       - /opt/cerebro/bin/cerebro
-      - -Dhosts.0.host=http://msa_es_link:9200
+      - -Dhosts.0.host=http://msa_es:9200
     depends_on:
       - msa_es
     ports:
