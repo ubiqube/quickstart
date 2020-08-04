@@ -53,7 +53,7 @@ update_github_repo() {
     if [ -d OpenMSA_WF ]; 
     then 
         cd OpenMSA_WF;
-	git stash;
+	      git stash;
         git checkout master;
         git pull;
         git stash pop;
@@ -64,7 +64,7 @@ update_github_repo() {
         git pull; 
     else 
         git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; 
-        cd OpenMSA_MS; 
+        cd OpenMSA_WF;
     fi ; 
     cd -; 
     ### Etsi-Mano ###
@@ -248,7 +248,7 @@ install_adapters() {
     install_adapter ansible_generic
     install_adapter mikrotik_generic
 
-
+    ln -fs /opt/devops/OpenMSA_Adapters/vendor /opt/sms/bin/php/vendor
     #install_adapter stormshield 
     #install_adapter a10_thunder 
 }
