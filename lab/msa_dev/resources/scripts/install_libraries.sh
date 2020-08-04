@@ -221,6 +221,7 @@ install_adapters() {
     install_adapter oneaccess_lbb 
     install_adapter oneaccess_whitebox
     install_adapter oneaccess_netconf
+    install_adapter openstack_keystone_v3
     install_adapter fortigate
     install_adapter fortiweb
     #install_adapter fortinet_fortimanager
