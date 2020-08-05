@@ -6,6 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
+      - msa_sms
     image: ubiqube/msa2-front:0203e1bdf67817e89bee08fb1f8ca62319053cfe
     ports:
       - target: 80
