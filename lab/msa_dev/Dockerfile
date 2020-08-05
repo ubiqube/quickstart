@@ -75,10 +75,12 @@ RUN	cd /opt/fmc_repository/Process; \
 COPY resources/scripts/create_test_me.sh /usr/bin/
 COPY resources/scripts/create_mini_lab.sh /usr/bin/
 COPY resources/scripts/install_libraries.sh /usr/bin/
+COPY resources/scripts/install_license.sh /usr/bin/
 
 RUN chmod a+x /usr/bin/create_mini_lab.sh; \
     chmod a+x /usr/bin/install_libraries.sh; \
     chmod a+x /usr/bin/create_test_me.sh; \
+    chmod a+x /usr/bin/install_license.sh; \
     chown -R ncuser:ncuser /opt/fmc_repository/*; \
     chown -R ncuser:ncuser /opt/fmc_entities/; \
 #    chown -R ncuser:ncuser /opt/sms/bin/php/*; \

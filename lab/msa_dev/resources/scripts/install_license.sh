@@ -33,7 +33,7 @@ else
     MSA_IP=$2
 fi
 
-RESPONSE=`curl -k -s -H 'Content-Type: application/json' -XPOST https://$MSA_IP/ubi-api-rest/auth/token -d '{"username":"ncroot", "password":"ubiqube" }'`
+RESPONSE=`curl -k -H 'Content-Type: application/json' -XPOST http://$MSA_IP:8480/ubi-api-rest/auth/token -d '{"username":"ncroot", "password":"ubiqube" }'`
 if [ -z "$RESPONSE" ]
 then
       echo "Authentication API error"
@@ -41,5 +41,5 @@ then
 fi
 TOKEN=$(php -r 'echo json_decode($argv[1])->token;' "$RESPONSE")
 
-curl --location -s -k -H "Authorization: Bearer "$TOKEN -XPOST https://$MSA_IP/ubi-api-rest/system-admin/v1/license --form file=@$LICENSE_PATH
+curl --location -k -H "Authorization: Bearer "$TOKEN -XPOST http://$MSA_IP:8480/ubi-api-rest/system-admin/v1/license --form file=@$LICENSE_PATH
 
