@@ -173,20 +173,6 @@ install_microservices () {
 
 }
 
-install_license() {
-  #get license
-  curl -k https://repository.ubiqube.com/share/license/MSA2-eval.lic --output /opt/devops/MSA2-eval.lic
-
-  if [ $? -ne 0];
-  then
-    echo "download license failed"
-    exit 1
-  fi
-
-  install_license.sh /opt/devops/MSA2-eval.lic msa_api
-
-}
-
 install_workflows() {
     echo "-------------------------------------------------------------------------------"
     echo " Install some WF from OpenMSA github repo"
@@ -316,7 +302,6 @@ main() {
             install_microservices;
             install_workflows;
             install_adapters;
-            install_license;
 			;;
 		ms)
             update_github_repo

@@ -21,14 +21,20 @@ usage() {
 }
 
 if [ -z "$1" ]; then
-    usage
-    exit 0
+   #get license from repository
+   curl -k https://repository.ubiqube.com/share/license/MSA2-eval.lic --output /opt/devops/MSA2-eval.lic
+
+   if [ $? -ne 0 ]; then
+    echo "download license failed"
+    exit 1
+   fi
+   LICENSE_PATH=/opt/devops/MSA2-eval.lic
 else
     LICENSE_PATH=$1
 fi
 
 if [ -z "$2" ]; then
-    MSA_IP=localhost
+    MSA_IP=msa_api
 else
     MSA_IP=$2
 fi
