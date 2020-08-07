@@ -73,7 +73,7 @@ services:
       - "msa_es:/usr/share/elasticsearch/data"
 
   msa_sms:
-    build: ./lab/msa_sms
+    image: ubiqube/msa2-sms:3e32150a5202db71211d2bd453af883894c52513
     depends_on:
       - db
       - msa_es
