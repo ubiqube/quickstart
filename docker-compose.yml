@@ -134,7 +134,8 @@ volumes:
   msa_db:
   msa_entities:
   msa_repository:
-  msa_sms:
+  msa_sms_php:
+  msa_sms_devices:
   msa_api:
   msa_config:
   msa_dev:
