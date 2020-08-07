@@ -82,10 +82,10 @@ services:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
-      - "msa_sms:/opt/sms/bin/php"
+      - "msa_sms_php:/opt/sms/bin/php"
       - "msa_config:/opt/configurator"
       - "msa_dev:/opt/devops/"
-      - "msa_sms:/opt/sms/devices"
+      - "msa_sms_devices:/opt/sms/devices"
       - "rrd_repository:/opt/rrd"
 
   msa_bud:
@@ -113,13 +113,11 @@ services:
     volumes:
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
-      - "msa_sms:/opt/sms/bin/php"
-      - "msa_sms:/opt/sms/devices"
+      - "msa_sms_php:/opt/sms/bin/php"
+      - "msa_sms_devices:/opt/sms/devices"
       - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_config:/opt/configurator"
       - "msa_dev:/opt/devops/"
-      - "msa_es:/usr/share/elasticsearch/config"
-      - "msa_es:/etc/elasticsearch"
 
   linux_me:
     build: ./lab/linux.me
