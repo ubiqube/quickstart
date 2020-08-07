@@ -10,6 +10,6 @@ RUN passwd --stdin msa <<< "ubiqube"
 RUN echo 'msa  ALL=(ALL:ALL) NOPASSWD: ALL' >> /etc/sudoers
 
 RUN chkconfig iptables on
-RUN chkconfig sshd on
+RUN chkconfig --add sshd && chkconfig sshd on
 
 CMD [ "/sbin/init" ]
