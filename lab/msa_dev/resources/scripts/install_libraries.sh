@@ -145,9 +145,9 @@ install_microservices () {
     ln -fs ../OpenMSA_MS/FLEXIWAN FLEXIWAN; ln -fs ../OpenMSA_MS/.meta_FLEXIWAN .meta_FLEXIWAN; 
     echo "  >> FORTINET"
     ln -fs ../OpenMSA_MS/FORTINET FORTINET; ln -fs ../OpenMSA_MS/.meta_FORTINET .meta_FORTINET; 
-    echo "  >> JUNIPER"
-    ln -fs ../OpenMSA_MS/JUNIPER JUNIPER; ln -fs ../OpenMSA_MS/.meta_JUNIPER .meta_JUNIPER;
-    rm -rf  JUNIPER/SSG
+    #echo "  >> JUNIPER"
+    #ln -fs ../OpenMSA_MS/JUNIPER JUNIPER; ln -fs ../OpenMSA_MS/.meta_JUNIPER .meta_JUNIPER;
+    #rm -rf  JUNIPER/SSG
     echo "  >> LINUX"
     ln -fs ../OpenMSA_MS/LINUX LINUX; ln -fs ../OpenMSA_MS/.meta_LINUX .meta_LINUX; 
     echo "  >> MIKROTIK"
