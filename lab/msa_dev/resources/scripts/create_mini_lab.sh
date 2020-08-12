@@ -14,6 +14,11 @@ fi
 TOKEN=$(php -r 'echo json_decode($argv[1])->token;' "$RESPONSE")
 
 echo "-------------------------------------------------------"
+echo "INSTALL EVAL LICENSE"
+echo "-------------------------------------------------------"
+exec /usr/bin/install_license.sh
+
+echo "-------------------------------------------------------"
 echo "CREATE $OPERATOR TENANT AND CUSTOMER Tyrell Corporation"
 echo "-------------------------------------------------------"
 
