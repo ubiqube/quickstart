@@ -5,6 +5,11 @@ USER="ncroot"
 PASSWORD="ubiqube"
 OPERATOR="BLR"
 
+echo "-------------------------------------------------------"
+echo "INSTALL EVAL LICENSE"
+echo "-------------------------------------------------------"
+/usr/bin/install_license.sh
+
 RESPONSE=`curl -s -H 'Content-Type: application/json' -XPOST http://msa_api:8480/ubi-api-rest/auth/token -d '{"username":"ncroot", "password":"ubiqube" }'`
 if [ -z "$RESPONSE" ]
 then
@@ -12,11 +17,6 @@ then
       exit 1
 fi
 TOKEN=$(php -r 'echo json_decode($argv[1])->token;' "$RESPONSE")
-
-echo "-------------------------------------------------------"
-echo "INSTALL EVAL LICENSE"
-echo "-------------------------------------------------------"
-exec /usr/bin/install_license.sh
 
 echo "-------------------------------------------------------"
 echo "CREATE $OPERATOR TENANT AND CUSTOMER Tyrell Corporation"
