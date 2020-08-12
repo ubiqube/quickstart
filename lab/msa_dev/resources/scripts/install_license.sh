@@ -22,7 +22,7 @@ usage() {
 
 if [ -z "$1" ]; then
    #get license from repository
-   curl -k https://repository.ubiqube.com/share/license/MSA2-eval.lic --output /opt/devops/MSA2-eval.lic
+   curl -s -k https://repository.ubiqube.com/share/license/MSA2-eval.lic --output /opt/devops/MSA2-eval.lic
 
    if [ $? -ne 0 ]; then
     echo "download license failed"
@@ -39,7 +39,7 @@ else
     MSA_IP=$2
 fi
 
-RESPONSE=`curl -k -H 'Content-Type: application/json' -XPOST http://$MSA_IP:8480/ubi-api-rest/auth/token -d '{"username":"ncroot", "password":"ubiqube" }'`
+RESPONSE=`curl -s -k -H 'Content-Type: application/json' -XPOST http://$MSA_IP:8480/ubi-api-rest/auth/token -d '{"username":"ncroot", "password":"ubiqube" }'`
 if [ -z "$RESPONSE" ]
 then
       echo "Authentication API error"
@@ -47,5 +47,5 @@ then
 fi
 TOKEN=$(php -r 'echo json_decode($argv[1])->token;' "$RESPONSE")
 
-curl --location -k -H "Authorization: Bearer "$TOKEN -XPOST http://$MSA_IP:8480/ubi-api-rest/system-admin/v1/license --form file=@$LICENSE_PATH
+curl --location -s -k -H "Authorization: Bearer "$TOKEN -XPOST http://$MSA_IP:8480/ubi-api-rest/system-admin/v1/license --form file=@$LICENSE_PATH
 
