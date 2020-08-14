@@ -91,7 +91,7 @@ services:
   msa_bud:
     depends_on:
       - db
-    image: ubiqube/msa2-bud:42951df0800592a00a651717ab4a13573562e63c
+    image: ubiqube/msa2-bud:26cf8835dadb548dd8c23edc8b7d671c1489d10b
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
 
