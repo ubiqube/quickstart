@@ -19,7 +19,7 @@ update_github_repo() {
         git stash pop;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         ### TODO REMOVE BEFORE PR MERGE
-        git checkout 2.1.0GA;
+        #git checkout 2.1.0GA;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         git pull;
     else 

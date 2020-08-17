@@ -26,7 +26,7 @@ RUN cd /opt/devops/; \
     if [ -d OpenMSA_Adapters ]; then cd OpenMSA_Adapters; git pull; else git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters; fi; \
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ### TODO REMOVE BEFORE PR MERGE
-    cd /opt/devops/OpenMSA_Adapters ; git checkout 2.1.0GA; \
+    #cd /opt/devops/OpenMSA_Adapters ; git checkout 2.1.0GA; \
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
  	### MS ###
     cd /opt/fmc_repository ; \
