@@ -40,7 +40,7 @@ RUN cd /opt/devops/; \
     if [ -d OpenMSA_WF ]; then cd OpenMSA_WF;  git pull ; else  git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; cd OpenMSA_WF; fi ; \
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ### TODO REMOVE BEFORE PR MERGE
-    cd /opt/fmc_repository/OpenMSA_WF ; git checkout 2.1.0GA; \
+    #cd /opt/fmc_repository/OpenMSA_WF ; git checkout 2.1.0GA; \
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
     ### MANO ###
     cd /opt/fmc_repository ; \
