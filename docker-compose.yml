@@ -32,7 +32,7 @@ services:
       POSTGRES_DB: POSTGRESQL
     volumes:
       - "msa_db:/var/lib/postgresql/data"
-      
+
   msa_api:
     image: ubiqube/msa-api:b0e07f0b076e8a6da3ee094a0aeff20c5021f2ae
     depends_on:
@@ -64,7 +64,7 @@ services:
     - FEATURE_LICENCE=true
 
   msa_es:
-    image: ubiqube/msa2:es-2.1
+    image: ubiqube/msa2-es:2.1GA
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
@@ -107,7 +107,7 @@ services:
       - "9000:9000"
 
   msa_dev:
-    build: ./lab/msa_dev
+    image: ubiqube/msa2-linuxdev
     depends_on:
       - msa_es
     volumes:
@@ -120,7 +120,7 @@ services:
       - "msa_dev:/opt/devops/"
 
   linux_me:
-    build: ./lab/linux.me
+    image: ubiqube/msa2-linuxme
     cap_add:
       - NET_ADMIN
       - sys_rawio
@@ -132,7 +132,7 @@ services:
       default:
         ipv4_address: 172.20.0.101
     hostname: linux_me
-  
+
 volumes:
   msa_db:
   msa_entities:
