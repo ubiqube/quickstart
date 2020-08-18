@@ -119,6 +119,7 @@ services:
       - "msa_config:/opt/configurator"
       - "msa_dev:/opt/devops/"
 
+
   linux_me:
     image: ubiqube/msa2-linuxme
     cap_add:
@@ -132,6 +133,8 @@ services:
       default:
         ipv4_address: 172.20.0.101
     hostname: linux_me
+    devices:
+      - "/dev/mem:/dev/mem"
 
 volumes:
   msa_db:
