@@ -123,8 +123,11 @@ services:
     build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
+      - sys_rawio
     ports:
       - "2224:22"
+    devices:                     # required for dmidecode used by polld/asset
+      - "/dev/mem:/dev/mem"
     networks:
       default:
         ipv4_address: 172.20.0.101
