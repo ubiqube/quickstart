@@ -1,4 +1,4 @@
-FROM centos:6.8
+FROM centos:6.8 as linux_me
 
 # for msa asset info
 RUN yum install -y redhat-lsb-core dmidecode
@@ -10,6 +10,6 @@ RUN passwd --stdin msa <<< "ubiqube"
 RUN echo 'msa  ALL=(ALL:ALL) NOPASSWD: ALL' >> /etc/sudoers
 
 RUN chkconfig iptables on
-RUN chkconfig sshd on
+RUN chkconfig --add sshd && chkconfig sshd on
 
 CMD [ "/sbin/init" ]

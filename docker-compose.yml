@@ -1,68 +1,125 @@
-version: "2"
+version: "3.8"
 
 services:
-
-  front:
-    image: ubiqube/msa2:front-20.0
-    volumes:
-      - "front.certs:/etc/nginx/ssl/"
-    ports:
-      - "80:80"
-      - "443:443"
-      - "514:514/udp"
+  msa_front:
     depends_on:
-      - ui
-      - api
+      - msa_api
+      - msa_ui
       - camunda
-      - kibana
-
-  api:
-    image: ubiqube/msa2:api-2.1.0rc2
-    build: ./lab/api
-    volumes:
-      - "repo.entities:/opt/fmc_entities"
-      - "repo.contents:/opt/fmc_repository"
-      - "monitoring:/opt/rrd"
-      - "change-mgt:/opt/svnroot"
-      - "settings:/opt/settings"
-      - "license:/opt/ubiqube/lic"
-    networks:
-      default:
-        ipv4_address: 172.20.0.66
-    hostname: msa
+      - msa_sms
+    image: ubiqube/msa2-front:319bd74db43185cd6456563c55bc0cdf9c4eff37
     ports:
-      - "2223:22"
-    depends_on:
-      - db
-      - es
-
-  kibana:
-    image: ubiqube/msa2:kibana-20.0
-    volumes:
-      - "kibana:/opt/kibana/"
-
-  db:
-    image: ubiqube/msa2:db-20.0
-    volumes:
-      - "db:/opt/database/9.3/data/"
-
-  es:
-    image: ubiqube/msa2:es-20.0
-    volumes:
-      - "es:/opt/elasticsearch/data/"
-
-  ui:
-    image: ubiqube/msa2-ui:dbdcfc3add4745759acf0f40e247e00fa84ffb6b
-    environment:
-      - FEATURE_ADMIN=true
-      - FEATURE_LICENCE=true
-      - FEATURE_ALARMS=false
+      - target: 80
+        published: 80
+        protocol: tcp
+        mode: host
+      - target: 443
+        published: 443
+        protocol: tcp
+        mode: host
+      - target: 514
+        published: 514
+        protocol: udp
+        mode: host
 
   camunda:
-    image: camunda/camunda-bpm-platform:7.12.0
+    image: camunda/camunda-bpm-platform
+
+  db:
+    image: ubiqube/msa2-db:2b7c486764c882abe1a720094ec5159d3bd75389
+    environment:
+      POSTGRES_PASSWORD: my_db_password
+      POSTGRES_DB: POSTGRESQL
+    volumes:
+      - "msa_db:/var/lib/postgresql/data"
+      
+  msa_api:
+    image: ubiqube/msa-api:b0e07f0b076e8a6da3ee094a0aeff20c5021f2ae
+    depends_on:
+      - db
+      - msa_es
+      - msa_dev
+    entrypoint:
+      - /opt/jboss/wildfly/bin/standalone.sh
+      - -b
+      - 0.0.0.0
+      - -bmanagement
+      - 0.0.0.0
+      - -c
+      - ubiqube.xml
+    volumes:
+      - "msa_entities:/opt/fmc_entities"
+      - "msa_repository:/opt/fmc_repository"
+      - "msa_api:/opt/ubi-jentreprise/generated/conf"
+      - "rrd_repository:/opt/rrd"
+
+  msa_ui:
+    depends_on:
+      - msa_api
+    image: ubiqube/msa2-ui:d5ef0bc036cccec555247711408536a149334ba9
+    environment:
+    - FEATURE_ADMIN=true
+    - FEATURE_CONNECTION_STATUS=true
+    - FEATURE_ALARMS=true
+    - FEATURE_LICENCE=true
+
+  msa_es:
+    image: ubiqube/msa2:es-2.1
+    environment:
+      - "discovery.type=single-node"
+      - "script.painless.regex.enabled=true"
+      - bootstrap.memory_lock=true
+    volumes:
+      - "msa_es:/usr/share/elasticsearch/data"
+
+  msa_sms:
+    image: ubiqube/msa2-sms:feefa4f1f72a0c28d8f01aaa455ec2f834becbed
+    depends_on:
+      - db
+      - msa_es
+      - msa_dev
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+      - "msa_entities:/opt/fmc_entities"
+      - "msa_repository:/opt/fmc_repository"
+      - "msa_sms_php:/opt/sms/bin/php"
+      - "msa_config:/opt/configurator"
+      - "msa_dev:/opt/devops/"
+      - "msa_sms_devices:/opt/sms/devices"
+      - "rrd_repository:/opt/rrd"
+
+  msa_bud:
+    depends_on:
+      - db
+    image: ubiqube/msa2-bud:26cf8835dadb548dd8c23edc8b7d671c1489d10b
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+
+
+  msa_cerebro:
+    image: lmenezes/cerebro
+    entrypoint:
+      - /opt/cerebro/bin/cerebro
+      - -Dhosts.0.host=http://msa_es:9200
+    depends_on:
+      - msa_es
+    ports:
+      - "9000:9000"
+
+  msa_dev:
+    build: ./lab/msa_dev
+    depends_on:
+      - msa_es
+    volumes:
+      - "msa_entities:/opt/fmc_entities"
+      - "msa_repository:/opt/fmc_repository"
+      - "msa_sms_php:/opt/sms/bin/php"
+      - "msa_sms_devices:/opt/sms/devices"
+      - "msa_api:/opt/ubi-jentreprise/generated/conf"
+      - "msa_config:/opt/configurator"
+      - "msa_dev:/opt/devops/"
 
   linux_me:
-    image: linux:me
     build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -74,19 +131,21 @@ services:
     hostname: linux_me
   
 volumes:
-  db:
-  es:
-  kibana:
-  monitoring:
-  change-mgt:
-  repo.entities:
-  repo.contents:
-  front.certs:
-  settings:
-  license:
+  msa_db:
+  msa_entities:
+  msa_repository:
+  msa_sms_php:
+  msa_sms_devices:
+  msa_api:
+  msa_config:
+  msa_dev:
+  rrd_repository:
+  msa_es:
 
 networks:
   default:
+    name: quickstart_default
     ipam:
       config:
         - subnet: 172.20.0.0/24
+
