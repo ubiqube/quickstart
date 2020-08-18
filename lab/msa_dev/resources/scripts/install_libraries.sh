@@ -198,7 +198,6 @@ install_workflows() {
 
 }
 
-
 install_adapters() {
     #uninstall_adapter netasq
     install_adapter linux_generic 

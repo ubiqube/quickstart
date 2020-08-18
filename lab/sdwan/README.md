@@ -1,4 +1,4 @@
-# [Sandbox] SDWAN LAB
+# [Sandbox] SD-WAN LAB
 
 Sandbox environment intended to be base environment for further development:
   - site_A - HUB (headquarter)
@@ -7,6 +7,27 @@ Sandbox environment intended to be base environment for further development:
   - site_N - scalig-out (remote office)
   - underlay network: 172.20.0.0/24 - eth0 interfaces
   - overlay network: IPsec
+
+## How to install
+
+SD-WAN lab by default uses existed "quickstart_default" network.
+First - ensure you have quickstart setup created:
+```sh
+$ git clone https://github.com/ubiqube/quickstart.git
+$ cd quickstart
+$ sudo docker login
+$ sudo docker-compose up -d
+```
+
+Command to check available networks:
+```sh
+$ sudo docker network ls
+```
+
+then run SD-WAN lab:
+```sh
+$ sudo docker-compose -f ./lab/sdwan/docker-compose.yml up -d
+```
 
 ## Diagram - underlay netwotk
 
