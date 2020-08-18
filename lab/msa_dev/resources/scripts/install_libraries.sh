@@ -190,6 +190,10 @@ install_workflows() {
     echo "  >> Ansible"
     ln -fs ../OpenMSA_WF/Ansible Ansible
     ln -fs ../OpenMSA_WF/.meta_Ansible .meta_Ansible
+    echo "  >> Public Cloud - AWS"
+    ln -fs ../OpenMSA_WF/Public_Cloud Public_Cloud
+    ln -fs ../OpenMSA_WF/.meta_Public_Cloud .meta_Public_Cloud
+ 
     echo "DONE"
 
 }
