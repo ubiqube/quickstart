@@ -50,7 +50,7 @@ RUN cd /opt/devops/; \
     if [ -d /opt/fmc_repository/quickstart ]; then cd quickstart; git pull ; else git clone https://github.com/ubiqube/quickstart.git quickstart; fi ; \
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ### TODO REMOVE BEFORE PR MERGE
-    cd /opt/fmc_repository/quickstart ; git checkout 2.1.0GA; \
+    #cd /opt/fmc_repository/quickstart ; git checkout 2.1.0GA; \
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
     :
 
