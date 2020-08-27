@@ -7,7 +7,7 @@ services:
       - msa_ui
       - camunda
       - msa_sms
-    image: ubiqube/msa2-front:319bd74db43185cd6456563c55bc0cdf9c4eff37
+    image: ubiqube/msa2-front:96ee3ae7a03985d80e337238dadc575544e1cec3
     ports:
       - target: 80
         published: 80
@@ -34,7 +34,7 @@ services:
       - "msa_db:/var/lib/postgresql/data"
 
   msa_api:
-    image: ubiqube/msa-api:b0e07f0b076e8a6da3ee094a0aeff20c5021f2ae
+    image: ubiqube/msa-api:80b9b59ff7c812b188233ba4bc91cca68e4648b6
     depends_on:
       - db
       - msa_es
@@ -56,15 +56,17 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:d5ef0bc036cccec555247711408536a149334ba9
+    image: ubiqube/msa2-ui:0514c1c9991bf0d0e1cbaf87e419d65a7ea97b62
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
     - FEATURE_ALARMS=true
     - FEATURE_LICENCE=true
+    - FEATURE_TOPOLOGY=true
+
 
   msa_es:
-    image: ubiqube/msa2-es:2.1GA
+    image: ubiqube/msa2-es:037a2067826b36e646b45e5a148431346f62f3a6
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
@@ -73,7 +75,7 @@ services:
       - "msa_es:/usr/share/elasticsearch/data"
 
   msa_sms:
-    image: ubiqube/msa2-sms:feefa4f1f72a0c28d8f01aaa455ec2f834becbed
+    image: ubiqube/msa2-sms:e8c49d8a6616565870a92bf27fddde8db5db228a
     depends_on:
       - db
       - msa_es
@@ -107,7 +109,9 @@ services:
       - "9000:9000"
 
   msa_dev:
-    image: ubiqube/msa2-linuxdev
+    # use local image for quickstart dev => for release: make sure the chnages are ported to msa-docker and uncomment the line below
+    #image: ubiqube/msa2-linuxdev
+    build: ./lab/msa_dev
     depends_on:
       - msa_es
     volumes:
@@ -120,7 +124,9 @@ services:
       - "msa_dev:/opt/devops/"
 
   linux_me:
-    image: ubiqube/msa2-linuxme
+    # use local image for quickstart dev => for release: make sure the chnages are ported to msa-docker and uncomment the line below
+    #image: ubiqube/msa2-linuxme
+    build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
       - sys_rawio
