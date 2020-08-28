@@ -22,7 +22,7 @@ usage() {
 
 if [ -z "$1" ]; then
    #get license from repository
-   curl -s -k https://repository.ubiqube.com/share/license/MSA2-eval.lic --output /opt/devops/MSA2-eval.lic
+   curl --connect-timeout 2 -s -k https://repository.ubiqube.com/share/license/MSA2-eval.lic --output /opt/devops/MSA2-eval.lic
 
    if [ $? -ne 0 ]; then
     echo "download license failed"
