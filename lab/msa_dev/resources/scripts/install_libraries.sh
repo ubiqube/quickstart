@@ -19,7 +19,7 @@ update_github_repo() {
         git stash pop;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         ### TODO REMOVE BEFORE PR MERGE
-        #git checkout 2.1.0GA;
+        git checkout 2.2.0GA;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         git pull;
     else 
@@ -39,7 +39,7 @@ update_github_repo() {
         git stash pop;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         ### TODO REMOVE BEFORE PR MERGE
-        #git checkout 2.1.0GA;
+        git checkout 2.2.0GA;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         git pull;
     else 
@@ -59,7 +59,7 @@ update_github_repo() {
         git stash pop;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         ### TODO REMOVE BEFORE PR MERGE
-        #git checkout 2.1.0GA;
+        git checkout 2.2.0GA;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         git pull; 
     else 
@@ -90,7 +90,7 @@ update_github_repo() {
         git stash pop;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         ### TODO REMOVE BEFORE PR MERGE
-        #git checkout 2.1.0GA;
+        git checkout 2.2.0GA;
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         git pull;
     else 
@@ -145,9 +145,9 @@ install_microservices () {
     ln -fs ../OpenMSA_MS/FLEXIWAN FLEXIWAN; ln -fs ../OpenMSA_MS/.meta_FLEXIWAN .meta_FLEXIWAN; 
     echo "  >> FORTINET"
     ln -fs ../OpenMSA_MS/FORTINET FORTINET; ln -fs ../OpenMSA_MS/.meta_FORTINET .meta_FORTINET; 
-    #echo "  >> JUNIPER"
-    #ln -fs ../OpenMSA_MS/JUNIPER JUNIPER; ln -fs ../OpenMSA_MS/.meta_JUNIPER .meta_JUNIPER;
-    #rm -rf  JUNIPER/SSG
+    echo "  >> JUNIPER"
+    ln -fs ../OpenMSA_MS/JUNIPER JUNIPER; ln -fs ../OpenMSA_MS/.meta_JUNIPER .meta_JUNIPER;
+    rm -rf  JUNIPER/SSG
     echo "  >> LINUX"
     ln -fs ../OpenMSA_MS/LINUX LINUX; ln -fs ../OpenMSA_MS/.meta_LINUX .meta_LINUX; 
     echo "  >> MIKROTIK"
@@ -234,7 +234,7 @@ install_adapters() {
     install_adapter paloalto_generic
     install_adapter paloalto_vsys
     install_adapter netconf_generic
-    #install_adapter juniper_srx
+    install_adapter juniper_srx
     #install_adapter juniper_contrail
     install_adapter redfish_generic
     install_adapter veex_rtu
