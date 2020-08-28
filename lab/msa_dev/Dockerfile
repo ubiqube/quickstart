@@ -1,6 +1,6 @@
 FROM centos:7
 
-RUN yum -y install https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.7-1.x86_64.rpm && yum install -y git php
+RUN yum -y install https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.7-1.x86_64.rpm git php
 RUN adduser ncuser
 
 # install some useful things
@@ -26,21 +26,21 @@ RUN cd /opt/devops/; \
     if [ -d OpenMSA_Adapters ]; then cd OpenMSA_Adapters; git pull; else git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters; fi; \
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ### TODO REMOVE BEFORE PR MERGE
-    #cd /opt/devops/OpenMSA_Adapters ; git checkout 2.1.0GA; \
+    cd /opt/devops/OpenMSA_Adapters ; git checkout 2.2.0GA; \
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
  	### MS ###
     cd /opt/fmc_repository ; \
     if [ -d OpenMSA_MS ]; then  cd OpenMSA_MS; git pull; else git clone https://github.com/openmsa/Microservices.git OpenMSA_MS; fi; \
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ### TODO REMOVE BEFORE PR MERGE
-    #cd /opt/fmc_repository/OpenMSA_MS ; git checkout 2.1.0GA; \
+    cd /opt/fmc_repository/OpenMSA_MS ; git checkout 2.2.0GA; \
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
     ### WF ###
     cd /opt/fmc_repository ; \
     if [ -d OpenMSA_WF ]; then cd OpenMSA_WF;  git pull ; else  git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; cd OpenMSA_WF; fi ; \
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ### TODO REMOVE BEFORE PR MERGE
-    #cd /opt/fmc_repository/OpenMSA_WF ; git checkout 2.1.0GA; \
+    cd /opt/fmc_repository/OpenMSA_WF ; git checkout 2.2.0GA; \
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
     ### MANO ###
     cd /opt/fmc_repository ; \
@@ -50,7 +50,7 @@ RUN cd /opt/devops/; \
     if [ -d /opt/fmc_repository/quickstart ]; then cd quickstart; git pull ; else git clone https://github.com/ubiqube/quickstart.git quickstart; fi ; \
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ### TODO REMOVE BEFORE PR MERGE
-    cd /opt/fmc_repository/quickstart ; git checkout 2.1.0GA; \
+    cd /opt/fmc_repository/quickstart ; git checkout 2.2.0GA; \
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
     :
 
@@ -83,7 +83,6 @@ RUN chmod a+x /usr/bin/create_mini_lab.sh; \
     chmod a+x /usr/bin/install_license.sh; \
     chown -R ncuser:ncuser /opt/fmc_repository/*; \
     chown -R ncuser:ncuser /opt/fmc_entities/; \
-#    chown -R ncuser:ncuser /opt/sms/bin/php/*; \
     chown -R ncuser:ncuser /opt/devops/*; \
     :
 
