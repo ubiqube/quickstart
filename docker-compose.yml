@@ -7,7 +7,7 @@ services:
       - msa_ui
       - camunda
       - msa_sms
-    image: ubiqube/msa2-front:96ee3ae7a03985d80e337238dadc575544e1cec3
+    image: ubiqube/msa2-front:854396a3b17fdc13b40506017f67f0eb463a5343
     ports:
       - target: 80
         published: 80
@@ -34,7 +34,7 @@ services:
       - "msa_db:/var/lib/postgresql/data"
 
   msa_api:
-    image: ubiqube/msa-api:80b9b59ff7c812b188233ba4bc91cca68e4648b6
+    image: ubiqube/msa-api:01c2449225961e288c0d0e47795193b97da28a8c
     depends_on:
       - db
       - msa_es
@@ -52,11 +52,13 @@ services:
       - "msa_repository:/opt/fmc_repository"
       - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "rrd_repository:/opt/rrd"
+      - "msa_sms_php:/opt/sms/bin/php"
+      - "msa_dev:/opt/devops/"
 
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:0514c1c9991bf0d0e1cbaf87e419d65a7ea97b62
+    image: ubiqube/msa2-ui:4ab34eda0af7540a3c19ccc657b0ec2e3fd3d579
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -115,6 +117,7 @@ services:
     depends_on:
       - msa_es
     volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "msa_sms_php:/opt/sms/bin/php"
