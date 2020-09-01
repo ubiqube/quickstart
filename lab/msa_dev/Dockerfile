@@ -1,8 +1,19 @@
 FROM centos:7
 
-RUN yum -y install https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.7-1.x86_64.rpm git php
-RUN adduser ncuser
+RUN yum -y install https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.7-1.x86_64.rpm git php openssh-server sudo
+RUN yum -y upgrade git 
+#ENV container docker
+#RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
+#systemd-tmpfiles-setup.service ] || rm -f $i; done); \
+#rm -f /lib/systemd/system/multi-user.target.wants/*;\
+#rm -f /etc/systemd/system/*.wants/*;\
+#rm -f /lib/systemd/system/local-fs.target.wants/*; \
+#rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
+#rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
+#rm -f /lib/systemd/system/basic.target.wants/*;\
+#rm -f /lib/systemd/system/anaconda.target.wants/*;
 
+RUN adduser ncuser
 # install some useful things
 RUN git config --global alias.lg "log --graph --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(bold blue)<%an>%C(reset) %C(green)(%ar)%C(reset)' --abbrev-commit --date=relative"; \
     git config --global push.default simple; \
@@ -57,9 +68,6 @@ RUN cd /opt/devops/; \
 # remove all adapter config from code base
 RUN mkdir -p /opt/ubi-jentreprise/generated/conf/device/custom/;
 
- # install a custom asset script for Linux
-#COPY resources/opt/sms/bin/php/polld/custom/linux_generic_mgmt.php  /opt/devops/sms/bin/php/polld/custom/
-
 # install the lab: workflows
 RUN	cd /opt/fmc_repository/Process; \
     cp -r ../OpenMSA_WF/Reference .; \
@@ -86,4 +94,4 @@ RUN chmod a+x /usr/bin/create_mini_lab.sh; \
     chown -R ncuser:ncuser /opt/devops/*; \
     :
 
-CMD [ "/sbin/init" ]
+CMD ["/usr/sbin/init"]
