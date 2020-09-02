@@ -193,7 +193,10 @@ install_workflows() {
     echo "  >> Public Cloud - AWS"
     ln -fs ../OpenMSA_WF/Public_Cloud Public_Cloud
     ln -fs ../OpenMSA_WF/.meta_Public_Cloud .meta_Public_Cloud
- 
+    echo "  >> Topology"
+    ln -fs ../OpenMSA_WF/Topology Topology
+    ln -fs ../OpenMSA_WF/.meta_Topology .meta_Topology
+
     echo "DONE"
 
 }
