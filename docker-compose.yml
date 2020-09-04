@@ -7,7 +7,7 @@ services:
       - msa_ui
       - camunda
       - msa_sms
-    image: ubiqube/msa2-front:d46f52d6421bc25ec4ea5811f45660f656f7298b
+    image: ubiqube/msa2-front:9ecdf15eaeeca838a831edb8e1eba35e3e58801f
     ports:
       - target: 80
         published: 80
@@ -26,7 +26,7 @@ services:
     image: camunda/camunda-bpm-platform
 
   db:
-    image: ubiqube/msa2-db:a04c9cf8ac13fe28e2d02cc2a37d1552ee6bdb44
+    image: ubiqube/msa2-db:f4d0bd4ddcc3480db0db96bc4cac1ad44c236579
     environment:
       POSTGRES_PASSWORD: my_db_password
       POSTGRES_DB: POSTGRESQL
@@ -34,7 +34,7 @@ services:
       - "msa_db:/var/lib/postgresql/data"
 
   msa_api:
-    image: ubiqube/msa-api:c576cb4a35f5132585faaacd985284ca31c7393f
+    image: ubiqube/msa-api:f7a32032367c4ca98a430501455989d0f5c0c514
     depends_on:
       - db
       - msa_es
@@ -58,7 +58,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:453f441abf4f8cfe397e5df2e7a04bfbf7a0966c
+    image: ubiqube/msa2-ui:3d09f56f003ae390b572d0a5d750ab05863ff9e6
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
