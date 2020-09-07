@@ -1,8 +1,11 @@
 FROM centos:6
 
-# for msa asset info
-RUN yum install -y redhat-lsb-core dmidecode openssh-server sudo iptables net-snmp net-snmp-utils tcpdump
+ENV container docker
 
+RUN yum install -y redhat-lsb-core dmidecode openssh-server \   
+        sudo iptables net-snmp net-snmp-utils tcpdump
+
+RUN passwd --stdin root <<< "ubiqube"
 RUN useradd msa
 RUN passwd --stdin msa <<< "ubiqube"
 RUN echo 'msa  ALL=(ALL:ALL) NOPASSWD: ALL' >> /etc/sudoers
