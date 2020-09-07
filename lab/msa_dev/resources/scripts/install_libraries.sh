@@ -3,6 +3,32 @@
 
 PROG=$(basename $0)
 
+init_db() {
+   
+    echo "-------------------------------------------------------"
+    echo "INIT DB CONFIG VARS"
+    echo "-------------------------------------------------------"
+    /usr/bin/init_db.sh
+}
+
+init_intall() {
+    
+    git config --global alias.lg "log --graph --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(bold blue)<%an>%C(reset) %C(green)(%ar)%C(reset)' --abbrev-commit --date=relative"; \
+    git config --global push.default simple; \
+    
+    mkdir -p /opt/fmc_entities; \
+    mkdir -p /opt/fmc_repository/CommandDefinition; \
+    mkdir -p /opt/fmc_repository/Configuration; \
+    mkdir -p /opt/fmc_repository/Datafiles; \
+    mkdir -p /opt/fmc_repository/Documentation; \
+    mkdir -p /opt/fmc_repository/Firmware; \
+    mkdir -p /opt/fmc_repository/License; \
+    mkdir -p /opt/fmc_repository/Process; \
+
+    chown -R ncuser.ncuser /opt/fmc_repository /opt/fmc_entities
+    
+}
+
 update_github_repo() {
 
     echo "-------------------------------------------------------------------------------"
@@ -174,10 +200,21 @@ install_microservices () {
 }
 
 install_workflows() {
+
+    cd /opt/fmc_repository/CommandDefinition/; \
+    ln -fs /opt/fmc_repository/OpenMSA_MS/LINUX LINUX; ln -fs ../OpenMSA_MS/.meta_LINUX .meta_LINUX; \
+
+
     echo "-------------------------------------------------------------------------------"
-    echo " Install some WF from OpenMSA github repo"
+    echo " Install some WF from OpenMSA github github repository"
     echo "-------------------------------------------------------------------------------"
-    cd /opt/fmc_repository/Process/; 
+    cd /opt/fmc_repository/Process; \
+    echo "  >> WF references and libs"
+    ln -fs ../OpenMSA_WF/Reference Reference; \
+    ln -fs ../OpenMSA_WF/.meta_Reference .meta_Reference; \
+    echo "  >> WF tutorials"
+    ln -fs ../OpenMSA_WF/Tutorials Tutorials; \
+    ln -fs ../OpenMSA_WF/.meta_Tutorials .meta_Tutorials; \
     echo "  >> BIOS_Automation"
     ln -fs ../OpenMSA_WF/BIOS_Automation BIOS_Automation
     ln -fs ../OpenMSA_WF/.meta_BIOS_Automation .meta_BIOS_Automation
@@ -196,6 +233,13 @@ install_workflows() {
     echo "  >> Topology"
     ln -fs ../OpenMSA_WF/Topology Topology
     ln -fs ../OpenMSA_WF/.meta_Topology .meta_Topology
+
+
+    echo "-------------------------------------------------------------------------------"
+    echo " Install mini lab setup WF from quickstart github repository"
+    echo "-------------------------------------------------------------------------------"
+    ln -fs ../quickstart/lab/msa_dev/resources/libraries/workflows/SelfDemoSetup SelfDemoSetup; \
+    ln -fs ../quickstart/lab/msa_dev/resources/libraries/workflows/.meta_SelfDemoSetup .meta_SelfDemoSetup; \
 
     echo "DONE"
 
@@ -282,7 +326,7 @@ finalize_install() {
     echo " service restart"
     echo "-------------------------------------------------------------------------------"
     echo "  >> execute [sudo docker-compose restart msa_api] to restart the API service"
-    echo "  >> execute [sudo docker-compose exec msa_sms /etc/init.d/ubi-sms restart] to restart the CoreEngine service"
+    echo "  >> execute [sudo docker-compose restart msa_sms] to restart the CoreEngine service"
     echo "DONE"
 }
 
@@ -304,20 +348,28 @@ main() {
 	shift
 	case $cmd in
 		""|all)
+            init_db
+            init_intall
             update_github_repo
             install_microservices;
             install_workflows;
             install_adapters;
 			;;
 		ms)
+            init_db
+            init_intall
             update_github_repo
 			install_microservices 
 			;;
 		wf)
+            init_db
+            init_intall
             update_github_repo
 			install_workflows 
 			;;
 		da)
+            init_db
+            init_intall
             update_github_repo
 			install_adapters
 			;;
