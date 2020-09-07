@@ -7,7 +7,7 @@ services:
       - msa_ui
       - camunda
       - msa_sms
-    image: ubiqube/msa2-front:9ecdf15eaeeca838a831edb8e1eba35e3e58801f
+    image: ubiqube/msa2-front:340a0dfd4655832aaf175565aebbb3658c9fdcbd
     ports:
       - target: 80
         published: 80
@@ -23,7 +23,7 @@ services:
         mode: host
 
   camunda:
-    image: camunda/camunda-bpm-platform
+    image: camunda/camunda-bpm-platform:7.13.0
 
   db:
     image: ubiqube/msa2-db:f4d0bd4ddcc3480db0db96bc4cac1ad44c236579
@@ -34,7 +34,7 @@ services:
       - "msa_db:/var/lib/postgresql/data"
 
   msa_api:
-    image: ubiqube/msa-api:f7a32032367c4ca98a430501455989d0f5c0c514
+    image: ubiqube/msa-api:49bc367e1df781272a050da599a84b1fabde9747
     depends_on:
       - db
       - msa_es
@@ -58,7 +58,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:3d09f56f003ae390b572d0a5d750ab05863ff9e6
+    image: ubiqube/msa2-ui:fb12af3d6747516d02520945e3df0eb8f388a704
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -83,22 +83,20 @@ services:
       - msa_es
       - msa_dev
     volumes:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+      - "msa_api:/opt/ubi-jentreprise/generated/conf"
+      - "msa_dev:/opt/devops/"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
-      - "msa_sms_php:/opt/sms/bin/php"
-      - "msa_config:/opt/configurator"
-      - "msa_dev:/opt/devops/"
       - "msa_sms_devices:/opt/sms/devices"
+      - "msa_sms_php:/opt/sms/bin/php"
       - "rrd_repository:/opt/rrd"
+#      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+
 
   msa_bud:
     depends_on:
       - db
     image: ubiqube/msa2-bud:26cf8835dadb548dd8c23edc8b7d671c1489d10b
-    volumes:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-
 
   msa_cerebro:
     image: lmenezes/cerebro
@@ -143,16 +141,16 @@ services:
     hostname: linux_me
 
 volumes:
-  msa_db:
-  msa_entities:
-  msa_repository:
-  msa_sms_php:
-  msa_sms_devices:
   msa_api:
   msa_config:
+  msa_db:
   msa_dev:
-  rrd_repository:
+  msa_entities:
   msa_es:
+  msa_repository:
+  msa_sms_devices:
+  msa_sms_php:
+  rrd_repository:
 
 networks:
   default:
