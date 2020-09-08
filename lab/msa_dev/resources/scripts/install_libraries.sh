@@ -30,10 +30,10 @@ init_intall() {
 }
 
 update_github_repo() {
-
     echo "-------------------------------------------------------------------------------"
     echo " Update the github repositories "
     echo "-------------------------------------------------------------------------------"
+    git config --global user.email devops@openmsa.co
     cd /opt/devops ; 
     echo "  >> https://github.com/openmsa/Adapters.git "
     if [ -d OpenMSA_Adapters ]; 
@@ -43,17 +43,15 @@ update_github_repo() {
         git checkout master;
         git pull;
         git stash pop;
-        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        ### TODO REMOVE BEFORE PR MERGE
-        git checkout 2.2.0GA;
-        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        git pull;
     else 
         git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters; 
         cd OpenMSA_Adapters; 
     fi ;
-    cd -; 
-        ### MS ###
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ### TODO REMOVE BEFORE PR MERGE
+    git checkout 2.2.0GA;
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ### MS ###
     echo "  >> https://github.com/openmsa/Microservices.git "
     cd /opt/fmc_repository ; 
     if [ -d OpenMSA_MS ]; 
@@ -62,37 +60,31 @@ update_github_repo() {
         git stash;
         git checkout master;
         git pull;
-        git stash pop;
-        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        ### TODO REMOVE BEFORE PR MERGE
-        git checkout 2.2.0GA;
-        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        git pull;
     else 
         git clone https://github.com/openmsa/Microservices.git OpenMSA_MS; 
         cd OpenMSA_MS; 
     fi;
-    cd -; 
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ### TODO REMOVE BEFORE PR MERGE
+    git checkout 2.2.0GA;
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ### WF ###
     echo "  >> https://github.com/openmsa/Workflows.git "
     cd /opt/fmc_repository ; 
     if [ -d OpenMSA_WF ]; 
     then 
         cd OpenMSA_WF;
-	      git stash;
+        git stash;
         git checkout master;
         git pull;
-        git stash pop;
-        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        ### TODO REMOVE BEFORE PR MERGE
-        git checkout 2.2.0GA;
-        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        git pull; 
     else 
         git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; 
         cd OpenMSA_WF;
     fi ; 
-    cd -; 
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ### TODO REMOVE BEFORE PR MERGE
+    git checkout 2.2.0GA;
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ### Etsi-Mano ###
     echo "  >> https://github.com/openmsa/etsi-mano.git "
     cd /opt/fmc_repository ; 
@@ -113,15 +105,13 @@ update_github_repo() {
         git stash;
         git checkout master;
         git pull;
-        git stash pop;
-        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        ### TODO REMOVE BEFORE PR MERGE
-        git checkout 2.2.0GA;
-        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        git pull;
     else 
         git clone https://github.com/ubiqube/quickstart.git quickstart; 
     fi ;
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ### TODO REMOVE BEFORE PR MERGE
+    git checkout 2.2.0GA;
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 }
 
