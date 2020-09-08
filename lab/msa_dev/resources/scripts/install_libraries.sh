@@ -18,6 +18,7 @@ init_intall() {
     
     mkdir -p /opt/fmc_entities; \
     mkdir -p /opt/fmc_repository/CommandDefinition; \
+    mkdir -p /opt/fmc_repository/CommandDefinition/microservices; \
     mkdir -p /opt/fmc_repository/Configuration; \
     mkdir -p /opt/fmc_repository/Datafiles; \
     mkdir -p /opt/fmc_repository/Documentation; \
