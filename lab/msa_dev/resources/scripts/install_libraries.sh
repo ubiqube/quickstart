@@ -3,6 +3,14 @@
 
 PROG=$(basename $0)
 
+install_license() {
+    echo "-------------------------------------------------------"
+    echo "INSTALL EVAL LICENSE"
+    echo "-------------------------------------------------------"
+    /usr/bin/install_license.sh
+
+}
+
 init_db() {
    
     echo "-------------------------------------------------------"
@@ -336,6 +344,7 @@ main() {
 	case $cmd in
 		""|all)
             init_db
+            install_license
             init_intall
             update_github_repo
             install_microservices;
@@ -344,18 +353,21 @@ main() {
 			;;
 		ms)
             init_db
+            install_license
             init_intall
             update_github_repo
 			install_microservices 
 			;;
 		wf)
             init_db
+            install_license
             init_intall
             update_github_repo
 			install_workflows 
 			;;
 		da)
             init_db
+            install_license
             init_intall
             update_github_repo
 			install_adapters
