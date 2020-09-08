@@ -191,10 +191,6 @@ install_microservices () {
 
 install_workflows() {
 
-    cd /opt/fmc_repository/CommandDefinition/; \
-    ln -fs /opt/fmc_repository/OpenMSA_MS/LINUX LINUX; ln -fs ../OpenMSA_MS/.meta_LINUX .meta_LINUX; \
-
-
     echo "-------------------------------------------------------------------------------"
     echo " Install some WF from OpenMSA github github repository"
     echo "-------------------------------------------------------------------------------"
