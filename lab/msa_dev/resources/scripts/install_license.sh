@@ -20,6 +20,12 @@ usage() {
    	echo "default FQDN: localhost"
 }
 
+/usr/bin/wait_for_api.sh
+if [ $? -ne 0 ]; then
+    echo "\nERROR: API unavailable"
+    exit 1
+fi
+
 if [ -z "$1" ]; then
    #get license from repository
    curl --connect-timeout 2 -s -k https://repository.ubiqube.com/share/license/MSA2-eval.lic --output /opt/devops/MSA2-eval.lic

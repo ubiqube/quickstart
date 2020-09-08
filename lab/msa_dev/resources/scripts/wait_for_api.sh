@@ -1,0 +1,42 @@
+#!/bin/bash
+#set -x
+
+PROG=$(basename $0)
+
+usage() {
+	echo "usage: $PROG <license file path> [<MSActivator IP or FQDN>]"
+	echo
+	echo "install a license on the MSActivator."
+   	echo "default FQDN: localhost"
+}
+
+echo "Connecting to the MSActivator API."
+
+
+S="\033[s"
+U="\033[u"
+
+POS="\033[1000D\033[2C"
+
+for (( c=1; c<=20; c++ ))
+do  
+    HTTP_STATUS=$(curl -m 1 --connect-timeout 1 -k -s -I -o /dev/null -w ''%{http_code}'' https://msa_front/ubi-api-ping/)
+    if [ $HTTP_STATUS == "200" ]
+    then 
+        break 2
+    fi
+    if [ $c == 20 ]
+    then
+        exit 1
+    fi
+    eval echo -ne '${S}${POS}\.\ \ \ \ ${U}'
+    sleep 0.2
+    eval echo -ne '${S}${POS}\ \/\ \ \ ${U}'
+    sleep 0.2
+    eval echo -ne '${S}${POS}\ \ \o\ \ ${U}'
+    sleep 0.2
+    eval echo -ne '${S}${POS}\ \ \ \O\ ${U}'
+    sleep 0.2
+    eval echo -ne '${S}${POS}\ \ \ \ \o${U}'
+    sleep 0.2
+done

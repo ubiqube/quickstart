@@ -347,6 +347,11 @@ echo
 }
 
 main() {
+	/usr/bin/wait_for_api.sh
+	if [ $? -ne 0 ]; then
+    echo "\nERROR: API unavailable"
+    exit 1
+	fi
     init_db
 }
 

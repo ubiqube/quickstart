@@ -8,6 +8,9 @@ install_license() {
     echo "INSTALL EVAL LICENSE"
     echo "-------------------------------------------------------"
     /usr/bin/install_license.sh
+	if [ $? -ne 0 ]; then
+        exit 1
+	fi
 
 }
 
@@ -17,6 +20,9 @@ init_db() {
     echo "INIT DB CONFIG VARS"
     echo "-------------------------------------------------------"
     /usr/bin/init_db.sh
+	if [ $? -ne 0 ]; then
+        exit 1
+	fi
 }
 
 init_intall() {
