@@ -58,7 +58,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:fb12af3d6747516d02520945e3df0eb8f388a704
+    image: ubiqube/msa2-ui:fd40ac958fe0db1fc6417c032b7dbca65a503e9d
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -77,7 +77,7 @@ services:
       - "msa_es:/usr/share/elasticsearch/data"
 
   msa_sms:
-    image: ubiqube/msa2-sms:7c91681101674749dc29be67c5833f12083be5f4
+    image: ubiqube/msa2-sms:1b09ab71a4ae34e1f7ef01f33961ecd2983a315c
     depends_on:
       - db
       - msa_es
@@ -95,7 +95,7 @@ services:
   msa_bud:
     depends_on:
       - db
-    image: ubiqube/msa2-bud:26cf8835dadb548dd8c23edc8b7d671c1489d10b
+    image: ubiqube/msa2-bud:9a9e8d23c1f79992c131b3ba8d36a5c4d0fcdcf7
 
   msa_cerebro:
     image: lmenezes/cerebro:0.9.2
