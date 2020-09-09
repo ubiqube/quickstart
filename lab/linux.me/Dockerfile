@@ -22,4 +22,6 @@ RUN chkconfig --add iptables && chkconfig iptables on
 RUN chkconfig --add sshd && chkconfig sshd on
 RUN chkconfig --add snmpd && chkconfig snmpd on
 
+RUN service sshd start && service snmpd start 
+
 CMD [ "/sbin/init" ]
