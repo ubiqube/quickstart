@@ -5,6 +5,13 @@ USER="ncroot"
 PASSWORD="ubiqube"
 OPERATOR="BLR"
 
+/usr/bin/wait_for_api.sh
+if [ $? -ne 0 ]; then
+    echo "\nERROR: API unavailable"
+    exit 1
+fi
+
+
 RESPONSE=`curl -s -H 'Content-Type: application/json' -XPOST http://msa_api:8480/ubi-api-rest/auth/token -d '{"username":"ncroot", "password":"ubiqube" }'`
 if [ -z "$RESPONSE" ]
 then
