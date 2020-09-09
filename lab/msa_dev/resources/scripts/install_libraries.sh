@@ -65,6 +65,7 @@ update_github_repo() {
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ### TODO REMOVE BEFORE PR MERGE
     git checkout 2.2.0GA;
+    git pull
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ### MS ###
     echo "  >> https://github.com/openmsa/Microservices.git "
@@ -82,6 +83,7 @@ update_github_repo() {
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ### TODO REMOVE BEFORE PR MERGE
     git checkout 2.2.0GA;
+    git pull
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ### WF ###
     echo "  >> https://github.com/openmsa/Workflows.git "
@@ -99,6 +101,7 @@ update_github_repo() {
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ### TODO REMOVE BEFORE PR MERGE
     git checkout 2.2.0GA;
+    git pull
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ### Etsi-Mano ###
     echo "  >> https://github.com/openmsa/etsi-mano.git "
@@ -126,6 +129,7 @@ update_github_repo() {
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ### TODO REMOVE BEFORE PR MERGE
     git checkout 2.2.0GA;
+    git pull
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 }
@@ -161,44 +165,44 @@ install_microservices () {
     echo "-------------------------------------------------------------------------------"
     cd /opt/fmc_repository/CommandDefinition/; 
     echo "  >> ADVA"
-    ln -fs ../OpenMSA_MS/ADVA ADVA; ln -fs ../OpenMSA_MS/.meta_ADVA .meta_ADVA; 
+    ln -fsn ../OpenMSA_MS/ADVA ADVA; ln -fsn ../OpenMSA_MS/.meta_ADVA .meta_ADVA; 
     echo "  >> ANSIBLE"
-    ln -fs ../OpenMSA_MS/ANSIBLE ANSIBLE; ln -fs ../OpenMSA_MS/.meta_ANSIBLE .meta_ANSIBLE; 
+    ln -fsn ../OpenMSA_MS/ANSIBLE ANSIBLE; ln -fsn ../OpenMSA_MS/.meta_ANSIBLE .meta_ANSIBLE; 
     echo "  >> AWS"
-    ln -fs ../OpenMSA_MS/AWS AWS; ln -fs ../OpenMSA_MS/.meta_AWS .meta_AWS; 
+    ln -fsn ../OpenMSA_MS/AWS AWS; ln -fsn ../OpenMSA_MS/.meta_AWS .meta_AWS; 
     echo "  >> CHECKPOINT"
-    ln -fs ../OpenMSA_MS/CHECKPOINT CHECKPOINT; ln -fs ../OpenMSA_MS/.meta_CHECKPOINT .meta_CHECKPOINT; 
+    ln -fsn ../OpenMSA_MS/CHECKPOINT CHECKPOINT; ln -fsn ../OpenMSA_MS/.meta_CHECKPOINT .meta_CHECKPOINT; 
     echo "  >> CISCO"
-    ln -fs ../OpenMSA_MS/CISCO CISCO; ln -fs ../OpenMSA_MS/.meta_CISCO .meta_CISCO; 
+    ln -fsn ../OpenMSA_MS/CISCO CISCO; ln -fsn ../OpenMSA_MS/.meta_CISCO .meta_CISCO; 
     echo "  >> CITRIX"
-    ln -fs ../OpenMSA_MS/CITRIX CITRIX; ln -fs ../OpenMSA_MS/.meta_CITRIX .meta_CITRIX; 
+    ln -fsn ../OpenMSA_MS/CITRIX CITRIX; ln -fsn ../OpenMSA_MS/.meta_CITRIX .meta_CITRIX; 
     echo "  >> FLEXIWAN"
-    ln -fs ../OpenMSA_MS/FLEXIWAN FLEXIWAN; ln -fs ../OpenMSA_MS/.meta_FLEXIWAN .meta_FLEXIWAN; 
+    ln -fsn ../OpenMSA_MS/FLEXIWAN FLEXIWAN; ln -fsn ../OpenMSA_MS/.meta_FLEXIWAN .meta_FLEXIWAN; 
     echo "  >> FORTINET"
-    ln -fs ../OpenMSA_MS/FORTINET FORTINET; ln -fs ../OpenMSA_MS/.meta_FORTINET .meta_FORTINET; 
+    ln -fsn ../OpenMSA_MS/FORTINET FORTINET; ln -fsn ../OpenMSA_MS/.meta_FORTINET .meta_FORTINET; 
     echo "  >> JUNIPER"
-    ln -fs ../OpenMSA_MS/JUNIPER JUNIPER; ln -fs ../OpenMSA_MS/.meta_JUNIPER .meta_JUNIPER;
+    ln -fsn ../OpenMSA_MS/JUNIPER JUNIPER; ln -fsn ../OpenMSA_MS/.meta_JUNIPER .meta_JUNIPER;
     rm -rf  JUNIPER/SSG
     echo "  >> LINUX"
-    ln -fs ../OpenMSA_MS/LINUX LINUX; ln -fs ../OpenMSA_MS/.meta_LINUX .meta_LINUX; 
+    ln -fsn ../OpenMSA_MS/LINUX LINUX; ln -fsn ../OpenMSA_MS/.meta_LINUX .meta_LINUX; 
     echo "  >> MIKROTIK"
-    ln -fs ../OpenMSA_MS/MIKROTIK MIKROTIK; ln -fs ../OpenMSA_MS/.meta_MIKROTIK .meta_MIKROTIK; 
+    ln -fsn ../OpenMSA_MS/MIKROTIK MIKROTIK; ln -fsn ../OpenMSA_MS/.meta_MIKROTIK .meta_MIKROTIK; 
     echo "  >> OPENSTACK"
-    ln -fs ../OpenMSA_MS/OPENSTACK OPENSTACK; ln -fs ../OpenMSA_MS/.meta_OPENSTACK .meta_OPENSTACK; 
+    ln -fsn ../OpenMSA_MS/OPENSTACK OPENSTACK; ln -fsn ../OpenMSA_MS/.meta_OPENSTACK .meta_OPENSTACK; 
     echo "  >> ONEACCESS"
-    ln -fs ../OpenMSA_MS/ONEACCESS ONEACCESS; ln -fs ../OpenMSA_MS/.meta_ONEACCESS .meta_ONEACCESS; 
+    ln -fsn ../OpenMSA_MS/ONEACCESS ONEACCESS; ln -fsn ../OpenMSA_MS/.meta_ONEACCESS .meta_ONEACCESS; 
     echo "  >> PALOALTO"
-    ln -fs ../OpenMSA_MS/PALOALTO PALOALTO; ln -fs ../OpenMSA_MS/.meta_PALOALTO .meta_PALOALTO; 
+    ln -fsn ../OpenMSA_MS/PALOALTO PALOALTO; ln -fsn ../OpenMSA_MS/.meta_PALOALTO .meta_PALOALTO; 
     echo "  >> PFSENSE"
-    ln -fs ../OpenMSA_MS/PFSENSE PFSENSE; ln -fs ../OpenMSA_MS/.meta_PFSENSE .meta_PFSENSE; 
+    ln -fsn ../OpenMSA_MS/PFSENSE PFSENSE; ln -fsn ../OpenMSA_MS/.meta_PFSENSE .meta_PFSENSE; 
     echo "  >> REDFISHAPI"
-    ln -fs ../OpenMSA_MS/REDFISHAPI REDFISHAPI; ln -fs ../OpenMSA_MS/.meta_REDFISHAPI .meta_REDFISHAPI; 
+    ln -fsn ../OpenMSA_MS/REDFISHAPI REDFISHAPI; ln -fsn ../OpenMSA_MS/.meta_REDFISHAPI .meta_REDFISHAPI; 
     echo "  >> REST"
-    ln -fs ../OpenMSA_MS/REST REST; ln -fs ../OpenMSA_MS/.meta_REST .meta_REST; 
+    ln -fsn ../OpenMSA_MS/REST REST; ln -fsn ../OpenMSA_MS/.meta_REST .meta_REST; 
     echo "  >> ETSI-MANO"
-    ln -fs ../OpenMSA_MS/NFVO NFVO;  ln -fs ../OpenMSA_MS/.meta_NFVO .meta_NFVO
-    ln -fs ../OpenMSA_MS/VNFM VNFM; ln -fs ../OpenMSA_MS/.meta_VNFM .meta_VNFM
-    ln -fs ../OpenMSA_MS/KUBERNETES KUBERNETES; ln -fs ../OpenMSA_MS/.meta_KUBERNETES .meta_KUBERNETES
+    ln -fsn ../OpenMSA_MS/NFVO NFVO;  ln -fsn ../OpenMSA_MS/.meta_NFVO .meta_NFVO
+    ln -fsn ../OpenMSA_MS/VNFM VNFM; ln -fsn ../OpenMSA_MS/.meta_VNFM .meta_VNFM
+    ln -fsn ../OpenMSA_MS/KUBERNETES KUBERNETES; ln -fsn ../OpenMSA_MS/.meta_KUBERNETES .meta_KUBERNETES
  
     echo "DONE"
 
@@ -211,36 +215,36 @@ install_workflows() {
     echo "-------------------------------------------------------------------------------"
     cd /opt/fmc_repository/Process; \
     echo "  >> WF references and libs"
-    ln -fs ../OpenMSA_WF/Reference Reference; \
-    ln -fs ../OpenMSA_WF/.meta_Reference .meta_Reference; \
+    ln -fsn ../OpenMSA_WF/Reference Reference; \
+    ln -fsn ../OpenMSA_WF/.meta_Reference .meta_Reference; \
     echo "  >> WF tutorials"
-    ln -fs ../OpenMSA_WF/Tutorials Tutorials; \
-    ln -fs ../OpenMSA_WF/.meta_Tutorials .meta_Tutorials; \
+    ln -fsn ../OpenMSA_WF/Tutorials Tutorials; \
+    ln -fsn ../OpenMSA_WF/.meta_Tutorials .meta_Tutorials; \
     echo "  >> BIOS_Automation"
-    ln -fs ../OpenMSA_WF/BIOS_Automation BIOS_Automation
-    ln -fs ../OpenMSA_WF/.meta_BIOS_Automation .meta_BIOS_Automation
+    ln -fsn ../OpenMSA_WF/BIOS_Automation BIOS_Automation
+    ln -fsn ../OpenMSA_WF/.meta_BIOS_Automation .meta_BIOS_Automation
  #   echo "  >> ETSI-MANO"
- #   ln -fs ../OpenMSA_MANO/WORKFLOWS/ETSI-MANO ETSI-MANO
- #   ln -fs ../OpenMSA_MANO/WORKFLOWS/.meta_ETSI-MANO .meta_ETSI-MANO
+ #   ln -fsn ../OpenMSA_MANO/WORKFLOWS/ETSI-MANO ETSI-MANO
+ #   ln -fsn ../OpenMSA_MANO/WORKFLOWS/.meta_ETSI-MANO .meta_ETSI-MANO
     echo "  >> Private Cloud - Openstack"
-    ln -fs ../OpenMSA_WF/Private_Cloud Private_Cloud
-    ln -fs ../OpenMSA_WF/.meta_Private_Cloud .meta_Private_Cloud
+    ln -fsn ../OpenMSA_WF/Private_Cloud Private_Cloud
+    ln -fsn ../OpenMSA_WF/.meta_Private_Cloud .meta_Private_Cloud
     echo "  >> Ansible"
-    ln -fs ../OpenMSA_WF/Ansible Ansible
-    ln -fs ../OpenMSA_WF/.meta_Ansible .meta_Ansible
+    ln -fsn ../OpenMSA_WF/Ansible Ansible
+    ln -fsn ../OpenMSA_WF/.meta_Ansible .meta_Ansible
     echo "  >> Public Cloud - AWS"
-    ln -fs ../OpenMSA_WF/Public_Cloud Public_Cloud
-    ln -fs ../OpenMSA_WF/.meta_Public_Cloud .meta_Public_Cloud
+    ln -fsn ../OpenMSA_WF/Public_Cloud Public_Cloud
+    ln -fsn ../OpenMSA_WF/.meta_Public_Cloud .meta_Public_Cloud
     echo "  >> Topology"
-    ln -fs ../OpenMSA_WF/Topology Topology
-    ln -fs ../OpenMSA_WF/.meta_Topology .meta_Topology
+    ln -fsn ../OpenMSA_WF/Topology Topology
+    ln -fsn ../OpenMSA_WF/.meta_Topology .meta_Topology
 
 
     echo "-------------------------------------------------------------------------------"
     echo " Install mini lab setup WF from quickstart github repository"
     echo "-------------------------------------------------------------------------------"
-    ln -fs ../quickstart/lab/msa_dev/resources/libraries/workflows/SelfDemoSetup SelfDemoSetup; \
-    ln -fs ../quickstart/lab/msa_dev/resources/libraries/workflows/.meta_SelfDemoSetup .meta_SelfDemoSetup; \
+    ln -fsn ../quickstart/lab/msa_dev/resources/libraries/workflows/SelfDemoSetup SelfDemoSetup; \
+    ln -fsn ../quickstart/lab/msa_dev/resources/libraries/workflows/.meta_SelfDemoSetup .meta_SelfDemoSetup; \
 
     echo "DONE"
 
@@ -300,7 +304,7 @@ install_adapters() {
     install_adapter ansible_generic
     install_adapter mikrotik_generic
 
-    ln -fs /opt/devops/OpenMSA_Adapters/vendor /opt/sms/bin/php/vendor
+    ln -fsn /opt/devops/OpenMSA_Adapters/vendor /opt/sms/bin/php/vendor
     #install_adapter stormshield 
     #install_adapter a10_thunder 
 }
@@ -350,7 +354,7 @@ main() {
 	shift
 	case $cmd in
 		""|all)
-            init_db
+            #init_db
             install_license
             init_intall
             update_github_repo
@@ -359,21 +363,21 @@ main() {
             install_adapters;
 			;;
 		ms)
-            init_db
+            #init_db
             install_license
             init_intall
             update_github_repo
 			install_microservices 
 			;;
 		wf)
-            init_db
+            #init_db
             install_license
             init_intall
             update_github_repo
 			install_workflows 
 			;;
 		da)
-            init_db
+            #init_db
             install_license
             init_intall
             update_github_repo
