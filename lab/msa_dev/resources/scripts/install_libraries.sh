@@ -316,11 +316,12 @@ finalize_install() {
     echo "-------------------------------------------------------------------------------"
     echo " update file owner to ncuser.ncuser"
     echo "-------------------------------------------------------------------------------"
-    chown -R ncuser:ncuser /opt/fmc_repository/*; \
-    chown -R ncuser:ncuser /opt/fmc_repository/.meta_*; \
-    chown -R ncuser:ncuser /opt/sms/bin/php/*; \
-    chown -R ncuser:ncuser /opt/sms/devices/; \
-    #chown -R ncuser:ncuser /opt/ubi-jentreprise/resources/templates/conf/device;\
+    chown -R ncuser:ncuser /opt/fmc_repository
+    chown -R ncuser:ncuser /opt/fmc_repository/.meta_*
+    chown -R ncuser:ncuser /opt/sms/bin/php
+    chown -R ncuser:ncuser /opt/sms/devices
+    chown -R ncuser.ncuser /opt/devops/OpenMSA_Adapters
+
     echo "DONE"
 
     echo "-------------------------------------------------------------------------------"
