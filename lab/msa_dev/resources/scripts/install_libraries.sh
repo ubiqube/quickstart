@@ -355,7 +355,6 @@ main() {
 	shift
 	case $cmd in
 		""|all)
-            #init_db
             install_license
             init_intall
             update_github_repo
@@ -364,21 +363,18 @@ main() {
             install_adapters;
 			;;
 		ms)
-            #init_db
             install_license
             init_intall
             update_github_repo
 			install_microservices 
 			;;
 		wf)
-            #init_db
             install_license
             init_intall
             update_github_repo
 			install_workflows 
 			;;
 		da)
-            #init_db
             install_license
             init_intall
             update_github_repo
