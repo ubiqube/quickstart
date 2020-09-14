@@ -99,7 +99,7 @@ services:
       - db
     image: ubiqube/msa2-bud:48fc6aff23c59318ee2ba3184e0c8c78f622afba
     volumes:
-      - "msa-bud:/opt/bud/logs/""
+      - "msa_bud:/opt/bud/logs/"
 
   msa_cerebro:
     image: lmenezes/cerebro:0.9.2
@@ -156,7 +156,7 @@ volumes:
   rrd_repository:
   msa_api_logs:
   msa_sms_logs:
-  msa-bud:
+  msa_bud:
 
 networks:
   default:
