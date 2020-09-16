@@ -14,17 +14,6 @@ install_license() {
 
 }
 
-init_db() {
-   
-    echo "-------------------------------------------------------"
-    echo "INIT DB CONFIG VARS"
-    echo "-------------------------------------------------------"
-    /usr/bin/init_db.sh
-	if [ $? -ne 0 ]; then
-        exit 1
-	fi
-}
-
 init_intall() {
     
     git config --global alias.lg "log --graph --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(bold blue)<%an>%C(reset) %C(green)(%ar)%C(reset)' --abbrev-commit --date=relative"; \
