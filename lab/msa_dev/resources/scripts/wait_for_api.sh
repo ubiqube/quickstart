@@ -18,7 +18,7 @@ U="\033[u"
 
 POS="\033[1000D\033[2C"
 
-for (( c=1; c<=80; c++ ))
+for (( c=1; c<=60; c++ ))
 do  
     HTTP_STATUS=$(curl -m 1 --connect-timeout 1 -k -s -I -o /dev/null -w ''%{http_code}'' https://msa_front/ubi-api-ping/)
     if [ $HTTP_STATUS == "200" ]
@@ -30,25 +30,25 @@ do
         echo
         exit 1
     fi
-    eval echo -ne '${S}${POS}\•${U}'
+    eval echo -ne '${S}${POS}\• ${U}'
     sleep 0.2
-    eval echo -ne '${S}${POS}\◦${U}'
+    eval echo -ne '${S}${POS}\◦ ${U}'
     sleep 0.2
-    eval echo -ne '${S}${POS}\o${U}'
+    eval echo -ne '${S}${POS}\o ${U}'
     sleep 0.2
-    eval echo -ne '${S}${POS}\O${U}'
+    eval echo -ne '${S}${POS}\O ${U}'
     sleep 0.2
-    eval echo -ne '${S}${POS}\o${U}'
+    eval echo -ne '${S}${POS}\o ${U}'
     sleep 0.2
-    eval echo -ne '${S}${POS}\◦${U}'
+    eval echo -ne '${S}${POS}\◦ ${U}'
     sleep 0.2
-    eval echo -ne '${S}${POS}\.${U}'
+    eval echo -ne '${S}${POS}\. ${U}'
     sleep 0.2
-    eval echo -ne '${S}${POS}\_${U}'
+    eval echo -ne '${S}${POS}\_ ${U}'
     sleep 0.2
-    eval echo -ne '${S}${POS}\-${U}'
+    eval echo -ne '${S}${POS}\- ${U}'
     sleep 0.2
-    eval echo -ne '${S}${POS}\⌒${U}'
+    eval echo -ne '${S}${POS}\⌒ ${U}'
     sleep 0.2
 
 
