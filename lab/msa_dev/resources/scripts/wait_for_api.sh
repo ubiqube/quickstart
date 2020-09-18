@@ -25,12 +25,12 @@ do
     then 
         break 2
     fi
-    if [ $c == 80 ]
+    if [ $c == 60 ]
     then
         echo
         exit 1
     fi
-    eval echo -ne '${S}${POS}\.${U}'
+    eval echo -ne '${S}${POS}\•${U}'
     sleep 0.2
     eval echo -ne '${S}${POS}\◦${U}'
     sleep 0.2
@@ -45,6 +45,10 @@ do
     eval echo -ne '${S}${POS}\.${U}'
     sleep 0.2
     eval echo -ne '${S}${POS}\_${U}'
+    sleep 0.2
+    eval echo -ne '${S}${POS}\-${U}'
+    sleep 0.2
+    eval echo -ne '${S}${POS}\⌒${U}'
     sleep 0.2
 
 
