@@ -34,7 +34,7 @@ services:
       - "msa_db:/var/lib/postgresql/data"
 
   msa_api:
-    image: ubiqube/msa2-api:c30f58ca1045fabc8b23f06a8aa240d0c2481ce2s
+    image: ubiqube/msa2-api:c30f58ca1045fabc8b23f06a8aa240d0c2481ce2
     depends_on:
       - db
       - msa_es
