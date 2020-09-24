@@ -2,6 +2,10 @@
 set -e
 
 target_version="2.2.0GA"
+force_option=true
+if [ -z "$1" ]; then
+force_option=false
+fi
 
 echo "Upgrading to last $target_version version"
 echo "################################"
@@ -43,11 +47,15 @@ upgrade(){
         echo "Upgrade done!"
 }
 
-while true; do
-    read -p "Are you sure to want to upgrade to $target_version?" yn
-    case $yn in
-        [Yy]* ) upgrade; break;;
-        [Nn]* ) exit;;
-        * ) echo "Please answer yes or no.";;
-    esac
-done
+if [ "$force_option" = false ] ; then
+        while true; do
+                read -p "Are you sure to want to upgrade to $target_version?" yn
+        case $yn in
+                [Yy]* ) upgrade; break;;
+                [Nn]* ) exit;;
+                * ) echo "Please answer yes or no.";;
+        esac
+        done
+else
+        upgrade;
+fi
