@@ -2,7 +2,7 @@ FROM centos:6
 
 ENV container docker
 
-RUN yum install -y redhat-lsb-core openssh-server  sudo iptables net-snmp net-snmp-utils tcpdump
+RUN yum install -y redhat-lsb-core openssh-server sudo iptables net-snmp net-snmp-utilsnet-snmp net-snmp-utils tcpdump
 
 RUN passwd --stdin root <<< "ubiqube"
 RUN useradd msa
