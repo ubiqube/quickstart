@@ -4,14 +4,19 @@
 PROG=$(basename $0)
 
 install_license() {
+
     echo "-------------------------------------------------------"
     echo "INSTALL EVAL LICENSE"
     echo "-------------------------------------------------------"
-    /usr/bin/install_license.sh
-	if [ $? -ne 0 ]; then
-        exit 1
-	fi
-
+    if [ -z "$1"  ]
+    then
+        /usr/bin/install_license.sh
+        if [ $? -ne 0 ]; then
+            exit 1
+        fi
+    else
+        echo "skipping license installation"
+    fi
 }
 
 init_intall() {
@@ -327,7 +332,7 @@ finalize_install() {
 }
 
 usage() {
-	echo "usage: $PROG [all|ms|wf|da]"
+	echo "usage: $PROG [all|ms|wf|da] [--no-lic]"
     echo "this script installs some librairies available @github.com/openmsa"
 	echo
 	echo "all (default): install everyting: worflows, microservices and adapters"
@@ -341,10 +346,11 @@ main() {
 
 
 	cmd=$1
+    option=$2
 	shift
 	case $cmd in
 		""|all)
-            install_license
+            install_license $option
             init_intall
             update_github_repo
             install_microservices;
@@ -352,19 +358,19 @@ main() {
             install_adapters;
 			;;
 		ms)
-            install_license
+            install_license  $option
             init_intall
             update_github_repo
 			install_microservices 
 			;;
 		wf)
-            install_license
+            install_license  $option
             init_intall
             update_github_repo
 			install_workflows 
 			;;
 		da)
-            install_license
+            install_license  $option
             init_intall
             update_github_repo
 			install_adapters
