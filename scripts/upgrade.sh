@@ -6,7 +6,7 @@ target_version="2.2.0GA"
 echo "Upgrading to last $target_version version"
 echo "################################"
 
-current_version=$(curl -s -k -XGET 'https://127.0.0.1/msa_version/' | grep -Po '(\d.\d.\d\w+)')
+current_version=$(curl -s -k -XGET 'https://127.0.0.1/msa_version/' | grep -Po '(\d.\d.\w+)')
 echo "You current MSA version is $current_version"
 
 if [[ $current_version =~ $target_version ]]
