@@ -28,8 +28,6 @@ upgrade(){
 
         # Need to call here script to clean old images [MSA-8583]
 
-        git checkout 2.2.0GA
-
         docker-compose up -d
 
         docker-compose exec msa_dev /usr/bin/install_libraries.sh
