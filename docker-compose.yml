@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:a996f636f944a22cb2a08067540e7ddb84559bf3
+    image: ubiqube/msa2-front:6e3ca857531616f96381b9ecf9616725fdad1e0d
     ports:
       - target: 80
         published: 80
@@ -25,7 +25,7 @@ services:
     image: camunda/camunda-bpm-platform:7.13.0
 
   db:
-    image: ubiqube/msa2-db:3c045d33f02b0293b7382584a7e69eb3a1724046
+    image: ubiqube/msa2-db:626f22c157300bfcc9745070f71480075443a4a7
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -67,6 +67,7 @@ services:
     - FEATURE_ALARMS=true
     - FEATURE_LICENCE=true
     - FEATURE_TOPOLOGY=true
+    - FEATURE_MONITORING_PROFILES=true
 
 
   msa_es:
