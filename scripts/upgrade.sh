@@ -18,9 +18,8 @@ upgrade(){
 
         # Need to call here script to clean old images [MSA-8583]
 
-        docker-compose up -d
-        status=$?
-        echo $status
+        docker-compose up -d --build
+
         docker-compose exec msa_dev /usr/bin/install_libraries.sh
 
         docker-compose restart msa_api
