@@ -45,15 +45,15 @@ main() {
 	cmd=$1
 	case $cmd in
 		"")
-                        force_option=false
-		;;		
+                  force_option=false
+		  ;;		
                 -f|--force)
-                        force_option=true
-		;;
+                  force_option=true
+		  ;;
 		*)
-                        fatal "unknown command: $1"
-                        usage
-		;;
+                  fatal "unknown command: $1"
+                  usage
+		  ;;
 	esac
 
         echo "Upgrading to last $target_version version"
