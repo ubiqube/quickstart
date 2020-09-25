@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-set -x
 
 PROG=$(basename $0)
 
