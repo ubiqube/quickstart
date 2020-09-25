@@ -20,7 +20,7 @@ upgrade(){
 
         docker-compose up -d --build
 
-        docker-compose exec msa_dev /usr/bin/install_libraries.sh
+        docker-compose exec msa_dev /usr/bin/install_libraries.sh all --no-lic
 
         docker-compose restart msa_api
 
