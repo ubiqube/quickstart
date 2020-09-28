@@ -377,7 +377,7 @@ main() {
 			;;
 
 		*)
-			fatal "unknown command: $1"
+            echo "Error: unknown command: $1"
             usage
 			;;
 	esac
