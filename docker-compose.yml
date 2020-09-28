@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:6e3ca857531616f96381b9ecf9616725fdad1e0d
+    image: ubiqube/msa2-front:d41b4082fa90485f48f8fc0ca563567b45afd338
     ports:
       - target: 80
         published: 80
@@ -34,7 +34,7 @@ services:
       - "msa_db:/var/lib/postgresql/data"
 
   msa_api:
-    image: ubiqube/msa2-api:a52cfed58f5a4fd0b3cd3830dd10f2bb05673c7f
+    image: ubiqube/msa2-api:0569a96eb94bc796b33685f808a2c7c4aa90db39
     depends_on:
       - db
       - msa_es
@@ -60,7 +60,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:7f0ac93c55dc4284a0f3d6bb22b89d8dbf121565
+    image: ubiqube/msa2-ui:11b69a6d9c2ff07553296857c6c7e025caf01422
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
