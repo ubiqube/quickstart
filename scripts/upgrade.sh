@@ -7,14 +7,15 @@ target_version="2.2.0GA"
 force_option=false
 
 upgrade(){
-        echo "Upgrade running"
-        echo "#############"
+        echo "Starting upgrade"
+        echo "----------------"
 
         docker-compose down
 
         sms_php_vol=$(docker volume ls | awk '{print $2}' | grep msa_sms_php)
-        echo "Recreate SMS volume $sms_php_vol for [MSA-8682]"
+        echo "Recreating Core Engine (msa_sms) volume $sms_php_vol"
         docker volume rm $sms_php_vol
+        echo "Done"
 
         # Need to call here script to clean old images [MSA-8583]
 
@@ -27,8 +28,9 @@ upgrade(){
         docker-compose restart msa_sms
 
         msa_api=$(docker ps -q -f name=msa_api)
-        echo "Start crond on API container for [MSA-8387]"
+        echo "Starting crond on API container msa_api"
         docker exec -it -u root $msa_api crond
+        echo "Done"
 
         echo "Upgrade done!"
 }
@@ -71,7 +73,7 @@ main() {
                 fi
 
                 while true; do
-                        read -p "Are you sure to want to upgrade to $target_version?" yn
+                        read -p "Are you sure to want to upgrade to $target_version? [y]/[N]" yn
                 case $yn in
                         [Yy]* ) upgrade; break;;
                         [Nn]* ) exit;;
