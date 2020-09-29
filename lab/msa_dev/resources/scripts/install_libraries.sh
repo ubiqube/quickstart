@@ -197,7 +197,9 @@ install_microservices () {
     ln -fsn ../OpenMSA_MS/NFVO NFVO;  ln -fsn ../OpenMSA_MS/.meta_NFVO .meta_NFVO
     ln -fsn ../OpenMSA_MS/VNFM VNFM; ln -fsn ../OpenMSA_MS/.meta_VNFM .meta_VNFM
     ln -fsn ../OpenMSA_MS/KUBERNETES KUBERNETES; ln -fsn ../OpenMSA_MS/.meta_KUBERNETES .meta_KUBERNETES
- 
+    echo "  >> NETBOX"
+    ln -fsn ../OpenMSA_MS/NETBOX NETBOX; ln -fsn ../OpenMSA_MS/.meta_NETBOX .meta_NETBOX; 
+
     echo "DONE"
 
 }
@@ -298,6 +300,7 @@ install_adapters() {
     install_adapter citrix_adc
     install_adapter ansible_generic
     install_adapter mikrotik_generic
+    install_adapter rest_netbox
 
     ln -fsn /opt/devops/OpenMSA_Adapters/vendor /opt/sms/bin/php/vendor
     #install_adapter stormshield 
