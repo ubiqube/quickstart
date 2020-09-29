@@ -60,7 +60,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:11b69a6d9c2ff07553296857c6c7e025caf01422
+    image: ubiqube/msa2-ui:8c382f701257d902e62ab54e46c4af8e6d951746
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
