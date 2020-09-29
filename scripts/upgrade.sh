@@ -115,7 +115,7 @@ main() {
                 upgrade;
         fi
 	
-	if [ $clean_option ] ; then
+	if [ "$clean_option" = true ] ; then
 		if [ $force_option = false ] ; then
 			while true; do
                         	read -p "Are you sure to want to clean unused images? [y]/[N]" yn
