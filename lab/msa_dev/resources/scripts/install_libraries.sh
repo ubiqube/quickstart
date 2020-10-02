@@ -234,6 +234,9 @@ install_workflows() {
     echo "  >> Topology"
     ln -fsn ../OpenMSA_WF/Topology Topology
     ln -fsn ../OpenMSA_WF/.meta_Topology .meta_Topology
+    echo "  >> MSA / Utils"
+    ln -fsn ../OpenMSA_WF/Utils/Assign_Device_Variables Assign_Device_Variables
+    ln -fsn ../OpenMSA_WF/Utils/.meta_Assign_Device_Variables .meta_Assign_Device_Variables
 
 
     echo "-------------------------------------------------------------------------------"
@@ -301,6 +304,7 @@ install_adapters() {
     install_adapter ansible_generic
     install_adapter mikrotik_generic
     install_adapter rest_netbox
+    install_adapter juniper_rest
 
     ln -fsn /opt/devops/OpenMSA_Adapters/vendor /opt/sms/bin/php/vendor
     #install_adapter stormshield 
