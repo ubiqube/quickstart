@@ -235,8 +235,8 @@ install_workflows() {
     ln -fsn ../OpenMSA_WF/Topology Topology
     ln -fsn ../OpenMSA_WF/.meta_Topology .meta_Topology
     echo "  >> MSA / Utils"
-    ln -fsn ../OpenMSA_WF/Utils/Assign_Device_Variables Assign_Device_Variables
-    ln -fsn ../OpenMSA_WF/Utils/.meta_Assign_Device_Variables .meta_Assign_Device_Variables
+    ln -fsn ../OpenMSA_WF/Utils/Manage_Device_Conf_Variables Manage_Device_Conf_Variables
+    ln -fsn ../OpenMSA_WF/Utils/.meta_Manage_Device_Conf_Variables .meta_Manage_Device_Conf_Variables
 
 
     echo "-------------------------------------------------------------------------------"
