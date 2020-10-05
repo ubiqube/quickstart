@@ -13,12 +13,7 @@ upgrade(){
 
         docker-compose down
 
-        sms_php_vol=$(docker volume ls | awk '{print $2}' | grep msa_sms_php)
-        echo "Recreating Core Engine (msa_sms) volume $sms_php_vol"
-        docker volume rm $sms_php_vol
-        echo "Done"
-
-        # Need to call here script to clean old images [MSA-8583]
+        docker-compose exec msa_sms rm -rf /opt/sms/bin/php/smsd /opt/sms/bin/php/agregatord  /opt/sms/bin/php/parserd  /opt/sms/bin/php/polld  /opt/sms/bin/php/smarty /opt/sms/bin/php/smsbd /opt/sms/bin/php/smserror
 
         docker-compose up -d --build
 
