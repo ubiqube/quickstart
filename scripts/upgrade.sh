@@ -11,11 +11,9 @@ upgrade(){
         echo "Starting upgrade"
         echo "----------------"
 
-        docker-compose down
+        docker-compose up -d --build
 
         docker-compose exec msa_sms rm -rf /opt/sms/bin/php/smsd /opt/sms/bin/php/agregatord  /opt/sms/bin/php/parserd  /opt/sms/bin/php/polld  /opt/sms/bin/php/smarty /opt/sms/bin/php/smsbd /opt/sms/bin/php/smserror
-
-        docker-compose up -d --build
 
         docker-compose exec msa_dev /usr/bin/install_libraries.sh all --no-lic
 
