@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:5813f85ec9d35780987d73a275e9f6f3a37192c9
+    image: ubiqube/msa2-front:c530231a1b8b563a4fae06c704d35c14b18f793c
     ports:
       - target: 80
         published: 80
@@ -32,9 +32,11 @@ services:
       POSTGRES_DB: POSTGRESQL
     volumes:
       - "msa_db:/var/lib/postgresql/data"
+    ports:
+      - "5432:5432"
 
   msa_api:
-    image: ubiqube/msa2-api:0569a96eb94bc796b33685f808a2c7c4aa90db39
+    image: ubiqube/msa2-api:7bc408dffba02a0395ba6a102daf3b501a12f05c
     depends_on:
       - db
       - msa_es
@@ -60,7 +62,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:8c382f701257d902e62ab54e46c4af8e6d951746
+    image: ubiqube/msa2-ui:2b65aa3d96bdf60bb6f1b7adf9d4eea94154db56
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -80,7 +82,7 @@ services:
       - "msa_es:/usr/share/elasticsearch/data"
 
   msa_sms:
-    image: ubiqube/msa2-sms:7802c321e61e1bdce76a986ecc2f8c608f8a2278
+    image: ubiqube/msa2-sms:b6cb8a301223710f61ff0cdebd5efdff77cdb9c5
     depends_on:
       - db
       - msa_es
