@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:c530231a1b8b563a4fae06c704d35c14b18f793c
+    image: ubiqube/msa2-front:c82708a99c71e5f84bfe1f31c6f02b3dfb309663
     ports:
       - target: 80
         published: 80
@@ -62,7 +62,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:2b65aa3d96bdf60bb6f1b7adf9d4eea94154db56
+    image: ubiqube/msa2-ui:b89b82c0f3fdc7d1d9fa08eddc52444f9e9a3407
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
