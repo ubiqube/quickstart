@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:c82708a99c71e5f84bfe1f31c6f02b3dfb309663
+    image: ubiqube/msa2-front:08eca91c9358f948f69d3122a39392eb7db348e6
     ports:
       - target: 80
         published: 80
@@ -25,7 +25,7 @@ services:
     image: camunda/camunda-bpm-platform:7.13.0
 
   db:
-    image: ubiqube/msa2-db:626f22c157300bfcc9745070f71480075443a4a7
+    image: ubiqube/msa2-db:035697433c104d960d8a31425eb90a8a5289d580
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -82,7 +82,7 @@ services:
       - "msa_es:/usr/share/elasticsearch/data"
 
   msa_sms:
-    image: ubiqube/msa2-sms:b6cb8a301223710f61ff0cdebd5efdff77cdb9c5
+    image: ubiqube/msa2-sms:91c5db17026520be6433fa22bbd8de209da012b7
     depends_on:
       - db
       - msa_es
