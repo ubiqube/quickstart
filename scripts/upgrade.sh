@@ -11,14 +11,26 @@ upgrade(){
         echo "Starting upgrade"
         echo "----------------"
 
-        docker-compose up -d --build
+	docker-compose down
+        
+	sms_php_vol=$(docker volume ls | awk '{print $2}' | grep msa_sms_php)
+        echo "Recreating Core Engine (msa_sms) volume $sms_php_vol"
+        docker volume rm $sms_php_vol
 
-        docker-compose exec msa_sms rm -rf /opt/sms/bin/php/smsd /opt/sms/bin/php/agregatord  /opt/sms/bin/php/parserd  /opt/sms/bin/php/polld  /opt/sms/bin/php/smarty /opt/sms/bin/php/smsbd /opt/sms/bin/php/smserror
+	sms_devices_vol=$(docker volume ls | awk '{print $2}' | grep msa_sms_devices)
+        echo "Recreating Core Engine (sms_devices) volume $sms_devices_vol"
+        docker volume rm $sms_devices_vol
+
+	dev_vol=$(docker volume ls | awk '{print $2}' | grep msa_dev)
+        echo "Recreating Dev volume $dev_vol"
+        docker volume rm $dev_vol
+
+        docker-compose up -d --build
 
         docker-compose exec msa_dev /usr/bin/install_libraries.sh all --no-lic
 
         docker-compose restart msa_api
-
+	
         docker-compose restart msa_sms
 
         msa_api=$(docker ps -q -f name=msa_api)
