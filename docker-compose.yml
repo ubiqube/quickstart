@@ -69,7 +69,6 @@ services:
     - FEATURE_ALARMS=true
     - FEATURE_LICENCE=true
     - FEATURE_TOPOLOGY=true
-    - FEATURE_MONITORING_PROFILES=true
 
 
   msa_es:
