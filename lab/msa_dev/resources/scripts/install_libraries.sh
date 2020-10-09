@@ -56,11 +56,6 @@ update_github_repo() {
         git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters; 
         cd OpenMSA_Adapters; 
     fi ;
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ### TODO REMOVE BEFORE PR MERGE
-    git checkout 2.2.0GA;
-    git pull
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ### MS ###
     echo "  >> https://github.com/openmsa/Microservices.git "
     cd /opt/fmc_repository ; 
@@ -74,11 +69,6 @@ update_github_repo() {
         git clone https://github.com/openmsa/Microservices.git OpenMSA_MS; 
         cd OpenMSA_MS; 
     fi;
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ### TODO REMOVE BEFORE PR MERGE
-    git checkout 2.2.0GA;
-    git pull
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ### WF ###
     echo "  >> https://github.com/openmsa/Workflows.git "
     cd /opt/fmc_repository ; 
@@ -92,11 +82,6 @@ update_github_repo() {
         git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; 
         cd OpenMSA_WF;
     fi ; 
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ### TODO REMOVE BEFORE PR MERGE
-    git checkout 2.2.0GA;
-    git pull
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ### Etsi-Mano ###
     echo "  >> https://github.com/openmsa/etsi-mano.git "
     cd /opt/fmc_repository ; 
@@ -120,12 +105,6 @@ update_github_repo() {
     else 
         git clone https://github.com/ubiqube/quickstart.git quickstart; 
     fi ;
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ### TODO REMOVE BEFORE PR MERGE
-    git checkout 2.2.0GA;
-    git pull
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 }
 
 uninstall_adapter() {
