@@ -32,8 +32,6 @@ services:
       POSTGRES_DB: POSTGRESQL
     volumes:
       - "msa_db:/var/lib/postgresql/data"
-    ports:
-      - "5432:5432"
 
   msa_api:
     image: ubiqube/msa2-api:130f7676edff39ad01a95418acb3ccf6e1c24546
