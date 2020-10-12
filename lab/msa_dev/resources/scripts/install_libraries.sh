@@ -3,6 +3,9 @@
 
 PROG=$(basename $0)
 
+DEV_BRANCH=default_dev_branch
+DEFAULT_BRANCH=2.2.0GA
+
 install_license() {
 
     echo "-------------------------------------------------------"
@@ -38,6 +41,7 @@ init_intall() {
     
 }
 
+
 update_github_repo() {
     echo "-------------------------------------------------------------------------------"
     echo " Update the github repositories "
@@ -47,56 +51,66 @@ update_github_repo() {
     echo "  >> https://github.com/openmsa/Adapters.git "
     if [ -d OpenMSA_Adapters ]; 
     then 
-        cd OpenMSA_Adapters; 
+        ## get current branch and store in variable CURRENT_BR
+        CURRENT_BR=`git rev-parse --abbrev-ref HEAD`
+        echo "Current working branch: $CURRENT_BR"
         git stash;
-        git checkout master;
+        echo "Check out $DEFAULT_BRANCH and getting the latest code"
+        git checkout $DEFAULT_BRANCH;
         git pull;
-        git stash pop;
+        echo "Back to working branch"
+        git checkout $CURRENT_BR
+        git stash pop
     else 
         git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters; 
         cd OpenMSA_Adapters; 
-    fi ;
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ### TODO REMOVE BEFORE PR MERGE
-    git checkout 2.2.0GA;
-    git pull
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        echo "Create a new developement branch $DEV_BRANCH"
+        git checkout -b $DEV_BRANCH
+    fi;
     ### MS ###
     echo "  >> https://github.com/openmsa/Microservices.git "
     cd /opt/fmc_repository ; 
     if [ -d OpenMSA_MS ]; 
     then  
         cd OpenMSA_MS; 
+        ## get current branch and store in variable CURRENT_BR
+        CURRENT_BR=`git rev-parse --abbrev-ref HEAD`
+        echo "Current working branch: $CURRENT_BR"
         git stash;
-        git checkout master;
+        echo "Check out $DEFAULT_BRANCH and getting the latest code"
+        git checkout $DEFAULT_BRANCH;
         git pull;
+        echo "Back to working branch"
+        git checkout $CURRENT_BR
+        git stash pop
     else 
         git clone https://github.com/openmsa/Microservices.git OpenMSA_MS; 
         cd OpenMSA_MS; 
+        echo "Create a new developement branch $DEV_BRANCH"
+        git checkout -b $DEV_BRANCH
     fi;
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ### TODO REMOVE BEFORE PR MERGE
-    git checkout 2.2.0GA;
-    git pull
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ### WF ###
     echo "  >> https://github.com/openmsa/Workflows.git "
     cd /opt/fmc_repository ; 
     if [ -d OpenMSA_WF ]; 
     then 
         cd OpenMSA_WF;
+        ## get current branch and store in variable CURRENT_BR
+        CURRENT_BR=`git rev-parse --abbrev-ref HEAD`
+        echo "Current working branch: $CURRENT_BR"
         git stash;
-        git checkout master;
+        echo "Check out $DEFAULT_BRANCH and getting the latest code"
+        git checkout $DEFAULT_BRANCH;
         git pull;
+        echo "Back to working branch"
+        git checkout $CURRENT_BR
+        git stash pop
     else 
         git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; 
         cd OpenMSA_WF;
+        echo "Create a new developement branch $DEV_BRANCH"
+        git checkout -b $DEV_BRANCH
     fi ; 
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ### TODO REMOVE BEFORE PR MERGE
-    git checkout 2.2.0GA;
-    git pull
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ### Etsi-Mano ###
     echo "  >> https://github.com/openmsa/etsi-mano.git "
     cd /opt/fmc_repository ; 
@@ -115,17 +129,13 @@ update_github_repo() {
     then 
         cd quickstart; 
         git stash;
-        git checkout master;
+        git checkout $DEFAULT_BRANCH;
         git pull;
     else 
         git clone https://github.com/ubiqube/quickstart.git quickstart; 
+        cd quickstart; 
+        git checkout $DEFAULT_BRANCH;
     fi ;
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ### TODO REMOVE BEFORE PR MERGE
-    git checkout 2.2.0GA;
-    git pull
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 }
 
 uninstall_adapter() {
@@ -137,7 +147,6 @@ uninstall_adapter() {
 }
 
 #
-# $1 : adapter folder name as in /opt/sms/bin/php
 # $2 : installation mode: DEV_MODE = create symlink / USER_MODE = copy code
 #
 install_adapter() {
@@ -250,65 +259,78 @@ install_workflows() {
 }
 
 install_adapters() {
-    #uninstall_adapter netasq
-    install_adapter linux_generic 
-    install_adapter pfsense_fw
+    #install_adapter a10_thunder
+    install_adapter a10_thunder_axapi
+    install_adapter adtran_generic
+    install_adapter adva_nc
+    install_adapter ansible_generic
+    install_adapter aws_generic
+    install_adapter brocade_vyatta
+    install_adapter catalyst_ios
     install_adapter checkpoint_r80
-    install_adapter rest_generic 
-    install_adapter aws_generic  
-    install_adapter adva_nc 
-    install_adapter f5_bigip 
-    install_adapter virtuora_nc 
-    install_adapter catalyst_ios 
-    install_adapter cisco_apic  
-    #install_adapter cisco_nexus9000
-    install_adapter cisco_isr
-    #install_adapter cisco_asr
+    install_adapter cisco_apic
     install_adapter cisco_asa_generic
+    install_adapter cisco_asa_rest
+    #install_adapter cisco_asr
+    install_adapter cisco_isr
+    #install_adapter cisco_nexus9000
+    install_adapter citrix_adc
     install_adapter esa
-    install_adapter wsa 
-    install_adapter rancher_cmp
-    install_adapter hp5900
+    install_adapter f5_bigip
+    install_adapter fortigate
+    #install_adapter fortinet_fortianalyzer
+    #install_adapter fortinet_fortimanager
+    install_adapter fortinet_generic
+    #install_adapter fortinet_jsonapi
+    install_adapter fortiweb
+    install_adapter fujitsu_ipcom
     install_adapter hp2530
+    install_adapter hp5900
+    install_adapter huawei_generic
+    #install_adapter juniper_contrail
+    install_adapter juniper_rest
+    install_adapter juniper_srx
+    install_adapter kubernetes_generic
+    install_adapter linux_generic
+    install_adapter mikrotik_generic
+    install_adapter mon_checkpoint_fw
+    install_adapter mon_cisco_asa
+    install_adapter mon_cisco_ios
+    install_adapter mon_fortinet_fortigate
+    install_adapter mon_generic
+    install_adapter nec_intersecvmlb
+    install_adapter nec_intersecvmsg
     install_adapter nec_ix
     install_adapter nec_nfa
-    install_adapter oneaccess_lbb 
-    install_adapter oneaccess_whitebox
+    install_adapter nec_pflow_p4_unc
+    install_adapter nec_pflow_pfcscapi
+    install_adapter netconf_generic
+    install_adapter nfvo_generic
+    install_adapter nokia_cloudband
+    install_adapter nokia_vsd
+    install_adapter oneaccess_lbb
     install_adapter oneaccess_netconf
+    install_adapter oneaccess_whitebox
+    install_adapter opendaylight
     install_adapter openstack_keystone_v3
-    install_adapter fortigate
-    install_adapter fortinet_generic
-    install_adapter fortiweb
-    #install_adapter fortinet_fortimanager
-    #install_adapter fortinet_fortianalyzer
-    #install_adapter fortinet_jsonapi
+    install_adapter paloalto
     install_adapter paloalto_chassis
     install_adapter paloalto_generic
     install_adapter paloalto_vsys
-    install_adapter netconf_generic
-    install_adapter juniper_srx
-    #install_adapter juniper_contrail
+    install_adapter pfsense_fw
+    install_adapter rancher_cmp
     install_adapter redfish_generic
-    install_adapter veex_rtu
-    install_adapter vmware_vsphere
-    install_adapter mon_cisco_ios
-    install_adapter mon_cisco_asa
-    install_adapter mon_generic
-    install_adapter mon_checkpoint_fw
-    install_adapter mon_fortinet_fortigate
-    install_adapter kubernetes_generic
-    install_adapter nfvo_generic
-    install_adapter vnfm_generic    
-    install_adapter huawei_generic
-    install_adapter citrix_adc
-    install_adapter ansible_generic
-    install_adapter mikrotik_generic
+    install_adapter rest_generic
     install_adapter rest_netbox
-    install_adapter juniper_rest
-
-    ln -fsn /opt/devops/OpenMSA_Adapters/vendor /opt/sms/bin/php/vendor
-    #install_adapter stormshield 
-    #install_adapter a10_thunder 
+    #install_adapter stormshield
+    install_adapter veex_rtu
+    install_adapter versa_analytics
+    install_adapter versa_appliance
+    install_adapter versa_director
+    install_adapter virtuora_nc
+    install_adapter vmware_vsphere
+    install_adapter vnfm_generic
+    install_adapter wsa   
 }
 
 finalize_install() {
@@ -322,10 +344,8 @@ finalize_install() {
     echo "-------------------------------------------------------------------------------"
     echo " update file owner to ncuser.ncuser"
     echo "-------------------------------------------------------------------------------"
-    chown -R ncuser:ncuser /opt/fmc_repository
-    chown -R ncuser:ncuser /opt/fmc_repository/.meta_*
-    chown -R ncuser:ncuser /opt/sms/bin/php
-    chown -R ncuser:ncuser /opt/sms/devices
+    chown -R ncuser:ncuser /opt/fmc_repository/*; \
+    chown -R ncuser:ncuser /opt/fmc_repository/.meta_*; \
     chown -R ncuser.ncuser /opt/devops/OpenMSA_Adapters
 
     echo "DONE"
