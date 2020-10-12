@@ -65,7 +65,8 @@ update_github_repo() {
     else 
         git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters
         cd OpenMSA_Adapters
-        echo "> Create a new developement branch: $DEV_BRANCH"
+        git checkout $DEFAULT_BRANCH;
+        echo "> Create a new developement branch: $DEV_BRANCH based on $DEFAULT_BRANCH"
         git checkout -b $DEV_BRANCH
     fi;
     ### MS ###
@@ -87,7 +88,8 @@ update_github_repo() {
     else 
         git clone https://github.com/openmsa/Microservices.git OpenMSA_MS
         cd OpenMSA_MS
-        echo "   Create a new developement branch $DEV_BRANCH"
+        git checkout $DEFAULT_BRANCH;
+        echo "> Create a new developement branch: $DEV_BRANCH based on $DEFAULT_BRANCH"
         git checkout -b $DEV_BRANCH
     fi;
     ### WF ###
@@ -109,7 +111,8 @@ update_github_repo() {
     else 
         git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; 
         cd OpenMSA_WF;
-        echo "> Create a new developement branch $DEV_BRANCH"
+        git checkout $DEFAULT_BRANCH;
+        echo "> Create a new developement branch: $DEV_BRANCH based on $DEFAULT_BRANCH"
         git checkout -b $DEV_BRANCH
     fi ; 
     ### Etsi-Mano ###
@@ -331,7 +334,7 @@ install_adapters() {
     install_adapter virtuora_nc
     install_adapter vmware_vsphere
     install_adapter vnfm_generic
-    install_adapter wsa   
+    install_adapter wsa
 }
 
 finalize_install() {
