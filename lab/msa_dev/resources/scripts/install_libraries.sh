@@ -48,71 +48,72 @@ update_github_repo() {
     echo "-------------------------------------------------------------------------------"
     git config --global user.email devops@openmsa.co
     cd /opt/devops ; 
-    echo "  >> https://github.com/openmsa/Adapters.git "
+    echo ">> https://github.com/openmsa/Adapters.git "
     if [ -d OpenMSA_Adapters ]; 
     then 
+        cd OpenMSA_Adapters
         ## get current branch and store in variable CURRENT_BR
         CURRENT_BR=`git rev-parse --abbrev-ref HEAD`
-        echo "Current working branch: $CURRENT_BR"
+        echo "> Current working branch: $CURRENT_BR"
         git stash;
-        echo "Check out $DEFAULT_BRANCH and getting the latest code"
+        echo "> Check out $DEFAULT_BRANCH and getting the latest code"
         git checkout $DEFAULT_BRANCH;
         git pull;
-        echo "Back to working branch"
+        echo "> Back to working branch"
         git checkout $CURRENT_BR
         git stash pop
     else 
-        git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters; 
-        cd OpenMSA_Adapters; 
-        echo "Create a new developement branch $DEV_BRANCH"
+        git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters
+        cd OpenMSA_Adapters
+        echo "> Create a new developement branch: $DEV_BRANCH"
         git checkout -b $DEV_BRANCH
     fi;
     ### MS ###
-    echo "  >> https://github.com/openmsa/Microservices.git "
+    echo ">> https://github.com/openmsa/Microservices.git "
     cd /opt/fmc_repository ; 
     if [ -d OpenMSA_MS ]; 
     then  
         cd OpenMSA_MS; 
         ## get current branch and store in variable CURRENT_BR
         CURRENT_BR=`git rev-parse --abbrev-ref HEAD`
-        echo "Current working branch: $CURRENT_BR"
+        echo "> Current working branch: $CURRENT_BR"
         git stash;
-        echo "Check out $DEFAULT_BRANCH and getting the latest code"
+        echo "> Check out $DEFAULT_BRANCH and getting the latest code"
         git checkout $DEFAULT_BRANCH;
         git pull;
-        echo "Back to working branch"
+        echo "> Back to working branch"
         git checkout $CURRENT_BR
         git stash pop
     else 
-        git clone https://github.com/openmsa/Microservices.git OpenMSA_MS; 
-        cd OpenMSA_MS; 
-        echo "Create a new developement branch $DEV_BRANCH"
+        git clone https://github.com/openmsa/Microservices.git OpenMSA_MS
+        cd OpenMSA_MS
+        echo "   Create a new developement branch $DEV_BRANCH"
         git checkout -b $DEV_BRANCH
     fi;
     ### WF ###
-    echo "  >> https://github.com/openmsa/Workflows.git "
+    echo ">> https://github.com/openmsa/Workflows.git "
     cd /opt/fmc_repository ; 
     if [ -d OpenMSA_WF ]; 
     then 
         cd OpenMSA_WF;
         ## get current branch and store in variable CURRENT_BR
         CURRENT_BR=`git rev-parse --abbrev-ref HEAD`
-        echo "Current working branch: $CURRENT_BR"
+        echo "> Current working branch: $CURRENT_BR"
         git stash;
-        echo "Check out $DEFAULT_BRANCH and getting the latest code"
+        echo "> Check out $DEFAULT_BRANCH and getting the latest code"
         git checkout $DEFAULT_BRANCH;
         git pull;
-        echo "Back to working branch"
+        echo "> Back to working branch"
         git checkout $CURRENT_BR
         git stash pop
     else 
         git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; 
         cd OpenMSA_WF;
-        echo "Create a new developement branch $DEV_BRANCH"
+        echo "> Create a new developement branch $DEV_BRANCH"
         git checkout -b $DEV_BRANCH
     fi ; 
     ### Etsi-Mano ###
-    echo "  >> https://github.com/openmsa/etsi-mano.git "
+    echo ">> https://github.com/openmsa/etsi-mano.git "
     cd /opt/fmc_repository ; 
     if [ -d OpenMSA_MANO ]; 
     then 
@@ -123,7 +124,7 @@ update_github_repo() {
         cd OpenMSA_MANO; 
     fi ; 
     cd -; 
-    echo "  >> Install the quickstart from https://github.com/ubiqube/quickstart.git"
+    echo ">> Install the quickstart from https://github.com/ubiqube/quickstart.git"
     cd /opt/fmc_repository ; 
     if [ -d /opt/fmc_repository/quickstart ]; 
     then 
