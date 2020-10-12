@@ -3,6 +3,9 @@
 
 PROG=$(basename $0)
 
+DEV_BRANCH=default_dev_branch
+DEFAULT_BRANCH=2.2.0GA
+
 install_license() {
 
     echo "-------------------------------------------------------"
@@ -38,6 +41,7 @@ init_intall() {
     
 }
 
+
 update_github_repo() {
     echo "-------------------------------------------------------------------------------"
     echo " Update the github repositories "
@@ -47,56 +51,66 @@ update_github_repo() {
     echo "  >> https://github.com/openmsa/Adapters.git "
     if [ -d OpenMSA_Adapters ]; 
     then 
-        cd OpenMSA_Adapters; 
+        ## get current branch and store in variable CURRENT_BR
+        CURRENT_BR=`git rev-parse --abbrev-ref HEAD`
+        echo "Current working branch: $CURRENT_BR"
         git stash;
-        git checkout master;
+        echo "Check out $DEFAULT_BRANCH and getting the latest code"
+        git checkout $DEFAULT_BRANCH;
         git pull;
-        git stash pop;
+        echo "Back to working branch"
+        git checkout $CURRENT_BR
+        git stash pop
     else 
         git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters; 
         cd OpenMSA_Adapters; 
-    fi ;
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ### TODO REMOVE BEFORE PR MERGE
-    git checkout 2.2.0GA;
-    git pull
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        echo "Create a new developement branch $DEV_BRANCH"
+        git checkout -b $DEV_BRANCH
+    fi;
     ### MS ###
     echo "  >> https://github.com/openmsa/Microservices.git "
     cd /opt/fmc_repository ; 
     if [ -d OpenMSA_MS ]; 
     then  
         cd OpenMSA_MS; 
+        ## get current branch and store in variable CURRENT_BR
+        CURRENT_BR=`git rev-parse --abbrev-ref HEAD`
+        echo "Current working branch: $CURRENT_BR"
         git stash;
-        git checkout master;
+        echo "Check out $DEFAULT_BRANCH and getting the latest code"
+        git checkout $DEFAULT_BRANCH;
         git pull;
+        echo "Back to working branch"
+        git checkout $CURRENT_BR
+        git stash pop
     else 
         git clone https://github.com/openmsa/Microservices.git OpenMSA_MS; 
         cd OpenMSA_MS; 
+        echo "Create a new developement branch $DEV_BRANCH"
+        git checkout -b $DEV_BRANCH
     fi;
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ### TODO REMOVE BEFORE PR MERGE
-    git checkout 2.2.0GA;
-    git pull
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ### WF ###
     echo "  >> https://github.com/openmsa/Workflows.git "
     cd /opt/fmc_repository ; 
     if [ -d OpenMSA_WF ]; 
     then 
         cd OpenMSA_WF;
+        ## get current branch and store in variable CURRENT_BR
+        CURRENT_BR=`git rev-parse --abbrev-ref HEAD`
+        echo "Current working branch: $CURRENT_BR"
         git stash;
-        git checkout master;
+        echo "Check out $DEFAULT_BRANCH and getting the latest code"
+        git checkout $DEFAULT_BRANCH;
         git pull;
+        echo "Back to working branch"
+        git checkout $CURRENT_BR
+        git stash pop
     else 
         git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; 
         cd OpenMSA_WF;
+        echo "Create a new developement branch $DEV_BRANCH"
+        git checkout -b $DEV_BRANCH
     fi ; 
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ### TODO REMOVE BEFORE PR MERGE
-    git checkout 2.2.0GA;
-    git pull
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ### Etsi-Mano ###
     echo "  >> https://github.com/openmsa/etsi-mano.git "
     cd /opt/fmc_repository ; 
@@ -115,17 +129,13 @@ update_github_repo() {
     then 
         cd quickstart; 
         git stash;
-        git checkout master;
+        git checkout $DEFAULT_BRANCH;
         git pull;
     else 
         git clone https://github.com/ubiqube/quickstart.git quickstart; 
+        cd quickstart; 
+        git checkout $DEFAULT_BRANCH;
     fi ;
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ### TODO REMOVE BEFORE PR MERGE
-    git checkout 2.2.0GA;
-    git pull
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 }
 
 uninstall_adapter() {
@@ -137,7 +147,6 @@ uninstall_adapter() {
 }
 
 #
-# $1 : adapter folder name
 # $2 : installation mode: DEV_MODE = create symlink / USER_MODE = copy code
 #
 install_adapter() {
@@ -197,7 +206,7 @@ install_microservices () {
     ln -fsn ../OpenMSA_MS/NFVO NFVO;  ln -fsn ../OpenMSA_MS/.meta_NFVO .meta_NFVO
     ln -fsn ../OpenMSA_MS/VNFM VNFM; ln -fsn ../OpenMSA_MS/.meta_VNFM .meta_VNFM
     ln -fsn ../OpenMSA_MS/KUBERNETES KUBERNETES; ln -fsn ../OpenMSA_MS/.meta_KUBERNETES .meta_KUBERNETES
-     echo "  >> NETBOX"
+    echo "  >> NETBOX"
     ln -fsn ../OpenMSA_MS/NETBOX NETBOX; ln -fsn ../OpenMSA_MS/.meta_NETBOX .meta_NETBOX; 
 
     echo "DONE"
@@ -321,7 +330,7 @@ install_adapters() {
     install_adapter virtuora_nc
     install_adapter vmware_vsphere
     install_adapter vnfm_generic
-    install_adapter wsa
+    install_adapter wsa   
 }
 
 finalize_install() {
