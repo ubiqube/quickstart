@@ -122,8 +122,6 @@ services:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
-      - "msa_sms_php:/opt/sms/bin/php"
-      - "msa_sms_devices:/opt/sms/devices"
       - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_dev:/opt/devops/"
 
