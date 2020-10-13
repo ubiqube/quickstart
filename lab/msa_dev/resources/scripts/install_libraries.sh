@@ -351,6 +351,8 @@ finalize_install() {
     chown -R ncuser:ncuser /opt/fmc_repository/*; \
     chown -R ncuser:ncuser /opt/fmc_repository/.meta_*; \
     chown -R ncuser.ncuser /opt/devops/OpenMSA_Adapters
+    chown -R ncuser.ncuser /opt/devops/OpenMSA_Adapters/adapters/*
+    chown -R ncuser.ncuser /opt/devops/OpenMSA_Adapters/vendor/*
 
     echo "DONE"
 
