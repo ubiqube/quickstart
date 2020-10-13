@@ -41,80 +41,79 @@ init_intall() {
     
 }
 
+update_git_repo () {
+    
+    REPO_URL=$1
+    REPO_BASE_DIR=$2
+    REPO_DIR=$3
 
-update_github_repo() {
+    cd $REPO_BASE_DIR
+    echo ">> $REPO_URL"
+    if [ -d $REPO_DIR ]; 
+    then 
+        cd $REPO_DIR
+        ## get current branch and store in variable CURRENT_BR
+        CURRENT_BR=`git rev-parse --abbrev-ref HEAD`
+        echo "> Current working branch: $CURRENT_BR"
+        git stash;
+        echo "> Checking merge $DEFAULT_BRANCH to $CURRENT_BR"
+        git merge --no-commit --no-ff $DEFAULT_BRANCH
+        CAN_MERGE=$?
+        if [ $CAN_MERGE == 0 ];
+        then
+            echo "> Auto-merge $DEFAULT_BRANCH to $CURRENT_BR is possible"
+            while true; do
+            echo "> merge $DEFAULT_BRANCH to current working branch $CURRENT_BR ?"
+            read -p  "[y]/[N]" yn
+            case $yn in
+                [Yy]* )
+                    git pull origin $DEFAULT_BRANCH; break
+                ;;
+                [Nn]* ) 
+                    break
+                ;;
+                * ) 
+                    echo "Please answer yes or no."
+                ;;
+            esac
+            done
+        else
+            echo "> WARN: conflict found when merging $DEFAULT_BRANCH to $CURRENT_BR."
+            echo ">       auto-merge not possible"
+            echo ">       login to the container msa_dev and merge manually if merge is needed"
+            echo ">       git repository at $REPO_BASE_DIR/$REPO_DIR"
+            git merge --abort
+        fi;
+
+       echo "> Check out $DEFAULT_BRANCH and getting the latest code"
+        git checkout $DEFAULT_BRANCH;
+        git pull;
+        echo "> Back to working branch"
+        git checkout $CURRENT_BR
+        git stash pop
+    else 
+        git clone $REPO_URL $REPO_DIR
+        cd $REPO_DIR
+        git checkout $DEFAULT_BRANCH;
+        echo "> Create a new developement branch: $DEV_BRANCH based on $DEFAULT_BRANCH"
+        git checkout -b $DEV_BRANCH
+    fi;
+
+}
+
+
+update_all_github_repo() {
     echo "-------------------------------------------------------------------------------"
     echo " Update the github repositories "
     echo "-------------------------------------------------------------------------------"
     git config --global user.email devops@openmsa.co
-    cd /opt/devops ; 
-    echo ">> https://github.com/openmsa/Adapters.git "
-    if [ -d OpenMSA_Adapters ]; 
-    then 
-        cd OpenMSA_Adapters
-        ## get current branch and store in variable CURRENT_BR
-        CURRENT_BR=`git rev-parse --abbrev-ref HEAD`
-        echo "> Current working branch: $CURRENT_BR"
-        git stash;
-        echo "> Check out $DEFAULT_BRANCH and getting the latest code"
-        git checkout $DEFAULT_BRANCH;
-        git pull;
-        echo "> Back to working branch"
-        git checkout $CURRENT_BR
-        git stash pop
-    else 
-        git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters
-        cd OpenMSA_Adapters
-        git checkout $DEFAULT_BRANCH;
-        echo "> Create a new developement branch: $DEV_BRANCH based on $DEFAULT_BRANCH"
-        git checkout -b $DEV_BRANCH
-    fi;
-    ### MS ###
-    echo ">> https://github.com/openmsa/Microservices.git "
-    cd /opt/fmc_repository ; 
-    if [ -d OpenMSA_MS ]; 
-    then  
-        cd OpenMSA_MS; 
-        ## get current branch and store in variable CURRENT_BR
-        CURRENT_BR=`git rev-parse --abbrev-ref HEAD`
-        echo "> Current working branch: $CURRENT_BR"
-        git stash;
-        echo "> Check out $DEFAULT_BRANCH and getting the latest code"
-        git checkout $DEFAULT_BRANCH;
-        git pull;
-        echo "> Back to working branch"
-        git checkout $CURRENT_BR
-        git stash pop
-    else 
-        git clone https://github.com/openmsa/Microservices.git OpenMSA_MS
-        cd OpenMSA_MS
-        git checkout $DEFAULT_BRANCH;
-        echo "> Create a new developement branch: $DEV_BRANCH based on $DEFAULT_BRANCH"
-        git checkout -b $DEV_BRANCH
-    fi;
-    ### WF ###
-    echo ">> https://github.com/openmsa/Workflows.git "
-    cd /opt/fmc_repository ; 
-    if [ -d OpenMSA_WF ]; 
-    then 
-        cd OpenMSA_WF;
-        ## get current branch and store in variable CURRENT_BR
-        CURRENT_BR=`git rev-parse --abbrev-ref HEAD`
-        echo "> Current working branch: $CURRENT_BR"
-        git stash;
-        echo "> Check out $DEFAULT_BRANCH and getting the latest code"
-        git checkout $DEFAULT_BRANCH;
-        git pull;
-        echo "> Back to working branch"
-        git checkout $CURRENT_BR
-        git stash pop
-    else 
-        git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; 
-        cd OpenMSA_WF;
-        git checkout $DEFAULT_BRANCH;
-        echo "> Create a new developement branch: $DEV_BRANCH based on $DEFAULT_BRANCH"
-        git checkout -b $DEV_BRANCH
-    fi ; 
+    
+    update_git_repo "https://github.com/openmsa/Adapters.git" "/opt/devops" "OpenMSA_Adapters"
+    
+    update_git_repo "https://github.com/openmsa/Microservices.git" "/opt/fmc_repository" "OpenMSA_MS"
+
+    update_git_repo "https://github.com/openmsa/Workflows.git" "/opt/fmc_repository" "OpenMSA_WF"
+
     ### Etsi-Mano ###
     echo ">> https://github.com/openmsa/etsi-mano.git "
     cd /opt/fmc_repository ; 
@@ -126,7 +125,7 @@ update_github_repo() {
         git clone https://github.com/openmsa/etsi-mano.git OpenMSA_MANO; 
         cd OpenMSA_MANO; 
     fi ; 
-    cd -; 
+
     echo ">> Install the quickstart from https://github.com/ubiqube/quickstart.git"
     cd /opt/fmc_repository ; 
     if [ -d /opt/fmc_repository/quickstart ]; 
@@ -383,7 +382,7 @@ main() {
 		""|all)
             install_license $option
             init_intall
-            update_github_repo
+            update_all_github_repo
             install_microservices;
             install_workflows;
             install_adapters;
@@ -391,19 +390,19 @@ main() {
 		ms)
             install_license  $option
             init_intall
-            update_github_repo
+            update_all_github_repo
 			install_microservices 
 			;;
 		wf)
             install_license  $option
             init_intall
-            update_github_repo
+            update_all_github_repo
 			install_workflows 
 			;;
 		da)
             install_license  $option
             init_intall
-            update_github_repo
+            update_all_github_repo
 			install_adapters
 			;;
 
