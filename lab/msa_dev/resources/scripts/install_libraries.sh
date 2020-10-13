@@ -4,7 +4,7 @@
 PROG=$(basename $0)
 
 DEV_BRANCH=default_dev_branch
-DEFAULT_BRANCH=2.2.0GA
+DEFAULT_BRANCH=master
 
 install_license() {
 
