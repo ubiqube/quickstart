@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:6e3ca857531616f96381b9ecf9616725fdad1e0d
+    image: ubiqube/msa2-front:42251f5e6a9ff4fa06cb68acf91267ee8741859a
     ports:
       - target: 80
         published: 80
@@ -25,16 +25,18 @@ services:
     image: camunda/camunda-bpm-platform:7.13.0
 
   db:
-    image: ubiqube/msa2-db:626f22c157300bfcc9745070f71480075443a4a7
+    image: ubiqube/msa2-db:ba1dd3d66525b3a88532904782750e4d8a013b53
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
       POSTGRES_DB: POSTGRESQL
     volumes:
       - "msa_db:/var/lib/postgresql/data"
+    ports:
+      - "5432:5432"
 
   msa_api:
-    image: ubiqube/msa2-api:a52cfed58f5a4fd0b3cd3830dd10f2bb05673c7f
+    image: ubiqube/msa2-api:deb05fa2df625f13d65b107df7b3b205b34f1a5d
     depends_on:
       - db
       - msa_es
@@ -52,7 +54,6 @@ services:
       - "msa_repository:/opt/fmc_repository"
       - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "rrd_repository:/opt/rrd"
-      - "msa_sms_php:/opt/sms/bin/php"
       - "msa_dev:/opt/devops/"
       - "msa_api_logs:/opt/jboss/wildfly/standalone/log"
       - "msa_api_logs:/opt/wildfly/logs/processLog"
@@ -60,14 +61,13 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:7f0ac93c55dc4284a0f3d6bb22b89d8dbf121565
+    image: ubiqube/msa2-ui:96bab226b5397f1660791e35e497fd3f111a4c66
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
     - FEATURE_ALARMS=true
     - FEATURE_LICENCE=true
     - FEATURE_TOPOLOGY=true
-    - FEATURE_MONITORING_PROFILES=false
 
 
   msa_es:
@@ -80,27 +80,26 @@ services:
       - "msa_es:/usr/share/elasticsearch/data"
 
   msa_sms:
-    image: ubiqube/msa2-sms:7802c321e61e1bdce76a986ecc2f8c608f8a2278
+    image: ubiqube/msa2-sms:91c5db17026520be6433fa22bbd8de209da012b7
     depends_on:
       - db
       - msa_es
       - msa_dev
     volumes:
-      - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_dev:/opt/devops/"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
-      - "msa_sms_devices:/opt/sms/devices"
-      - "msa_sms_php:/opt/sms/bin/php"
       - "rrd_repository:/opt/rrd"
       - "msa_sms_logs:/opt/sms/logs"
+    ports:
+      - "69:69"
 
   msa_bud:
     depends_on:
       - db
     image: ubiqube/msa2-bud:b23dbf64520fbddbc74ab6468bd23cf9b8ee3393
     volumes:
-      - "msa_bud:/opt/bud/logs/"
+      - "msa_bud_logs:/opt/bud/logs/"
 
   msa_cerebro:
     image: lmenezes/cerebro:0.9.2
@@ -114,7 +113,7 @@ services:
 
   msa_dev:
     # use local image for quickstart dev => for release: make sure the chnages are ported to msa-docker and uncomment the line below
-    #image: ubiqube/msa2-linuxdev
+    #image: ubiqube/msa2-linuxdev:b14d5a902747bfc9a37a21bb2ab4539445c90844
     build: ./lab/msa_dev
     depends_on:
       - msa_es
@@ -122,10 +121,7 @@ services:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
-      - "msa_sms_php:/opt/sms/bin/php"
-      - "msa_sms_devices:/opt/sms/devices"
       - "msa_api:/opt/ubi-jentreprise/generated/conf"
-      - "msa_config:/opt/configurator"
       - "msa_dev:/opt/devops/"
 
   linux_me:
@@ -146,18 +142,15 @@ services:
 
 volumes:
   msa_api:
-  msa_config:
   msa_db:
   msa_dev:
   msa_entities:
-  msa_es:
   msa_repository:
-  msa_sms_devices:
-  msa_sms_php:
+  msa_es:
   rrd_repository:
   msa_api_logs:
   msa_sms_logs:
-  msa_bud:
+  msa_bud_logs:
 
 networks:
   default:

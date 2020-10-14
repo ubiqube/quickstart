@@ -1,0 +1,28 @@
+#!/bin/bash
+
+data=`brctl show | awk '{print $1}{print $4}' | egrep -v -e '^$|bridge|id'`
+
+set -f
+array=(${data// / })
+for i in "${!array[@]}"
+do
+    if [[ ${array[i]} == vlan_* ]]
+    then
+        tmp_var=${array[i]}
+
+    elif [[ ${array[i]} == eth* ]]
+    then
+        if [[ ${array[i]} == *"."* ]]
+        then
+            port=${array[i]%.*}
+            tag=${array[i]#*.}
+        else
+            port=${array[i]}
+            tag="untagged"
+        fi
+        echo -e "${array[i]}\t$port\t$tmp_var\t$tag"
+
+    else
+        echo $tmp_var
+    fi
+done
