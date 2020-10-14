@@ -4,14 +4,17 @@
 PROG=$(basename $0)
 
 DEV_BRANCH=default_dev_branch
-DEFAULT_BRANCH=master
+GITHUB_DEFAULT_BRANCH=master
+QUICKSTART_DEFAULT_BRANCH=2.2.0GA
+INSTALL_LICENSE
+ASSUME_YES
 
 install_license() {
 
     echo "-------------------------------------------------------"
     echo "INSTALL EVAL LICENSE"
     echo "-------------------------------------------------------"
-    if [ -z "$1"  ]
+    if [ -z "$INSTALL_LICENSE"  ]
     then
         /usr/bin/install_license.sh
         if [ $? -ne 0 ]; then
@@ -41,105 +44,97 @@ init_intall() {
     
 }
 
+update_git_repo () {
 
-update_github_repo() {
+    REPO_URL=$1
+    REPO_BASE_DIR=$2
+    REPO_DIR=$3
+    DEFAULT_BRANCH=$4
+    DEFAULT_DEV_BRANCH=$5
+    
+    cd $REPO_BASE_DIR
+    echo ">> "
+    echo ">> $REPO_URL"
+    if [ -d $REPO_DIR ]; 
+    then 
+        cd $REPO_DIR
+        ## get current branch and store in variable CURRENT_BR
+        CURRENT_BR=`git rev-parse --abbrev-ref HEAD`
+        echo "> Current working branch: $CURRENT_BR"
+        git stash;
+        echo "> Checking merge $DEFAULT_BRANCH to $CURRENT_BR"
+        git merge --no-commit --no-ff $DEFAULT_BRANCH
+        CAN_MERGE=$?
+        if [ $CAN_MERGE == 0 ];
+        then
+            echo "> Auto-merge $DEFAULT_BRANCH to $CURRENT_BR is possible"
+            if [ -z $ASSUME_YES ];
+            then
+                while true; do
+                echo "> merge $DEFAULT_BRANCH to current working branch $CURRENT_BR ?"
+                read -p  "[y]/[N]" yn
+                case $yn in
+                    [Yy]* )
+                        git pull origin $DEFAULT_BRANCH; break
+                    ;;
+                    [Nn]* ) 
+                        echo "> skip merge "
+                        break
+                    ;;
+                    * ) 
+                        echo "Please answer yes or no."
+                    ;;
+                esac
+                done
+            else
+                git pull origin $DEFAULT_BRANCH
+            fi
+        else
+            echo "> WARN: conflict found when merging $DEFAULT_BRANCH to $CURRENT_BR."
+            echo ">       auto-merge not possible"
+            echo ">       login to the container msa_dev and merge manually if merge is needed"
+            echo ">       git repository at $REPO_BASE_DIR/$REPO_DIR"
+            git merge --abort
+        fi;
+
+       echo "> Check out $DEFAULT_BRANCH and get the latest code"
+        git checkout $DEFAULT_BRANCH;
+        git pull;
+        echo "> Back to working branch"
+        git checkout $CURRENT_BR
+        git stash pop
+    else 
+        git clone $REPO_URL $REPO_DIR
+        cd $REPO_DIR
+        git checkout $DEFAULT_BRANCH;
+        if [ $DEFAULT_DEV_BRANCH != ""  ];
+        then
+            echo "> Create a new developement branch: $DEFAULT_DEV_BRANCH based on $DEFAULT_BRANCH"
+            git checkout -b $DEFAULT_DEV_BRANCH
+        fi
+    fi;
+    echo ">>"
+    echo ">> DONE"
+}
+
+
+update_all_github_repo() {
     echo "-------------------------------------------------------------------------------"
     echo " Update the github repositories "
     echo "-------------------------------------------------------------------------------"
+    
     git config --global user.email devops@openmsa.co
-    cd /opt/devops ; 
-    echo ">> https://github.com/openmsa/Adapters.git "
-    if [ -d OpenMSA_Adapters ]; 
-    then 
-        cd OpenMSA_Adapters
-        ## get current branch and store in variable CURRENT_BR
-        CURRENT_BR=`git rev-parse --abbrev-ref HEAD`
-        echo "> Current working branch: $CURRENT_BR"
-        git stash;
-        echo "> Check out $DEFAULT_BRANCH and getting the latest code"
-        git checkout $DEFAULT_BRANCH;
-        git pull;
-        echo "> Back to working branch"
-        git checkout $CURRENT_BR
-        git stash pop
-    else 
-        git clone https://github.com/openmsa/Adapters.git OpenMSA_Adapters
-        cd OpenMSA_Adapters
-        git checkout $DEFAULT_BRANCH;
-        echo "> Create a new developement branch: $DEV_BRANCH based on $DEFAULT_BRANCH"
-        git checkout -b $DEV_BRANCH
-    fi;
-    ### MS ###
-    echo ">> https://github.com/openmsa/Microservices.git "
-    cd /opt/fmc_repository ; 
-    if [ -d OpenMSA_MS ]; 
-    then  
-        cd OpenMSA_MS; 
-        ## get current branch and store in variable CURRENT_BR
-        CURRENT_BR=`git rev-parse --abbrev-ref HEAD`
-        echo "> Current working branch: $CURRENT_BR"
-        git stash;
-        echo "> Check out $DEFAULT_BRANCH and getting the latest code"
-        git checkout $DEFAULT_BRANCH;
-        git pull;
-        echo "> Back to working branch"
-        git checkout $CURRENT_BR
-        git stash pop
-    else 
-        git clone https://github.com/openmsa/Microservices.git OpenMSA_MS
-        cd OpenMSA_MS
-        git checkout $DEFAULT_BRANCH;
-        echo "> Create a new developement branch: $DEV_BRANCH based on $DEFAULT_BRANCH"
-        git checkout -b $DEV_BRANCH
-    fi;
-    ### WF ###
-    echo ">> https://github.com/openmsa/Workflows.git "
-    cd /opt/fmc_repository ; 
-    if [ -d OpenMSA_WF ]; 
-    then 
-        cd OpenMSA_WF;
-        ## get current branch and store in variable CURRENT_BR
-        CURRENT_BR=`git rev-parse --abbrev-ref HEAD`
-        echo "> Current working branch: $CURRENT_BR"
-        git stash;
-        echo "> Check out $DEFAULT_BRANCH and getting the latest code"
-        git checkout $DEFAULT_BRANCH;
-        git pull;
-        echo "> Back to working branch"
-        git checkout $CURRENT_BR
-        git stash pop
-    else 
-        git clone https://github.com/openmsa/Workflows.git OpenMSA_WF; 
-        cd OpenMSA_WF;
-        git checkout $DEFAULT_BRANCH;
-        echo "> Create a new developement branch: $DEV_BRANCH based on $DEFAULT_BRANCH"
-        git checkout -b $DEV_BRANCH
-    fi ; 
-    ### Etsi-Mano ###
-    echo ">> https://github.com/openmsa/etsi-mano.git "
-    cd /opt/fmc_repository ; 
-    if [ -d OpenMSA_MANO ]; 
-    then 
-        cd OpenMSA_MANO; 
-        git pull; 
-    else 
-        git clone https://github.com/openmsa/etsi-mano.git OpenMSA_MANO; 
-        cd OpenMSA_MANO; 
-    fi ; 
-    cd -; 
-    echo ">> Install the quickstart from https://github.com/ubiqube/quickstart.git"
-    cd /opt/fmc_repository ; 
-    if [ -d /opt/fmc_repository/quickstart ]; 
-    then 
-        cd quickstart; 
-        git stash;
-        git checkout $DEFAULT_BRANCH;
-        git pull;
-    else 
-        git clone https://github.com/ubiqube/quickstart.git quickstart; 
-        cd quickstart; 
-        git checkout $DEFAULT_BRANCH;
-    fi ;
+    
+    update_git_repo "https://github.com/openmsa/Adapters.git" "/opt/devops" "OpenMSA_Adapters" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
+    
+    update_git_repo "https://github.com/openmsa/Microservices.git" "/opt/fmc_repository" "OpenMSA_MS" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
+
+    update_git_repo "https://github.com/openmsa/Workflows.git" "/opt/fmc_repository" "OpenMSA_WF" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
+
+    update_git_repo "https://github.com/openmsa/etsi-mano.git" "/opt/fmc_repository" "OpenMSA_MANO" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
+
+    update_git_repo "https://github.com/ubiqube/quickstart.git" "/opt/fmc_repository" "quickstart" $QUICKSTART_DEFAULT_BRANCH 
+
 }
 
 uninstall_adapter() {
@@ -363,13 +358,15 @@ finalize_install() {
 }
 
 usage() {
-	echo "usage: $PROG [all|ms|wf|da] [--no-lic]"
+	echo "usage: $PROG all|ms|wf|da [--no-lic] [-y]"
     echo "this script installs some librairies available @github.com/openmsa"
 	echo
-	echo "all (default): install everyting: worflows, microservices and adapters"
-	echo "ms: install the microservices from https://github.com/openmsa/Microservices"
-	echo "wf: install the worflows from https://github.com/openmsa/Workflows"
-	echo "da: install the adapters from https://github.com/openmsa/Adapters"
+	echo "all:          install everyting: worflows, microservices and adapters"
+	echo "ms:           install the microservices from https://github.com/openmsa/Microservices"
+	echo "wf:           install the worflows from https://github.com/openmsa/Workflows"
+	echo "da:           install the adapters from https://github.com/openmsa/Adapters"
+    echo "--no-lic:     skip license installation"
+    echo "-y:           answer yes for all questions"
     exit 0
 }
 
@@ -377,13 +374,32 @@ main() {
 
 
 	cmd=$1
-    option=$2
-	shift
+   	shift
+
+    while [ ! -z $1 ]
+    do
+        echo $1
+        option=$1
+        case $option in
+            --no-lic)
+                INSTALL_LICENSE=false
+                ;;
+            -y)
+                ASSUME_YES=true
+                ;;
+            *)
+            echo "Error: unknown option: $option"
+            usage
+			;;
+        esac
+        shift
+    done   
+
 	case $cmd in
-		""|all)
+		all)
             install_license $option
             init_intall
-            update_github_repo
+            update_all_github_repo
             install_microservices;
             install_workflows;
             install_adapters;
@@ -391,19 +407,19 @@ main() {
 		ms)
             install_license  $option
             init_intall
-            update_github_repo
+            update_all_github_repo
 			install_microservices 
 			;;
 		wf)
             install_license  $option
             init_intall
-            update_github_repo
+            update_all_github_repo
 			install_workflows 
 			;;
 		da)
             install_license  $option
             init_intall
-            update_github_repo
+            update_all_github_repo
 			install_adapters
 			;;
 
