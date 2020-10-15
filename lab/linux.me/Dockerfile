@@ -1,15 +1,22 @@
-FROM centos:6.8 as linux_me
+FROM centos:6
 
-# for msa asset info
-RUN yum install -y redhat-lsb-core dmidecode
+ENV container docker
 
-# for msa asset access
-RUN yum install -y openssh-server sudo 
+RUN yum install -y redhat-lsb-core openssh-server sudo iptables net-snmp net-snmp-utilsnet-snmp net-snmp-utils tcpdump
+
+RUN passwd --stdin root <<< "ubiqube"
 RUN useradd msa
 RUN passwd --stdin msa <<< "ubiqube"
 RUN echo 'msa  ALL=(ALL:ALL) NOPASSWD: ALL' >> /etc/sudoers
 
-RUN chkconfig iptables on
+
+COPY snmpd.conf /etc/snmp/
+
+RUN chkconfig --add iptables && chkconfig iptables on
 RUN chkconfig --add sshd && chkconfig sshd on
+RUN chkconfig --add snmpd && chkconfig snmpd on
+
+RUN service sshd start 
+RUN service snmpd start 
 
 CMD [ "/sbin/init" ]

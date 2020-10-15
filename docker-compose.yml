@@ -6,8 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-      - msa_sms
-    image: ubiqube/msa2-front:319bd74db43185cd6456563c55bc0cdf9c4eff37
+    image: ubiqube/msa2-front:e4087c9947273aa71e762247ed36c5d6309f3a64
     ports:
       - target: 80
         published: 80
@@ -23,18 +22,19 @@ services:
         mode: host
 
   camunda:
-    image: camunda/camunda-bpm-platform
+    image: camunda/camunda-bpm-platform:7.13.0
 
   db:
-    image: ubiqube/msa2-db:584373628bf62cedcac57b13fcab5a648c604982
+    image: ubiqube/msa2-db:ba1dd3d66525b3a88532904782750e4d8a013b53
+    command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
       POSTGRES_DB: POSTGRESQL
     volumes:
       - "msa_db:/var/lib/postgresql/data"
-      
+
   msa_api:
-    image: ubiqube/msa-api:b0e07f0b076e8a6da3ee094a0aeff20c5021f2ae
+    image: ubiqube/msa2-api:43ac93d9b7908d0c0ea60a6e60aff903e5ae8ebb
     depends_on:
       - db
       - msa_es
@@ -52,19 +52,24 @@ services:
       - "msa_repository:/opt/fmc_repository"
       - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "rrd_repository:/opt/rrd"
+      - "msa_dev:/opt/devops/"
+      - "msa_api_logs:/opt/jboss/wildfly/standalone/log"
+      - "msa_api_logs:/opt/wildfly/logs/processLog"
 
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:d5ef0bc036cccec555247711408536a149334ba9
+    image: ubiqube/msa2-ui:96bab226b5397f1660791e35e497fd3f111a4c66
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
     - FEATURE_ALARMS=true
     - FEATURE_LICENCE=true
+    - FEATURE_TOPOLOGY=true
+
 
   msa_es:
-    image: ubiqube/msa2:es-2.1
+    image: ubiqube/msa2-es:037a2067826b36e646b45e5a148431346f62f3a6
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
@@ -73,31 +78,29 @@ services:
       - "msa_es:/usr/share/elasticsearch/data"
 
   msa_sms:
-    image: ubiqube/msa2-sms:feefa4f1f72a0c28d8f01aaa455ec2f834becbed
+    image: ubiqube/msa2-sms:91c5db17026520be6433fa22bbd8de209da012b7
     depends_on:
       - db
       - msa_es
       - msa_dev
     volumes:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+      - "msa_dev:/opt/devops/"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
-      - "msa_sms_php:/opt/sms/bin/php"
-      - "msa_config:/opt/configurator"
-      - "msa_dev:/opt/devops/"
-      - "msa_sms_devices:/opt/sms/devices"
       - "rrd_repository:/opt/rrd"
+      - "msa_sms_logs:/opt/sms/logs"
+    ports:
+      - "69:69"
 
   msa_bud:
     depends_on:
       - db
-    image: ubiqube/msa2-bud:26cf8835dadb548dd8c23edc8b7d671c1489d10b
+    image: ubiqube/msa2-bud:b23dbf64520fbddbc74ab6468bd23cf9b8ee3393
     volumes:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-
+      - "msa_bud_logs:/opt/bud/logs/"
 
   msa_cerebro:
-    image: lmenezes/cerebro
+    image: lmenezes/cerebro:0.9.2
     entrypoint:
       - /opt/cerebro/bin/cerebro
       - -Dhosts.0.host=http://msa_es:9200
@@ -107,20 +110,22 @@ services:
       - "9000:9000"
 
   msa_dev:
-    build: ./lab/msa_dev
+    # use local image for quickstart dev => for release: make sure the chnages are ported to msa-docker and uncomment the line below
+    image: ubiqube/msa2-linuxdev:e4087c9947273aa71e762247ed36c5d6309f3a64
+    #build: ./lab/msa_dev
     depends_on:
       - msa_es
     volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
-      - "msa_sms_php:/opt/sms/bin/php"
-      - "msa_sms_devices:/opt/sms/devices"
       - "msa_api:/opt/ubi-jentreprise/generated/conf"
-      - "msa_config:/opt/configurator"
       - "msa_dev:/opt/devops/"
 
   linux_me:
-    image: ubiqube/msa2-linuxme
+    # use local image for quickstart dev => for release: make sure the chnages are ported to msa-docker and uncomment the line below
+    #image: ubiqube/msa2-linuxme
+    build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
       - sys_rawio
@@ -132,18 +137,18 @@ services:
       default:
         ipv4_address: 172.20.0.101
     hostname: linux_me
-  
+
 volumes:
+  msa_api:
   msa_db:
+  msa_dev:
   msa_entities:
   msa_repository:
-  msa_sms_php:
-  msa_sms_devices:
-  msa_api:
-  msa_config:
-  msa_dev:
-  rrd_repository:
   msa_es:
+  rrd_repository:
+  msa_api_logs:
+  msa_sms_logs:
+  msa_bud_logs:
 
 networks:
   default:

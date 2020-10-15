@@ -1,0 +1,109 @@
+version: "3.8"
+
+services:
+
+  pc_01:
+    privileged: true
+    build:
+      context: .
+      dockerfile: pc.dockerfile
+    ports:
+      - "60622:22"
+    tty: true
+    networks:
+      default:
+        ipv4_address: 172.20.0.141
+      intranet_01:
+        ipv4_address: 10.222.222.11
+    hostname: pc_01
+  
+  pc_02:
+    privileged: true
+    build:
+      context: .
+      dockerfile: pc.dockerfile
+    ports:
+      - "60722:22"
+    tty: true
+    networks:
+      default:
+        ipv4_address: 172.20.0.142
+      # IP ADDRESS will be replaced with ENTRYPOINT script
+      intranet_02:
+        ipv4_address: 10.222.223.12
+    hostname: pc_02
+  
+  pc_03:
+    privileged: true
+    build:
+      context: .
+      dockerfile: pc.dockerfile
+    ports:
+      - "60822:22"
+    tty: true
+    networks:
+      default:
+        ipv4_address: 172.20.0.143
+      # IP ADDRESS will be replaced with ENTRYPOINT script
+      intranet_03:
+        ipv4_address: 10.222.224.12
+    hostname: pc_03
+
+  pc_04:
+    privileged: true
+    build:
+      context: .
+      dockerfile: pc.dockerfile
+    ports:
+      - "60922:22"
+    tty: true
+    networks:
+      default:
+        ipv4_address: 172.20.0.144
+      # IP ADDRESS will be replaced with ENTRYPOINT script
+      intranet_04:
+        ipv4_address: 10.222.225.12
+    hostname: pc_04
+
+  switch:
+    privileged: true
+    build:
+      context: .
+      dockerfile: switch.dockerfile
+    ports:
+      - "61022:22"
+    tty: true
+    networks:
+      default:
+        ipv4_address: 172.20.0.145
+      # DUMMY ADDRESSES - interfaces will be switched into promiscuous mode
+      intranet_01:
+        ipv4_address: 10.222.222.10
+      intranet_02:
+        ipv4_address: 10.222.223.10
+      intranet_03:
+        ipv4_address: 10.222.224.10
+      intranet_04:
+        ipv4_address: 10.222.225.10
+    hostname: switch
+
+networks:
+  default:
+    external:
+      name: quickstart_default
+  intranet_01:
+    ipam:
+      config:
+        - subnet: 10.222.222.0/24
+  intranet_02:
+    ipam:
+      config:
+        - subnet: 10.222.223.0/24
+  intranet_03:
+    ipam:
+      config:
+        - subnet: 10.222.224.0/24
+  intranet_04:
+    ipam:
+      config:
+        - subnet: 10.222.225.0/24
