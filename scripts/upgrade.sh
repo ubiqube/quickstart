@@ -11,21 +11,26 @@ upgrade(){
         echo "Starting upgrade"
         echo "----------------"
 
-        docker-compose down
-
-        sms_php_vol=$(docker volume ls | awk '{print $2}' | grep msa_sms_php)
+	docker-compose down
+        
+	sms_php_vol=$(docker volume ls | awk '{print $2}' | grep msa_sms_php)
         echo "Recreating Core Engine (msa_sms) volume $sms_php_vol"
         docker volume rm $sms_php_vol
-        echo "Done"
 
-        # Need to call here script to clean old images [MSA-8583]
+	sms_devices_vol=$(docker volume ls | awk '{print $2}' | grep msa_sms_devices)
+        echo "Recreating Core Engine (sms_devices) volume $sms_devices_vol"
+        docker volume rm $sms_devices_vol
+
+	dev_vol=$(docker volume ls | awk '{print $2}' | grep msa_dev)
+        echo "Recreating Dev volume $dev_vol"
+        docker volume rm $dev_vol
 
         docker-compose up -d --build
 
         docker-compose exec msa_dev /usr/bin/install_libraries.sh all --no-lic
 
         docker-compose restart msa_api
-
+	
         docker-compose restart msa_sms
 
         msa_api=$(docker ps -q -f name=msa_api)
@@ -115,7 +120,7 @@ main() {
                 upgrade;
         fi
 	
-	if [ $clean_option ] ; then
+	if [ "$clean_option" = true ] ; then
 		if [ $force_option = false ] ; then
 			while true; do
                         	read -p "Are you sure to want to clean unused images? [y]/[N]" yn
