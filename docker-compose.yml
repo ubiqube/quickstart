@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:586140505bed021aaaffe56c360206b673131fde
+    image: ubiqube/msa2-front:e4087c9947273aa71e762247ed36c5d6309f3a64
     ports:
       - target: 80
         published: 80
@@ -36,7 +36,7 @@ services:
       - "5432:5432"
 
   msa_api:
-    image: ubiqube/msa2-api:69f4baebe4cecf260d2c885df7ae84c222212dc5
+    image: ubiqube/msa2-api:43ac93d9b7908d0c0ea60a6e60aff903e5ae8ebb
     depends_on:
       - db
       - msa_es
@@ -113,7 +113,7 @@ services:
 
   msa_dev:
     # use local image for quickstart dev => for release: make sure the chnages are ported to msa-docker and uncomment the line below
-    #image: ubiqube/msa2-linuxdev:b14d5a902747bfc9a37a21bb2ab4539445c90844
+    #image: ubiqube/msa2-linuxdev:e4087c9947273aa71e762247ed36c5d6309f3a64
     build: ./lab/msa_dev
     depends_on:
       - msa_es
