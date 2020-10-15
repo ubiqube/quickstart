@@ -6,15 +6,15 @@ PROG=$(basename $0)
 DEV_BRANCH=default_dev_branch
 GITHUB_DEFAULT_BRANCH=master
 QUICKSTART_DEFAULT_BRANCH=2.2.0GA
-INSTALL_LICENSE
-ASSUME_YES
+INSTALL_LICENSE=true
+ASSUME_YES=false
 
 install_license() {
 
     echo "-------------------------------------------------------"
     echo "INSTALL EVAL LICENSE"
     echo "-------------------------------------------------------"
-    if [ -z "$INSTALL_LICENSE"  ]
+    if [ $INSTALL_LICENSE == true  ];
     then
         /usr/bin/install_license.sh
         if [ $? -ne 0 ]; then
@@ -68,7 +68,7 @@ update_git_repo () {
         if [ $CAN_MERGE == 0 ];
         then
             echo "> Auto-merge $DEFAULT_BRANCH to $CURRENT_BR is possible"
-            if [ -z $ASSUME_YES ];
+            if [ $ASSUME_YES == false ];
             then
                 while true; do
                 echo "> merge $DEFAULT_BRANCH to current working branch $CURRENT_BR ?"
@@ -346,6 +346,8 @@ finalize_install() {
     chown -R ncuser:ncuser /opt/fmc_repository/*; \
     chown -R ncuser:ncuser /opt/fmc_repository/.meta_*; \
     chown -R ncuser.ncuser /opt/devops/OpenMSA_Adapters
+    chown -R ncuser.ncuser /opt/devops/OpenMSA_Adapters/adapters/*
+    chown -R ncuser.ncuser /opt/devops/OpenMSA_Adapters/vendor/*
 
     echo "DONE"
 
@@ -359,21 +361,30 @@ finalize_install() {
 
 usage() {
 	echo "usage: $PROG all|ms|wf|da [--no-lic] [-y]"
-    echo "this script installs some librairies available @github.com/openmsa"
+  echo
+  echo "this script installs some librairies available @github.com/openmsa"
 	echo
-	echo "all:          install everyting: worflows, microservices and adapters"
+  echo "Commands:"
+	echo "all:          install everything: worflows, microservices and adapters"
 	echo "ms:           install the microservices from https://github.com/openmsa/Microservices"
 	echo "wf:           install the worflows from https://github.com/openmsa/Workflows"
 	echo "da:           install the adapters from https://github.com/openmsa/Adapters"
-    echo "--no-lic:     skip license installation"
-    echo "-y:           answer yes for all questions"
-    exit 0
+  echo "Options:"
+  echo "--no-lic:     skip license installation"
+  echo "-y:           answer yes for all questions"
+  exit 0
 }
 
 main() {
 
 
 	cmd=$1
+
+    if [ $cmd == --help ];
+    then
+        usage
+    fi
+
    	shift
 
     while [ ! -z $1 ]
