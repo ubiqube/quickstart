@@ -113,8 +113,8 @@ services:
 
   msa_dev:
     # use local image for quickstart dev => for release: make sure the chnages are ported to msa-docker and uncomment the line below
-    #image: ubiqube/msa2-linuxdev:e4087c9947273aa71e762247ed36c5d6309f3a64
-    build: ./lab/msa_dev
+    image: ubiqube/msa2-linuxdev:e4087c9947273aa71e762247ed36c5d6309f3a64
+    #build: ./lab/msa_dev
     depends_on:
       - msa_es
     volumes:
