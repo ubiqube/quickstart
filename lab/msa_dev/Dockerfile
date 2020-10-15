@@ -9,10 +9,6 @@ RUN git config --global alias.lg "log --graph --pretty=format:'%C(red)%h%C(reset
     git config --global push.default simple; \
     :
 
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-
-
 COPY resources/scripts/create_test_me.sh /usr/bin/
 COPY resources/scripts/create_mini_lab.sh /usr/bin/
 COPY resources/scripts/install_libraries.sh /usr/bin/
