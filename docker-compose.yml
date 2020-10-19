@@ -110,9 +110,9 @@ services:
       - "9000:9000"
 
   msa_dev:
-    # use local image for quickstart dev => for release: make sure the chnages are ported to msa-docker and uncomment the line below
-    image: ubiqube/msa2-linuxdev:e4087c9947273aa71e762247ed36c5d6309f3a64
+    # uncomment to use a local image for quickstart dev 
     #build: ./lab/msa_dev
+    image: ubiqube/msa2-linuxdev:fdb23376f6a8bd004d73aa0ea1e15f78fb96d099
     depends_on:
       - msa_es
     volumes:
