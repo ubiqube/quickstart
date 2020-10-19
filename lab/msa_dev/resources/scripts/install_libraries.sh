@@ -21,7 +21,7 @@ install_license() {
             exit 1
         fi
     else
-        echo "skipping license installation"
+        echo ">> skipping license installation..."
     fi
 }
 
@@ -53,14 +53,37 @@ update_git_repo () {
     DEFAULT_DEV_BRANCH=$5
     
     cd $REPO_BASE_DIR
-    echo ">> "
-    echo ">> $REPO_URL"
+    echo ""
+    echo "---> $REPO_URL <---"
     if [ -d $REPO_DIR ]; 
     then 
         cd $REPO_DIR
         ## get current branch and store in variable CURRENT_BR
         CURRENT_BR=`git rev-parse --abbrev-ref HEAD`
         echo "> Current working branch: $CURRENT_BR"
+        if [[ $ASSUME_YES == false && $CURRENT_BR == "master" ]];
+        then
+            echo "> WARNING: your current branch is $CURRENT_BR, to be safe, you may want to switch to a working branch"
+            read -p  "  continue ? [y]/[N]" yn
+            case $yn in
+                [Yy]* )
+                    read -p   "> Enter the name of the working branch:" br
+                    if [ $br == "" ];
+                    then
+                        echo "> ERROR: invalid branch name, exiting..."
+                        exit 0
+                    else
+                        # checkout or create and checkout the branch
+                        git checkout $br 2>/dev/null || git checkout -b $br
+                        CURRENT_BR=$br
+                    fi
+                    ;;
+                * ) 
+                    echo "> exiting... "
+                    exit 0
+                    ;;
+            esac
+        fi
         git stash;
         echo "> Checking merge $DEFAULT_BRANCH to $CURRENT_BR"
         git merge --no-commit --no-ff $DEFAULT_BRANCH
@@ -72,7 +95,7 @@ update_git_repo () {
             then
                 while true; do
                 echo "> merge $DEFAULT_BRANCH to current working branch $CURRENT_BR ?"
-                read -p  "[y]/[N]" yn
+                read -p  "  [y]/[N]" yn
                 case $yn in
                     [Yy]* )
                         git pull origin $DEFAULT_BRANCH; break
@@ -82,7 +105,7 @@ update_git_repo () {
                         break
                     ;;
                     * ) 
-                        echo "Please answer yes or no."
+                        echo "> Please answer yes or no."
                     ;;
                 esac
                 done
@@ -113,7 +136,7 @@ update_git_repo () {
             git checkout -b $DEFAULT_DEV_BRANCH
         fi
     fi;
-    echo ">>"
+    echo ""
     echo ">> DONE"
 }
 
@@ -389,7 +412,6 @@ main() {
 
     while [ ! -z $1 ]
     do
-        echo $1
         option=$1
         case $option in
             --no-lic)
