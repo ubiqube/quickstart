@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:da09d681aa1686d0a079ed6f10e741d46cb7c58d
+    image: ubiqube/msa2-front:9c769e85a26f1046bd0a6bb6ead68a75b5b20027
     ports:
       - target: 80
         published: 80
@@ -32,9 +32,10 @@ services:
       POSTGRES_DB: POSTGRESQL
     volumes:
       - "msa_db:/var/lib/postgresql/data"
-
+    ports:
+      - "5432:5432"
   msa_api:
-    image: ubiqube/msa2-api:fd20bacbe019774bb555234bb462c3a447c0d494
+    image: ubiqube/msa2-api:4d2f79787372e8899de49d3bcf5cc4f29cd0bba1
     depends_on:
       - db
       - msa_es
