@@ -8,7 +8,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:9c769e85a26f1046bd0a6bb6ead68a75b5b20027
+    image: ubiqube/msa2-front:f41707f8fcc7552fd3cc628c5321056f72414332
     deploy:
       replicas: 1
       placement:
@@ -92,7 +92,7 @@ services:
   msa_sms:
     depends_on:
       - db
-    image: ubiqube/msa2-sms:a505a96f2c86c6e1114baf357ceb2aeb820f0745
+    image: ubiqube/msa2-sms:4638bd0000f7ac7a761c4f82837939775d752240
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
