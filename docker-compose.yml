@@ -112,8 +112,8 @@ services:
 
   msa_dev:
     # uncomment to use a local image for quickstart dev 
-    #build: ./lab/msa_dev
-    image: ubiqube/msa2-linuxdev:fdb23376f6a8bd004d73aa0ea1e15f78fb96d099
+    # build: ./lab/msa_dev
+    image: ubiqube/msa2-linuxdev:0673683b389103f2ccf72731d7cfde562854d679
     depends_on:
       - msa_es
     volumes:
