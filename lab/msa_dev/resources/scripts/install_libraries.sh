@@ -122,14 +122,23 @@ update_all_github_repo() {
     echo "-------------------------------------------------------------------------------"
     echo " Update the github repositories "
     echo "-------------------------------------------------------------------------------"
-    
+    install_type=$1
     git config --global user.email devops@openmsa.co
     
-    update_git_repo "https://github.com/openmsa/Adapters.git" "/opt/devops" "OpenMSA_Adapters" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
+    if [[ $install_type = "all" || $install_type = "da" ]];
+    then
+        update_git_repo "https://github.com/openmsa/Adapters.git" "/opt/devops" "OpenMSA_Adapters" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
+    fi
     
-    update_git_repo "https://github.com/openmsa/Microservices.git" "/opt/fmc_repository" "OpenMSA_MS" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
-
-    update_git_repo "https://github.com/openmsa/Workflows.git" "/opt/fmc_repository" "OpenMSA_WF" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
+    if [[ $install_type = "all" || $install_type = "ms" ]];
+    then
+        update_git_repo "https://github.com/openmsa/Microservices.git" "/opt/fmc_repository" "OpenMSA_MS" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
+    fi
+    
+    if [[ $install_type = "all" || $install_type = "wf" ]];
+    then
+        update_git_repo "https://github.com/openmsa/Workflows.git" "/opt/fmc_repository" "OpenMSA_WF" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
+    fi
 
     update_git_repo "https://github.com/openmsa/etsi-mano.git" "/opt/fmc_repository" "OpenMSA_MANO" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
 
@@ -234,8 +243,8 @@ install_workflows() {
     ln -fsn ../OpenMSA_WF/Private_Cloud Private_Cloud
     ln -fsn ../OpenMSA_WF/.meta_Private_Cloud .meta_Private_Cloud
     echo "  >> Ansible"
-    ln -fsn ../OpenMSA_WF/Ansible Ansible
-    ln -fsn ../OpenMSA_WF/.meta_Ansible .meta_Ansible
+    ln -fsn ../OpenMSA_WF/Ansible_integration Ansible_integration
+    #ln -fsn ../OpenMSA_WF/.meta_Ansible_integration .meta_Ansible_integration
     echo "  >> Public Cloud - AWS"
     ln -fsn ../OpenMSA_WF/Public_Cloud Public_Cloud
     ln -fsn ../OpenMSA_WF/.meta_Public_Cloud .meta_Public_Cloud
@@ -410,7 +419,7 @@ main() {
 		all)
             install_license $option
             init_intall
-            update_all_github_repo
+            update_all_github_repo $cmd
             install_microservices;
             install_workflows;
             install_adapters;
@@ -418,19 +427,19 @@ main() {
 		ms)
             install_license  $option
             init_intall
-            update_all_github_repo
+            update_all_github_repo  $cmd
 			install_microservices 
 			;;
 		wf)
             install_license  $option
             init_intall
-            update_all_github_repo
+            update_all_github_repo  $cmd
 			install_workflows 
 			;;
 		da)
             install_license  $option
             init_intall
-            update_all_github_repo
+            update_all_github_repo  $cmd
 			install_adapters
 			;;
 
