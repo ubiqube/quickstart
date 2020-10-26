@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:974b4eff88f727a8010817a18adcbd3e34cf85d5
+    image: ubiqube/msa2-front:91af847bf5da3269d6b9d5c023255d2350fe8f29
     ports:
       - target: 80
         published: 80
@@ -79,7 +79,7 @@ services:
       - "msa_es:/usr/share/elasticsearch/data"
 
   msa_sms:
-    image: ubiqube/msa2-sms:705f114bdd31a587dc6d4cab1cfcbcdf6957b649
+    image: ubiqube/msa2-sms:341029005626557b716871a37267982239e49f3d
     depends_on:
       - db
       - msa_es
