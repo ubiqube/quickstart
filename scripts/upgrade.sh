@@ -107,11 +107,10 @@ main() {
 
     if [ $force_option = false ] ; then
     
-	if [[ $current_version =~ $target_version ]]
-                then
-                	echo "Already up to date: nothing to do"
+		if [[ $current_version =~ $target_version ]]; then
+            echo "Already up to date: nothing to do"
         	exit
-	fi
+		fi
     
         while true; do
             read -p "Are you sure to want to upgrade to $target_version? [y]/[N]" yn
