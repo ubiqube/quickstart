@@ -100,10 +100,10 @@ main() {
         echo "Upgrading to last $target_version version"
         echo "################################"
 
-	if [ ! -z "$(docker ps | grep msa)" ]; then
-        	current_version=$(curl -s -k -XGET 'https://127.0.0.1/msa_version/' | grep -Po '(\d.\d.\w+)')
-       		echo "You current MSA version is $current_version"
-	fi
+	#if [ ! -z "$(docker ps | grep msa)" ]; then
+        #	current_version=$(curl -s -k -XGET 'https://127.0.0.1/msa_version/' | grep -Po '(\d.\d.\w+)')
+       	#	echo "You current MSA version is $current_version"
+	#fi
 
         if [ $force_option = false ] ; then
 
