@@ -142,7 +142,7 @@ services:
     #  - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
 
   msa_dev:
-    image: ubiqube/msa2-linuxdev:0673683b389103f2ccf72731d7cfde562854d679
+    image: ubiqube/msa2-linuxdev:bd0f7f65b54b81f10348949bc96bfa1ec5d324fb
     depends_on:
       - msa_es
     deploy:
