@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:91af847bf5da3269d6b9d5c023255d2350fe8f29
+    image: ubiqube/msa2-front:58c95188ecf920dc3a42d243cfcba79c004fc2c4
     ports:
       - target: 80
         published: 80
@@ -20,26 +20,26 @@ services:
         published: 514
         protocol: udp
         mode: host
+    volumes:
+        - "msa_front:/etc/nginx/ssl"
 
   camunda:
     image: camunda/camunda-bpm-platform:7.13.0
 
   db:
-    image: ubiqube/msa2-db:ba1dd3d66525b3a88532904782750e4d8a013b53
+    image: ubiqube/msa2-db:0fa25b25ce930c2da8d73d14e0fa11dab06207d7
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
       POSTGRES_DB: POSTGRESQL
     volumes:
       - "msa_db:/var/lib/postgresql/data"
-    ports:
-      - "5432:5432"
+
   msa_api:
-    image: ubiqube/msa2-api:4d2f79787372e8899de49d3bcf5cc4f29cd0bba1
     depends_on:
       - db
       - msa_es
-      - msa_dev
+    image: ubiqube/msa2-api:77c1751e3a498453286d6ffbf3120eecc83e475c
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b
@@ -49,9 +49,9 @@ services:
       - -c
       - ubiqube.xml
     volumes:
+      - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
-      - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "rrd_repository:/opt/rrd"
       - "msa_dev:/opt/devops/"
       - "msa_api_logs:/opt/jboss/wildfly/standalone/log"
@@ -60,14 +60,14 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:8b5408a6c355a9bfacfc3f88e087e68b1b4415ec
+    image: ubiqube/msa2-ui:255d026ece4bc2cc10d7af91071129b36408a6c3
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
     - FEATURE_ALARMS=true
     - FEATURE_LICENCE=true
     - FEATURE_TOPOLOGY=true
-
+    - FEATURE_MONITORING_PROFILES=true
 
   msa_es:
     image: ubiqube/msa2-es:037a2067826b36e646b45e5a148431346f62f3a6
@@ -79,7 +79,7 @@ services:
       - "msa_es:/usr/share/elasticsearch/data"
 
   msa_sms:
-    image: ubiqube/msa2-sms:341029005626557b716871a37267982239e49f3d
+    image: ubiqube/msa2-sms:0107cbf1ac1f1d2067c69a76b107e93f9de9cbd7
     depends_on:
       - db
       - msa_es
@@ -96,7 +96,7 @@ services:
   msa_bud:
     depends_on:
       - db
-    image: ubiqube/msa2-bud:b23dbf64520fbddbc74ab6468bd23cf9b8ee3393
+    image: ubiqube/msa2-bud:43ee454c22b9ed217dac6baba9a88a345a5422c2
     volumes:
       - "msa_bud_logs:/opt/bud/logs/"
 
@@ -112,8 +112,8 @@ services:
 
   msa_dev:
     # uncomment to use a local image for quickstart dev 
-    # build: ./lab/msa_dev
-    image: ubiqube/msa2-linuxdev:0673683b389103f2ccf72731d7cfde562854d679
+    build: ./lab/msa_dev
+    #image: ubiqube/msa2-linuxdev:0673683b389103f2ccf72731d7cfde562854d679
     depends_on:
       - msa_es
     volumes:
