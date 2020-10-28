@@ -150,6 +150,7 @@ volumes:
   msa_api_logs:
   msa_sms_logs:
   msa_bud_logs:
+  msa_front:
 
 networks:
   default:
