@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:58c95188ecf920dc3a42d243cfcba79c004fc2c4
+    image: ubiqube/msa2-front:b787e84568e1bf77a05cb851114aaf442de991bb
     ports:
       - target: 80
         published: 80
@@ -27,7 +27,7 @@ services:
     image: camunda/camunda-bpm-platform:7.13.0
 
   db:
-    image: ubiqube/msa2-db:0fa25b25ce930c2da8d73d14e0fa11dab06207d7
+    image: ubiqube/msa2-db:c1aa0013c4d8b8c39682034a23d395be8e4d8547
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -39,7 +39,7 @@ services:
     depends_on:
       - db
       - msa_es
-    image: ubiqube/msa2-api:77c1751e3a498453286d6ffbf3120eecc83e475c
+    image: ubiqube/msa2-api:366aeb256ea7b41d6922d8bff7d663ac159bd914
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b
@@ -60,7 +60,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:255d026ece4bc2cc10d7af91071129b36408a6c3
+    image: ubiqube/msa2-ui:47731007fb487aac69d15678c87c8156903d9f51
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
