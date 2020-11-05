@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:03f833a9c34c8740256162dee5cc0ccd39e6d4ef
+    image: ubiqube/msa2-front:3d35ebda171bc5aaf77a025c652440c1aaa7b21d
     ports:
       - target: 80
         published: 80
@@ -27,7 +27,7 @@ services:
     image: camunda/camunda-bpm-platform:7.13.0
 
   db:
-    image: ubiqube/msa2-db:c1aa0013c4d8b8c39682034a23d395be8e4d8547
+    image: ubiqube/msa2-db:c22894a3262ec57399f222d30786f9f17f940cd4
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -39,7 +39,7 @@ services:
     depends_on:
       - db
       - msa_es
-    image: ubiqube/msa2-api:6068794aa30160fb5696bb5c96253a4b1fb3536b
+    image: ubiqube/msa2-api:c6a2139c109b7e5895da722e851afceae401814f
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b
@@ -60,7 +60,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:47731007fb487aac69d15678c87c8156903d9f51
+    image: ubiqube/msa2-ui:302e7965d648cf5b692db7dcaee38401d18e90f9
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -122,7 +122,7 @@ services:
       - "msa_repository:/opt/fmc_repository"
       - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_dev:/opt/devops/"
-
+      
   linux_me:
     # use local image for quickstart dev => for release: make sure the chnages are ported to msa-docker and uncomment the line below
     #image: ubiqube/msa2-linuxme
