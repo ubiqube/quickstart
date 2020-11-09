@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:3d35ebda171bc5aaf77a025c652440c1aaa7b21d
+    image: ubiqube/msa2-front:27eea2c020a148497c89cdd3e379e5d1cff9df90
     ports:
       - target: 80
         published: 80
@@ -39,7 +39,7 @@ services:
     depends_on:
       - db
       - msa_es
-    image: ubiqube/msa2-api:c6a2139c109b7e5895da722e851afceae401814f
+    image: ubiqube/msa2-api:2c8f792ad7f4d6f156616d629eb56776e897d62b
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b
@@ -60,7 +60,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:302e7965d648cf5b692db7dcaee38401d18e90f9
+    image: ubiqube/msa2-ui:7a1b18286a257e38ecb271120e9d867ae1184422
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -79,7 +79,7 @@ services:
       - "msa_es:/usr/share/elasticsearch/data"
 
   msa_sms:
-    image: ubiqube/msa2-sms:0107cbf1ac1f1d2067c69a76b107e93f9de9cbd7
+    image: ubiqube/msa2-sms:6246532ddf2e50d73964226dd9e95064213cf859
     depends_on:
       - db
       - msa_es
