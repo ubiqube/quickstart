@@ -60,7 +60,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:7a1b18286a257e38ecb271120e9d867ae1184422
+    image: ubiqube/msa2-ui:05a27bb34c60b22e195faf28e2bfb8cd749f0fe1
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -79,7 +79,7 @@ services:
       - "msa_es:/usr/share/elasticsearch/data"
 
   msa_sms:
-    image: ubiqube/msa2-sms:6246532ddf2e50d73964226dd9e95064213cf859
+    image: ubiqube/msa2-sms:0c35674640403a0bb8912d83828298bd02d1cbbb
     depends_on:
       - db
       - msa_es
