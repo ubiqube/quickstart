@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:27eea2c020a148497c89cdd3e379e5d1cff9df90
+    image: ubiqube/msa2-front:7da07e7c64ee7be8691b97c7751db81d4ed6e5b4
     ports:
       - target: 80
         published: 80
@@ -39,7 +39,7 @@ services:
     depends_on:
       - db
       - msa_es
-    image: ubiqube/msa2-api:2c8f792ad7f4d6f156616d629eb56776e897d62b
+    image: ubiqube/msa2-api:0c1bfc483eb39b5d5582a35f0a2b8dcb42826307
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b
@@ -60,7 +60,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:05a27bb34c60b22e195faf28e2bfb8cd749f0fe1
+    image: ubiqube/msa2-ui:7a1b18286a257e38ecb271120e9d867ae1184422
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -96,7 +96,7 @@ services:
   msa_bud:
     depends_on:
       - db
-    image: ubiqube/msa2-bud:43ee454c22b9ed217dac6baba9a88a345a5422c2
+    image: ubiqube/msa2-bud:e43613e82f13f405953fdcb7736f915eaffe523c
     volumes:
       - "msa_bud_logs:/opt/bud/logs/"
 
@@ -109,6 +109,11 @@ services:
       - msa_es
     ports:
       - "9000:9000"
+  
+  msa_kibana:
+    image: ubiqube/msa2-kibana:5634d2ada524a9dab10711637fb76c4570424501
+    ports:
+      - "5601:5601"
 
   msa_dev:
     # uncomment to use a local image for quickstart dev 
