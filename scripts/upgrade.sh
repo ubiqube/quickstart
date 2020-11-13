@@ -50,11 +50,6 @@ upgrade(){
 	
     docker-compose restart msa_sms
 
-    msa_api=$(docker ps -q -f name=msa_api)
-    echo "Starting crond on API container msa_api"
-    docker exec -it -u root $msa_api crond
-    echo "Done"
-
     echo "Upgrade done!"
 }
 
