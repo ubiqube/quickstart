@@ -153,8 +153,6 @@ services:
 
   msa_dev:
     image: ubiqube/msa2-linuxdev:e4087c9947273aa71e762247ed36c5d6309f3a64
-    depends_on:
-      - msa_es
     deploy:
       replicas: 1
       placement:
