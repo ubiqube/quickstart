@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:893baa9b939919711d6414ba1f651820b744e4b7
+    image: ubiqube/msa2-front:f1cccfa9c8cae01c97ccff29900da9fd727e2050
     ports:
       - target: 80
         published: 80
@@ -20,11 +20,9 @@ services:
         published: 514
         protocol: udp
         mode: host
-    volumes:
-        - "msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:7ded9624984d2af7dae97518a8780ccca953e7f1
+    image: ubiqube/msa2-db:ba1dd3d66525b3a88532904782750e4d8a013b53
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -36,7 +34,7 @@ services:
     depends_on:
       - db
       - msa_es
-    image: ubiqube/msa2-api:10d08ecfd9b82fbb0dd0d33a94b090abe05dcc54
+    image: ubiqube/msa2-api:4d2f79787372e8899de49d3bcf5cc4f29cd0bba1
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b
@@ -57,7 +55,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:7a1b18286a257e38ecb271120e9d867ae1184422
+    image: ubiqube/msa2-ui:0d722c3147341ea4b5b0755166d88bc70312d1c2
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -67,7 +65,7 @@ services:
     - FEATURE_MONITORING_PROFILES=true
 
   msa_sms:
-    image: ubiqube/msa2-sms:0c35674640403a0bb8912d83828298bd02d1cbbb
+    image: ubiqube/msa2-sms:341029005626557b716871a37267982239e49f3d
     depends_on:
       - db
       - msa_es
@@ -84,7 +82,7 @@ services:
   msa_bud:
     depends_on:
       - db
-    image: ubiqube/msa2-bud:ae2819b776e5d60920ba5b1b5f6f510bb6e50f6c
+    image: ubiqube/msa2-bud:b23dbf64520fbddbc74ab6468bd23cf9b8ee3393
     volumes:
       - "msa_bud_logs:/opt/bud/logs/"
 
@@ -116,7 +114,7 @@ services:
       - "5601:5601"
 
   msa_dev:
-    build: ./lab/api
+    build: ./lab/msa_dev
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
