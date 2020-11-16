@@ -1,5 +1,4 @@
 # This docker-compose file is provided as an exmaple to create a Docker Swarm based MSActivator setup
-
 version: "3.8"
 
 services:
@@ -8,7 +7,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:91af847bf5da3269d6b9d5c023255d2350fe8f29
+    image: ubiqube/msa2-front:79f992043bcab882b33718822977201fe27f90c5
     deploy:
       replicas: 1
       placement:
@@ -28,6 +27,8 @@ services:
         published: 514
         protocol: udp
         mode: host
+    volumes:
+      - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   camunda:
     image: camunda/camunda-bpm-platform:7.13.0
@@ -36,23 +37,8 @@ services:
       placement:
         max_replicas_per_node: 1
 
-  msa_ui:
-    depends_on:
-      - msa_api
-    image: ubiqube/msa2-ui:8b5408a6c355a9bfacfc3f88e087e68b1b4415ec
-    deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-    environment:
-    - FEATURE_ADMIN=true
-    - FEATURE_CONNECTION_STATUS=true
-    - FEATURE_ALARMS=true
-    - FEATURE_LICENCE=true
-    - FEATURE_TOPOLOGY=true
-
   db:
-    image: ubiqube/msa2-db:ba1dd3d66525b3a88532904782750e4d8a013b53
+    image: ubiqube/msa2-db:7ded9624984d2af7dae97518a8780ccca953e7f1
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -68,7 +54,7 @@ services:
   msa_api:
     depends_on:
       - db
-    image: ubiqube/msa2-api:4d2f79787372e8899de49d3bcf5cc4f29cd0bba1
+    image: ubiqube/msa2-api:d3bf6e61bfea9dd662a721248ecdba00f43fcfea
     deploy:
       replicas: 1
       placement:
@@ -89,10 +75,25 @@ services:
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
 
+  msa_ui:
+    depends_on:
+      - msa_api
+    image: ubiqube/msa2-ui:7a1b18286a257e38ecb271120e9d867ae1184422
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+    environment:
+    - FEATURE_ADMIN=true
+    - FEATURE_CONNECTION_STATUS=true
+    - FEATURE_ALARMS=true
+    - FEATURE_LICENCE=true
+    - FEATURE_TOPOLOGY=true
+
   msa_sms:
     depends_on:
       - db
-    image: ubiqube/msa2-sms:341029005626557b716871a37267982239e49f3d
+    image: ubiqube/msa2-sms:0c35674640403a0bb8912d83828298bd02d1cbbb
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
@@ -110,6 +111,18 @@ services:
     deploy:
       replicas: 1
 
+  msa_es:
+    image: ubiqube/msa2-es:037a2067826b36e646b45e5a148431346f62f3a6
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+    environment:
+      - "discovery.type=single-node"
+      - "script.painless.regex.enabled=true"
+    volumes:
+      - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
+
   msa_cerebro:
     image: lmenezes/cerebro:0.9.2
     entrypoint:
@@ -126,23 +139,10 @@ services:
         constraints:
           - "node.role==manager"
 
-  msa_linux:
-    image: efeubiqube/linuxe2e
-
-  msa_es:
-    image: ubiqube/msa2-es:037a2067826b36e646b45e5a148431346f62f3a6
-    deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-    environment:
-      - "discovery.type=single-node"
-      - "script.painless.regex.enabled=true"
-    #volumes:
-    #  - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
-
   msa_dev:
-    image: ubiqube/msa2-linuxdev:0673683b389103f2ccf72731d7cfde562854d679
+    # uncomment to use a local image for quickstart dev 
+    build: ./lab/msa_dev
+    #image: ubiqube/msa2-linuxdev:0673683b389103f2ccf72731d7cfde562854d679
     depends_on:
       - msa_es
     deploy:
@@ -156,3 +156,18 @@ services:
       - "/mnt/NASVolume/msa_api:/opt/ubi-jentreprise/generated/conf"
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
 
+  linux_me:
+    # use local image for quickstart dev => for release: make sure the chnages are ported to msa-docker and uncomment the line below
+    #image: ubiqube/msa2-linuxme
+    build: ./lab/linux.me
+    cap_add:
+      - NET_ADMIN
+      - sys_rawio
+    ports:
+      - "2224:22"
+    devices:                     # required for dmidecode used by polld/asset
+      - "/dev/mem:/dev/mem"
+    networks:
+      default:
+        ipv4_address: 172.20.0.101
+    hostname: linux_me
