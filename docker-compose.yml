@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-db:7ded9624984d2af7dae97518a8780ccca953e7f1
+    image: ubiqube/msa2-front:3700e95d922d42e94244f96a93cfaae9cdfba9f6
     ports:
       - target: 80
         published: 80
@@ -22,7 +22,7 @@ services:
         mode: host
 
   db:
-    image: ubiqube/msa2-db:ba1dd3d66525b3a88532904782750e4d8a013b53
+    image: ubiqube/msa2-db:7ded9624984d2af7dae97518a8780ccca953e7f1
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
