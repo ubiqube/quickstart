@@ -30,13 +30,6 @@ services:
     volumes:
       - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
-  camunda:
-    image: camunda/camunda-bpm-platform:7.13.0
-    deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-
   db:
     image: ubiqube/msa2-db:7ded9624984d2af7dae97518a8780ccca953e7f1
     command: postgres -c 'max_connections=800'
@@ -110,6 +103,13 @@ services:
     image: ubiqube/msa2-bud:b23dbf64520fbddbc74ab6468bd23cf9b8ee3393
     deploy:
       replicas: 1
+
+  camunda:
+    image: camunda/camunda-bpm-platform:7.13.0
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
 
   msa_es:
     image: ubiqube/msa2-es:037a2067826b36e646b45e5a148431346f62f3a6
