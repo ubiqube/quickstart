@@ -54,7 +54,7 @@ services:
   msa_api:
     depends_on:
       - db
-    image: ubiqube/msa2-api:d3bf6e61bfea9dd662a721248ecdba00f43fcfea
+    image: ubiqube/msa2-api:98e27bc3c38486466d41041e2e5afbd314467a55
     deploy:
       replicas: 1
       placement:

@@ -39,7 +39,7 @@ services:
     depends_on:
       - db
       - msa_es
-    image: ubiqube/msa2-api:d3bf6e61bfea9dd662a721248ecdba00f43fcfea
+    image: ubiqube/msa2-api:98e27bc3c38486466d41041e2e5afbd314467a55
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b
@@ -69,15 +69,6 @@ services:
     - FEATURE_TOPOLOGY=true
     - FEATURE_MONITORING_PROFILES=true
 
-  msa_es:
-    image: ubiqube/msa2-es:037a2067826b36e646b45e5a148431346f62f3a6
-    environment:
-      - "discovery.type=single-node"
-      - "script.painless.regex.enabled=true"
-      - bootstrap.memory_lock=true
-    volumes:
-      - "msa_es:/usr/share/elasticsearch/data"
-
   msa_sms:
     image: ubiqube/msa2-sms:0c35674640403a0bb8912d83828298bd02d1cbbb
     depends_on:
@@ -100,6 +91,15 @@ services:
     volumes:
       - "msa_bud_logs:/opt/bud/logs/"
 
+  msa_es:
+    image: ubiqube/msa2-es:037a2067826b36e646b45e5a148431346f62f3a6
+    environment:
+      - "discovery.type=single-node"
+      - "script.painless.regex.enabled=true"
+      - bootstrap.memory_lock=true
+    volumes:
+      - "msa_es:/usr/share/elasticsearch/data"
+
   msa_cerebro:
     image: lmenezes/cerebro:0.9.2
     entrypoint:
@@ -116,9 +116,6 @@ services:
       - "5601:5601"
 
   msa_dev:
-    # uncomment to use a local image for quickstart dev 
-    build: ./lab/msa_dev
-    #image: ubiqube/msa2-linuxdev:0673683b389103f2ccf72731d7cfde562854d679
     depends_on:
       - msa_es
     volumes:
