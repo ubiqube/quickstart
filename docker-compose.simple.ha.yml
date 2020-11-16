@@ -3,11 +3,11 @@ version: "3.8"
 
 services:
   msa_front:
+    image: ubiqube/msa2-front:893baa9b939919711d6414ba1f651820b744e4b7
     depends_on:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:893baa9b939919711d6414ba1f651820b744e4b7
     deploy:
       replicas: 2
       placement:
@@ -45,9 +45,9 @@ services:
           - "node.role==manager"
 
   msa_api:
+    image: ubiqube/msa2-api:d3bf6e61bfea9dd662a721248ecdba00f43fcfea
     depends_on:
       - db
-    image: ubiqube/msa2-api:d3bf6e61bfea9dd662a721248ecdba00f43fcfea
     deploy:
       replicas: 1
       placement:
@@ -69,9 +69,9 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
 
   msa_ui:
+    image: ubiqube/msa2-ui:5c75626e0820ba2ca9a7aa867515fc35fccffbb8
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:5c75626e0820ba2ca9a7aa867515fc35fccffbb8
     deploy:
       replicas: 3
       placement:
@@ -85,9 +85,9 @@ services:
     - FEATURE_MONITORING_PROFILES=true
 
   msa_sms:
+    image: ubiqube/msa2-sms:05c28160213d0f16de882b0503e4e73572f9908c
     depends_on:
       - db
-    image: ubiqube/msa2-sms:05c28160213d0f16de882b0503e4e73572f9908c
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
@@ -99,9 +99,9 @@ services:
         max_replicas_per_node: 1
 
   msa_bud:
+    image: ubiqube/msa2-bud:ae2819b776e5d60920ba5b1b5f6f510bb6e50f6c
     depends_on:
       - db
-    image: ubiqube/msa2-bud:ae2819b776e5d60920ba5b1b5f6f510bb6e50f6c
     deploy:
       replicas: 1
 
@@ -152,9 +152,7 @@ services:
           - "node.role==manager"
 
   msa_dev:
-    # uncomment to use a local image for quickstart dev 
-    build: ./lab/msa_dev
-    #image: ubiqube/msa2-linuxdev:0673683b389103f2ccf72731d7cfde562854d679
+    image: ubiqube/msa2-linuxdev:e4087c9947273aa71e762247ed36c5d6309f3a64
     depends_on:
       - msa_es
     deploy:
