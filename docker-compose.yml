@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:79f992043bcab882b33718822977201fe27f90c5
+    image: ubiqube/msa2-front:893baa9b939919711d6414ba1f651820b744e4b7
     ports:
       - target: 80
         published: 80
@@ -116,8 +116,7 @@ services:
       - "5601:5601"
 
   msa_dev:
-    depends_on:
-      - msa_es
+    build: ./lab/api
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
