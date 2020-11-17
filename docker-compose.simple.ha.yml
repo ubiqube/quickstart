@@ -60,6 +60,8 @@ services:
         max_replicas_per_node: 1
       update_config:
         parallelism: 1
+      restart_policy:
+        condition: on-failure
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b
@@ -127,8 +129,8 @@ services:
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
-    volumes:
-      - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
+    #volumes:
+    #  - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
 
   msa_kibana:
     image: ubiqube/msa2-kibana:5634d2ada524a9dab10711637fb76c4570424501
