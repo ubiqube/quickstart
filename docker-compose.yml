@@ -20,7 +20,14 @@ services:
         published: 514
         protocol: udp
         mode: host
-
+    #
+    # uncomment one of the 2 section below when installing a custom certificate 
+    # - Docker standard standalone installation
+    #volumes:
+    #    - "msa_front:/etc/nginx/ssl"
+    # - Docker Swarm HA installation
+    #volumes:
+    #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
   db:
     image: ubiqube/msa2-db:7ded9624984d2af7dae97518a8780ccca953e7f1
     command: postgres -c 'max_connections=800'
