@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:3700e95d922d42e94244f96a93cfaae9cdfba9f6
+    image: ubiqube/msa2-front:7bbfd62265c5b7caa710e76a86ffec82e1986be0
     depends_on:
       - msa_api
       - msa_ui
@@ -51,7 +51,7 @@ services:
           - "node.role==manager"
 
   msa_api:
-    image: ubiqube/msa2-api:d3bf6e61bfea9dd662a721248ecdba00f43fcfea
+    image: ubiqube/msa2-api:fa747fc2cc43369df731b39a3202390b1db1e94b
     depends_on:
       - db
     deploy:
@@ -60,6 +60,8 @@ services:
         max_replicas_per_node: 1
       update_config:
         parallelism: 1
+      restart_policy:
+        condition: on-failure
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b
@@ -134,6 +136,9 @@ services:
     image: ubiqube/msa2-kibana:5634d2ada524a9dab10711637fb76c4570424501
     ports:
       - "5601:5601"
+    environment:
+      - ELASTICSEARCH_URL: http://msa_es:9200
+      - ELASTICSEARCH_HOSTS: http://msa_es:9200
     deploy:
       replicas: 1
       placement:
