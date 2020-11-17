@@ -137,8 +137,8 @@ services:
     ports:
       - "5601:5601"
     environment:
-      - ELASTICSEARCH_URL: http://msa_es:9200
-      - ELASTICSEARCH_HOSTS: http://msa_es:9200
+      ELASTICSEARCH_URL: http://msa_es:9200
+      ELASTICSEARCH_HOSTS: http://msa_es:9200
     deploy:
       replicas: 1
       placement:
