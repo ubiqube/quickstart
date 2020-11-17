@@ -62,7 +62,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:5ef1b57ce377894607bb5d92f2cb472b236ac1a1
+    image: ubiqube/msa2-ui:0caf5816fee40a457d2bb0209a6f8a1211ce0edb
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -97,7 +97,7 @@ services:
     image: camunda/camunda-bpm-platform:7.13.0
 
   msa_es:
-    image: ubiqube/msa2-es:037a2067826b36e646b45e5a148431346f62f3a6
+    image: ubiqube/msa2-es:bcdc35f42e3eb8f3a0ce2658649424031b9f98be
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
