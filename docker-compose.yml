@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:3700e95d922d42e94244f96a93cfaae9cdfba9f6
+    image: ubiqube/msa2-front:7bbfd62265c5b7caa710e76a86ffec82e1986be0
     ports:
       - target: 80
         published: 80
@@ -41,7 +41,7 @@ services:
     depends_on:
       - db
       - msa_es
-    image: ubiqube/msa2-api:d3bf6e61bfea9dd662a721248ecdba00f43fcfea
+    image: ubiqube/msa2-api:7c0218df4d3c7da79023abc512f65aca86ef4bb9
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b
@@ -119,6 +119,9 @@ services:
     image: ubiqube/msa2-kibana:5634d2ada524a9dab10711637fb76c4570424501
     ports:
       - "5601:5601"
+    environment:
+      ELASTICSEARCH_URL: http://msa_es:9200
+      ELASTICSEARCH_HOSTS: http://msa_es:9200
 
   msa_dev:
     build: ./lab/msa_dev
