@@ -51,7 +51,7 @@ services:
           - "node.role==manager"
 
   msa_api:
-    image: ubiqube/msa2-api:fa747fc2cc43369df731b39a3202390b1db1e94b
+    image: ubiqube/msa2-api:a101269f31111bc1138cbfec5378155320d77cdc
     depends_on:
       - db
     deploy:
