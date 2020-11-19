@@ -300,6 +300,7 @@ install_adapters() {
     install_adapter juniper_srx
     install_adapter kubernetes_generic
     install_adapter linux_generic
+    install_adapter linux_k8_cli
     install_adapter mikrotik_generic
     install_adapter mon_checkpoint_fw
     install_adapter mon_cisco_asa
