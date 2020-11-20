@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:7bbfd62265c5b7caa710e76a86ffec82e1986be0
+    image: ubiqube/msa2-front:5ec91fa53998e9541f8954add7bfbd8967095e93
     depends_on:
       - msa_api
       - msa_ui
@@ -37,7 +37,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:7ded9624984d2af7dae97518a8780ccca953e7f1
+    image: ubiqube/msa2-db:42961a9928f0f2949309965322e991e0c00b87b1
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -51,7 +51,7 @@ services:
           - "node.role==manager"
 
   msa_api:
-    image: ubiqube/msa2-api:a101269f31111bc1138cbfec5378155320d77cdc
+    image: ubiqube/msa2-api:b269f8b982cc17d1634be6e6188325f7071337df
     depends_on:
       - db
     deploy:
@@ -77,7 +77,7 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
 
   msa_ui:
-    image: ubiqube/msa2-ui:0caf5816fee40a457d2bb0209a6f8a1211ce0edb
+    image: ubiqube/msa2-ui:d4ec8b84c975fd355563aeb3b265e07c6ba30691
     depends_on:
       - msa_api
     deploy:
@@ -93,7 +93,7 @@ services:
     - FEATURE_MONITORING_PROFILES=true
 
   msa_sms:
-    image: ubiqube/msa2-sms:8bc19d11a98e2c169ee3fb25c6136afcdda5506a
+    image: ubiqube/msa2-sms:b3f37e5c64369c15d1fa4db49ab3949f332a8f52
     depends_on:
       - db
     volumes:
@@ -107,7 +107,7 @@ services:
         max_replicas_per_node: 1
 
   msa_bud:
-    image: ubiqube/msa2-bud:ae2819b776e5d60920ba5b1b5f6f510bb6e50f6c
+    image: ubiqube/msa2-bud:945d13e90885ed894de375ffb786577767afc735
     depends_on:
       - db
     deploy:
