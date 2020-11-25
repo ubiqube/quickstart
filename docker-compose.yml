@@ -41,7 +41,7 @@ services:
     depends_on:
       - db
       - msa_es
-    image: ubiqube/msa2-api:c898303a81b89f22d8b9faca069afdc148701061
+    image: ubiqube/msa2-api:84721260d1cda331243ac4d014fbd31243fad3db
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b
