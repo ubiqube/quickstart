@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:75d7c1ba3e990d997f5b74a4e9b87f1379aaf32c
+    image: ubiqube/msa2-front:646f2191ddd79faae7d9a79ae508c45dda956eb2
     depends_on:
       - msa_api
       - msa_ui
@@ -51,7 +51,7 @@ services:
           - "node.role==manager"
 
   msa_api:
-    image: ubiqube/msa2-api:2b2bc1509e6b3195f3940ecfbea6c401ac01ee1e
+    image: ubiqube/msa2-api:dba749506022b2b2311ba4c5046787c547d2e8d8
     depends_on:
       - db
     deploy:
@@ -77,7 +77,7 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
 
   msa_ui:
-    image: ubiqube/msa2-ui:4270fa87b6c8bc2364cdcb7a3e00e5e46073755d
+    image: ubiqube/msa2-ui:640748b23f315a9b454174165fec1c79e845b1d2
     depends_on:
       - msa_api
     deploy:
