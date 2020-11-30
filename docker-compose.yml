@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:07cc7f132838f4b5b8e386938e825ba5c0ec4401
+    image: ubiqube/msa2-front:8033695c3f8750bed7959c239df49d688fe9a347
     ports:
       - target: 80
         published: 80
@@ -72,7 +72,7 @@ services:
     - FEATURE_MONITORING_PROFILES=true
 
   msa_sms:
-    image: ubiqube/msa2-sms:b3f37e5c64369c15d1fa4db49ab3949f332a8f52
+    image: ubiqube/msa2-sms:a5be100f7d1d9542e0ab8084b99d177fe6ca6572
     depends_on:
       - db
       - msa_es
@@ -89,7 +89,7 @@ services:
   msa_bud:
     depends_on:
       - db
-    image: ubiqube/msa2-bud:945d13e90885ed894de375ffb786577767afc735
+    image: ubiqube/msa2-bud:532f54e8dd0a57a417bad1d885aa852d61b37a7c
     volumes:
       - "msa_bud_logs:/opt/bud/logs/"
 
