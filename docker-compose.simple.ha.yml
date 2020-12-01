@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:8033695c3f8750bed7959c239df49d688fe9a347
+    image: ubiqube/msa2-front:d8f92109763bb2637f194dd2127ad9a8306dc580
     depends_on:
       - msa_api
       - msa_ui
@@ -77,7 +77,7 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
 
   msa_ui:
-    image: ubiqube/msa2-ui:9dde1acb415c7d88abaa44bc95129e5ff21abdb6
+    image: ubiqube/msa2-ui:a395460e1b97bb6fdee0ba65ac229354602c3ff7
     depends_on:
       - msa_api
     deploy:
@@ -93,7 +93,7 @@ services:
     - FEATURE_MONITORING_PROFILES=true
 
   msa_sms:
-    image: ubiqube/msa2-sms:a5be100f7d1d9542e0ab8084b99d177fe6ca6572
+    image: ubiqube/msa2-sms:1e05fb9cb74122cf536dff01099785476f6361ae
     depends_on:
       - db
     volumes:
