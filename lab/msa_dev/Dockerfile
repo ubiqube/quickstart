@@ -14,12 +14,14 @@ COPY resources/scripts/create_mini_lab.sh /usr/bin/
 COPY resources/scripts/install_libraries.sh /usr/bin/
 COPY resources/scripts/install_license.sh /usr/bin/
 COPY resources/scripts/wait_for_api.sh /usr/bin/
+COPY resources/scripts/install_gwan_rab.sh /usr/bin/
 
 RUN chmod a+x /usr/bin/create_mini_lab.sh; \
     chmod a+x /usr/bin/install_libraries.sh; \
     chmod a+x /usr/bin/create_test_me.sh; \
     chmod a+x /usr/bin/install_license.sh; \
     chmod a+x /usr/bin/wait_for_api.sh; \
+    chmod a+x /usr/bin/install_gwan_rab.sh; \
     :
 
 CMD [ "/sbin/init" ]
