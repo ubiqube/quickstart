@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:f549cbcde0b9b1f9dd8a4a30f420a7be9cea5293
+    image: ubiqube/msa2-front:3f9e9e80a3a8f2f01cd407b9d53d4ac1d9b5d5e1
     ports:
       - target: 80
         published: 80
@@ -147,6 +147,7 @@ services:
       default:
         ipv4_address: 172.20.0.101
     hostname: linux_me
+    privileged: true
 
 volumes:
   msa_api:
