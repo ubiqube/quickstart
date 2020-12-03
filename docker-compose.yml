@@ -62,7 +62,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:a395460e1b97bb6fdee0ba65ac229354602c3ff7
+    image: ubiqube/msa2-ui:574c1aace9ebda8d84c2a43bcf82647cd0341130
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -72,7 +72,7 @@ services:
     - FEATURE_MONITORING_PROFILES=true
 
   msa_sms:
-    image: ubiqube/msa2-sms:ccb733cb7bbc6cd804a49ceaa0df7f9a4ae1eddd
+    image: ubiqube/msa2-sms:83b7d42ba4a46ea78f8f36c89079f755f00ee412
     depends_on:
       - db
       - msa_es
