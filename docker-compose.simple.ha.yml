@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:ee5d100177fc755da2e2117b9a6f6bafed023e59
+    image: ubiqube/msa2-front:f549cbcde0b9b1f9dd8a4a30f420a7be9cea5293
     depends_on:
       - msa_api
       - msa_ui
@@ -51,7 +51,7 @@ services:
           - "node.role==manager"
 
   msa_api:
-    image: ubiqube/msa2-api:06d72e87177a87f62d89183e09c831bce31935cf
+    image: ubiqube/msa2-api:235b745a75cc2aec740b17c851baf58bbf04a36b
     depends_on:
       - db
     deploy:
@@ -93,7 +93,7 @@ services:
     - FEATURE_MONITORING_PROFILES=true
 
   msa_sms:
-    image: ubiqube/msa2-sms:74a31cc3b2acb6601d78966aaa1b1d61962a1267
+    image: ubiqube/msa2-sms:83b7d42ba4a46ea78f8f36c89079f755f00ee412
     depends_on:
       - db
     volumes:
@@ -107,7 +107,7 @@ services:
         max_replicas_per_node: 1
 
   msa_bud:
-    image: ubiqube/msa2-bud:a621aedde7f3a311f84eaf2c886506c2899d9551
+    image: ubiqube/msa2-bud:3e04b6ac1f279f4c73d2fe7b17de63887f74ff01
     depends_on:
       - db
     deploy:
