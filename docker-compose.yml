@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:6658e0107032e99813613b12fa78af59f35d02d6
+    image: ubiqube/msa2-front:91af847bf5da3269d6b9d5c023255d2350fe8f29
     ports:
       - target: 80
         published: 80
@@ -25,7 +25,7 @@ services:
     image: camunda/camunda-bpm-platform:7.13.0
 
   db:
-    image: ubiqube/msa2-db:7ded9624984d2af7dae97518a8780ccca953e7f1
+    image: ubiqube/msa2-db:ba1dd3d66525b3a88532904782750e4d8a013b53
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -36,7 +36,7 @@ services:
       - "5432:5432"
 
   msa_api:
-    image: ubiqube/msa2-api:fa747fc2cc43369df731b39a3202390b1db1e94b
+    image: ubiqube/msa2-api:4d2f79787372e8899de49d3bcf5cc4f29cd0bba1
     depends_on:
       - db
       - msa_es
@@ -61,7 +61,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:5ef1b57ce377894607bb5d92f2cb472b236ac1a1
+    image: ubiqube/msa2-ui:8b5408a6c355a9bfacfc3f88e087e68b1b4415ec
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -70,7 +70,7 @@ services:
     - FEATURE_TOPOLOGY=true
 
   msa_sms:
-    image: ubiqube/msa2-sms:71b41c833e59a6cf9437d08b3b481ec994f902bb
+    image: ubiqube/msa2-sms:341029005626557b716871a37267982239e49f3d
     depends_on:
       - db
       - msa_es
@@ -87,12 +87,12 @@ services:
   msa_bud:
     depends_on:
       - db
-    image: ubiqube/msa2-bud:945d13e90885ed894de375ffb786577767afc735
+    image: ubiqube/msa2-bud:b23dbf64520fbddbc74ab6468bd23cf9b8ee3393
     volumes:
       - "msa_bud_logs:/opt/bud/logs/"
 
   msa_es:
-    image: ubiqube/msa2-es:bcdc35f42e3eb8f3a0ce2658649424031b9f98be
+    image: ubiqube/msa2-es:037a2067826b36e646b45e5a148431346f62f3a6
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
@@ -120,8 +120,8 @@ services:
 
   msa_dev:
     # uncomment to use a local image for quickstart dev 
-    build: ./lab/msa_dev
-    #image: ubiqube/msa2-linuxdev:bd0f7f65b54b81f10348949bc96bfa1ec5d324fb
+    #build: ./lab/msa_dev
+    image: ubiqube/msa2-linuxdev:0673683b389103f2ccf72731d7cfde562854d679
     depends_on:
       - msa_es
     volumes:
