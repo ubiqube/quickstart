@@ -146,6 +146,7 @@ services:
       default:
         ipv4_address: 172.20.0.101
     hostname: linux_me
+    privileged: true
 
 volumes:
   msa_api:
