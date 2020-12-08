@@ -132,7 +132,7 @@ services:
       - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_dev:/opt/devops/"
       
-  linux_me:
+  linux_me_1:
     # use local image for quickstart dev => for release: make sure the chnages are ported to msa-docker and uncomment the line below
     #image: ubiqube/msa2-linuxme
     build: ./lab/linux.me
@@ -148,7 +148,26 @@ services:
     networks:
       default:
         ipv4_address: 172.20.0.101
-    hostname: linux_me
+    hostname: linux_me_1
+    privileged: true
+
+  linux_me_2:
+    # use local image for quickstart dev => for release: make sure the chnages are ported to msa-docker and uncomment the line below
+    #image: ubiqube/msa2-linuxme
+    build: ./lab/linux.me
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - DAC_READ_SEARCH
+      - sys_rawio
+    ports:
+      - "2224:22"
+    devices:                     # required for dmidecode used by polld/asset
+      - "/dev/mem:/dev/mem"
+    networks:
+      default:
+        ipv4_address: 172.20.0.102
+    hostname: linux_me_2
     privileged: true
 
 volumes:
