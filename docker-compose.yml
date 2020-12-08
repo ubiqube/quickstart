@@ -40,7 +40,11 @@ services:
     depends_on:
       - db
       - msa_es
+<<<<<<< HEAD
       - msa_dev
+=======
+    image: ubiqube/msa2-api:90841c6a4d0a8ae9ef44ac6fa2eaaa7f4fcc955f
+>>>>>>> 9ca2ac9... configure SNMPD and iptables to allow SNMP on linux_me
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b
@@ -137,6 +141,8 @@ services:
     build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
+      - NET_RAW
+      - DAC_READ_SEARCH
       - sys_rawio
     ports:
       - "2224:22"
