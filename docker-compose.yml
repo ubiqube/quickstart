@@ -41,7 +41,7 @@ services:
     depends_on:
       - db
       - msa_es
-    image: ubiqube/msa2-api:90841c6a4d0a8ae9ef44ac6fa2eaaa7f4fcc955f
+    image: ubiqube/msa2-api:47ae53b4f73e9503cff31d0035e56e9f17b5d575
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b
@@ -72,7 +72,7 @@ services:
     - FEATURE_MONITORING_PROFILES=true
 
   msa_sms:
-    image: ubiqube/msa2-sms:fa70053609443d1d3ab66527c2380ebebccc1f38
+    image: ubiqube/msa2-sms:36f1b0bcfcace8f251daa34e16ee7d424750b1e4
     depends_on:
       - db
       - msa_es
@@ -97,7 +97,7 @@ services:
     image: camunda/camunda-bpm-platform:7.13.0
 
   msa_es:
-    image: ubiqube/msa2-es:d9899d1f09809a40548f96211984647a8b4901fc
+    image: ubiqube/msa2-es:e030c1b2d9992a4334a100d3dd418c856c9d6941
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
@@ -161,7 +161,7 @@ services:
       - DAC_READ_SEARCH
       - sys_rawio
     ports:
-      - "2224:22"
+      - "2225:22"
     devices:                     # required for dmidecode used by polld/asset
       - "/dev/mem:/dev/mem"
     networks:
