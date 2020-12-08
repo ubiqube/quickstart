@@ -41,7 +41,7 @@ services:
     depends_on:
       - db
       - msa_es
-    image: ubiqube/msa2-api:47ae53b4f73e9503cff31d0035e56e9f17b5d575
+    image: ubiqube/msa2-api:90841c6a4d0a8ae9ef44ac6fa2eaaa7f4fcc955f
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b
@@ -138,6 +138,8 @@ services:
     build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
+      - NET_RAW
+      - DAC_READ_SEARCH
       - sys_rawio
     ports:
       - "2224:22"
