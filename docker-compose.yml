@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:1e03cd6d3242de318dc108873af68a5d3a465186
+    image: ubiqube/msa2-front:8b6f676080f1047f3d3747779dd197b57f8ca927
     ports:
       - target: 80
         published: 80
@@ -97,7 +97,7 @@ services:
     image: camunda/camunda-bpm-platform:7.13.0
 
   msa_es:
-    image: ubiqube/msa2-es:e030c1b2d9992a4334a100d3dd418c856c9d6941
+    image: ubiqube/msa2-es:d9899d1f09809a40548f96211984647a8b4901fc
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
