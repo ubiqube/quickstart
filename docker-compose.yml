@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:5b9fbcb4f3cd99d90496337bc6e873b46d5b64c8
+    image: ubiqube/msa2-front:4903fb1229cb5b6984a23dfee8947c436c755a57
     ports:
       - target: 80
         published: 80
@@ -41,7 +41,7 @@ services:
     depends_on:
       - db
       - msa_es
-    image: ubiqube/msa2-api:acc338dfa010f5798c6993479a8456488bf02e7e
+    image: ubiqube/msa2-api:5a7b6a6ad6c8aed45fa2d9ed9b90d4fca87423af
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b
@@ -62,7 +62,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:9700e7977c0e9fd4a0324f1ee4d11ee0017b8293
+    image: ubiqube/msa2-ui:57917d28a0751f9731f460ee0bc38e4b55ed95d2
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -72,7 +72,7 @@ services:
     - FEATURE_MONITORING_PROFILES=true
 
   msa_sms:
-    image: ubiqube/msa2-sms:bb9e96882b3114e47a2893fa9297e4badc14c039
+    image: ubiqube/msa2-sms:b3f37e5c64369c15d1fa4db49ab3949f332a8f52
     depends_on:
       - db
       - msa_es
@@ -89,7 +89,7 @@ services:
   msa_bud:
     depends_on:
       - db
-    image: ubiqube/msa2-bud:6449ea6cc905229a8e8b2686cf0b43a81f02e69d
+    image: ubiqube/msa2-bud:945d13e90885ed894de375ffb786577767afc735
     volumes:
       - "msa_bud_logs:/opt/bud/logs/"
 
@@ -124,7 +124,7 @@ services:
       ELASTICSEARCH_HOSTS: http://msa_es:9200
 
   msa_dev:
-    build: ./lab/msa_dev
+    image: ubiqube/msa2-linuxdev:e4087c9947273aa71e762247ed36c5d6309f3a64
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
@@ -135,7 +135,7 @@ services:
   linux_me:
     # use local image for quickstart dev => for release: make sure the chnages are ported to msa-docker and uncomment the line below
     #image: ubiqube/msa2-linuxme
-    build: ./lab/linux.me
+    image: ubiqube/msa2-linuxme:7fc20ffaef77c39f402b6fcaa81b24540ee35850
     cap_add:
       - NET_ADMIN
       - NET_RAW
@@ -149,25 +149,6 @@ services:
       default:
         ipv4_address: 172.20.0.101
     hostname: linux_me
-    privileged: true
-
-  linux_me_2:
-    # use local image for quickstart dev => for release: make sure the chnages are ported to msa-docker and uncomment the line below
-    #image: ubiqube/msa2-linuxme
-    build: ./lab/linux.me
-    cap_add:
-      - NET_ADMIN
-      - NET_RAW
-      - DAC_READ_SEARCH
-      - sys_rawio
-    ports:
-      - "2225:22"
-    devices:                     # required for dmidecode used by polld/asset
-      - "/dev/mem:/dev/mem"
-    networks:
-      default:
-        ipv4_address: 172.20.0.102
-    hostname: linux_me_2
     privileged: true
 
 volumes:
