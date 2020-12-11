@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:1e03cd6d3242de318dc108873af68a5d3a465186
+    image: ubiqube/msa2-front:5b9fbcb4f3cd99d90496337bc6e873b46d5b64c8
     ports:
       - target: 80
         published: 80
@@ -41,7 +41,7 @@ services:
     depends_on:
       - db
       - msa_es
-    image: ubiqube/msa2-api:47ae53b4f73e9503cff31d0035e56e9f17b5d575
+    image: ubiqube/msa2-api:acc338dfa010f5798c6993479a8456488bf02e7e
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b
@@ -62,7 +62,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:527b6cc2fc3f18f4bea96e197d10c03b175b2cc2
+    image: ubiqube/msa2-ui:9700e7977c0e9fd4a0324f1ee4d11ee0017b8293
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -72,7 +72,7 @@ services:
     - FEATURE_MONITORING_PROFILES=true
 
   msa_sms:
-    image: ubiqube/msa2-sms:36f1b0bcfcace8f251daa34e16ee7d424750b1e4
+    image: ubiqube/msa2-sms:bb9e96882b3114e47a2893fa9297e4badc14c039
     depends_on:
       - db
       - msa_es
@@ -89,7 +89,7 @@ services:
   msa_bud:
     depends_on:
       - db
-    image: ubiqube/msa2-bud:1f643131d54729e01c759e1b5d63cd08d0b51a1c
+    image: ubiqube/msa2-bud:6449ea6cc905229a8e8b2686cf0b43a81f02e69d
     volumes:
       - "msa_bud_logs:/opt/bud/logs/"
 
@@ -97,7 +97,7 @@ services:
     image: camunda/camunda-bpm-platform:7.13.0
 
   msa_es:
-    image: ubiqube/msa2-es:e030c1b2d9992a4334a100d3dd418c856c9d6941
+    image: ubiqube/msa2-es:d9899d1f09809a40548f96211984647a8b4901fc
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
