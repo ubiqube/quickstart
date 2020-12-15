@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:f34a7737908646b974901bec2528d5028f1b2923
+    image: ubiqube/msa2-front:ad87c3197b495ba873e0cc07781ff8083eb58f5f
     depends_on:
       - msa_api
       - msa_ui
@@ -51,7 +51,7 @@ services:
           - "node.role==manager"
 
   msa_api:
-    image: ubiqube/msa2-api:d48e41002ac5712c26ac6aaa8cea5477a3f9e956
+    image: ubiqube/msa2-api:744cf04c8e48bb7ceef61a98c257253e41efb9f0
     depends_on:
       - db
     deploy:
