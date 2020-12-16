@@ -383,7 +383,7 @@ usage() {
 	echo "wf:           install the worflows from https://github.com/openmsa/Workflows"
 	echo "da:           install the adapters from https://github.com/openmsa/Adapters"
   echo "Options:"
-  echo "--no-lic:     skip license installation"
+  echo "--lic:        force license installation"
   echo "-y:           answer yes for all questions"
   exit 0
 }
