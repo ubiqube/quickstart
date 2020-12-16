@@ -83,6 +83,7 @@ services:
       - "msa_repository:/opt/fmc_repository"
       - "rrd_repository:/opt/rrd"
       - "msa_sms_logs:/opt/sms/logs"
+      - "msa_svn:/opt/svnroot"
     ports:
       - "69:69"
 
@@ -182,6 +183,7 @@ volumes:
   msa_sms_logs:
   msa_bud_logs:
   msa_front:
+  msa_svn:
 
 networks:
   default:
