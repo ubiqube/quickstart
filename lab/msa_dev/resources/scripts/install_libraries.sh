@@ -267,79 +267,84 @@ install_workflows() {
 }
 
 install_adapters() {
-    #install_adapter a10_thunder
-    install_adapter a10_thunder_axapi
-    install_adapter adtran_generic
-    install_adapter adva_nc
-    install_adapter ansible_generic
-    install_adapter aws_generic
-    install_adapter brocade_vyatta
-    install_adapter catalyst_ios
-    install_adapter checkpoint_r80
-    install_adapter cisco_apic
-    install_adapter cisco_asa_generic
-    install_adapter cisco_asa_rest
-    #install_adapter cisco_asr
-    install_adapter cisco_isr
-    #install_adapter cisco_nexus9000
-    install_adapter citrix_adc
-    install_adapter esa
-    install_adapter f5_bigip
-    install_adapter fortigate
-    #install_adapter fortinet_fortianalyzer
-    #install_adapter fortinet_fortimanager
-    install_adapter fortinet_generic
-    #install_adapter fortinet_jsonapi
-    install_adapter fortiweb
-    install_adapter fujitsu_ipcom
-    install_adapter hp2530
-    install_adapter hp5900
-    install_adapter huawei_generic
-    #install_adapter juniper_contrail
-    install_adapter juniper_rest
-    install_adapter juniper_srx
-    install_adapter kubernetes_generic
-    install_adapter linux_generic
-    install_adapter linux_k8_cli
-    install_adapter mikrotik_generic
-    install_adapter mon_checkpoint_fw
-    install_adapter mon_cisco_asa
-    install_adapter mon_cisco_ios
-    install_adapter mon_fortinet_fortigate
-    install_adapter mon_generic
-    install_adapter nec_intersecvmlb
-    install_adapter nec_intersecvmsg
-    install_adapter nec_ix
-    install_adapter nec_nfa
-    install_adapter nec_pflow_p4_unc
-    install_adapter nec_pflow_pfcscapi
-    install_adapter netconf_generic
-    install_adapter nfvo_generic
-    install_adapter nokia_cloudband
-    install_adapter nokia_vsd
-    install_adapter oneaccess_lbb
-    install_adapter oneaccess_netconf
-    install_adapter oneaccess_whitebox
-    install_adapter opendaylight
-    install_adapter openstack_keystone_v3
-    install_adapter paloalto
-    install_adapter paloalto_chassis
-    install_adapter paloalto_generic
-    install_adapter paloalto_vsys
-    install_adapter pfsense_fw
-    install_adapter rancher_cmp
-    install_adapter redfish_generic
-    install_adapter rest_generic
-    install_adapter rest_netbox
-    #install_adapter stormshield
-    install_adapter veex_rtu
-    install_adapter versa_analytics
-    install_adapter versa_appliance
-    install_adapter versa_director
-    install_adapter virtuora_nc
-    install_adapter vmware_vsphere
-    install_adapter vnfm_generic
-    install_adapter wsa
+    local adapters=(
+
+    #a10_thunder
+    a10_thunder_axapi
+    adtran_generic
+    adva_nc
+    ansible_generic
+    aws_generic
+    brocade_vyatta
+    catalyst_ios
+    checkpoint_r80
+    cisco_apic
+    cisco_asa_generic
+    cisco_asa_rest
+    #cisco_asr
+    cisco_isr
+    #cisco_nexus9000
+    citrix_adc
+    esa
+    f5_bigip
+    fortigate
+    #fortinet_fortianalyzer
+    #fortinet_fortimanager
+    fortinet_generic
+    #fortinet_jsonapi
+    fortiweb
+    fujitsu_ipcom
+    hp2530
+    hp5900
+    huawei_generic
+    #juniper_contrail
+    juniper_rest
+    juniper_srx
+    kubernetes_generic
+    linux_generic
+    linux_k8_cli
+    mikrotik_generic
+    mon_checkpoint_fw
+    mon_cisco_asa
+    mon_cisco_ios
+    mon_fortinet_fortigate
+    mon_generic
+    nec_intersecvmlb
+    nec_intersecvmsg
+    nec_ix
+    nec_nfa
+    nec_pflow_p4_unc
+    nec_pflow_pfcscapi
+    netconf_generic
+    nfvo_generic
+    nokia_cloudband
+    nokia_vsd
+    oneaccess_lbb
+    oneaccess_netconf
+    oneaccess_whitebox
+    opendaylight
+    openstack_keystone_v3
+    paloalto
+    paloalto_chassis
+    paloalto_generic
+    paloalto_vsys
+    pfsense_fw
+    rancher_cmp
+    redfish_generic
+    rest_generic
+    rest_netbox
+    #stormshield
+    veex_rtu
+    versa_analytics
+    versa_appliance
+    versa_director
+    virtuora_nc
+    vmware_vsphere
+    vnfm_generic
+    wsa
+    )
+
+    for adapter in ${adapters[@]}; do install_adapter $adapter; done
 }
 
 finalize_install() {
