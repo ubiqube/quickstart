@@ -15,6 +15,8 @@ COPY resources/scripts/install_libraries.sh /usr/bin/
 COPY resources/scripts/install_license.sh /usr/bin/
 COPY resources/scripts/wait_for_api.sh /usr/bin/
 COPY resources/scripts/install_gwan_rab.sh /usr/bin/
+COPY resources/scripts/migrate_bpmn.sh /usr/bin/
+COPY resources/scripts/clean_old_topology_instances.sh /usr/bin/
 
 RUN chmod a+x /usr/bin/create_mini_lab.sh; \
     chmod a+x /usr/bin/install_libraries.sh; \
@@ -22,6 +24,8 @@ RUN chmod a+x /usr/bin/create_mini_lab.sh; \
     chmod a+x /usr/bin/install_license.sh; \
     chmod a+x /usr/bin/wait_for_api.sh; \
     chmod a+x /usr/bin/install_gwan_rab.sh; \
+    chmod a+x /usr/bin/migrate_bpmn.sh; \
+    chmod a+x /usr/bin/clean_old_topology_instances.sh; \
     :
 
 CMD [ "/sbin/init" ]
