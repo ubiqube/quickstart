@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:ad87c3197b495ba873e0cc07781ff8083eb58f5f
+    image: ubiqube/msa2-front:77b28e78d38631f1ddf28af516bf27b70324b3d7
     ports:
       - target: 80
         published: 80
@@ -41,7 +41,7 @@ services:
     depends_on:
       - db
       - msa_es
-    image: ubiqube/msa2-api:744cf04c8e48bb7ceef61a98c257253e41efb9f0
+    image: ubiqube/msa2-api:70a26f8a23c44bbe2e343cade7f42e7f28464a58
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b
@@ -62,7 +62,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:5c4f2b92b23b6454763ce7e4df26e9c024202a29
+    image: ubiqube/msa2-ui:f70238e43b284af52893711583f93ad09f526a3b
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
