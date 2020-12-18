@@ -14,10 +14,7 @@ COPY resources/scripts/create_mini_lab.sh /usr/bin/
 COPY resources/scripts/install_libraries.sh /usr/bin/
 COPY resources/scripts/install_license.sh /usr/bin/
 COPY resources/scripts/wait_for_api.sh /usr/bin/
-<<<<<<< HEAD
 COPY resources/scripts/install_gwan_rab.sh /usr/bin/
-=======
->>>>>>> e949cf4b137793a8ac2e4f93509f2278cd471844
 COPY resources/scripts/migrate_bpmn.sh /usr/bin/
 COPY resources/scripts/clean_old_topology_instances.sh /usr/bin/
 
@@ -26,10 +23,7 @@ RUN chmod a+x /usr/bin/create_mini_lab.sh; \
     chmod a+x /usr/bin/create_test_me.sh; \
     chmod a+x /usr/bin/install_license.sh; \
     chmod a+x /usr/bin/wait_for_api.sh; \
-<<<<<<< HEAD
     chmod a+x /usr/bin/install_gwan_rab.sh; \
-=======
->>>>>>> e949cf4b137793a8ac2e4f93509f2278cd471844
     chmod a+x /usr/bin/migrate_bpmn.sh; \
     chmod a+x /usr/bin/clean_old_topology_instances.sh; \
     :
