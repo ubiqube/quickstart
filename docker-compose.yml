@@ -41,7 +41,7 @@ services:
     depends_on:
       - db
       - msa_es
-    image: ubiqube/msa2-api:4cc5e51fce3ef3b56bf70861331bd5ac961ee1f0
+    image: ubiqube/msa2-api:6a421434107a323a7b2d1d814556f95fa71e7122
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b
@@ -62,7 +62,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:10d2a0a78e3f021f0ca68eb0e6eda194a04a550c
+    image: ubiqube/msa2-ui:fc979a5628dc6d432aa272d5d9a413e907c04332
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
