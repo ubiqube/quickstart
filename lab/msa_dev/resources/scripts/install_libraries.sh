@@ -6,7 +6,7 @@ PROG=$(basename $0)
 DEV_BRANCH=default_dev_branch
 GITHUB_DEFAULT_BRANCH=master
 QUICKSTART_DEFAULT_BRANCH=2.3.0GA
-INSTALL_LICENSE=true
+INSTALL_LICENSE=false
 ASSUME_YES=false
 
 install_license() {
@@ -20,8 +20,6 @@ install_license() {
         if [ $? -ne 0 ]; then
             exit 1
         fi
-    else
-        echo "skipping license installation"
     fi
 }
 
@@ -385,7 +383,7 @@ usage() {
 	echo "wf:           install the worflows from https://github.com/openmsa/Workflows"
 	echo "da:           install the adapters from https://github.com/openmsa/Adapters"
   echo "Options:"
-  echo "--no-lic:     skip license installation"
+  echo "--lic:        force license installation"
   echo "-y:           answer yes for all questions"
   exit 0
 }
@@ -407,8 +405,8 @@ main() {
         echo $1
         option=$1
         case $option in
-            --no-lic)
-                INSTALL_LICENSE=false
+            --lic)
+                INSTALL_LICENSE=true
                 ;;
             -y)
                 ASSUME_YES=true

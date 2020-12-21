@@ -41,9 +41,9 @@ upgrade(){
 	docker-compose exec msa_dev rm -rf /opt/fmc_repository/Process/Reference
 
 	if [ $force_option = false ] ; then
-		docker-compose exec msa_dev /usr/bin/install_libraries.sh all --no-lic
+		docker-compose exec msa_dev /usr/bin/install_libraries.sh all
 	else
-		docker-compose exec msa_dev /usr/bin/install_libraries.sh all --no-lic -y
+		docker-compose exec msa_dev /usr/bin/install_libraries.sh all -y
 	fi
 	
     docker-compose restart msa_api
