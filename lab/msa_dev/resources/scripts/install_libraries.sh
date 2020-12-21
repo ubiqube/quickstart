@@ -283,6 +283,7 @@ install_adapters() {
     cisco_isr
     #cisco_nexus9000
     citrix_adc
+    dell_redfish
     esa
     f5_bigip
     fortigate
@@ -294,11 +295,14 @@ install_adapters() {
     fujitsu_ipcom
     hp2530
     hp5900
+    hpe_redfish
     huawei_generic
+    intel_redfish
     #juniper_contrail
     juniper_rest
     juniper_srx
     kubernetes_generic
+    lanner_ipmi
     linux_generic
     linux_k8_cli
     mikrotik_generic
