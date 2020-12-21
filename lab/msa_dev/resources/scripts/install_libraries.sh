@@ -11,11 +11,11 @@ ASSUME_YES=false
 
 install_license() {
 
-    echo "-------------------------------------------------------"
-    echo "INSTALL EVAL LICENSE"
-    echo "-------------------------------------------------------"
     if [ $INSTALL_LICENSE == true  ];
     then
+        echo "-------------------------------------------------------"
+        echo "INSTALL EVAL LICENSE"
+        echo "-------------------------------------------------------"
         /usr/bin/install_license.sh
         if [ $? -ne 0 ]; then
             exit 1
@@ -252,6 +252,9 @@ install_workflows() {
     echo "  >> MSA / Utils"
     ln -fsn ../OpenMSA_WF/Utils/Manage_Device_Conf_Variables Manage_Device_Conf_Variables
     ln -fsn ../OpenMSA_WF/Utils/.meta_Manage_Device_Conf_Variables .meta_Manage_Device_Conf_Variables
+    echo "  >> MSA / Utils"
+    ln -fsn ../OpenMSA_WF/BIOS_Automation BIOS_Automation
+    ln -fsn ../OpenMSA_WF/.meta_BIOS_Automation .meta_BIOS_Automation
 
 
     echo "-------------------------------------------------------------------------------"
