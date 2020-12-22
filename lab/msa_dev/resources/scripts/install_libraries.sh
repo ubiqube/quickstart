@@ -214,6 +214,14 @@ install_microservices () {
     ln -fsn ../OpenMSA_MS/KUBERNETES KUBERNETES; ln -fsn ../OpenMSA_MS/.meta_KUBERNETES .meta_KUBERNETES
     echo "  >> NETBOX"
     ln -fsn ../OpenMSA_MS/NETBOX NETBOX; ln -fsn ../OpenMSA_MS/.meta_NETBOX .meta_NETBOX; 
+    echo "  >> DELL/REDFISH"
+    ln -fsn ../OpenMSA_MS/DELL DELL; ln -fsn ../OpenMSA_MS/.meta_DELL .meta_DELL; 
+    echo "  >> INTEL/REDFISH"
+    ln -fsn ../OpenMSA_MS/INTEL INTEL; ln -fsn ../OpenMSA_MS/.meta_INTEL .meta_INTEL; 
+    echo "  >> HP/REDFISH"
+    ln -fsn ../OpenMSA_MS/HP HP; ln -fsn ../OpenMSA_MS/.meta_HP .meta_HP; 
+    echo "  >> LANNER/IPMI"
+    ln -fsn ../OpenMSA_MS/LANNER LANNER; ln -fsn ../OpenMSA_MS/.meta_LANNER .meta_LANNER; 
 
     echo "DONE"
 
