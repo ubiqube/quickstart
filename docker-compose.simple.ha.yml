@@ -77,7 +77,7 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
 
   msa_ui:
-    image: ubiqube/msa2-ui:fc979a5628dc6d432aa272d5d9a413e907c04332
+    image: ubiqube/msa2-ui:30c914428850164bc679dc6a9d6993b6ab5ff9d1
     depends_on:
       - msa_api
     deploy:
