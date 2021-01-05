@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:dbb3b75b5e00304d1ff4f8e844edfe44d52c3af6
+    image: ubiqube/msa2-front:fe0a332bd2c994def2e2156d243186b85fc24047
     depends_on:
       - msa_api
       - msa_ui
@@ -25,6 +25,10 @@ services:
         mode: host
       - target: 514
         published: 514
+        protocol: udp
+        mode: host
+      - target: 162
+        published: 162
         protocol: udp
         mode: host
     #
