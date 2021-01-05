@@ -94,7 +94,7 @@ services:
     - FEATURE_SCHEDULE_WORKFLOWS=true
 
   msa_sms:
-    image: ubiqube/msa2-sms:eb033586d910eb9ebdfd0d42cde7a758d642d5be
+    image: ubiqube/msa2-sms:1c9408e857d7c14449b3d6bb6d19c2ee8365dcc3
     depends_on:
       - db
     volumes:
