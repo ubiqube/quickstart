@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:4288b490ea13e9db239e9dafb4111049187a599d
+    image: ubiqube/msa2-front:b3876af2fa27efacd1b534d6fb416a1e2804a2b6
     ports:
       - target: 80
         published: 80
