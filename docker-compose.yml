@@ -29,7 +29,7 @@ services:
     #volumes:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
   db:
-    image: ubiqube/msa2-db:42961a9928f0f2949309965322e991e0c00b87b1
+    image: ubiqube/msa2-db:a3e4fcaae0fb3a0eed37921f5670a30fe4aa7f6b
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
