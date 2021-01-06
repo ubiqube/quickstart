@@ -3,7 +3,7 @@ set -e
 
 PROG=$(basename $0)
 
-target_version="2.2.0GA"
+target_version="2.3.0GA"
 force_option=false
 clean_option=false
 remove_orphans=false
@@ -17,7 +17,8 @@ upgrade(){
 	else
 		docker-compose down --remove-orphans 
 	fi
-        
+	
+        ############ From 2.1
 	if [ ! -z "$(docker volume ls | grep msa_sms_php)" ]; then
 		sms_php_vol=$(docker volume ls | awk '{print $2}' | grep msa_sms_php)
         echo "Recreating Core Engine (msa_sms) volume $sms_php_vol"
@@ -36,7 +37,7 @@ upgrade(){
         docker volume rm $dev_vol
 	fi
 
-    docker-compose up -d --build
+        docker-compose up -d --build
 
 	docker-compose exec msa_dev rm -rf /opt/fmc_repository/Process/Reference
 
@@ -54,6 +55,14 @@ upgrade(){
     echo "Starting crond on API container msa_api"
     docker exec -it -u root $msa_api crond
     echo "Done"
+    
+    ############ From 2.2
+    msa_dev=$(docker ps -q -f name=msa_dev)
+    echo "Migrating old BPMs from DataFile to BPM repository"
+    lab/msa_dev/resources/scripts/migrate_bpmn.sh -c $msa_dev
+    
+    echo "Removing old instances of topology"
+    lab/msa_dev/resources/scripts/clean_old_topology_instances.sh -c $msa_dev
 
     echo "Upgrade done!"
 }
