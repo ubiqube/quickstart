@@ -6,7 +6,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:d8809d1f96de2bc74bd20c205b407660e0124f90
+    image: ubiqube/msa2-front:7e1fe013a441792a844a4a60e89dcec4aca857a7
     ports:
       - target: 80
         published: 80
@@ -25,7 +25,7 @@ services:
         protocol: udp
         mode: host
    #
-    # uncomment one of the 2 section below when installing a custom certificate 
+    # uncomment one of the 2 sections below when installing a custom certificate 
     # - Docker standard standalone installation
     #volumes:
     #    - "msa_front:/etc/nginx/ssl"
@@ -68,7 +68,7 @@ services:
   msa_ui:
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:96c4ea7c027889c4a54e75055b1981b4057aac4a
+    image: ubiqube/msa2-ui:ad0cd9d4aeaad530d95ee0d704b828f1f146af04
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true

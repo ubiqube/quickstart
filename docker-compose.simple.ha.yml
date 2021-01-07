@@ -1,9 +1,9 @@
-# This docker-compose file is provided as an exmaple to create a Docker Swarm based MSActivator setup
+# This docker-compose file is provided as an example to create a Docker Swarm based MSActivator setup
 version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:d8809d1f96de2bc74bd20c205b407660e0124f90
+    image: ubiqube/msa2-front:7e1fe013a441792a844a4a60e89dcec4aca857a7
     depends_on:
       - msa_api
       - msa_ui
@@ -32,7 +32,7 @@ services:
         protocol: udp
         mode: host
     #
-    # uncomment one of the 2 section below when installing a custom certificate 
+    # uncomment one of the 2 sections below when installing a custom certificate 
     # - Docker standard standalone installation
     #volumes:
     #    - "msa_front:/etc/nginx/ssl"
@@ -81,7 +81,7 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
 
   msa_ui:
-    image: ubiqube/msa2-ui:96c4ea7c027889c4a54e75055b1981b4057aac4a
+    image: ubiqube/msa2-ui:ad0cd9d4aeaad530d95ee0d704b828f1f146af04
     depends_on:
       - msa_api
     deploy:
