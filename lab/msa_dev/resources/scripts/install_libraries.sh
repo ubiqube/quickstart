@@ -11,11 +11,11 @@ ASSUME_YES=false
 
 install_license() {
 
-    echo "-------------------------------------------------------"
-    echo "INSTALL EVAL LICENSE"
-    echo "-------------------------------------------------------"
     if [ $INSTALL_LICENSE == true  ];
     then
+        echo "-------------------------------------------------------"
+        echo "INSTALL EVAL LICENSE"
+        echo "-------------------------------------------------------"
         /usr/bin/install_license.sh
         if [ $? -ne 0 ]; then
             exit 1
