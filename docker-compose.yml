@@ -40,8 +40,6 @@ services:
       POSTGRES_DB: POSTGRESQL
     volumes:
       - "msa_db:/var/lib/postgresql/data"
-    ports:
-      - 5432:5432
 
   msa_api:
     depends_on:

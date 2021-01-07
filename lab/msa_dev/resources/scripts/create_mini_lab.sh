@@ -51,7 +51,6 @@ sleep 1
 curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://msa_api:8480/ubi-api-rest/orchestration/$CUSTID/service/attach?uri=Process/Tutorials/python/Simple_Firewall/Simple_Firewall.xml"
 sleep 1
 
-
 echo "--------------------------------------------------"
 echo "CREATE DEMO DEVICES"
 echo "--------------------------------------------------"
