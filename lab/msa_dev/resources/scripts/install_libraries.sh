@@ -140,6 +140,8 @@ update_all_github_repo() {
 
     update_git_repo "https://github.com/openmsa/etsi-mano.git" "/opt/fmc_repository" "OpenMSA_MANO" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
 
+    update_git_repo "https://github.com/openmsa/python-sdk.git" "/tmp/" "python_sdk" "develop" "default_dev_branch"
+
     update_git_repo "https://github.com/ubiqube/quickstart.git" "/opt/fmc_repository" "quickstart" $QUICKSTART_DEFAULT_BRANCH 
 
 }
@@ -165,6 +167,16 @@ install_adapter() {
     /opt/devops/OpenMSA_Adapters/bin/da_installer install /opt/devops/OpenMSA_Adapters/adapters/$DEVICE_DIR $MODE
     echo "DONE"
 
+}
+
+install_python_sdk() {
+    mkdir -p /opt/fmc_repository/Process/PythonReference/custom
+    touch /opt/fmc_repository/Process/PythonReference/custom/__init__.py
+    pushd /tmp/python_sdk
+    python3 setup.py install \
+        --install-lib='/opt/fmc_repository/Process/PythonReference'
+    popd
+    rm -rf /tmp/python_sdk
 }
 
 install_microservices () {
@@ -375,7 +387,7 @@ finalize_install() {
 }
 
 usage() {
-	echo "usage: $PROG all|ms|wf|da [--no-lic] [-y]"
+    echo "usage: $PROG all|ms|wf|da|py [--lic] [-y]"
   echo
   echo "this script installs some librairies available @github.com/openmsa"
 	echo
@@ -384,9 +396,10 @@ usage() {
 	echo "ms:           install the microservices from https://github.com/openmsa/Microservices"
 	echo "wf:           install the worflows from https://github.com/openmsa/Workflows"
 	echo "da:           install the adapters from https://github.com/openmsa/Adapters"
-  echo "Options:"
-  echo "--lic:        force license installation"
-  echo "-y:           answer yes for all questions"
+    echo "py:           install the python-sdk from https://github.com/openmsa/python-sdk"
+echo "Options:"
+  echo "--lic:          force license installation"
+  echo "-y:             answer yes for all questions"
   exit 0
 }
 
@@ -429,6 +442,7 @@ main() {
             install_microservices;
             install_workflows;
             install_adapters;
+            install_python_sdk
 			;;
 		ms)
             install_license  $option
@@ -448,7 +462,12 @@ main() {
             update_all_github_repo  $cmd
 			install_adapters
 			;;
-
+        py)
+            install_license  $option
+            init_intall
+            update_all_github_repo
+            install_python_sdk
+            ;;
 		*)
             echo "Error: unknown command: $1"
             usage
