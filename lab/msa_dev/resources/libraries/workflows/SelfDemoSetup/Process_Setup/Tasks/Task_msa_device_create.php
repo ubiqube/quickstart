@@ -4,7 +4,6 @@ require_once '/opt/fmc_repository/Process/Reference/Common/common.php';
 //require_once '/opt/fmc_repository/Process/BLR/SelfDemoSetup/Process_Setup/Tasks/device_rest.php';
 
 function list_args() {
-	create_var_def('customer_id', 'String');
 	create_var_def('managed_device_name', 'String');
 	create_var_def('device_external_reference', 'String');
 	create_var_def('manufacturer_id', 'Integer');
@@ -19,7 +18,6 @@ function list_args() {
 	create_var_def('management_port', 'Integer');
 }
 
-check_mandatory_param('customer_id');
 check_mandatory_param('managed_device_name');
 check_mandatory_param('manufacturer_id');
 check_mandatory_param('model_id');
@@ -64,7 +62,7 @@ $device_id = $response['wo_newparams']['entity']['externalReference'];
 $context['device_id'] = $device_id;
 $device_id_long = substr($device_id, 3);
 
-_device_do_initial_provisioning_by_id($device_id_long);
+//_device_do_initial_provisioning_by_id($device_id_long);
 
 $wo_comment = "ID  : $device_id";
 $response = prepare_json_response(ENDED, "Managed entity created successfully.\n$wo_comment", $context, true);
