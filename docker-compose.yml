@@ -40,14 +40,12 @@ services:
       POSTGRES_DB: POSTGRESQL
     volumes:
       - "msa_db:/var/lib/postgresql/data"
-    ports:
-      - 5432:5432
 
   msa_api:
     depends_on:
       - db
       - msa_es
-    image: ubiqube/msa2-api:ac5d572fc15a7e3d0752b56ded04667d1826204e
+    image: ubiqube/msa2-api:104b99668bcd5153b86872b582d63a92b3adc309
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b

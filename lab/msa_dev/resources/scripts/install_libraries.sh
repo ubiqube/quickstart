@@ -261,6 +261,8 @@ install_workflows() {
     echo "  >> Topology"
     ln -fsn ../OpenMSA_WF/Topology Topology
     ln -fsn ../OpenMSA_WF/.meta_Topology .meta_Topology
+    echo "  >> Analytics"
+    ln -fsn ../OpenMSA_WF/Analytics Analytics
     echo "  >> MSA / Utils"
     ln -fsn ../OpenMSA_WF/Utils/Manage_Device_Conf_Variables Manage_Device_Conf_Variables
     ln -fsn ../OpenMSA_WF/Utils/.meta_Manage_Device_Conf_Variables .meta_Manage_Device_Conf_Variables
