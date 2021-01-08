@@ -197,8 +197,7 @@ install_python_sdk() {
     mkdir -p /opt/fmc_repository/Process/PythonReference/custom
     touch /opt/fmc_repository/Process/PythonReference/custom/__init__.py
     pushd /tmp/python_sdk
-    python3 setup.py install \
-        --install-lib='/opt/fmc_repository/Process/PythonReference'
+    python3 setup.py install --install-lib='/opt/fmc_repository/OpenMSA_PythonReference'
     popd
     rm -rf /tmp/python_sdk
 }
@@ -431,11 +430,11 @@ usage() {
   echo "this script installs some librairies available @github.com/openmsa"
 	echo
   echo "Commands:"
-	echo "all:          install everything: worflows, microservices and adapters"
-	echo "ms:           install the microservices from https://github.com/openmsa/Microservices"
-	echo "wf:           install the worflows from https://github.com/openmsa/Workflows"
-	echo "da:           install the adapters from https://github.com/openmsa/Adapters"
-    echo "py:           install the python-sdk from https://github.com/openmsa/python-sdk"
+	echo "all:          install/update everything: worflows, microservices and adapters"
+	echo "ms:           install/update the microservices from https://github.com/openmsa/Microservices"
+	echo "wf:           install/update the worflows from https://github.com/openmsa/Workflows"
+	echo "da:           install/update the adapters from https://github.com/openmsa/Adapters"
+    echo "py:           install/update the python-sdk from https://github.com/openmsa/python-sdk"
 echo "Options:"
   echo "--lic:          force license installation"
   echo "-y:             answer yes for all questions"
@@ -502,9 +501,7 @@ main() {
 			install_adapters
 			;;
         py)
-            install_license  $option
             init_intall
-            update_all_github_repo
             install_python_sdk
             ;;
 		*)
