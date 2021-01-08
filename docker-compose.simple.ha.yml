@@ -57,7 +57,7 @@ services:
         condition: on-failure
  
   msa_api:
-    image: ubiqube/msa2-api:ac221630ffcbfdd70aaad26174520c1081fbaff9
+    image: ubiqube/msa2-api:8152abbc15fc4d6b4ec24ed856ff746cff166598
     depends_on:
       - db
     deploy:
