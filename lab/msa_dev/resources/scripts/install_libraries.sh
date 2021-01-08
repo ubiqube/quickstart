@@ -59,6 +59,30 @@ update_git_repo () {
         ## get current branch and store in variable CURRENT_BR
         CURRENT_BR=`git rev-parse --abbrev-ref HEAD`
         echo "> Current working branch: $CURRENT_BR"
+        #if [[ $ASSUME_YES == false && $CURRENT_BR == "master" ]];
+        #then
+        #    echo "> WARNING: your current branch is $CURRENT_BR, to be safe, you may want to switch to a working branch (default_dev_branch is the factory default)"
+        #    read -p  "> continue ? [y]/[N]" yn
+        #    case $yn in
+        #        [Yy]* )
+        #            read -p   "> Enter the name of the working branch (enter $CURRENT_BR to stay on your current branch):" br
+        #            if [ $br == "" ];
+        #            then
+        #                echo "> ERROR: invalid branch name, exiting..."
+        #                exit 0
+        #            else
+        #                # checkout or create and checkout the branch
+        #                echo "> Switching to $br (will be created if it doesn't exist yet)"
+        #                git checkout $br 2>/dev/null || git checkout -b $br
+        #                CURRENT_BR=$br
+        #            fi
+        #            ;;
+        #        * )
+        #            echo "> exiting... "
+        #            exit 0
+        #            ;;
+        #    esac
+        #fi
         git stash;
         echo "> Checking merge $DEFAULT_BRANCH to $CURRENT_BR"
         git merge --no-commit --no-ff $DEFAULT_BRANCH
