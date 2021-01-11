@@ -62,7 +62,7 @@ update_git_repo () {
         if [[ $ASSUME_YES == false && $CURRENT_BR == "master" ]];
         then
             echo "> WARNING: your current branch is $CURRENT_BR, to be safe, you may want to switch to a working branch (default_dev_branch is the factory default for development)"
-            read -p  "> continue ? [y]/[N]" yn
+            read -p  "> switch ? [y]/[N]" yn
             case $yn in
                 [Yy]* )
                     read -p   "> Enter the name of the working branch (enter $CURRENT_BR to stay on your current branch):" br
@@ -77,7 +77,17 @@ update_git_repo () {
                         CURRENT_BR=$br
                     fi
                     ;;
-               * )
+                [Nn]* )
+                    read -p  "> stay on master ? [y]/[N]" resp
+                    if [[ $resp != "" && $resp == "y" ]];
+                    then
+                        echo "> running installation/update on master branch on local repository"
+                    else
+                        echo "> cancelling installation, exiting... "
+                        exit 0
+                    fi
+                    ;;
+                * )
                     echo "> exiting... "
                     exit 0
                    ;;
