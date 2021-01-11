@@ -11,8 +11,8 @@ filebeat.inputs:
     match: after
 output.elasticsearch:
   hosts: "msa_es:9200"
-  username: "elastic"
-  password: "PASSWORD HERE"
+#  username: "elastic"
+#  password: "PASSWORD HERE"
   protocol: "http"
   ssl.verification_mode: none
   indices:
@@ -23,5 +23,5 @@ setup.kibana:
   host: "msa_kibana:5601"
   protocol: "http"
   ssl.verification_mode: none
-  username: "elastic"
-  password: "PASSWORD HERE"
+#  username: "elastic"
+#  password: "PASSWORD HERE"
