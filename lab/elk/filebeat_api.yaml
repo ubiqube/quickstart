@@ -13,7 +13,7 @@ output.elasticsearch:
   hosts: "msa_es:9200"
   username: "elastic"
   password: "PASSWORD HERE"
-  protocol: "https"
+  protocol: "http"
   ssl.verification_mode: none
   indices:
     - index: "msa-api-%{[agent.version]}-%{+yyyy.MM.dd}"
@@ -21,7 +21,7 @@ output.elasticsearch:
         log.file.path: "quickstart_msa_api_logs"
 setup.kibana:
   host: "msa_kibana:5601"
-  protocol: "https"
+  protocol: "http"
   username: "elastic"
   password: "PASSWORD HERE"
   ssl.verification_mode: none

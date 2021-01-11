@@ -13,7 +13,7 @@ output.elasticsearch:
   hosts: "msa_es:9200"
   username: "elastic"
   password: "PASSWORD HERE"
-  protocol: "https"
+  protocol: "http"
   ssl.verification_mode: none
   indices:
     - index: "msa-sms-%{[agent.version]}-%{+yyyy.MM.dd}"
@@ -21,7 +21,7 @@ output.elasticsearch:
         log.file.path: "quickstart_msa_sms_logs"
 setup.kibana:
   host: "msa_kibana:5601"
-  protocol: "https"
+  protocol: "http"
   ssl.verification_mode: none
   username: "elastic"
   password: "PASSWORD HERE"
