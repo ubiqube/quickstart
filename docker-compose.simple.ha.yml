@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:5f5f0c0a24f4503840b24a4e9ebc5d2672e5e2ca
+    image: ubiqube/msa2-front:8cc268d6a12b29345fcf0e1441354b38358cf73e
     depends_on:
       - msa_api
       - msa_ui
@@ -83,7 +83,7 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
 
   msa_ui:
-    image: ubiqube/msa2-ui:9d58058d112e1b7a7b531b512fd971510563a0d3
+    image: ubiqube/msa2-ui:0c98b2abe20c15e6905eb3e7befa2605d5176ca4
     depends_on:
       - msa_api
     deploy:
@@ -141,18 +141,6 @@ services:
       - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
 
   msa_kibana:
-    image: ubiqube/msa2-kibana:5634d2ada524a9dab10711637fb76c4570424501
-    ports:
-      - "5601:5601"
-    deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-    environment:
-      ELASTICSEARCH_URL: http://msa_es:9200
-      ELASTICSEARCH_HOSTS: http://msa_es:9200
-
-  msa_kibana:
     image: ubiqube/msa2-kibana:868fb6f9e3b5ab8a5a9a346b93b8779262d9e738
     ports:
       - "5601:5601"
@@ -183,7 +171,7 @@ services:
           - "node.role==manager"
 
   msa_dev:
-    image: ubiqube/msa2-linuxdev:e4087c9947273aa71e762247ed36c5d6309f3a64
+    image: ubiqube/msa2-linuxdev:542c63ccb52a97a6101a60756634288fb0fec587
     deploy:
       replicas: 1
       placement:
