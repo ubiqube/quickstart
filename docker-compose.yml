@@ -183,7 +183,8 @@ services:
     volumes:
      - ./lab/elk/filebeat_sms.yaml:/usr/share/filebeat/filebeat.yml:ro
      - /var/lib/docker/volumes/quickstart_msa_sms_logs/_data:/var/lib/docker/volumes/quickstart_msa_sms_logs/_data:ro
-     
+    privileged: true
+    
   fb_api:
     container_name: filebeat_api
     image: "docker.elastic.co/beats/filebeat:7.10.1"
@@ -191,6 +192,7 @@ services:
     volumes:
      - ./lab/elk/filebeat_api.yaml:/usr/share/filebeat/filebeat.yml:ro
      - /var/lib/docker/volumes/quickstart_msa_api_logs/_data:/var/lib/docker/volumes/quickstart_msa_api_logs/_data:ro
+    privileged: true
  
 volumes:
   msa_api:
