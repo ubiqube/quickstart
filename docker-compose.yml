@@ -42,6 +42,8 @@ services:
       POSTGRES_DB: POSTGRESQL
     volumes:
       - "msa_db:/var/lib/postgresql/data"
+    ports:
+      - 5432:5432
 
   msa_api:
     container_name: msa_api
@@ -111,7 +113,9 @@ services:
 
   msa_es:
     container_name: msa_es
-    image: ubiqube/msa2-es:d9899d1f09809a40548f96211984647a8b4901fc
+    #image: ubiqube/msa2-es:d9899d1f09809a40548f96211984647a8b4901fc
+    # use a custom image for compatibility with Filebeat 7.10.1
+    image: ubiqube/msa2-es:msa2-es-7.10.1
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
@@ -189,28 +193,18 @@ services:
     hostname: linux_me_2
     privileged: true
 
-  fb_sms:
-    container_name: filebeat_sms
-    build:
-      context: ./lab/elk/
-      dockerfile: filebeat_sms.dockerfile
-#    image: "docker.elastic.co/beats/filebeat:7.10.1"
+  # msa log collecting with ELK Filebeat
+  msa_fb:
+    container_name: msa_fb
+    environment:
+      - ELASTICSEARCH_HOSTS=msa_es
+      - KIBANA_HOST=msa_kibana
+    build: ./lab/elk
     volumes:
-#     - ./lab/elk/filebeat_sms.yaml:/usr/share/filebeat/filebeat.yml:ro
      - /var/lib/docker/volumes/quickstart_msa_sms_logs/_data:/var/lib/docker/volumes/quickstart_msa_sms_logs/_data:ro
-    privileged: true
-    
-  fb_api:
-    container_name: filebeat_api
-    build:
-      context: ./lab/elk/
-      dockerfile: filebeat_api.dockerfile
-#   image: "docker.elastic.co/beats/filebeat:7.10.1"
-    volumes:
-#    - ./lab/elk/filebeat_api.yaml:/usr/share/filebeat/filebeat.yml:ro
      - /var/lib/docker/volumes/quickstart_msa_api_logs/_data:/var/lib/docker/volumes/quickstart_msa_api_logs/_data:ro
     privileged: true
- 
+     
 volumes:
   msa_api:
   msa_db:
@@ -224,6 +218,7 @@ volumes:
   msa_bud_logs:
   msa_front:
   msa_svn:
+  msa_fb:
 
 networks:
   default:
