@@ -1,0 +1,4 @@
+- module: sms
+  smsd:
+    enabled: true
+    var.paths: ["/var/lib/docker/volumes/quickstart_msa_sms_logs/_data/smsd.log"]

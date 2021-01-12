@@ -1,0 +1,49 @@
+filebeat.inputs:
+- type: log
+  paths:
+    - '/var/lib/docker/volumes/quickstart_msa_sms_logs/_data/sms*.log'
+  multiline:
+    type: pattern
+    pattern: ^[0-9]{4}\/[0-9]{2}\/([0-9]{2}\:){3}[0-9]{2}
+    negate: true
+    match: after
+
+- type: log
+  paths:
+    - '/var/lib/docker/volumes/quickstart_msa_api_logs/_data/*.log'
+  multiline:
+    type: pattern
+    pattern: ^[0-9]{4}-[0-9]{2}-[0-9]{2}\s([0-9]{2}\:){2}[0-9]{2}
+    negate: true
+    match: after
+
+output.elasticsearch:
+  hosts: "msa_es:9200"
+  protocol: "http"
+  ssl.verification_mode: none
+  indices:
+    - index: "msa-sms-%{[agent.version]}-%{+yyyy.MM.dd}"
+      when.contains:
+        log.file.path: "msa_sms_logs"
+    - index: "msa-api-%{[agent.version]}-%{+yyyy.MM.dd}"
+      when.contains:
+        log.file.path: "msa_api_logs"
+
+setup.kibana:
+  hosts: "msa_kibana:9200"
+#  protocol: "https"
+  ssl.verification_mode: none
+#  username: "elastic"
+#  password: "PASSWORD HERE"
+
+# Logging
+logging.level: info
+logging.to_files: true
+logging.files:
+  path: /var/log/filebeat
+  name: filebeat
+  keepfiles: 1
+  permissions: 0664
+logging.metrics.enabled: false
+
+setup.ilm.enabled: false
