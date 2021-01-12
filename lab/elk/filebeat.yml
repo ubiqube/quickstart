@@ -22,12 +22,24 @@ output.elasticsearch:
   protocol: "http"
   ssl.verification_mode: none
   indices:
-    - index: "msa-sms-%{[agent.version]}-%{+yyyy.MM.dd}"
+    - index: "msa-smsd-%{[agent.version]}-%{+yyyy.MM.dd}"
       when.contains:
-        log.file.path: "msa_sms_logs"
+        log.file.path: "smsd"
+    - index: "msa-sms_polld-%{[agent.version]}-%{+yyyy.MM.dd}"
+      when.contains:
+        log.file.path: "sms_polld"
+    - index: "msa-sms_syslogd-%{[agent.version]}-%{+yyyy.MM.dd}"
+      when.contains:
+        log.file.path: "sms_syslogd"
+    - index: "msa-sms_agregatord-%{[agent.version]}-%{+yyyy.MM.dd}"
+      when.contains:
+        log.file.path: "sms_agregatord"
     - index: "msa-api-%{[agent.version]}-%{+yyyy.MM.dd}"
       when.contains:
-        log.file.path: "msa_api_logs"
+        log.file.path: "server"
+    - index: "msa-process-%{[agent.version]}-%{+yyyy.MM.dd}"
+      when.contains:
+        log.file.path: "process"
 
 setup.kibana:
   hosts: "msa_kibana:9200"
@@ -46,4 +58,5 @@ logging.files:
   permissions: 0664
 logging.metrics.enabled: false
 
-setup.ilm.enabled: false
+setup.ilm:
+  enabled: auto
