@@ -59,31 +59,41 @@ update_git_repo () {
         ## get current branch and store in variable CURRENT_BR
         CURRENT_BR=`git rev-parse --abbrev-ref HEAD`
         echo "> Current working branch: $CURRENT_BR"
-        #if [[ $ASSUME_YES == false && $CURRENT_BR == "master" ]];
-        #then
-        #    echo "> WARNING: your current branch is $CURRENT_BR, to be safe, you may want to switch to a working branch (default_dev_branch is the factory default)"
-        #    read -p  "> continue ? [y]/[N]" yn
-        #    case $yn in
-        #        [Yy]* )
-        #            read -p   "> Enter the name of the working branch (enter $CURRENT_BR to stay on your current branch):" br
-        #            if [ $br == "" ];
-        #            then
-        #                echo "> ERROR: invalid branch name, exiting..."
-        #                exit 0
-        #            else
-        #                # checkout or create and checkout the branch
-        #                echo "> Switching to $br (will be created if it doesn't exist yet)"
-        #                git checkout $br 2>/dev/null || git checkout -b $br
-        #                CURRENT_BR=$br
-        #            fi
-        #            ;;
-        #        * )
-        #            echo "> exiting... "
-        #            exit 0
-        #            ;;
-        #    esac
-        #fi
-        git stash;
+        if [[ $ASSUME_YES == false && $CURRENT_BR == "master" ]];
+        then
+            echo "> WARNING: your current branch is $CURRENT_BR, to be safe, you may want to switch to a working branch (default_dev_branch is the factory default for development)"
+            read -p  "> switch ? [y]/[N]" yn
+            case $yn in
+                [Yy]* )
+                    read -p   "> Enter the name of the working branch (enter $CURRENT_BR to stay on your current branch):" br
+                    if [ $br == "" ];
+                    then
+                        echo "> ERROR: invalid branch name, exiting..."
+                        exit 0
+                    else
+                        # checkout or create and checkout the branch
+                        echo "> Switching to $br (the branch will be created if it doesn't exist yet)"
+                        git checkout $br 2>/dev/null || git checkout -b $br
+                        CURRENT_BR=$br
+                    fi
+                    ;;
+                [Nn]* )
+                    read -p  "> stay on master ? [y]/[N]" resp
+                    if [[ $resp != "" && $resp == "y" ]];
+                    then
+                        echo "> running installation/update on master branch on local repository"
+                    else
+                        echo "> cancelling installation, exiting... "
+                        exit 0
+                    fi
+                    ;;
+                * )
+                    echo "> exiting... "
+                    exit 0
+                   ;;
+            esac
+        fi
+        git stash
         echo "> Checking merge $DEFAULT_BRANCH to $CURRENT_BR"
         git merge --no-commit --no-ff $DEFAULT_BRANCH
         CAN_MERGE=$?
@@ -97,7 +107,7 @@ update_git_repo () {
                 read -p  "[y]/[N]" yn
                 case $yn in
                     [Yy]* )
-                        git pull origin $DEFAULT_BRANCH; break
+                        git pull origin $DEFAULT_BRANCH --prune; break
                     ;;
                     [Nn]* ) 
                         echo "> skip merge "
@@ -109,7 +119,7 @@ update_git_repo () {
                 esac
                 done
             else
-                git pull origin $DEFAULT_BRANCH
+                git pull origin $DEFAULT_BRANCH --prune
             fi
         else
             echo "> WARN: conflict found when merging $DEFAULT_BRANCH to $CURRENT_BR."
@@ -162,12 +172,20 @@ update_all_github_repo() {
         update_git_repo "https://github.com/openmsa/Workflows.git" "/opt/fmc_repository" "OpenMSA_WF" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
     fi
 
-    update_git_repo "https://github.com/openmsa/etsi-mano.git" "/opt/fmc_repository" "OpenMSA_MANO" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
+    if [[ $install_type = "all" || $install_type = "mano" ]];
+    then
+       update_git_repo "https://github.com/openmsa/etsi-mano.git" "/opt/fmc_repository" "OpenMSA_MANO" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
+    fi
 
-    update_git_repo "https://github.com/openmsa/python-sdk.git" "/tmp/" "python_sdk" "develop" "default_dev_branch"
+    if [[ $install_type = "all" || $install_type = "py" ]];
+    then
+        update_git_repo "https://github.com/openmsa/python-sdk.git" "/tmp/" "python_sdk" "develop" "default_dev_branch"
+    fi
 
-    update_git_repo "https://github.com/ubiqube/quickstart.git" "/opt/fmc_repository" "quickstart" $QUICKSTART_DEFAULT_BRANCH 
-
+    if [[ $install_type = "all" || $install_type = "quickstart" ]];
+    then    
+        update_git_repo "https://github.com/ubiqube/quickstart.git" "/opt/fmc_repository" "quickstart" $QUICKSTART_DEFAULT_BRANCH 
+    fi
 }
 
 uninstall_adapter() {
@@ -197,7 +215,7 @@ install_python_sdk() {
     mkdir -p /opt/fmc_repository/Process/PythonReference/custom
     touch /opt/fmc_repository/Process/PythonReference/custom/__init__.py
     pushd /tmp/python_sdk
-    python3 setup.py install --install-lib='/opt/fmc_repository/OpenMSA_PythonReference'
+    python3 setup.py install --install-lib='/opt/fmc_repository/Process/PythonReference'
     popd
     rm -rf /tmp/python_sdk
 }
@@ -408,37 +426,44 @@ finalize_install() {
     echo "-------------------------------------------------------------------------------"
     echo " update file owner to ncuser.ncuser"
     echo "-------------------------------------------------------------------------------"
-    chown -R ncuser:ncuser /opt/fmc_repository/*; \
-    chown -R ncuser:ncuser /opt/fmc_repository/.meta_*; \
+    chown -R ncuser:ncuser /opt/fmc_repository/*; 
+    if [[ $install_type = "all" || $install_type = "da" ]];
+    then 
     chown -R ncuser.ncuser /opt/devops/OpenMSA_Adapters
     chown -R ncuser.ncuser /opt/devops/OpenMSA_Adapters/adapters/*
     chown -R ncuser.ncuser /opt/devops/OpenMSA_Adapters/vendor/*
+    fi
 
     echo "DONE"
-
-    echo "-------------------------------------------------------------------------------"
-    echo " service restart"
-    echo "-------------------------------------------------------------------------------"
-    echo "  >> execute [sudo docker-compose restart msa_sms] to restart the CoreEngine service"
-    echo "  >> execute [sudo docker-compose restart msa_api] to restart the API service"
-    echo "DONE"
+    if [[ $install_type = "all" || $install_type = "da" ]];
+    then
+        echo "-------------------------------------------------------------------------------"
+        echo " service restart"
+        echo "-------------------------------------------------------------------------------"
+        echo "  >> execute [sudo docker-compose restart msa_sms] to restart the CoreEngine service"
+        echo "  >> execute [sudo docker-compose restart msa_api] to restart the API service"
+        echo "DONE"
+    fi
 }
 
 usage() {
-    echo "usage: $PROG all|ms|wf|da|py [--lic] [-y]"
-  echo
-  echo "this script installs some librairies available @github.com/openmsa"
-	echo
-  echo "Commands:"
+    echo "usage: $PROG all|ms|wf|da|py|mano|quickstart [--lic] [-y]"
+    echo
+    echo "this script installs some librairies available @github.com/openmsa"
+    echo
+    echo "Commands:"
 	echo "all:          install/update everything: worflows, microservices and adapters"
 	echo "ms:           install/update the microservices from https://github.com/openmsa/Microservices"
 	echo "wf:           install/update the worflows from https://github.com/openmsa/Workflows"
 	echo "da:           install/update the adapters from https://github.com/openmsa/Adapters"
+    echo "mano:         install/update the python-sdk from https://github.com/openmsa/etsi-mano"
     echo "py:           install/update the python-sdk from https://github.com/openmsa/python-sdk"
-echo "Options:"
-  echo "--lic:          force license installation"
-  echo "-y:             answer yes for all questions"
-  exit 0
+    echo "quickstart:   install/update the local quickstart from https://github.com/ubiqube/quickstart"
+    echo
+    echo "Options:"
+    echo "--lic:          force license installation"
+    echo "-y:             answer yes for all questions"
+    exit 0
 }
 
 main() {
@@ -502,7 +527,16 @@ main() {
 			;;
         py)
             init_intall
+            update_all_github_repo  $cmd
             install_python_sdk
+            ;;
+        mano)
+            init_intall
+            update_all_github_repo  $cmd
+            ;;
+        quickstart)
+            init_intall
+            update_all_github_repo  $cmd
             ;;
 		*)
             echo "Error: unknown command: $1"

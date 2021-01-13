@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:5f5f0c0a24f4503840b24a4e9ebc5d2672e5e2ca
+    image: ubiqube/msa2-front:093ea85ec6f626460d0618212501ff6670ef7b66
     depends_on:
       - msa_api
       - msa_ui
@@ -41,7 +41,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:68663c96a0ffa8712fa6a511cfb45ffed0054dcb
+    image: ubiqube/msa2-db:7a2dceac9ba808ce9be16b557a536ac65d39e976
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -57,7 +57,7 @@ services:
         condition: on-failure
  
   msa_api:
-    image: ubiqube/msa2-api:8152abbc15fc4d6b4ec24ed856ff746cff166598
+    image: ubiqube/msa2-api:27331d85eb3f520f1e9cb6f9c15b37fc515c3936
     depends_on:
       - db
     deploy:
@@ -83,7 +83,7 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
 
   msa_ui:
-    image: ubiqube/msa2-ui:9d58058d112e1b7a7b531b512fd971510563a0d3
+    image: ubiqube/msa2-ui:ad13e6c0de4f1d9317af9be3fba394c87424fc05
     depends_on:
       - msa_api
     deploy:
@@ -100,7 +100,7 @@ services:
     - FEATURE_SCHEDULE_WORKFLOWS=true
 
   msa_sms:
-    image: ubiqube/msa2-sms:1c9408e857d7c14449b3d6bb6d19c2ee8365dcc3
+    image: ubiqube/msa2-sms:757a8095c81e84861eb3c008754f9f985f0563ab
     depends_on:
       - db
     volumes:
@@ -141,18 +141,6 @@ services:
       - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
 
   msa_kibana:
-    image: ubiqube/msa2-kibana:5634d2ada524a9dab10711637fb76c4570424501
-    ports:
-      - "5601:5601"
-    deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-    environment:
-      ELASTICSEARCH_URL: http://msa_es:9200
-      ELASTICSEARCH_HOSTS: http://msa_es:9200
-
-  msa_kibana:
     image: ubiqube/msa2-kibana:868fb6f9e3b5ab8a5a9a346b93b8779262d9e738
     ports:
       - "5601:5601"
@@ -183,7 +171,7 @@ services:
           - "node.role==manager"
 
   msa_dev:
-    image: ubiqube/msa2-linuxdev:e4087c9947273aa71e762247ed36c5d6309f3a64
+    image: ubiqube/msa2-linuxdev:542c63ccb52a97a6101a60756634288fb0fec587
     deploy:
       replicas: 1
       placement:
