@@ -83,12 +83,8 @@ services:
     - FEATURE_SCHEDULE_WORKFLOWS=true
 
   msa_sms:
-<<<<<<< HEAD
     container_name: msa_sms
     image: ubiqube/msa2-sms:1c9408e857d7c14449b3d6bb6d19c2ee8365dcc3
-=======
-    image: ubiqube/msa2-sms:757a8095c81e84861eb3c008754f9f985f0563ab
->>>>>>> f34090f31f841044f0c34edcd811ab57b86fb610
     depends_on:
       - db
       - msa_es
