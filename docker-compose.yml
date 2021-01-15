@@ -7,7 +7,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:9f7e5225e351d27c4e8588015d987364dc3e467f
+    image: ubiqube/msa2-front:cd9a0e6a7312b798bf8b5becdea5a5e1976a90bb
     ports:
       - target: 80
         published: 80
@@ -35,7 +35,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
   db:
     container_name: db
-    image: ubiqube/msa2-db:7a2dceac9ba808ce9be16b557a536ac65d39e976
+    image: ubiqube/msa2-db:37d694d70a8d3a7f30faecce4a91a4215305cf48
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -50,7 +50,7 @@ services:
     depends_on:
       - db
       - msa_es
-    image: ubiqube/msa2-api:8f6762627990b1bde8140a5042357e3ac9cf56d8
+    image: ubiqube/msa2-api:06242abdf059b2abe0e0c138fb4a1a5adfcdb401
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b
@@ -72,7 +72,7 @@ services:
     container_name: msa_ui
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:10ee8908b6a7efeb6f85ce256d55efe38d875060
+    image: ubiqube/msa2-ui:2366f539f47e0520408d229367f6f37fb58267c4
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -84,7 +84,7 @@ services:
 
   msa_sms:
     container_name: msa_sms
-    image: ubiqube/msa2-sms:1c9408e857d7c14449b3d6bb6d19c2ee8365dcc3
+    image: ubiqube/msa2-sms:9578193ef0f63d1bba767c015627b436c35dd829
     depends_on:
       - db
       - msa_es
