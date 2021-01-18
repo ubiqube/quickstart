@@ -66,7 +66,7 @@ upgrade(){
 
     msa_es=$(docker ps -q -f name=msa_es)
     echo "Elasticsearch settings & mappings update"
-    docker exec -u root -w /home/install/ -it  $msa_es bash -c './delete_mapping_template.sh && ./install_cluster_settings.sh && ./install_mapping_template.sh'
+    docker exec -u root -w /home/install/scripts/ -it  $msa_es bash -c './install.sh'
     echo "Done"
 
     msa_kibana=$(docker ps -q -f name=msa_kibana)
