@@ -64,6 +64,16 @@ upgrade(){
     echo "Removing old instances of topology"
     docker-compose exec msa_dev /usr/bin/clean_old_topology_instances.sh
 
+    msa_es=$(docker ps -q -f name=msa_es)
+    echo "Elasticsearch settings & mappings update"
+    docker exec -u root -w /home/install/ -it  $msa_es bash -c './delete_mapping_template.sh && ./install_cluster_settings.sh && ./install_mapping_template.sh'
+    echo "Done"
+
+    msa_kibana=$(docker ps -q -f name=msa_kibana)
+    echo "Kibana configs & dashboard templates update"
+    docker exec -u root -w /home/install/ -it  $msa_kibana bash -c 'php install_default_template_dash_and_visu.php '
+    echo "Done"
+
     echo "Upgrade done!"
 }
 
