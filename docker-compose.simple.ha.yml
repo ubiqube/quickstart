@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:e948056220d324082fe0910a4afcbfe3d2a22c76
+    image: ubiqube/msa2-front:c117713f00576f53e32799eecbac1ab3daea6b5b
     depends_on:
       - msa_api
       - msa_ui
@@ -57,7 +57,7 @@ services:
         condition: on-failure
  
   msa_api:
-    image: ubiqube/msa2-api:86eeac790040890f30de86650cdcd84446efa0a9
+    image: ubiqube/msa2-api:6c4e92f842fbe0c3d61e8f012f5ef30b7f0f7dde
     depends_on:
       - db
     deploy:
@@ -129,7 +129,7 @@ services:
         max_replicas_per_node: 1
 
   msa_es:
-    image: ubiqube/msa2-es:d9899d1f09809a40548f96211984647a8b4901fc
+    image: ubiqube/msa2-es:ccde46f0025790807235dc9c97975f0dc9640e7a
     deploy:
       replicas: 1
       placement:
