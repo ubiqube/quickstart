@@ -79,6 +79,7 @@ services:
     - FEATURE_TOPOLOGY=true
     - FEATURE_MONITORING_PROFILES=true
     - FEATURE_SCHEDULE_WORKFLOWS=true
+    - FEATURE_PROFILE_AUDIT_LOGS=true
 
   msa_sms:
     container_name: msa_sms
