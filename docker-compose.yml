@@ -7,7 +7,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:1c0d13c540550718dabbd46b5c3be6d7704be8a7
+    image: ubiqube/msa2-front:26e1e771f9a3289073179626999fdbb66dc240cd
     ports:
       - target: 80
         published: 80
@@ -48,7 +48,7 @@ services:
     depends_on:
       - db
       - msa_es
-    image: ubiqube/msa2-api:6c4e92f842fbe0c3d61e8f012f5ef30b7f0f7dde
+    image: ubiqube/msa2-api:25843d1e94f6f517229eab64b804d6443985a756
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b
@@ -70,7 +70,7 @@ services:
     container_name: msa_ui
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:d72dbe8cfa60dd745a09f9eee6d78f36bbd9d6ba
+    image: ubiqube/msa2-ui:182f107d97345b3b8e509f7d790ebe79c9e24cc9
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -82,7 +82,7 @@ services:
 
   msa_sms:
     container_name: msa_sms
-    image: ubiqube/msa2-sms:9578193ef0f63d1bba767c015627b436c35dd829
+    image: ubiqube/msa2-sms:b55c6eae883a2c01f98c1a172a01f52569f57244
     depends_on:
       - db
       - msa_es
@@ -111,7 +111,7 @@ services:
 
   msa_es:
     container_name: msa_es
-    image: ubiqube/msa2-es:ccde46f0025790807235dc9c97975f0dc9640e7a
+    image: ubiqube/msa2-es:9c616a14ba0c35eb545da78bd40bf4f68d9d0d2c
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"

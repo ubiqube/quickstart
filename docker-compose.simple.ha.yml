@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:1c0d13c540550718dabbd46b5c3be6d7704be8a7
+    image: ubiqube/msa2-front:26e1e771f9a3289073179626999fdbb66dc240cd
     depends_on:
       - msa_api
       - msa_ui
@@ -41,7 +41,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:6ff533af5e10c9c9bf02912cb8b0db837fce7424
+    image: ubiqube/msa2-db:821e804d7d10187284ecb41e8974e6e554829371
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -57,7 +57,7 @@ services:
         condition: on-failure
  
   msa_api:
-    image: ubiqube/msa2-api:6c4e92f842fbe0c3d61e8f012f5ef30b7f0f7dde
+    image: ubiqube/msa2-api:25843d1e94f6f517229eab64b804d6443985a756
     depends_on:
       - db
     deploy:
@@ -83,7 +83,7 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
 
   msa_ui:
-    image: ubiqube/msa2-ui:d72dbe8cfa60dd745a09f9eee6d78f36bbd9d6ba
+    image: ubiqube/msa2-ui:182f107d97345b3b8e509f7d790ebe79c9e24cc9
     depends_on:
       - msa_api
     deploy:
@@ -100,7 +100,7 @@ services:
     - FEATURE_SCHEDULE_WORKFLOWS=true
 
   msa_sms:
-    image: ubiqube/msa2-sms:757a8095c81e84861eb3c008754f9f985f0563ab
+    image: ubiqube/msa2-sms:b55c6eae883a2c01f98c1a172a01f52569f57244
     depends_on:
       - db
     volumes:
@@ -129,7 +129,7 @@ services:
         max_replicas_per_node: 1
 
   msa_es:
-    image: ubiqube/msa2-es:ccde46f0025790807235dc9c97975f0dc9640e7a
+    image: ubiqube/msa2-es:9c616a14ba0c35eb545da78bd40bf4f68d9d0d2c
     deploy:
       replicas: 1
       placement:
