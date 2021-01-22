@@ -452,9 +452,9 @@ usage() {
     echo "this script installs some librairies available @github.com/openmsa"
     echo
     echo "Commands:"
-	echo "all:          install/update everything: worflows, microservices and adapters"
+	echo "all:          install/update everything: workflows, microservices and adapters"
 	echo "ms:           install/update the microservices from https://github.com/openmsa/Microservices"
-	echo "wf:           install/update the worflows from https://github.com/openmsa/Workflows"
+	echo "wf:           install/update the worfklows from https://github.com/openmsa/Workflows"
 	echo "da:           install/update the adapters from https://github.com/openmsa/Adapters"
     echo "mano:         install/update the python-sdk from https://github.com/openmsa/etsi-mano"
     echo "py:           install/update the python-sdk from https://github.com/openmsa/python-sdk"
