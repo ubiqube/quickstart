@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:26e1e771f9a3289073179626999fdbb66dc240cd
+    image: ubiqube/msa2-front:3378d2a23abf76b09831ff2182a67956ab7aa637
     depends_on:
       - msa_api
       - msa_ui
@@ -57,7 +57,7 @@ services:
         condition: on-failure
  
   msa_api:
-    image: ubiqube/msa2-api:f5e86de8ae98620720c6c9d5a4cd8b74c3f8bb96
+    image: ubiqube/msa2-api:25843d1e94f6f517229eab64b804d6443985a756
     depends_on:
       - db
     deploy:
@@ -81,9 +81,10 @@ services:
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
+      - "/mnt/NASVolume/msa_api_logs:/opt/jboss/wildfly/standalone/logs"
 
   msa_ui:
-    image: ubiqube/msa2-ui:182f107d97345b3b8e509f7d790ebe79c9e24cc9
+    image: ubiqube/msa2-ui:c8135d9ce13572eadea97e30ff0b7654c9dcf7a7
     depends_on:
       - msa_api
     deploy:
@@ -98,6 +99,7 @@ services:
     - FEATURE_TOPOLOGY=true
     - FEATURE_MONITORING_PROFILES=true
     - FEATURE_SCHEDULE_WORKFLOWS=true
+    - FEATURE_PROFILE_AUDIT_LOGS=true
 
   msa_sms:
     image: ubiqube/msa2-sms:b55c6eae883a2c01f98c1a172a01f52569f57244
@@ -109,6 +111,8 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
       - "/mnt/NASVolume/msa_svn:/opt/svnroot"
+      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
+
     deploy:
       replicas: 1
       placement:
