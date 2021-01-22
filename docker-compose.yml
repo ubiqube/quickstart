@@ -69,8 +69,8 @@ services:
     container_name: msa_ui
     depends_on:
       - msa_api
-    #image: ubiqube/msa2-ui:c8135d9ce13572eadea97e30ff0b7654c9dcf7a7
-    build: ./msa2-ui
+    image: ubiqube/msa2-ui:c8135d9ce13572eadea97e30ff0b7654c9dcf7a7
+    #build: ./msa2-ui
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
