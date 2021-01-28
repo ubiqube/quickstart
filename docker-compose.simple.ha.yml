@@ -84,7 +84,7 @@ services:
       - "/mnt/NASVolume/msa_api_logs:/opt/jboss/wildfly/standalone/logs"
 
   msa_ui:
-    image: ubiqube/msa2-ui:0e813e6072fa29ff38dcc10428783c89c049dcd9
+    image: ubiqube/msa2-ui:b52d111b110cf2f63743a564ff47310ebc0d9968
     depends_on:
       - msa_api
     deploy:
