@@ -83,7 +83,7 @@ services:
 
   msa_sms:
     container_name: msa_sms
-    image: ubiqube/msa2-sms:b55c6eae883a2c01f98c1a172a01f52569f57244
+    image: ubiqube/msa2-sms:302eb8b8f0ad17d7b431c40152707813986c6e77
     depends_on:
       - db
       - msa_es
