@@ -50,7 +50,7 @@ $response = _device_create($customer_db_id, $device_name, $manufacturer_id,
 							$management_address, $device_external_reference, 
 							$log_enabled = "true", $log_more_enabled = "false",
 							$mail_alerting = "false", $reporting = "false", $snmp_community, 
-							$managementInterface = "", $hostname, $management_port);
+							$managementInterface, $hostname, $management_port);
 
 $response = json_decode($response, true);
 if ($response['wo_status'] !== ENDED) {
