@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:31a923439137617cab3addeff17397a304524906
+    image: ubiqube/msa2-front:9521930aa78bb21bdae83a87d7873a6522a23dfd
     depends_on:
       - msa_api
       - msa_ui
@@ -84,7 +84,7 @@ services:
       - "/mnt/NASVolume/msa_api_logs:/opt/jboss/wildfly/standalone/logs"
 
   msa_ui:
-    image: ubiqube/msa2-ui:b52d111b110cf2f63743a564ff47310ebc0d9968
+    image: ubiqube/msa2-ui:dcd2e94c3395c3ba78004d8d76345d8fcfaaff21
     depends_on:
       - msa_api
     deploy:
@@ -104,7 +104,7 @@ services:
 
 
   msa_sms:
-    image: ubiqube/msa2-sms:b55c6eae883a2c01f98c1a172a01f52569f57244
+    image: ubiqube/msa2-sms:302eb8b8f0ad17d7b431c40152707813986c6e77
     depends_on:
       - db
     volumes:
