@@ -66,7 +66,7 @@ services:
           - "node.role==manager"
       restart_policy:
         condition: on-failure
- 
+
   msa_api:
     depends_on:
       - db
@@ -96,7 +96,7 @@ services:
   msa_sms:
     depends_on:
       - db
-    image: ubiqube/msa2-sms:71b41c833e59a6cf9437d08b3b481ec994f902bb
+    image: ubiqube/msa2-sms:d5ce08a89eddbc6d123bea00505896c03921e03e
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
@@ -106,6 +106,13 @@ services:
       replicas: 1
       placement:
         max_replicas_per_node: 1
+
+  msa_alarm:
+    depends_on:
+      - db
+    image: ubiqube/msa2-alarm:458f78dd1f242e54eaf6d6ddc5d6c5589872c7db
+    volumes:
+      - "/mnt/NASVolume/msa_dev:/opt/devops/"
 
   msa_bud:
     depends_on:

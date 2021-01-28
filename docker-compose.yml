@@ -70,7 +70,7 @@ services:
     - FEATURE_TOPOLOGY=true
 
   msa_sms:
-    image: ubiqube/msa2-sms:341029005626557b716871a37267982239e49f3d
+    image: ubiqube/msa2-sms:d5ce08a89eddbc6d123bea00505896c03921e03e
     depends_on:
       - db
       - msa_es
@@ -83,6 +83,16 @@ services:
       - "msa_sms_logs:/opt/sms/logs"
     ports:
       - "69:69"
+
+  msa_alarm:
+    depends_on:
+      - db
+      - msa_es
+      - msa_dev
+    image: ubiqube/msa2-alarm:458f78dd1f242e54eaf6d6ddc5d6c5589872c7db
+    volumes:
+      - "msa_dev:/opt/devops/"
+      - "msa_alarm_logs:/opt/alarm/logs/"
 
   msa_bud:
     depends_on:
@@ -119,7 +129,7 @@ services:
       - "9000:9000"
 
   msa_dev:
-    # uncomment to use a local image for quickstart dev 
+    # uncomment to use a local image for quickstart dev
     #build: ./lab/msa_dev
     image:  ubiqube/msa2-linuxdev:e00d878237105a9300a8a739451edb4ee5801e42
     depends_on:
