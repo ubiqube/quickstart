@@ -3,11 +3,11 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
+    image: openmsa/openmsa:msa2-front-2.3.0GA-fc7d724ffd6402ddf037b32144ab68fc3143477e
     depends_on:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:9521930aa78bb21bdae83a87d7873a6522a23dfd
     ports:
       - target: 80
         published: 80
@@ -34,8 +34,8 @@ services:
     #volumes:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
   db:
-    container_name: db
-    image: ubiqube/msa2-db:821e804d7d10187284ecb41e8974e6e554829371
+    container_name: msa_db
+    image: openmsa/openmsa:msa2-db-2.3.0GA-821e804d7d10187284ecb41e8974e6e554829371
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -45,10 +45,10 @@ services:
 
   msa_api:
     container_name: msa_api
+    image: openmsa/openmsa:msa2-api-2.3.0GA-46c1c05fe2374f26efc57def60c0f8e4f70a6af3
     depends_on:
       - db
       - msa_es
-    image: ubiqube/msa2-api:46c1c05fe2374f26efc57def60c0f8e4f70a6af3
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b
@@ -63,13 +63,14 @@ services:
       - "msa_repository:/opt/fmc_repository"
       - "rrd_repository:/opt/rrd"
       - "msa_dev:/opt/devops/"
-      - "msa_api_logs:/opt/jboss/wildfly/standalone/logs"
+      - "msa_api_logs:/opt/jboss/wildfly/standalone/log"
+      - "msa_api_logs:/opt/wildfly/logs/processLog"
 
   msa_ui:
     container_name: msa_ui
+    image: openmsa/openmsa:msa2-ui-2.3.0GA-dcd2e94c3395c3ba78004d8d76345d8fcfaaff21
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:dcd2e94c3395c3ba78004d8d76345d8fcfaaff21
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -83,7 +84,7 @@ services:
 
   msa_sms:
     container_name: msa_sms
-    image: ubiqube/msa2-sms:302eb8b8f0ad17d7b431c40152707813986c6e77
+    image: openmsa/openmsa:msa2-sms-2.3.0GA-302eb8b8f0ad17d7b431c40152707813986c6e77
     depends_on:
       - db
       - msa_es
@@ -100,9 +101,9 @@ services:
 
   msa_bud:
     container_name: msa_bud
+    image: openmsa/openmsa:msa2-bud-2.3.0GA-6449ea6cc905229a8e8b2686cf0b43a81f02e69d
     depends_on:
       - db
-    image: ubiqube/msa2-bud:6449ea6cc905229a8e8b2686cf0b43a81f02e69d
     volumes:
       - "msa_bud_logs:/opt/bud/logs/"
 
@@ -112,7 +113,7 @@ services:
 
   msa_es:
     container_name: msa_es
-    image: ubiqube/msa2-es:9c616a14ba0c35eb545da78bd40bf4f68d9d0d2c
+    image: openmsa/openmsa:msa2-es-2.3.0GA-9c616a14ba0c35eb545da78bd40bf4f68d9d0d2c
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
@@ -133,7 +134,7 @@ services:
   
   msa_kibana:
     container_name: msa_kibana
-    image: ubiqube/msa2-kibana:868fb6f9e3b5ab8a5a9a346b93b8779262d9e738
+    image: openmsa/openmsa:msa2-kibana-2.3.0GA-868fb6f9e3b5ab8a5a9a346b93b8779262d9e738
     ports:
       - "5601:5601"
     environment:
@@ -142,7 +143,8 @@ services:
 
   msa_dev:
     container_name: msa_dev
-    build: ./lab/msa_dev
+    #build: ./lab/msa_dev
+    image: openmsa/openmsa:msa2-linuxdev-2.3.0GA-fe3982a6cb39e961b8c8dea1d6e31425a48093ed
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
@@ -152,9 +154,9 @@ services:
       
   linux_me:
     container_name: linux_me
-    # use local image for quickstart dev => for release: make sure the chnages are ported to msa-docker and uncomment the line below
-    #image: ubiqube/msa2-linuxme
-    build: ./lab/linux.me
+    # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
+    image: openmsa/openmsa:msa2-linuxme-2.3.0GA-7fc20ffaef77c39f402b6fcaa81b24540ee35850
+    #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
       - NET_RAW
@@ -172,9 +174,8 @@ services:
 
   linux_me_2:
     container_name: linux_me_2
-    # use local image for quickstart dev => for release: make sure the chnages are ported to msa-docker and uncomment the line below
-    #image: ubiqube/msa2-linuxme
-    build: ./lab/linux.me
+    # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
+    image: openmsa/openmsa:msa2-linuxme-2.3.0GA-7fc20ffaef77c39f402b6fcaa81b24540ee35850
     cap_add:
       - NET_ADMIN
       - NET_RAW
