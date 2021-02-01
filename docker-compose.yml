@@ -2,11 +2,12 @@ version: "3.8"
 
 services:
   msa_front:
+    container_name: msa_front
+    image: openmsa/openmsa:msa2-front-2.3.0GA-ef6f3bc7e5cd814c40f79fdd71e1458199201bc2
     depends_on:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:91af847bf5da3269d6b9d5c023255d2350fe8f29
     ports:
       - target: 80
         published: 80
@@ -20,27 +21,34 @@ services:
         published: 514
         protocol: udp
         mode: host
-
-  camunda:
-    image: camunda/camunda-bpm-platform:7.13.0
-
+      - target: 162
+        published: 162
+        protocol: udp
+        mode: host
+   #
+    # uncomment one of the 2 sections below when installing a custom certificate 
+    # - Docker standard standalone installation
+    #volumes:
+    #    - "msa_front:/etc/nginx/ssl"
+    # - Docker Swarm HA installation
+    #volumes:
+    #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
   db:
-    image: ubiqube/msa2-db:ba1dd3d66525b3a88532904782750e4d8a013b53
+    container_name: msa_db
+    image: openmsa/openmsa:msa2-db-2.3.0GA-821e804d7d10187284ecb41e8974e6e554829371
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
       POSTGRES_DB: POSTGRESQL
     volumes:
       - "msa_db:/var/lib/postgresql/data"
-    ports:
-      - "5432:5432"
 
   msa_api:
-    image: ubiqube/msa2-api:4d2f79787372e8899de49d3bcf5cc4f29cd0bba1
+    container_name: msa_api
+    image: openmsa/openmsa:msa2-api-2.3.0GA-46c1c05fe2374f26efc57def60c0f8e4f70a6af3
     depends_on:
       - db
       - msa_es
-      - msa_dev
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b
@@ -50,27 +58,33 @@ services:
       - -c
       - ubiqube.xml
     volumes:
+      - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
-      - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "rrd_repository:/opt/rrd"
       - "msa_dev:/opt/devops/"
       - "msa_api_logs:/opt/jboss/wildfly/standalone/log"
       - "msa_api_logs:/opt/wildfly/logs/processLog"
 
   msa_ui:
+    container_name: msa_ui
+    image: openmsa/openmsa:msa2-ui-2.3.0GA-dcd2e94c3395c3ba78004d8d76345d8fcfaaff21
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:8b5408a6c355a9bfacfc3f88e087e68b1b4415ec
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
     - FEATURE_ALARMS=true
     - FEATURE_LICENCE=true
     - FEATURE_TOPOLOGY=true
+    - FEATURE_MONITORING_PROFILES=true
+    - FEATURE_SCHEDULE_WORKFLOWS=true
+    - FEATURE_PROFILE_AUDIT_LOGS=true
+    - FEATURE_PERMISSION_PROFILES=false
 
   msa_sms:
-    image: ubiqube/msa2-sms:341029005626557b716871a37267982239e49f3d
+    container_name: msa_sms
+    image: openmsa/openmsa:msa2-sms-2.3.0GA-302eb8b8f0ad17d7b431c40152707813986c6e77
     depends_on:
       - db
       - msa_es
@@ -81,18 +95,25 @@ services:
       - "msa_repository:/opt/fmc_repository"
       - "rrd_repository:/opt/rrd"
       - "msa_sms_logs:/opt/sms/logs"
+      - "msa_svn:/opt/svnroot"
     ports:
       - "69:69"
 
   msa_bud:
+    container_name: msa_bud
+    image: openmsa/openmsa:msa2-bud-2.3.0GA-6449ea6cc905229a8e8b2686cf0b43a81f02e69d
     depends_on:
       - db
-    image: ubiqube/msa2-bud:b23dbf64520fbddbc74ab6468bd23cf9b8ee3393
     volumes:
       - "msa_bud_logs:/opt/bud/logs/"
 
+  camunda:
+    container_name: camunda
+    image: camunda/camunda-bpm-platform:7.13.0
+
   msa_es:
-    image: ubiqube/msa2-es:037a2067826b36e646b45e5a148431346f62f3a6
+    container_name: msa_es
+    image: openmsa/openmsa:msa2-es-2.3.0GA-9c616a14ba0c35eb545da78bd40bf4f68d9d0d2c
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
@@ -100,15 +121,8 @@ services:
     volumes:
       - "msa_es:/usr/share/elasticsearch/data"
 
-  msa_kibana:
-    image: ubiqube/msa2-kibana:5634d2ada524a9dab10711637fb76c4570424501
-    ports:
-      - "5601:5601"
-    environment:
-      ELASTICSEARCH_URL: http://msa_es:9200
-      ELASTICSEARCH_HOSTS: http://msa_es:9200
-
   msa_cerebro:
+    container_name: msa_cerebro
     image: lmenezes/cerebro:0.9.2
     entrypoint:
       - /opt/cerebro/bin/cerebro
@@ -117,24 +131,32 @@ services:
       - msa_es
     ports:
       - "9000:9000"
+  
+  msa_kibana:
+    container_name: msa_kibana
+    image: openmsa/openmsa:msa2-kibana-2.3.0GA-868fb6f9e3b5ab8a5a9a346b93b8779262d9e738
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_URL: http://msa_es:9200
+      ELASTICSEARCH_HOSTS: http://msa_es:9200
 
   msa_dev:
-    # uncomment to use a local image for quickstart dev 
+    container_name: msa_dev
     #build: ./lab/msa_dev
-    image:  ubiqube/msa2-linuxdev:e00d878237105a9300a8a739451edb4ee5801e42
-    depends_on:
-      - msa_es
+    image: openmsa/openmsa:msa2-linuxdev-2.3.0GA-d49b2df4db2c85c53728864ad1f744ebfa6e9c74
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_dev:/opt/devops/"
-
+      
   linux_me:
-    # use local image for quickstart dev => for release: make sure the chnages are ported to msa-docker and uncomment the line below
-    #image: ubiqube/msa2-linuxme
-    build: ./lab/linux.me
+    container_name: linux_me
+    # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
+    image: openmsa/openmsa:msa2-linuxme-2.3.0GA-7fc20ffaef77c39f402b6fcaa81b24540ee35850
+    #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
       - NET_RAW
@@ -150,6 +172,25 @@ services:
     hostname: linux_me
     privileged: true
 
+  linux_me_2:
+    container_name: linux_me_2
+    # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
+    image: openmsa/openmsa:msa2-linuxme-2.3.0GA-7fc20ffaef77c39f402b6fcaa81b24540ee35850
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - DAC_READ_SEARCH
+      - sys_rawio
+    ports:
+      - "2225:22"
+    devices:                     # required for dmidecode used by polld/asset
+      - "/dev/mem:/dev/mem"
+    networks:
+      default:
+        ipv4_address: 172.20.0.102
+    hostname: linux_me_2
+    privileged: true
+
 volumes:
   msa_api:
   msa_db:
@@ -161,6 +202,8 @@ volumes:
   msa_api_logs:
   msa_sms_logs:
   msa_bud_logs:
+  msa_front:
+  msa_svn:
 
 networks:
   default:
