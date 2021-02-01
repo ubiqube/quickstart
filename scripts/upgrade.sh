@@ -18,7 +18,10 @@ upgrade(){
 		docker-compose down --remove-orphans 
 	fi
 	
-        ############ For 2.2 upgrade
+	### 2.3 uses the images from openmsa repo => remove the previous images from ubiqube repo 
+	docker images | grep ubiqube| awk '{print $3}' | xargs docker rmi -f
+	
+    ############ For 2.2 upgrade
 	if [ ! -z "$(docker volume ls | grep msa_sms_php)" ]; then
 		sms_php_vol=$(docker volume ls | awk '{print $2}' | grep msa_sms_php)
         echo "Recreating Core Engine (msa_sms) volume $sms_php_vol"
@@ -31,7 +34,7 @@ upgrade(){
         docker volume rm $sms_devices_vol
 	fi
 
-        docker-compose up -d --build
+    docker-compose up -d --build
 
 	docker-compose exec msa_dev rm -rf /opt/fmc_repository/Process/Reference
 
