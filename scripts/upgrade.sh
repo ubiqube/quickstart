@@ -31,12 +31,6 @@ upgrade(){
         docker volume rm $sms_devices_vol
 	fi
 
-	if [ ! -z "$(docker volume ls | grep msa_dev)" ]; then
-		dev_vol=$(docker volume ls | awk '{print $2}' | grep msa_dev)
-        echo "Recreating Dev volume $dev_vol"
-        docker volume rm $dev_vol
-	fi
-
         docker-compose up -d --build
 
 	docker-compose exec msa_dev rm -rf /opt/fmc_repository/Process/Reference
@@ -51,18 +45,24 @@ upgrade(){
 	
     docker-compose restart msa_sms
 
-    msa_api=$(docker ps -q -f name=msa_api)
     echo "Starting crond on API container msa_api"
-    docker exec -it -u root $msa_api crond
+    docker exec -it -u root msa_api crond
     echo "Done"
     
     ############ For 2.3 upgrade
-    msa_dev=$(docker ps -q -f name=msa_dev)
     echo "Migrating old BPMs from DataFile to BPM repository"
     docker-compose exec msa_dev /usr/bin/migrate_bpmn.sh -r
     
     echo "Removing old instances of topology"
     docker-compose exec msa_dev /usr/bin/clean_old_topology_instances.sh
+
+    echo "Elasticsearch settings & mappings update"
+    docker exec -u root -w /home/install/scripts/ -it  msa_es bash -c './install.sh'
+    echo "Done"
+
+    echo "Kibana configs & dashboard templates update"
+    docker exec -u root -w /home/install/ -it  msa_kibana bash -c 'php install_default_template_dash_and_visu.php '
+    echo "Done"
 
     echo "Upgrade done!"
 }

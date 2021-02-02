@@ -3,11 +3,11 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
+    image: openmsa/openmsa:msa2-front-2.3.0GA-ef6f3bc7e5cd814c40f79fdd71e1458199201bc2
     depends_on:
       - msa_api
       - msa_ui
       - camunda
-    image: ubiqube/msa2-front:cd9a0e6a7312b798bf8b5becdea5a5e1976a90bb
     ports:
       - target: 80
         published: 80
@@ -34,8 +34,8 @@ services:
     #volumes:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
   db:
-    container_name: db
-    image: ubiqube/msa2-db:37d694d70a8d3a7f30faecce4a91a4215305cf48
+    container_name: msa_db
+    image: openmsa/openmsa:msa2-db-2.3.0GA-821e804d7d10187284ecb41e8974e6e554829371
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -47,10 +47,10 @@ services:
 
   msa_api:
     container_name: msa_api
+    image: openmsa/openmsa:msa2-api-2.3.0GA-46c1c05fe2374f26efc57def60c0f8e4f70a6af3
     depends_on:
       - db
       - msa_es
-    image: ubiqube/msa2-api:06242abdf059b2abe0e0c138fb4a1a5adfcdb401
     entrypoint:
       - /opt/jboss/wildfly/bin/standalone.sh
       - -b
@@ -70,9 +70,9 @@ services:
 
   msa_ui:
     container_name: msa_ui
+    image: openmsa/openmsa:msa2-ui-2.3.0GA-dcd2e94c3395c3ba78004d8d76345d8fcfaaff21
     depends_on:
       - msa_api
-    image: ubiqube/msa2-ui:2366f539f47e0520408d229367f6f37fb58267c4
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -81,10 +81,12 @@ services:
     - FEATURE_TOPOLOGY=true
     - FEATURE_MONITORING_PROFILES=true
     - FEATURE_SCHEDULE_WORKFLOWS=true
+    - FEATURE_PROFILE_AUDIT_LOGS=true
+    - FEATURE_PERMISSION_PROFILES=false
 
   msa_sms:
     container_name: msa_sms
-    image: ubiqube/msa2-sms:9578193ef0f63d1bba767c015627b436c35dd829
+    image: openmsa/openmsa:msa2-sms-2.3.0GA-302eb8b8f0ad17d7b431c40152707813986c6e77
     depends_on:
       - db
       - msa_es
@@ -101,14 +103,14 @@ services:
 
   msa_bud:
     container_name: msa_bud
+    image: openmsa/openmsa:msa2-bud-2.3.0GA-6449ea6cc905229a8e8b2686cf0b43a81f02e69d
     depends_on:
       - db
-    image: ubiqube/msa2-bud:6449ea6cc905229a8e8b2686cf0b43a81f02e69d
     volumes:
       - "msa_bud_logs:/opt/bud/logs/"
 
   camunda:
-    container_name: camuda
+    container_name: camunda
     image: camunda/camunda-bpm-platform:7.13.0
 
   msa_es:
@@ -116,7 +118,7 @@ services:
     #image: ubiqube/msa2-es:d9899d1f09809a40548f96211984647a8b4901fc
     # use a custom image for compatibility with Filebeat 7.10.1
     image: ubiqube/msa2-es:msa2-es-7.10.1
-    environment:
+   environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
       - bootstrap.memory_lock=true
@@ -136,7 +138,7 @@ services:
   
   msa_kibana:
     container_name: msa_kibana
-    image: ubiqube/msa2-kibana:868fb6f9e3b5ab8a5a9a346b93b8779262d9e738
+    image: openmsa/openmsa:msa2-kibana-2.3.0GA-868fb6f9e3b5ab8a5a9a346b93b8779262d9e738
     ports:
       - "5601:5601"
     environment:
