@@ -3,7 +3,7 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.3.0GA-ef6f3bc7e5cd814c40f79fdd71e1458199201bc2
+    image: openmsa/openmsa:msa2-front-2.3.0GA-2f2087bea3513608aa4b92f0d6f0bbcafbf22a2e
     depends_on:
       - msa_api
       - msa_ui
@@ -42,12 +42,10 @@ services:
       POSTGRES_DB: POSTGRESQL
     volumes:
       - "msa_db:/var/lib/postgresql/data"
-    ports:
-      - 5432:5432
 
   msa_api:
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.3.0GA-46c1c05fe2374f26efc57def60c0f8e4f70a6af3
+    image: openmsa/openmsa:msa2-api-2.3.0GA-ea373f441b99d3f59fb10cdbd7046baec7fc02f3
     depends_on:
       - db
       - msa_es
@@ -221,7 +219,7 @@ volumes:
   msa_front:
   msa_svn:
   msa_fb:
-
+  
 networks:
   default:
     name: quickstart_default
