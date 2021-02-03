@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: openmsa/openmsa:msa2-front-2.3.0GA-2f2087bea3513608aa4b92f0d6f0bbcafbf22a2e
+    image: ubiqube/msa2-front:9da930a1768764a8d9ef40b085dcf2ee9e414b68
     depends_on:
       - msa_api
       - msa_ui
@@ -41,7 +41,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: openmsa/openmsa:msa2-db-2.3.0GA-821e804d7d10187284ecb41e8974e6e554829371
+    image: ubiqube/msa2-db:821e804d7d10187284ecb41e8974e6e554829371
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -57,7 +57,7 @@ services:
         condition: on-failure
  
   msa_api:
-    image: openmsa/openmsa:msa2-api-2.3.0GA-ea373f441b99d3f59fb10cdbd7046baec7fc02f3
+    image: ubiqube/msa2-api:58ec2707276f354673f3d06798876be122d567f0
     depends_on:
       - db
     deploy:
@@ -86,7 +86,7 @@ services:
       - "/mnt/NASVolume/msa_api:/opt/ubi-jentreprise/generated/conf"
 
   msa_ui:
-    image: openmsa/openmsa:msa2-ui-2.3.0GA-dcd2e94c3395c3ba78004d8d76345d8fcfaaff21
+    image: ubiqube/msa2-sms:9921321b3add3b9f1e8d2440e102f0d39ade610e
     depends_on:
       - msa_api
     deploy:
@@ -106,7 +106,7 @@ services:
 
 
   msa_sms:
-    image: openmsa/openmsa:msa2-sms-2.3.0GA-302eb8b8f0ad17d7b431c40152707813986c6e77
+    image: ubiqube/msa2-sms:9921321b3add3b9f1e8d2440e102f0d39ade610e
     depends_on:
       - db
     volumes:
@@ -116,18 +116,26 @@ services:
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
       - "/mnt/NASVolume/msa_svn:/opt/svnroot"
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
-
     deploy:
       replicas: 1
       placement:
         max_replicas_per_node: 1
 
   msa_bud:
-    image: openmsa/openmsa:msa2-bud-2.3.0GA-6449ea6cc905229a8e8b2686cf0b43a81f02e69d
+    image: ubiqube/msa2-bud:baa1842a36e70afa16bc32333835ddcde31c5115
     depends_on:
       - db
     deploy:
       replicas: 1
+
+  msa_alarm:
+    image: ubiqube/msa2-alarm:88b8894234b874f532cad366cadc0e281dd3ccd8
+    depends_on:
+      - db
+      - msa_es
+    deploy:
+      replicas: 1
+
 
   camunda:
     image: camunda/camunda-bpm-platform:7.13.0
@@ -137,7 +145,7 @@ services:
         max_replicas_per_node: 1
 
   msa_es:
-    image: openmsa/openmsa:msa2-es-2.3.0GA-9c616a14ba0c35eb545da78bd40bf4f68d9d0d2c
+    image: ubiqube/msa2-es:9c616a14ba0c35eb545da78bd40bf4f68d9d0d2c
     deploy:
       replicas: 1
       placement:
@@ -149,7 +157,7 @@ services:
       - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
 
   msa_kibana:
-    image: openmsa/openmsa:msa2-kibana-2.3.0GA-868fb6f9e3b5ab8a5a9a346b93b8779262d9e738
+    image: ubiqube/msa2-kibana:868fb6f9e3b5ab8a5a9a346b93b8779262d9e738
     ports:
       - "5601:5601"
     environment:
