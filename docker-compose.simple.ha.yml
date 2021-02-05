@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: openmsa/openmsa:msa2-front-2.3.0GA-2f2087bea3513608aa4b92f0d6f0bbcafbf22a2e
+    image: openmsa/openmsa:msa2-front-2.3.0GA-f70597cd7ca8e1cace46003615b3a1820b1ac515
     depends_on:
       - msa_api
       - msa_ui
@@ -41,7 +41,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: openmsa/openmsa:msa2-front-2.3.0GA-f70597cd7ca8e1cace46003615b3a1820b1ac515
+    image: openmsa/openmsa:msa2-db-2.3.0GA-821e804d7d10187284ecb41e8974e6e554829371
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
