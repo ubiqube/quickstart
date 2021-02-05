@@ -63,9 +63,10 @@ then
 fi
 
 # === MAIN =====================================================================
+declare -a BPMN_FILES
 
 # to move: /opt/fmc_repository/Datafiles/operatorPrefix/customerId/bpmn/<bpmn file>
-BPMN_FILES=$(/usr/bin/printf '%s\n' /opt/fmc_repository/Datafiles/*/*/bpmn/*.bpmn)
+BPMN_FILES=($(/usr/bin/printf '%s\n' "/opt/fmc_repository/Datafiles/*/*/bpmn/*.bpmn"))
 
 # number of BPMN files
 NB_BPMN_FILES=${#BPMN_FILES[@]}
@@ -85,8 +86,7 @@ do
 
     if [ -f "/opt/fmc_repository/Bpmn/$BPMN_FILENAME" ]
     then
-        echo "WARNING, '/opt/fmc_repository/Bpmn/$BPMN_FILENAME' already exists."
-        echo "The '$BPMN_FILE' is skipped."
+        echo "WARNING, '$BPMN_FILE' is skipped because '/opt/fmc_repository/Bpmn/$BPMN_FILENAME' already exists."
         # next loop
     else
 
@@ -133,6 +133,8 @@ do
         # move BPMN file
         mkdir -p /opt/fmc_repository/Bpmn
         \mv -f "$BPMN_FILE"  /opt/fmc_repository/Bpmn/.
+
+        echo "File '$BPMN_FILE' moved, entity file '$ENTITY_FILE' updated."
     fi
 done
 

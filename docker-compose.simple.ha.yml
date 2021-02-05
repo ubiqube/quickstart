@@ -1,9 +1,9 @@
-# This docker-compose file is provided as an exmaple to create a Docker Swarm based MSActivator setup
+# This docker-compose file is provided as an example to create a Docker Swarm based MSActivator setup
 version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:49fd77614c1583cc99c78786484ffb4063903de5
+    image: openmsa/openmsa:msa2-front-2.3.0GA-ef6f3bc7e5cd814c40f79fdd71e1458199201bc2
     depends_on:
       - msa_api
       - msa_ui
@@ -27,8 +27,12 @@ services:
         published: 514
         protocol: udp
         mode: host
+      - target: 162
+        published: 162
+        protocol: udp
+        mode: host
     #
-    # uncomment one of the 2 section below when installing a custom certificate 
+    # uncomment one of the 2 sections below when installing a custom certificate 
     # - Docker standard standalone installation
     #volumes:
     #    - "msa_front:/etc/nginx/ssl"
@@ -37,7 +41,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:42961a9928f0f2949309965322e991e0c00b87b1
+    image: openmsa/openmsa:msa2-db-2.3.0GA-821e804d7d10187284ecb41e8974e6e554829371
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -49,9 +53,11 @@ services:
       placement:
         constraints:
           - "node.role==manager"
-
+      restart_policy:
+        condition: on-failure
+ 
   msa_api:
-    image: ubiqube/msa2-api:4cc5e51fce3ef3b56bf70861331bd5ac961ee1f0
+    image: openmsa/openmsa:msa2-api-2.3.0GA-46c1c05fe2374f26efc57def60c0f8e4f70a6af3
     depends_on:
       - db
     deploy:
@@ -75,9 +81,12 @@ services:
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
+      - "/mnt/NASVolume/msa_api_logs:/opt/jboss/wildfly/standalone/log"
+      - "/mnt/NASVolume/msa_api_logs:/opt/wildfly/logs/processLog"
+      - "/mnt/NASVolume/msa_api:/opt/ubi-jentreprise/generated/conf"
 
   msa_ui:
-    image: ubiqube/msa2-ui:f70238e43b284af52893711583f93ad09f526a3b
+    image: openmsa/openmsa:msa2-ui-2.3.0GA-dcd2e94c3395c3ba78004d8d76345d8fcfaaff21
     depends_on:
       - msa_api
     deploy:
@@ -91,9 +100,13 @@ services:
     - FEATURE_LICENCE=true
     - FEATURE_TOPOLOGY=true
     - FEATURE_MONITORING_PROFILES=true
+    - FEATURE_SCHEDULE_WORKFLOWS=true
+    - FEATURE_PROFILE_AUDIT_LOGS=true
+    - FEATURE_PERMISSION_PROFILES=false
+
 
   msa_sms:
-    image: ubiqube/msa2-sms:bb9e96882b3114e47a2893fa9297e4badc14c039
+    image: openmsa/openmsa:msa2-sms-2.3.0GA-302eb8b8f0ad17d7b431c40152707813986c6e77
     depends_on:
       - db
     volumes:
@@ -102,13 +115,15 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
       - "/mnt/NASVolume/msa_svn:/opt/svnroot"
+      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
+
     deploy:
       replicas: 1
       placement:
         max_replicas_per_node: 1
 
   msa_bud:
-    image: ubiqube/msa2-bud:6449ea6cc905229a8e8b2686cf0b43a81f02e69d
+    image: openmsa/openmsa:msa2-bud-2.3.0GA-6449ea6cc905229a8e8b2686cf0b43a81f02e69d
     depends_on:
       - db
     deploy:
@@ -122,7 +137,7 @@ services:
         max_replicas_per_node: 1
 
   msa_es:
-    image: ubiqube/msa2-es:d9899d1f09809a40548f96211984647a8b4901fc
+    image: openmsa/openmsa:msa2-es-2.3.0GA-9c616a14ba0c35eb545da78bd40bf4f68d9d0d2c
     deploy:
       replicas: 1
       placement:
@@ -130,11 +145,11 @@ services:
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
-    #volumes:
-    #  - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
+    volumes:
+      - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
 
   msa_kibana:
-    image: ubiqube/msa2-kibana:868fb6f9e3b5ab8a5a9a346b93b8779262d9e738
+    image: openmsa/openmsa:msa2-kibana-2.3.0GA-868fb6f9e3b5ab8a5a9a346b93b8779262d9e738
     ports:
       - "5601:5601"
     environment:
@@ -164,7 +179,7 @@ services:
           - "node.role==manager"
 
   msa_dev:
-    image: ubiqube/msa2-linuxdev:e4087c9947273aa71e762247ed36c5d6309f3a64
+    image: openmsa/openmsa:msa2-linuxdev-2.3.0GA-d49b2df4db2c85c53728864ad1f744ebfa6e9c74
     deploy:
       replicas: 1
       placement:
@@ -175,6 +190,3 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/msa_api:/opt/ubi-jentreprise/generated/conf"
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
-
-  msa_linux:
-    image: ubiqube/msa2-linuxme:7fc20ffaef77c39f402b6fcaa81b24540ee35850
