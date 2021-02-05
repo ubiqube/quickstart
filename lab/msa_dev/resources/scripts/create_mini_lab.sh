@@ -45,17 +45,18 @@ echo $CUSTID
 echo "--------------------------------------------------"
 echo "ATTACH WORKFLOWS TO CUSTOMER $CUSTID"  
 echo "--------------------------------------------------"
-
+echo "> Self Demo Setup"
 curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://msa_api:8480/ubi-api-rest/orchestration/$CUSTID/service/attach?uri=Process/SelfDemoSetup/SelfDemoSetup.xml"
-sleep 1
+echo "> Simple Firewall Python"
 curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://msa_api:8480/ubi-api-rest/orchestration/$CUSTID/service/attach?uri=Process/Tutorials/python/Simple_Firewall/Simple_Firewall.xml"
-sleep 1
-
+echo "> Security Event Detection"
+curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://msa_api:8480/ubi-api-rest/orchestration/$CUSTID/service/attach?uri=Process/Tutorials/alarm/Alarm_Action/Alarm_Action.xml"
+echo "> Dashboard Deployment"
+curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://msa_api:8480/ubi-api-rest/orchestration/$CUSTID/service/attach?uri=Process/Analytics/Kibana/kibana_dashboard.xml"
 
 echo "--------------------------------------------------"
 echo "CREATE DEMO DEVICES"
 echo "--------------------------------------------------"
-set -x
 CUSTIDONLY=${CUSTID//BLRA}
 curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://msa_api:8480/ubi-api-rest/orchestration/service/execute/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FProcess_Setup" \
     -d '{  "manufacturer_id": "14020601",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",  "managed_device_name": "linux_me",  "model_id": "14020601",  "device_ip_address": "172.20.0.101",  "login": "msa", "hostname": "linux_me" }'

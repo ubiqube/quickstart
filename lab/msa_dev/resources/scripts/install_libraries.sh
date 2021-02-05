@@ -6,22 +6,20 @@ PROG=$(basename $0)
 DEV_BRANCH=default_dev_branch
 GITHUB_DEFAULT_BRANCH=master
 QUICKSTART_DEFAULT_BRANCH=2.3.0GA
-INSTALL_LICENSE=true
+INSTALL_LICENSE=false
 ASSUME_YES=false
 
 install_license() {
 
-    echo "-------------------------------------------------------"
-    echo "INSTALL EVAL LICENSE"
-    echo "-------------------------------------------------------"
     if [ $INSTALL_LICENSE == true  ];
     then
+        echo "-------------------------------------------------------"
+        echo "INSTALL EVAL LICENSE"
+        echo "-------------------------------------------------------"
         /usr/bin/install_license.sh
         if [ $? -ne 0 ]; then
             exit 1
         fi
-    else
-        echo "skipping license installation"
     fi
 }
 
@@ -61,7 +59,41 @@ update_git_repo () {
         ## get current branch and store in variable CURRENT_BR
         CURRENT_BR=`git rev-parse --abbrev-ref HEAD`
         echo "> Current working branch: $CURRENT_BR"
-        git stash;
+        if [[ $ASSUME_YES == false && $CURRENT_BR == "master" ]];
+        then
+            echo "> WARNING: your current branch is $CURRENT_BR, to be safe, you may want to switch to a working branch (default_dev_branch is the factory default for development)"
+            read -p  "> switch ? [y]/[N]" yn
+            case $yn in
+                [Yy]* )
+                    read -p   "> Enter the name of the working branch (enter $CURRENT_BR to stay on your current branch):" br
+                    if [ $br == "" ];
+                    then
+                        echo "> ERROR: invalid branch name, exiting..."
+                        exit 0
+                    else
+                        # checkout or create and checkout the branch
+                        echo "> Switching to $br (the branch will be created if it doesn't exist yet)"
+                        git checkout $br 2>/dev/null || git checkout -b $br
+                        CURRENT_BR=$br
+                    fi
+                    ;;
+                [Nn]* )
+                    read -p  "> stay on master ? [y]/[N]" resp
+                    if [[ $resp != "" && $resp == "y" ]];
+                    then
+                        echo "> running installation/update on master branch on local repository"
+                    else
+                        echo "> cancelling installation, exiting... "
+                        exit 0
+                    fi
+                    ;;
+                * )
+                    echo "> exiting... "
+                    exit 0
+                   ;;
+            esac
+        fi
+        git stash
         echo "> Checking merge $DEFAULT_BRANCH to $CURRENT_BR"
         git merge --no-commit --no-ff $DEFAULT_BRANCH
         CAN_MERGE=$?
@@ -75,7 +107,7 @@ update_git_repo () {
                 read -p  "[y]/[N]" yn
                 case $yn in
                     [Yy]* )
-                        git pull origin $DEFAULT_BRANCH; break
+                        git pull origin $DEFAULT_BRANCH --prune; break
                     ;;
                     [Nn]* ) 
                         echo "> skip merge "
@@ -87,7 +119,7 @@ update_git_repo () {
                 esac
                 done
             else
-                git pull origin $DEFAULT_BRANCH
+                git pull origin $DEFAULT_BRANCH --prune
             fi
         else
             echo "> WARN: conflict found when merging $DEFAULT_BRANCH to $CURRENT_BR."
@@ -140,10 +172,20 @@ update_all_github_repo() {
         update_git_repo "https://github.com/openmsa/Workflows.git" "/opt/fmc_repository" "OpenMSA_WF" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
     fi
 
-    update_git_repo "https://github.com/openmsa/etsi-mano.git" "/opt/fmc_repository" "OpenMSA_MANO" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
+    if [[ $install_type = "all" || $install_type = "mano" ]];
+    then
+       update_git_repo "https://github.com/openmsa/etsi-mano.git" "/opt/fmc_repository" "OpenMSA_MANO" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
+    fi
 
-    update_git_repo "https://github.com/ubiqube/quickstart.git" "/opt/fmc_repository" "quickstart" $QUICKSTART_DEFAULT_BRANCH 
+    if [[ $install_type = "all" || $install_type = "py" ]];
+    then
+        update_git_repo "https://github.com/openmsa/python-sdk.git" "/tmp/" "python_sdk" "develop" "default_dev_branch"
+    fi
 
+    if [[ $install_type = "all" || $install_type = "quickstart" ]];
+    then    
+        update_git_repo "https://github.com/ubiqube/quickstart.git" "/opt/fmc_repository" "quickstart" $QUICKSTART_DEFAULT_BRANCH 
+    fi
 }
 
 uninstall_adapter() {
@@ -167,6 +209,15 @@ install_adapter() {
     /opt/devops/OpenMSA_Adapters/bin/da_installer install /opt/devops/OpenMSA_Adapters/adapters/$DEVICE_DIR $MODE
     echo "DONE"
 
+}
+
+install_python_sdk() {
+    mkdir -p /opt/fmc_repository/Process/PythonReference/custom
+    touch /opt/fmc_repository/Process/PythonReference/custom/__init__.py
+    pushd /tmp/python_sdk
+    python3 setup.py install --install-lib='/opt/fmc_repository/Process/PythonReference'
+    popd
+    rm -rf /tmp/python_sdk
 }
 
 install_microservices () {
@@ -216,6 +267,14 @@ install_microservices () {
     ln -fsn ../OpenMSA_MS/KUBERNETES KUBERNETES; ln -fsn ../OpenMSA_MS/.meta_KUBERNETES .meta_KUBERNETES
     echo "  >> NETBOX"
     ln -fsn ../OpenMSA_MS/NETBOX NETBOX; ln -fsn ../OpenMSA_MS/.meta_NETBOX .meta_NETBOX; 
+    echo "  >> DELL/REDFISH"
+    ln -fsn ../OpenMSA_MS/DELL DELL; ln -fsn ../OpenMSA_MS/.meta_DELL .meta_DELL; 
+    echo "  >> INTEL/REDFISH"
+    ln -fsn ../OpenMSA_MS/INTEL INTEL; ln -fsn ../OpenMSA_MS/.meta_INTEL .meta_INTEL; 
+    echo "  >> HP/REDFISH"
+    ln -fsn ../OpenMSA_MS/HP HP; ln -fsn ../OpenMSA_MS/.meta_HP .meta_HP; 
+    echo "  >> LANNER/IPMI"
+    ln -fsn ../OpenMSA_MS/LANNER LANNER; ln -fsn ../OpenMSA_MS/.meta_LANNER .meta_LANNER; 
 
     echo "DONE"
 
@@ -251,9 +310,14 @@ install_workflows() {
     echo "  >> Topology"
     ln -fsn ../OpenMSA_WF/Topology Topology
     ln -fsn ../OpenMSA_WF/.meta_Topology .meta_Topology
+    echo "  >> Analytics"
+    ln -fsn ../OpenMSA_WF/Analytics Analytics
     echo "  >> MSA / Utils"
     ln -fsn ../OpenMSA_WF/Utils/Manage_Device_Conf_Variables Manage_Device_Conf_Variables
     ln -fsn ../OpenMSA_WF/Utils/.meta_Manage_Device_Conf_Variables .meta_Manage_Device_Conf_Variables
+    echo "  >> MSA / Utils"
+    ln -fsn ../OpenMSA_WF/BIOS_Automation BIOS_Automation
+    ln -fsn ../OpenMSA_WF/.meta_BIOS_Automation .meta_BIOS_Automation
 
 
     echo "-------------------------------------------------------------------------------"
@@ -285,6 +349,7 @@ install_adapters() {
     cisco_isr
     #cisco_nexus9000
     citrix_adc
+    dell_redfish
     esa
     f5_bigip
     fortigate
@@ -296,11 +361,14 @@ install_adapters() {
     fujitsu_ipcom
     hp2530
     hp5900
+    hpe_redfish
     huawei_generic
+    intel_redfish
     #juniper_contrail
     juniper_rest
     juniper_srx
     kubernetes_generic
+    lanner_ipmi
     linux_generic
     linux_k8_cli
     mikrotik_generic
@@ -358,36 +426,44 @@ finalize_install() {
     echo "-------------------------------------------------------------------------------"
     echo " update file owner to ncuser.ncuser"
     echo "-------------------------------------------------------------------------------"
-    chown -R ncuser:ncuser /opt/fmc_repository/*; \
-    chown -R ncuser:ncuser /opt/fmc_repository/.meta_*; \
+    chown -R ncuser:ncuser /opt/fmc_repository/*; 
+    if [[ $install_type = "all" || $install_type = "da" ]];
+    then 
     chown -R ncuser.ncuser /opt/devops/OpenMSA_Adapters
     chown -R ncuser.ncuser /opt/devops/OpenMSA_Adapters/adapters/*
     chown -R ncuser.ncuser /opt/devops/OpenMSA_Adapters/vendor/*
+    fi
 
     echo "DONE"
-
-    echo "-------------------------------------------------------------------------------"
-    echo " service restart"
-    echo "-------------------------------------------------------------------------------"
-    echo "  >> execute [sudo docker-compose restart msa_api] to restart the API service"
-    echo "  >> execute [sudo docker-compose restart msa_sms] to restart the CoreEngine service"
-    echo "DONE"
+    if [[ $install_type = "all" || $install_type = "da" ]];
+    then
+        echo "-------------------------------------------------------------------------------"
+        echo " service restart"
+        echo "-------------------------------------------------------------------------------"
+        echo "  >> execute [sudo docker-compose restart msa_sms] to restart the CoreEngine service"
+        echo "  >> execute [sudo docker-compose restart msa_api] to restart the API service"
+        echo "DONE"
+    fi
 }
 
 usage() {
-	echo "usage: $PROG all|ms|wf|da [--no-lic] [-y]"
-  echo
-  echo "this script installs some librairies available @github.com/openmsa"
-	echo
-  echo "Commands:"
-	echo "all:          install everything: worflows, microservices and adapters"
-	echo "ms:           install the microservices from https://github.com/openmsa/Microservices"
-	echo "wf:           install the worflows from https://github.com/openmsa/Workflows"
-	echo "da:           install the adapters from https://github.com/openmsa/Adapters"
-  echo "Options:"
-  echo "--no-lic:     skip license installation"
-  echo "-y:           answer yes for all questions"
-  exit 0
+    echo "usage: $PROG all|ms|wf|da|py|mano|quickstart [--lic] [-y]"
+    echo
+    echo "this script installs some librairies available @github.com/openmsa"
+    echo
+    echo "Commands:"
+	echo "all:          install/update everything: workflows, microservices and adapters"
+	echo "ms:           install/update the microservices from https://github.com/openmsa/Microservices"
+	echo "wf:           install/update the worfklows from https://github.com/openmsa/Workflows"
+	echo "da:           install/update the adapters from https://github.com/openmsa/Adapters"
+    echo "mano:         install/update the python-sdk from https://github.com/openmsa/etsi-mano"
+    echo "py:           install/update the python-sdk from https://github.com/openmsa/python-sdk"
+    echo "quickstart:   install/update the local quickstart from https://github.com/ubiqube/quickstart"
+    echo
+    echo "Options:"
+    echo "--lic:          force license installation"
+    echo "-y:             answer yes for all questions"
+    exit 0
 }
 
 main() {
@@ -407,8 +483,8 @@ main() {
         echo $1
         option=$1
         case $option in
-            --no-lic)
-                INSTALL_LICENSE=false
+            --lic)
+                INSTALL_LICENSE=true
                 ;;
             -y)
                 ASSUME_YES=true
@@ -429,6 +505,7 @@ main() {
             install_microservices;
             install_workflows;
             install_adapters;
+            install_python_sdk
 			;;
 		ms)
             install_license  $option
@@ -448,7 +525,19 @@ main() {
             update_all_github_repo  $cmd
 			install_adapters
 			;;
-
+        py)
+            init_intall
+            update_all_github_repo  $cmd
+            install_python_sdk
+            ;;
+        mano)
+            init_intall
+            update_all_github_repo  $cmd
+            ;;
+        quickstart)
+            init_intall
+            update_all_github_repo  $cmd
+            ;;
 		*)
             echo "Error: unknown command: $1"
             usage

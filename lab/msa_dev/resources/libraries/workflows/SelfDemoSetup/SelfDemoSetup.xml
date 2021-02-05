@@ -1,16 +1,11 @@
 <ObjectDefinition>
   <variables frozen="0">
-    <variable displayName="Customer Id" name="params.customer_id" startIncrement="0" type="String" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="2" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" displayNameHeader="" fullDisplayName="" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
-      <sections>
-        <sections>Set Parameters</sections>
-      </sections>
-    </variable>
     <variable displayName="Managed Device Name" name="params.managed_device_name" startIncrement="0" type="String" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="3" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" default="linux_me" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
       <sections>
         <sections>Set Parameters</sections>
       </sections>
     </variable>
-    <variable displayName="Device External Reference" name="params.device_external_reference" startIncrement="0" type="String" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="4" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
+    <variable displayName="Device External Reference" name="params.device_external_reference" startIncrement="0" type="String" mandatoryArray="false" visible="false" description="" groupSeparator="" groupDisplayName="" displayOrder="4" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
       <sections>
         <sections>Set Parameters</sections>
       </sections>
@@ -25,7 +20,7 @@
         <sections>Set Parameters</sections>
       </sections>
     </variable>
-    <variable displayName="Device Ip Address" name="params.device_ip_address" startIncrement="0" type="IpAddress" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="7" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" default="172.20.0.101" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
+    <variable displayName="Device Ip Address" name="params.device_ip_address" startIncrement="0" type="IpAddress" mandatoryArray="false" visible="false" description="" groupSeparator="" groupDisplayName="" displayOrder="7" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" default="172.20.0.101" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
       <sections>
         <sections>Set Parameters</sections>
       </sections>
@@ -40,7 +35,7 @@
         <sections>Set Parameters</sections>
       </sections>
     </variable>
-    <variable displayName="Password Admin" name="params.password_admin" startIncrement="0" type="String" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="10" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" displayNameHeader="" fullDisplayName="" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
+    <variable displayName="Password Admin" name="params.password_admin" startIncrement="0" type="String" mandatoryArray="false" visible="false" description="" groupSeparator="" groupDisplayName="" displayOrder="10" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" displayNameHeader="" fullDisplayName="" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
       <sections>
         <sections>Set Parameters</sections>
       </sections>
@@ -66,6 +61,7 @@
     <displayName>Setup Linux ME</displayName>
     <type>CREATE</type>
     <visibility>0</visibility>
+    <allowSchedule/>
     <task name="Task_Set_Parameters1.php">
       <processPath>/opt/fmc_repository/Process/SelfDemoSetup/Process_Setup/Tasks/</processPath>
       <displayName>Set Parameters</displayName>
@@ -78,11 +74,16 @@
       <processPath>/opt/fmc_repository/Process/SelfDemoSetup</processPath>
       <displayName>Create DS</displayName>
     </task>
+    <task name="Task_Activate_ME.php">
+      <processPath>/opt/fmc_repository/Process/SelfDemoSetup/Process_Setup/Tasks</processPath>
+      <displayName>Activate ME</displayName>
+    </task>
   </process>
   <process name="Process/SelfDemoSetup/Process_Setup_2">
     <displayName>Setup MSA REST API</displayName>
     <type>CREATE</type>
     <visibility>0</visibility>
+    <allowSchedule/>
     <task name="Task_Set_Parameters2.php">
       <processPath>/opt/fmc_repository/Process/SelfDemoSetup/Process_Setup/Tasks/</processPath>
       <displayName>Set Parameters</displayName>
@@ -100,6 +101,7 @@
     <displayName>Delete</displayName>
     <type>DELETE</type>
     <visibility>0</visibility>
+    <allowSchedule/>
     <task name="Delete_delete.php">
       <processPath>/opt/fmc_repository/Process/SelfDemoSetup</processPath>
       <displayName>delete</displayName>
@@ -109,6 +111,7 @@
     <displayName>Create ME</displayName>
     <type>CREATE</type>
     <visibility>0</visibility>
+    <allowSchedule/>
     <task name="Create_ME_Create_ME.php">
       <processPath>/opt/fmc_repository/Process/SelfDemoSetup</processPath>
       <displayName>Create ME</displayName>
