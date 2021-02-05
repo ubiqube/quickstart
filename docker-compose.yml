@@ -68,7 +68,7 @@ services:
 
   msa_ui:
     container_name: msa_ui
-    image: ubiqube/msa2-ui:b4a269daefd628f4eedf71d09959817ab7f6d335
+    image: ubiqube/msa2-ui:470b952ee72c30a8dccdfee31bf4368425d144bc
     depends_on:
       - msa_api
     environment:
