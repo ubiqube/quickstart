@@ -41,7 +41,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: openmsa/openmsa:msa2-db-2.3.0GA-821e804d7d10187284ecb41e8974e6e554829371
+    image: openmsa/openmsa:msa2-front-2.3.0GA-f70597cd7ca8e1cace46003615b3a1820b1ac515
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -57,7 +57,7 @@ services:
         condition: on-failure
  
   msa_api:
-    image: openmsa/openmsa:msa2-api-2.3.0GA-ea373f441b99d3f59fb10cdbd7046baec7fc02f3
+    image: openmsa/openmsa:msa2-api-2.3.0GA-925898510583b7c4a38d9ca86532bf68cc7d5319
     depends_on:
       - db
     deploy:
@@ -86,7 +86,7 @@ services:
       - "/mnt/NASVolume/msa_api:/opt/ubi-jentreprise/generated/conf"
 
   msa_ui:
-    image: openmsa/openmsa:msa2-ui-2.3.0GA-dcd2e94c3395c3ba78004d8d76345d8fcfaaff21
+    image: openmsa/openmsa:msa2-ui-2.3.0GA-470b952ee72c30a8dccdfee31bf4368425d144bc
     depends_on:
       - msa_api
     deploy:
