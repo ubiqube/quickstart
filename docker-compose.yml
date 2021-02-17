@@ -3,7 +3,7 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image: ubiqube/msa2-front:2e385fe0c99bb853ee7a89c009b162e1a9d76d61
+    image: ubiqube/msa2-front:d76d76a4f4fadd0b75cca125ee2d9f1a50fe5e72
     depends_on:
       - msa_api
       - msa_ui
@@ -68,7 +68,7 @@ services:
 
   msa_ui:
     container_name: msa_ui
-    image: ubiqube/msa2-ui:339f26683bcfaa4873252357bd0881e842fe88dd
+    image: ubiqube/msa2-ui:fbf4a5ea689255d3627e7331ac8e8014b34bf8d6
     depends_on:
       - msa_api
     environment:
