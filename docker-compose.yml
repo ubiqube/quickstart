@@ -148,6 +148,17 @@ services:
       ELASTICSEARCH_URL: http://msa_es:9200
       ELASTICSEARCH_HOSTS: http://msa_es:9200
 
+  msa_ai_ml:
+    image: ubiqube/msa2-ai-ml:5358ff08bcac57587c73fe061ec303fc30b9d9f7
+    ports:
+      - "8000:8000"
+    volumes:
+      - "msa_ai_ml_db:/msa_proj/database"
+    networks:
+      default:
+        aliases:
+          - "msa-ai-ml"
+
   msa_dev:
     container_name: msa_dev
     build: ./lab/msa_dev
