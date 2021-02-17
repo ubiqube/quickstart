@@ -223,6 +223,7 @@ volumes:
   msa_bud_logs:
   msa_front:
   msa_svn:
+  msa_ai_ml_db:
 
 networks:
   default:
