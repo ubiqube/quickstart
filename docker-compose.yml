@@ -3,7 +3,7 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image: ubiqube/msa2-front:d76d76a4f4fadd0b75cca125ee2d9f1a50fe5e72
+    image: ubiqube/msa2-front:fd84d1f6d0b4c75e76da339a690c5fa8477a65c8
     depends_on:
       - msa_api
       - msa_ui
@@ -45,7 +45,7 @@ services:
 
   msa_api:
     container_name: msa_api
-    image: ubiqube/msa2-api:9f5d245cfc551159e50a693e5156c69561990ea8
+    image: ubiqube/msa2-api:73302171e0a5e4dae30ffc7d7357382ed2b25d96
     depends_on:
       - db
       - msa_es
@@ -68,7 +68,7 @@ services:
 
   msa_ui:
     container_name: msa_ui
-    image: ubiqube/msa2-ui:fbf4a5ea689255d3627e7331ac8e8014b34bf8d6
+    image: ubiqube/msa2-ui:97737c7a95d901662b86c142b8878b9f65379d58
     depends_on:
       - msa_api
     environment:
@@ -149,7 +149,7 @@ services:
       ELASTICSEARCH_HOSTS: http://msa_es:9200
 
   msa_ai_ml:
-    image: ubiqube/msa2-ai-ml:5358ff08bcac57587c73fe061ec303fc30b9d9f7
+    image: ubiqube/msa2-ai-ml:167a69b40e069e545a9bb146cf5bdfa49f2f546a
     ports:
       - "8000:8000"
     volumes:
