@@ -7,6 +7,7 @@ target_version="2.4.0GA"
 force_option=false
 clean_option=false
 remove_orphans=false
+fresh_setup=false
 ha_setup=false
 mini_lab=false
 ssh_user=root
@@ -181,21 +182,27 @@ main() {
      		esac
 	done
 
-   echo "Upgrading to last $target_version version"
-   echo "################################"
-   if [ -z "$(docker node ls | grep -q Ready)" ]; then
-	ha_setup=true
-	ha_front_ip=$(getHaNodeIp msa_front)
-        current_version=$(curl -s -k -XGET "https://$ha_front_ip/msa_version/" | awk -F\" '{print $4}')
-        echo "HA Setup, you current MSA version is $current_version"
-   else
 	if [ ! -z "$(docker ps | grep msa)" ]; then
-        	current_version=$(curl -s -k -XGET 'https://127.0.0.1/msa_version/' | awk -F\" '{print $4}')
-        	echo "Standalone Setup, you current MSA version is $current_version"
-        fi
-   fi
+        	res=$(docker stack ls > /dev/null 2>&1 ; echo $?)
+        	if [ $res -eq 0 ]; then
+			ha_setup=true
+			ha_front_ip=$(getHaNodeIp msa_front)
+			current_version=$(curl -s -k -XGET "https://$ha_front_ip/msa_version/" | awk -F\" '{print $4}')
+			echo "HA Setup. You current MSA version is $current_version"
+			echo "#####################################################"
+		else
+			current_version=$(curl -s -k -XGET 'https://127.0.0.1/msa_version/' | awk -F\" '{print $4}')
+			echo "Standalone setup. You current MSA version is $current_version"
+			echo "#############################################################"
+		fi
+  	 else
+                fresh_setup=true
+                echo "Installing a new $target_version"
+                echo "################################"
+   	fi
 
-    if [ $force_option = false ] ; then
+
+    	if [ $force_option = false ] ; then
     
 		if [[ $current_version =~ $target_version ]]; then
             echo "Already up to date: nothing to do"
