@@ -260,9 +260,6 @@ function getLibOptions(){
 	if [ $force_option = false ] ; then
 		lib_options="-y"
 	fi
-	if [ $fresh_setup = false ] ; then
-		lib_options+=" --lic"
-	fi
 	echo $lib_options
 }
 
