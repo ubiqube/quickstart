@@ -26,24 +26,26 @@ standaloneUpgrade(){
     echo "Starting upgrade"
     echo "----------------"
 
-	if [ $remove_orphans = false ] ; then				  
-		docker-compose down
-	else
-		docker-compose down --remove-orphans 
-	fi
-	
-        ############ For 2.2 upgrade
-	if [ ! -z "$(docker volume ls | grep msa_sms_php)" ]; then
-		sms_php_vol=$(docker volume ls | awk '{print $2}' | grep msa_sms_php)
-        echo "Recreating Core Engine (msa_sms) volume $sms_php_vol"
-        docker volume rm $sms_php_vol
-	fi
+	if [ $fresh_setup = false ] ; then
+		if [ $remove_orphans = false ] ; then				  
+			docker-compose down
+		else
+			docker-compose down --remove-orphans 
+		fi
+		
+		############ For 2.2 upgrade
+		if [ ! -z "$(docker volume ls | grep msa_sms_php)" ]; then
+			sms_php_vol=$(docker volume ls | awk '{print $2}' | grep msa_sms_php)
+		echo "Recreating Core Engine (msa_sms) volume $sms_php_vol"
+		docker volume rm $sms_php_vol
+		fi
 
-	if [ ! -z "$(docker volume ls | grep msa_sms_devices)" ]; then
-		sms_devices_vol=$(docker volume ls | awk '{print $2}' | grep msa_sms_devices)
-        echo "Recreating Core Engine (sms_devices) volume $sms_devices_vol"
-        docker volume rm $sms_devices_vol
-	fi
+		if [ ! -z "$(docker volume ls | grep msa_sms_devices)" ]; then
+			sms_devices_vol=$(docker volume ls | awk '{print $2}' | grep msa_sms_devices)
+		echo "Recreating Core Engine (sms_devices) volume $sms_devices_vol"
+		docker volume rm $sms_devices_vol
+		fi
+	fi	
 
         docker-compose up -d --build
 
@@ -55,30 +57,31 @@ standaloneUpgrade(){
 		docker-compose exec msa_dev /usr/bin/install_libraries.sh all -y
 	fi
 	
-    docker-compose restart msa_api
+    	docker-compose restart msa_api
+    	docker-compose restart msa_sms
 	
-    docker-compose restart msa_sms
-
-    echo "Starting crond on API container msa_api"
-    docker exec -it -u root msa_api crond
-    echo "Done"
+	echo "Starting crond on API container msa_api"
+	docker exec -it -u root msa_api crond
+	echo "Done"
     
-    ############ For 2.3 upgrade
-    echo "Migrating old BPMs from DataFile to BPM repository"
-    docker-compose exec msa_dev /usr/bin/migrate_bpmn.sh -r
-    
-    echo "Removing old instances of topology"
-    docker-compose exec msa_dev /usr/bin/clean_old_topology_instances.sh
+    	if [ $fresh_setup = false ] ; then
+		############ For 2.3 upgrade
+		echo "Migrating old BPMs from DataFile to BPM repository"
+		docker-compose exec msa_dev /usr/bin/migrate_bpmn.sh -r
 
-    echo "Elasticsearch settings & mappings update"
-    docker exec -u root -w /home/install/scripts/ -it  msa_es bash -c './install.sh'
-    echo "Done"
+		echo "Removing old instances of topology"
+		docker-compose exec msa_dev /usr/bin/clean_old_topology_instances.sh
+	fi
 
-    echo "Kibana configs & dashboard templates update"
-    docker exec -u root -w /home/install/ -it  msa_kibana bash -c 'php install_default_template_dash_and_visu.php '
-    echo "Done"
+	echo "Elasticsearch settings & mappings update"
+	docker exec -u root -w /home/install/scripts/ -it  msa_es bash -c './install.sh'
+	echo "Done"
 
-    echo "Upgrade done!"
+	echo "Kibana configs & dashboard templates update"
+	docker exec -u root -w /home/install/ -it  msa_kibana bash -c 'php install_default_template_dash_and_visu.php '
+	echo "Done"
+
+	echo "Upgrade done!"
 }
 
 haUpgrade(){
@@ -108,11 +111,13 @@ haUpgrade(){
         #echo "CROND started : $res"
         ssh "-o BatchMode=Yes" $ssh_user@$ha_api_node_ip "docker exec -u root $ha_api_container_ref crond"
 
-        echo "############### Migrating old BPMs from DataFile to BPM repository ####"
-        ssh "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec $ha_dev_container_ref /bin/bash -c '/usr/bin/migrate_bpmn.sh -r'"
+	if [ $fresh_setup = false ] ; then
+		echo "############### Migrating old BPMs from DataFile to BPM repository ####"
+		ssh "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec $ha_dev_container_ref /bin/bash -c '/usr/bin/migrate_bpmn.sh -r'"
 
-        echo "############### Removing old instances of topology ####################"
-        ssh "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec $ha_dev_container_ref /bin/bash -c '/usr/bin/clean_old_topology_instances.sh'"
+		echo "############### Removing old instances of topology ####################"
+		ssh "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec $ha_dev_container_ref /bin/bash -c '/usr/bin/clean_old_topology_instances.sh'"
+	fi
 
 	echo "################ Elasticsearch settings & mappings update #############"
 	ha_es_node_ip=$(getHaNodeIp msa_es)
