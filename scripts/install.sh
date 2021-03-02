@@ -51,7 +51,7 @@ standaloneUpgrade(){
 
 	docker-compose exec msa_dev rm -rf /opt/fmc_repository/Process/Reference
 
-	docker-compose exec msa_dev /usr/bin/install_libraries.sh all $(getLibOptions)
+	docker-compose exec msa_dev /usr/bin/install_libraries.sh $(getLibOptions)
 
     	docker-compose restart msa_api
     	docker-compose restart msa_sms
@@ -95,7 +95,7 @@ haUpgrade(){
         ha_dev_container_ref=$(getHaContainerReference msa_dev)
         echo "DEV $ha_dev_ip $ha_dev_container_ref"
         echo "Checking SSH access to $ha_dev_node_run with user $ssh_user on IP $ha_dev_node_ip to install libraries. If failed, please set SSH key"
-        ssh "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec $ha_dev_container_ref /bin/bash -c '/usr/bin/install_libraries.sh all -y'"
+        ssh "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec $ha_dev_container_ref /bin/bash -c '/usr/bin/install_libraries.sh $(getLibOptions)'"
         docker service update --force ha_msa_api
         docker service update --force ha_msa_sms
 
@@ -256,9 +256,9 @@ function getHaContainerReference(){
 }
 
 function getLibOptions(){
-	lib_options=""
+	lib_options="all"
 	if [ $force_option = false ] ; then
-		lib_options="-y"
+		lib_options+=" -y"
 	fi
 	echo $lib_options
 }
