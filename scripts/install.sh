@@ -85,7 +85,7 @@ haUpgrade(){
 	echo "############## Applying last images ##############################"
 	ha_stack=$(docker stack ls --format '{{.Name}}')
 	if [ -z "$ha_stack" ]; then
-		ha_stack="msa"
+		ha_stack="ha"
 		echo "No stack found. Fresh HA installation"
 	fi
 	docker stack deploy --with-registry-auth -c docker-compose.simple.ha.yml $ha_stack
@@ -96,8 +96,8 @@ haUpgrade(){
         echo "DEV $ha_dev_ip $ha_dev_container_ref"
         echo "Checking SSH access to $ha_dev_node_run with user $ssh_user on IP $ha_dev_node_ip to install libraries. If failed, please set SSH key"
         ssh "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec $ha_dev_container_ref /bin/bash -c '/usr/bin/install_libraries.sh $(getLibOptions)'"
-        docker service update --force ha_msa_api
-        docker service update --force ha_msa_sms
+        docker service update --force "$ha_stack"_msa_api
+        docker service update --force "$ha_stack"_msa_sms
 
         echo "############## Start CROND ############################################"
 	ha_api_node_ip=$(getHaNodeIp msa_api)
@@ -183,18 +183,22 @@ main() {
      		esac
 	done
 
+	is_ha=$(docker stack ls > /dev/null 2>&1 ; echo $?)
+	if [ $is_ha -eq 0 ]; then
+		ha_setup=true
+		echo "HA setup detected"
+	fi
+
 	if [ ! -z "$(docker ps | grep msa)" ]; then
-        	res=$(docker stack ls > /dev/null 2>&1 ; echo $?)
-        	if [ $res -eq 0 ]; then
-			ha_setup=true
+        	if [ $ha_setup = true ]; then
 			ha_front_ip=$(getHaNodeIp msa_front)
 			current_version=$(curl -s -k -XGET "https://$ha_front_ip/msa_version/" | awk -F\" '{print $4}')
-			echo "HA Setup. You current MSA version is $current_version"
+			echo "You current MSA version is $current_version"
 			echo "#####################################################"
 		else
 			current_version=$(curl -s -k -XGET 'https://127.0.0.1/msa_version/' | awk -F\" '{print $4}')
-			echo "Standalone setup. You current MSA version is $current_version"
-			echo "#############################################################"
+			echo "You current MSA version is $current_version"
+			echo "#####################################################"
 		fi
   	 else
                 fresh_setup=true
@@ -203,15 +207,19 @@ main() {
    	fi
 
 
-    	if [ $force_option = false ] ; then
-    
+    	if [ $force_option = false ] ; then    
 		if [[ $current_version =~ $target_version ]]; then
-            echo "Already up to date: nothing to do"
+            		echo "Already up to date: nothing to do"
         	exit
 		fi
     
         while true; do
-            read -p "Are you sure to want to upgrade to $target_version? [y]/[N]" yn
+	    action="upgrade to"
+	    if [ $ha_setup = true ]; then
+		action="install a new"
+	    fi
+
+            read -p "Are you sure you want to $action $target_version? [y]/[N]" yn
     	    case $yn in
                 [Yy]* ) upgrade; break;;
                 [Nn]* ) exit;;
@@ -257,7 +265,7 @@ function getHaContainerReference(){
 
 function getLibOptions(){
 	lib_options="all"
-	if [ $force_option = false ] ; then
+	if [ $force_option = true ] ; then
 		lib_options+=" -y"
 	fi
 	echo $lib_options
