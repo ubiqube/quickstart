@@ -51,12 +51,8 @@ standaloneUpgrade(){
 
 	docker-compose exec msa_dev rm -rf /opt/fmc_repository/Process/Reference
 
-	if [ $force_option = false ] ; then
-		docker-compose exec msa_dev /usr/bin/install_libraries.sh all
-	else
-		docker-compose exec msa_dev /usr/bin/install_libraries.sh all -y
-	fi
-	
+	docker-compose exec msa_dev /usr/bin/install_libraries.sh all $(getLibOptions)
+
     	docker-compose restart msa_api
     	docker-compose restart msa_sms
 	
@@ -257,6 +253,17 @@ function getHaContainerReference(){
     	ha_sv_name=$(docker service ls --format '{{.Name}}' | grep $1)
 	ha_container_ref=$(docker service ps --no-trunc $ha_sv_name --format "{{.Name}}.{{.ID}}" -f "desired-state=running" | head -n 1)
 	echo $ha_container_ref
+}
+
+function getLibOptions(){
+	lib_options=""
+	if [ $force_option = false ] ; then
+		lib_options="-y"
+	fi
+	if [ $fresh_setup = false ] ; then
+		lib_options+="--lic"
+	fi
+	echo $lib_options
 }
 
 
