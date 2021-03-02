@@ -176,7 +176,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - "msa_ai_ml_db:/msa_proj/database"
+      - "/mnt/NASVolume/msa_ai_ml_db:/msa_proj/database"
     networks:
       default:
         aliases:
