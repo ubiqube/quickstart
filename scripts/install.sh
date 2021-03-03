@@ -258,10 +258,10 @@ function getHaContainerReference(){
 function getLibOptions(){
 	lib_options=""
 	if [ $force_option = false ] ; then
-		lib_options="-y"
+		lib_options=" -y "
 	fi
 	if [ $fresh_setup = false ] ; then
-		lib_options+="--lic"
+		lib_options+=" --lic "
 	fi
 	echo $lib_options
 }
