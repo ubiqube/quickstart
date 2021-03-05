@@ -3,7 +3,7 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image: ubiqube/msa2-front:7257fec738e339219dcec4e88270c3d0321a0646
+    image: ubiqube/msa2-front:fad7d44ac6e404328e20b0d744b395d01c992bc7
     depends_on:
       - msa_api
       - msa_ui
@@ -84,7 +84,7 @@ services:
 
   msa_sms:
     container_name: msa_sms
-    image: ubiqube/msa2-sms:4f04d8692c42b0de0f3261bcb8b72dda71d52d74
+    image: ubiqube/msa2-sms:7737b16a0054a40242ea60f2f17f7f098e9ffa31
     depends_on:
       - db
       - msa_es
@@ -101,7 +101,7 @@ services:
 
   msa_bud:
     container_name: msa_bud
-    image: ubiqube/msa2-bud:289af5fb612a941c72cdfeab8209c0378f10560e
+    image: ubiqube/msa2-bud:2a368ab9efa42320ce8b5060d49b954b76dd323d
     depends_on:
       - db
     volumes:
@@ -109,7 +109,7 @@ services:
 
   msa_alarm:
     container_name: msa_alarm
-    image: ubiqube/msa2-alarm:fe8d212f40ad6c3bf16016b50275a19d450fc00e
+    image: ubiqube/msa2-alarm:d760b58a932d97ca31c57ea9c32b2fb062b79e4d
     depends_on:
       - db
       - msa_es
