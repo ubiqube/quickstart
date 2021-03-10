@@ -3,7 +3,7 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image: ubiqube/msa2-front:ac91d3b4efe00544515f81ea45baedb4a194b833
+    image: ubiqube/msa2-front:15d25087322641746650e0bb562b6b510b40f7b4
     depends_on:
       - msa_api
       - msa_ui
@@ -35,7 +35,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
   db:
     container_name: msa_db
-    image: ubiqube/msa2-db:821e804d7d10187284ecb41e8974e6e554829371
+    image: ubiqube/msa2-db:bcff13e337fd031e81f26bab184dff9e3cb98e59
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -45,7 +45,7 @@ services:
 
   msa_api:
     container_name: msa_api
-    image: ubiqube/msa2-api:e21f4c02d75c8d8b2a4871ff33c6c7ab276646cd
+    image: ubiqube/msa2-api:436ceda580c9d2904586eac83983202b3675822e
     depends_on:
       - db
       - msa_es
@@ -68,7 +68,7 @@ services:
 
   msa_ui:
     container_name: msa_ui
-    image: ubiqube/msa2-ui:e09f0e5fa4eea232c408186459af9c133c2af53e
+    image: ubiqube/msa2-ui:19831ec02cdc933b497e8b5c64f76a90ca36a83d
     depends_on:
       - msa_api
     environment:
@@ -149,7 +149,7 @@ services:
       ELASTICSEARCH_HOSTS: http://msa_es:9200
 
   msa_ai_ml:
-    image: ubiqube/msa2-ai-ml:167a69b40e069e545a9bb146cf5bdfa49f2f546a
+    image: ubiqube/msa2-ai-ml:b6674a077108ed42ca1fb53b9b102bf187f82a65
     ports:
       - "8000:8000"
     volumes:
