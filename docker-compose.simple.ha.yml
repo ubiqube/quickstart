@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:920199635e4fbc56d7ac5adcc72c6524f5ae96be
+    image: ubiqube/msa2-front:02b9cb70390bff296bf0293cbd414423807ed965
     depends_on:
       - msa_api
       - msa_ui
@@ -42,7 +42,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:821e804d7d10187284ecb41e8974e6e554829371
+    image: ubiqube/msa2-db:214cdca5764e064c4d47a0eaa1f0181a8a195236
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -58,7 +58,7 @@ services:
         condition: on-failure
  
   msa_api:
-    image: ubiqube/msa2-api:73302171e0a5e4dae30ffc7d7357382ed2b25d96
+    image: ubiqube/msa2-api:3be83300c930b808686011aa91a02eb9d3bc20db
     depends_on:
       - db
     deploy:
@@ -87,7 +87,7 @@ services:
       - "/mnt/NASVolume/msa_api:/opt/ubi-jentreprise/generated/conf"
 
   msa_ui:
-    image: ubiqube/msa2-ui:c5a30adbdda551b3cf31d7f095cc9a5635fddfdb
+    image: ubiqube/msa2-ui:304cc88a8ac7a34de22f9dfb04e851e18f5cdbf7
     depends_on:
       - msa_api
     deploy:
@@ -107,7 +107,7 @@ services:
 
 
   msa_sms:
-    image: ubiqube/msa2-sms:4f04d8692c42b0de0f3261bcb8b72dda71d52d74
+    image: ubiqube/msa2-sms:7737b16a0054a40242ea60f2f17f7f098e9ffa31
     depends_on:
       - db
     volumes:
@@ -123,14 +123,14 @@ services:
         max_replicas_per_node: 1
 
   msa_bud:
-    image: ubiqube/msa2-bud:baa1842a36e70afa16bc32333835ddcde31c5115
+    image: ubiqube/msa2-bud:2a368ab9efa42320ce8b5060d49b954b76dd323d
     depends_on:
       - db
     deploy:
       replicas: 1
 
   msa_alarm:
-    image: ubiqube/msa2-alarm:fe8d212f40ad6c3bf16016b50275a19d450fc00e
+    image: ubiqube/msa2-alarm:d760b58a932d97ca31c57ea9c32b2fb062b79e4d
     depends_on:
       - db
       - msa_es
@@ -172,7 +172,7 @@ services:
           - "node.role==manager"
           
   msa_ai_ml:
-    image: ubiqube/msa2-ai-ml:167a69b40e069e545a9bb146cf5bdfa49f2f546a
+    image: ubiqube/msa2-ai-ml:b6674a077108ed42ca1fb53b9b102bf187f82a65
     ports:
       - "8000:8000"
     volumes:
