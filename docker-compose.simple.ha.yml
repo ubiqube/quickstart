@@ -47,6 +47,9 @@ services:
     environment:
       POSTGRES_PASSWORD: my_db_password
       POSTGRES_DB: POSTGRESQL
+      CAMUNDA_PASSWORD: camunda
+      CAMUNDA_DB: process-engine
+      CAMUNDA_USER: camunda
     volumes:
       - "/mnt/NASVolume/msa_db:/var/lib/postgresql/data"
     deploy:
@@ -144,6 +147,14 @@ services:
       replicas: 1
       placement:
         max_replicas_per_node: 1
+    environment:
+      DB_DRIVER: org.postgresql.Driver
+      DB_URL: 'jdbc:postgresql://db:5432/process-engine'
+      DB_USERNAME: camunda
+      DB_PASSWORD: camunda
+      DB_VALIDATE_ON_BORROW: 'true'
+      WAIT_FOR: 'db:5432'
+      WAIT_FOR_TIMEOUT: 60
 
   msa_es:
     image: openmsa/openmsa:msa2-es-2.4.0RC1-9c616a14ba0c35eb545da78bd40bf4f68d9d0d2c
@@ -216,3 +227,5 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/msa_api:/opt/ubi-jentreprise/generated/conf"
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
+      - "/mnt/NASVolume/msa_svn:/opt/svnroot"
+
