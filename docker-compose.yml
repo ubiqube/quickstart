@@ -122,7 +122,7 @@ services:
   camunda:
     container_name: camunda
     image: camunda/camunda-bpm-platform:7.13.0
-     environment:
+    environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
       DB_USERNAME: camunda
