@@ -8,6 +8,7 @@ services:
       - msa_api
       - msa_ui
       - camunda
+      - msa_ai_ml
     ports:
       - target: 80
         published: 80
@@ -40,6 +41,9 @@ services:
     environment:
       POSTGRES_PASSWORD: my_db_password
       POSTGRES_DB: POSTGRESQL
+      CAMUNDA_PASSWORD: camunda
+      CAMUNDA_DB: process-engine
+      CAMUNDA_USER: camunda
     volumes:
       - "msa_db:/var/lib/postgresql/data"
 
@@ -118,6 +122,14 @@ services:
   camunda:
     container_name: camunda
     image: camunda/camunda-bpm-platform:7.13.0
+     environment:
+      DB_DRIVER: org.postgresql.Driver
+      DB_URL: 'jdbc:postgresql://db:5432/process-engine'
+      DB_USERNAME: camunda
+      DB_PASSWORD: camunda
+      DB_VALIDATE_ON_BORROW: 'true'
+      WAIT_FOR: 'db:5432'
+      WAIT_FOR_TIMEOUT: 60
 
   msa_es:
     container_name: msa_es
