@@ -66,7 +66,8 @@ standaloneUpgrade(){
 		docker-compose exec msa_dev /usr/bin/migrate_bpmn.sh -r
 
 		echo "Removing old instances of topology"
-		docker-compose exec msa_dev /usr/bin/clean_old_topology_instances.sh
+		# Disable are execution right is missing on this file. Need to generate again a DEV image
+		#docker-compose exec msa_dev /usr/bin/clean_old_topology_instances.sh
 	fi
 
 	echo "Elasticsearch settings & mappings update"
