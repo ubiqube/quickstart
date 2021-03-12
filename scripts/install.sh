@@ -112,8 +112,8 @@ haUpgrade(){
 		echo "############### Migrating old BPMs from DataFile to BPM repository ####"
 		ssh "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec $ha_dev_container_ref /bin/bash -c '/usr/bin/migrate_bpmn.sh -r'"
 
-		echo "############### Removing old instances of topology ####################"
-		ssh "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec $ha_dev_container_ref /bin/bash -c '/usr/bin/clean_old_topology_instances.sh'"
+		#echo "############### Removing old instances of topology ####################"
+		#ssh "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec $ha_dev_container_ref /bin/bash -c '/usr/bin/clean_old_topology_instances.sh'"
 	fi
 
 	echo "################ Elasticsearch settings & mappings update #############"
