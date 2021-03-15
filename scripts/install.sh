@@ -13,19 +13,16 @@ mini_lab=false
 ssh_user=root
 
 
-upgrade(){
+install(){
 	if [ $ha_setup = false ] ; then				  
-		standaloneUpgrade
+		standaloneInstall
 	else
-		haUpgrade 
+		haInstall
 	fi
 }
 
 
-standaloneUpgrade(){
-    echo "Starting upgrade to $target_version"
-    echo "----------------"
-
+standaloneInstall(){
 	if [ $fresh_setup = false ] ; then
 		if [ $remove_orphans = false ] ; then				  
 			docker-compose down
@@ -80,7 +77,7 @@ standaloneUpgrade(){
 	echo "Upgrade done!"
 }
 
-haUpgrade(){
+haInstall(){
 
 	echo "############## Applying last images ##############################"
 	ha_stack=$(docker stack ls --format '{{.Name}}')
@@ -148,7 +145,7 @@ cleanup(){
 
 usage() {
 	echo "usage: $PROG [--mini-lab|-m] [--force|-f] [--cleanup|-c] [--remove-orphans|-ro]"
-	echo "this script installs and upgrade a MSA"
+	echo "this script installs and upgrades a MSA"
 	echo "-m: mini lab creation. Create a demo platform around a Linux ME"
 	echo "-f: force the upgrade without asking for user confirmation. Permit also to reapply the upgrade and to auto merge files from OpenMSA"
 	echo "-c: cleanup unused images after upgrade to save disk space. This option clean all unused images, not only MSA quickstart ones"
@@ -221,7 +218,7 @@ main() {
 
             read -p "Are you sure you want to $action $target_version? [y]/[N]" yn
     	    case $yn in
-                [Yy]* ) upgrade; break;;
+                [Yy]* ) install; break;;
                 [Nn]* ) exit;;
             	* ) echo "Please answer yes or no.";;
             esac
