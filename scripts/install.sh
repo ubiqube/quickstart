@@ -215,7 +215,7 @@ main() {
     
         while true; do
 	    action="upgrade to"
-	    if [ $ha_setup = true ]; then
+	    if [ $fresh_setup = true ]; then
 		action="install a new"
 	    fi
 
