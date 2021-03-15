@@ -23,7 +23,7 @@ upgrade(){
 
 
 standaloneUpgrade(){
-    echo "Starting upgrade"
+    echo "Starting upgrade to $target_version"
     echo "----------------"
 
 	if [ $fresh_setup = false ] ; then
