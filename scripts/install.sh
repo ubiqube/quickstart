@@ -224,7 +224,7 @@ main() {
             esac
         done
     else
-        upgrade;
+        install;
     fi
 
 	if [ "$mini_lab" = true ] ; then
