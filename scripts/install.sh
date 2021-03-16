@@ -44,14 +44,14 @@ standaloneInstall(){
 		fi
 	fi	
 
-    docker-compose up -d --build
+    	docker-compose up -d --build
 
 	docker-compose exec -T msa_dev rm -rf /opt/fmc_repository/Process/Reference
 
 	docker-compose exec -T msa_dev /usr/bin/install_libraries.sh $(getLibOptions)
 
-    docker-compose restart msa_api
-    docker-compose restart msa_sms
+    	docker-compose restart msa_api
+    	docker-compose restart msa_sms
 	
 	echo "Starting crond on API container msa_api"
 	docker-compose exec -T -u root msa_api crond
@@ -71,6 +71,7 @@ standaloneInstall(){
 	echo "Done"
 
 	echo "Kibana configs & dashboard templates update"
+	waitUpKibana 127.0.0.1
 	docker-compose exec -T -u root -w /home/install/ msa_kibana bash -c 'php install_default_template_dash_and_visu.php'
 	echo "Done"
 
@@ -122,6 +123,7 @@ haInstall(){
         ha_kib_node_ip=$(getHaNodeIp msa_kib)
         ha_kib_container_ref=$(getHaContainerReference msa_kib)
         #echo "KIBANA $ha_kib_ip $ha_kib_container_ref"
+	waitUpKibana $ha_kib_ip
         ssh $ssh_user@$ha_kib_node_ip "docker exec -u root -w /home/install/ $ha_kib_container_ref /bin/bash -c 'php install_default_template_dash_and_visu.php'"
 
 	echo "Upgrade done!"
@@ -268,5 +270,13 @@ function getLibOptions(){
 	echo $lib_options
 }
 
+function waitUpKibana(){
+	echo "Wait Kibana to be ready"
+        until [ $(curl -s -o /dev/null -L -w ''%{http_code}'' "http://$1:5601") == "200" ]
+	do
+		printf '.'
+		sleep 3
+	done
+}
 
 main "$@"
