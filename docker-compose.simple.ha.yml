@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:b506a88e20cdf087457c0bd35e07d65b883eb830
+    image: ubiqube/msa2-front:5dc199aecd1dedd03704d0242c2fccce3a1a7406
     depends_on:
       - msa_api
       - msa_ui
@@ -110,7 +110,7 @@ services:
 
 
   msa_sms:
-    image: ubiqube/msa2-sms:7737b16a0054a40242ea60f2f17f7f098e9ffa31
+    image: ubiqube/msa2-sms:e96a7ccb0fb08ee40da296d8b84f814d462314f9
     depends_on:
       - db
     volumes:
@@ -216,7 +216,7 @@ services:
           - "node.role==manager"
 
   msa_dev:
-    image: ubiqube/msa2-linuxdev:fe3982a6cb39e961b8c8dea1d6e31425a48093ed
+    image: ubiqube/msa2-linuxdev:4af34aa8bfe44c5284ed2fcb52fb7621f71c39d1
     deploy:
       replicas: 1
       placement:
