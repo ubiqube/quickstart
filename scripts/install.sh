@@ -13,19 +13,16 @@ mini_lab=false
 ssh_user=root
 
 
-upgrade(){
+install(){
 	if [ $ha_setup = false ] ; then				  
-		standaloneUpgrade
+		standaloneInstall
 	else
-		haUpgrade 
+		haInstall
 	fi
 }
 
 
-standaloneUpgrade(){
-    echo "Starting upgrade"
-    echo "----------------"
-
+standaloneInstall(){
 	if [ $fresh_setup = false ] ; then
 		if [ $remove_orphans = false ] ; then				  
 			docker-compose down
@@ -49,39 +46,38 @@ standaloneUpgrade(){
 
     docker-compose up -d --build
 
-	docker-compose exec msa_dev rm -rf /opt/fmc_repository/Process/Reference
+	docker-compose exec -T msa_dev rm -rf /opt/fmc_repository/Process/Reference
 
-	docker-compose exec msa_dev /usr/bin/install_libraries.sh $(getLibOptions)
+	docker-compose exec -T msa_dev /usr/bin/install_libraries.sh $(getLibOptions)
 
     docker-compose restart msa_api
     docker-compose restart msa_sms
 	
 	echo "Starting crond on API container msa_api"
-	docker exec -it -u root msa_api crond
+	docker-compose exec -T -u root msa_api crond
 	echo "Done"
     
     	if [ $fresh_setup = false ] ; then
 		############ For 2.3 upgrade
 		echo "Migrating old BPMs from DataFile to BPM repository"
-		docker-compose exec msa_dev /usr/bin/migrate_bpmn.sh -r
+		docker-compose exec -T msa_dev /usr/bin/migrate_bpmn.sh -r
 
 		echo "Removing old instances of topology"
-		# Disable are execution right is missing on this file. Need to generate again a DEV image
-		#docker-compose exec msa_dev /usr/bin/clean_old_topology_instances.sh
+		docker-compose exec -T msa_dev /usr/bin/clean_old_topology_instances.sh
 	fi
 
 	echo "Elasticsearch settings & mappings update"
-	docker exec -u root -w /home/install/scripts/ -it  msa_es bash -c './install.sh'
+	docker-compose exec -T -u root -w /home/install/scripts/ msa_es bash -c './install.sh'
 	echo "Done"
 
 	echo "Kibana configs & dashboard templates update"
-	docker exec -u root -w /home/install/ -it  msa_kibana bash -c 'php install_default_template_dash_and_visu.php '
+	docker-compose exec -T -u root -w /home/install/ msa_kibana bash -c 'php install_default_template_dash_and_visu.php'
 	echo "Done"
 
 	echo "Upgrade done!"
 }
 
-haUpgrade(){
+haInstall(){
 
 	echo "############## Applying last images ##############################"
 	ha_stack=$(docker stack ls --format '{{.Name}}')
@@ -133,7 +129,7 @@ haUpgrade(){
 
 miniLabCreation(){
 	if [ $ha_setup = false ] ; then				  
-		docker-compose exec msa_dev /usr/bin/create_mini_lab.sh
+		docker-compose exec -T msa_dev /usr/bin/create_mini_lab.sh
 	else
 		ha_dev_node_ip=$(getHaNodeIp msa_dev)
         	ha_dev_container_ref=$(getHaContainerReference msa_dev)
@@ -149,7 +145,7 @@ cleanup(){
 
 usage() {
 	echo "usage: $PROG [--mini-lab|-m] [--force|-f] [--cleanup|-c] [--remove-orphans|-ro]"
-	echo "this script installs and upgrade a MSA"
+	echo "this script installs and upgrades a MSA"
 	echo "-m: mini lab creation. Create a demo platform around a Linux ME"
 	echo "-f: force the upgrade without asking for user confirmation. Permit also to reapply the upgrade and to auto merge files from OpenMSA"
 	echo "-c: cleanup unused images after upgrade to save disk space. This option clean all unused images, not only MSA quickstart ones"
@@ -216,19 +212,19 @@ main() {
     
         while true; do
 	    action="upgrade to"
-	    if [ $ha_setup = true ]; then
+	    if [ $fresh_setup = true ]; then
 		action="install a new"
 	    fi
 
             read -p "Are you sure you want to $action $target_version? [y]/[N]" yn
     	    case $yn in
-                [Yy]* ) upgrade; break;;
+                [Yy]* ) install; break;;
                 [Nn]* ) exit;;
             	* ) echo "Please answer yes or no.";;
             esac
         done
     else
-        upgrade;
+        install;
     fi
 
 	if [ "$mini_lab" = true ] ; then
