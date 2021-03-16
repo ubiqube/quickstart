@@ -47,14 +47,14 @@ standaloneUpgrade(){
 		fi
 	fi	
 
-        docker-compose up -d --build
+    docker-compose up -d --build
 
 	docker-compose exec msa_dev rm -rf /opt/fmc_repository/Process/Reference
 
 	docker-compose exec msa_dev /usr/bin/install_libraries.sh $(getLibOptions)
 
-    	docker-compose restart msa_api
-    	docker-compose restart msa_sms
+    docker-compose restart msa_api
+    docker-compose restart msa_sms
 	
 	echo "Starting crond on API container msa_api"
 	docker exec -it -u root msa_api crond
