@@ -3,7 +3,7 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image:  ubiqube/msa2-front:24c4e65fabcaa0e2e9ba3aecf5c22b1a0e5fd3b6
+    image: ubiqube/msa2-front:cdb69f17ca777a9cc33649ce43e901fd8eff0b34
     depends_on:
       - msa_api
       - msa_ui
@@ -36,7 +36,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
   db:
     container_name: msa_db
-    image: ubiqube/msa2-db:214cdca5764e064c4d47a0eaa1f0181a8a195236
+    image: ubiqube/msa2-db:809b338ed54adcba4d075a1ef0158f2f6f3fc8bd
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -49,7 +49,7 @@ services:
 
   msa_api:
     container_name: msa_api
-    image: ubiqube/msa2-api:3be83300c930b808686011aa91a02eb9d3bc20db
+    image: ubiqube/msa2-api:0fa041a835e677182b818ba69971353ac6605a0b
     depends_on:
       - db
       - msa_es
@@ -72,7 +72,7 @@ services:
 
   msa_ui:
     container_name: msa_ui
-    image: ubiqube/msa2-ui:304cc88a8ac7a34de22f9dfb04e851e18f5cdbf7
+    image: ubiqube/msa2-ui:e6b5d61d072192db71807058e16dc7d31fbbe134
     depends_on:
       - msa_api
     environment:
@@ -89,7 +89,7 @@ services:
 
   msa_sms:
     container_name: msa_sms
-    image: ubiqube/msa2-sms:e96a7ccb0fb08ee40da296d8b84f814d462314f9
+    image: ubiqube/msa2-sms:6b969645e22c3840f3a80b02188edd8a52c5f8ae
     depends_on:
       - db
       - msa_es
@@ -133,7 +133,7 @@ services:
 
   msa_es:
     container_name: msa_es
-    image: ubiqube/msa2-es:9c616a14ba0c35eb545da78bd40bf4f68d9d0d2c
+    image: ubiqube/msa2-es:41242eeb928df0ab23de497bcfdb393b60204b02
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
@@ -162,7 +162,7 @@ services:
       ELASTICSEARCH_HOSTS: http://msa_es:9200
 
   msa_ai_ml:
-    image: ubiqube/msa2-ai-ml:b6674a077108ed42ca1fb53b9b102bf187f82a65
+    image: ubiqube/msa2-ai-ml:9916accd0581ada9b2ed705dc06d6835d550ebe2
     ports:
       - "8000:8000"
     volumes:
