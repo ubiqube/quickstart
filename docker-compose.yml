@@ -3,7 +3,7 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image: ubiqube/msa2-front:8f82619c9dff18f9e63a7c1d94bb6717cd02be85
+    image: ubiqube/msa2-front:d67bf859e33292742588c797aabf7d99d6fe9b6a
     depends_on:
       - msa_api
       - msa_ui
@@ -36,7 +36,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
   db:
     container_name: msa_db
-    image: ubiqube/msa2-db:b7f7ff04bc1c67c1b1ad13fe434e6f0eb32e34b6
+    image: ubiqube/msa2-db:e13a0fb70e048892d419fd27e270878e0e93dfd6
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -72,7 +72,7 @@ services:
 
   msa_ui:
     container_name: msa_ui
-    image: ubiqube/msa2-ui:9911cd041ab0ce522d3c4eee79d90f092c6edeee
+    image: ubiqube/msa2-ui:dfa1e482ce0faa34a12d9501428f07a03e6e4036
     depends_on:
       - msa_api
     environment:
@@ -85,7 +85,7 @@ services:
     - FEATURE_SCHEDULE_WORKFLOWS=true
     - FEATURE_PROFILE_AUDIT_LOGS=true
     - FEATURE_PERMISSION_PROFILES=true
-    - FEATURE_AI_ML=true
+    - FEATURE_AI_ML=false
 
   msa_sms:
     container_name: msa_sms
@@ -106,7 +106,7 @@ services:
 
   msa_bud:
     container_name: msa_bud
-    image: ubiqube/msa2-bud:2a368ab9efa42320ce8b5060d49b954b76dd323d
+    image: ubiqube/msa2-bud:bd904fbd4b3615581672d81f82fdd1959d9ffc93
     depends_on:
       - db
     volumes:
@@ -114,7 +114,7 @@ services:
 
   msa_alarm:
     container_name: msa_alarm
-    image: ubiqube/msa2-alarm:d760b58a932d97ca31c57ea9c32b2fb062b79e4d
+    image: ubiqube/msa2-alarm:4887c3bcc71bf140ad8dbf1db36124b18a758134
     depends_on:
       - db
       - msa_es
