@@ -86,7 +86,7 @@ services:
       - "/mnt/NASVolume/msa_api:/opt/ubi-jentreprise/generated/conf"
 
   msa_ui:
-    image: openmsa/openmsa:msa2-ui-2.3.0GA-dcd2e94c3395c3ba78004d8d76345d8fcfaaff21
+    image: openmsa/openmsa:msa2-ui-2.3.0GA-470b952ee72c30a8dccdfee31bf4368425d144bc
     depends_on:
       - msa_api
     deploy:
@@ -179,7 +179,7 @@ services:
           - "node.role==manager"
 
   msa_dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.3.0GA-d49b2df4db2c85c53728864ad1f744ebfa6e9c74
+    image: openmsa/openmsa:msa2-linuxdev-2.3.0GA-73d93dc0779db3e7e22a11db6564c628d465d10e
     deploy:
       replicas: 1
       placement:
