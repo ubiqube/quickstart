@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: openmsa/openmsa:msa2-front-2.3.0GA-f70597cd7ca8e1cace46003615b3a1820b1ac515
+    image: openmsa/openmsa:msa2-front-2.3.1-ae6ecc33e3f20d2ad7cc4dd3f3c04d3d00c4dab3
     depends_on:
       - msa_api
       - msa_ui
@@ -57,7 +57,7 @@ services:
         condition: on-failure
  
   msa_api:
-    image: openmsa/openmsa:msa2-api-2.3.0GA-925898510583b7c4a38d9ca86532bf68cc7d5319
+    image: openmsa/openmsa:msa2-api-2.3.1-c138c9ba751837b0bf24c51a8af4dc969feeb4ac
     depends_on:
       - db
     deploy:
