@@ -26,6 +26,11 @@ services:
         published: 162
         protocol: udp
         mode: host
+      - target: 69
+        published: 69
+        protocol: udp
+        mode: host
+      - "5200-5210:5200-5200/udp"
    #
     # uncomment one of the 2 sections below when installing a custom certificate 
     # - Docker standard standalone installation
