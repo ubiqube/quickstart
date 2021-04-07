@@ -188,29 +188,6 @@ update_all_github_repo() {
     fi
 }
 
-uninstall_adapter() {
-    DEVICE_DIR=$1
-    echo "-------------------------------------------------------------------------------"
-    echo " Uninstall $DEVICE_DIR adapter source code from github repo "
-    echo "-------------------------------------------------------------------------------"
-    /opt/devops/OpenMSA_Adapters/bin/da_installer uninstall /opt/devops/OpenMSA_Adapters/adapters/$DEVICE_DIR
-}
-
-#
-# $2 : installation mode: DEV_MODE = create symlink / USER_MODE = copy code
-#
-install_adapter() {
-    DEVICE_DIR=$1
-    MODE=$2
-    echo "-------------------------------------------------------------------------------"
-    echo " Install $DEVICE_DIR adapter source code from github repo "
-    echo "-------------------------------------------------------------------------------"
-
-    /opt/devops/OpenMSA_Adapters/bin/da_installer install /opt/devops/OpenMSA_Adapters/adapters/$DEVICE_DIR $MODE
-    echo "DONE"
-
-}
-
 install_python_sdk() {
     mkdir -p /opt/fmc_repository/Process/PythonReference/custom
     touch /opt/fmc_repository/Process/PythonReference/custom/__init__.py
@@ -330,90 +307,6 @@ install_workflows() {
 
 }
 
-install_adapters() {
-    local adapters=(
-
-    #a10_thunder
-    a10_thunder_axapi
-    adtran_generic
-    adva_nc
-    ansible_generic
-    aws_generic
-    brocade_vyatta
-    catalyst_ios
-    checkpoint_r80
-    cisco_apic
-    cisco_asa_generic
-    cisco_asa_rest
-    #cisco_asr
-    cisco_isr
-    #cisco_nexus9000
-    citrix_adc
-    dell_redfish
-    esa
-    f5_bigip
-    fortigate
-    #fortinet_fortianalyzer
-    #fortinet_fortimanager
-    fortinet_generic
-    #fortinet_jsonapi
-    fortiweb
-    fujitsu_ipcom
-    hp2530
-    hp5900
-    hpe_redfish
-    huawei_generic
-    intel_redfish
-    #juniper_contrail
-    juniper_rest
-    juniper_srx
-    kubernetes_generic
-    lanner_ipmi
-    linux_generic
-    linux_k8_cli
-    mikrotik_generic
-    mon_checkpoint_fw
-    mon_cisco_asa
-    mon_cisco_ios
-    mon_fortinet_fortigate
-    mon_generic
-    nec_intersecvmlb
-    nec_intersecvmsg
-    nec_ix
-    nec_nfa
-    nec_pflow_p4_unc
-    nec_pflow_pfcscapi
-    netconf_generic
-    nfvo_generic
-    nokia_cloudband
-    nokia_vsd
-    oneaccess_lbb
-    oneaccess_netconf
-    oneaccess_whitebox
-    opendaylight
-    openstack_keystone_v3
-    paloalto
-    paloalto_chassis
-    paloalto_generic
-    paloalto_vsys
-    pfsense_fw
-    rancher_cmp
-    redfish_generic
-    rest_generic
-    rest_netbox
-    #stormshield
-    veex_rtu
-    versa_analytics
-    versa_appliance
-    versa_director
-    virtuora_nc
-    vmware_vsphere
-    vnfm_generic
-    wsa
-    )
-
-    for adapter in ${adapters[@]}; do install_adapter $adapter; done
-}
 
 finalize_install() {
     echo "-------------------------------------------------------------------------------"
@@ -523,7 +416,6 @@ main() {
             install_license  $option
             init_intall
             update_all_github_repo  $cmd
-			install_adapters
 			;;
         py)
             init_intall
