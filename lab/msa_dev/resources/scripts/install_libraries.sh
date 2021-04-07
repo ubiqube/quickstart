@@ -24,22 +24,21 @@ install_license() {
 }
 
 init_intall() {
-    
-    git config --global alias.lg "log --graph --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(bold blue)<%an>%C(reset) %C(green)(%ar)%C(reset)' --abbrev-commit --date=relative"; \
-    git config --global push.default simple; \
-    
-    mkdir -p /opt/fmc_entities; \
-    mkdir -p /opt/fmc_repository/CommandDefinition; \
-    mkdir -p /opt/fmc_repository/CommandDefinition/microservices; \
-    mkdir -p /opt/fmc_repository/Configuration; \
-    mkdir -p /opt/fmc_repository/Datafiles; \
-    mkdir -p /opt/fmc_repository/Documentation; \
-    mkdir -p /opt/fmc_repository/Firmware; \
-    mkdir -p /opt/fmc_repository/License; \
-    mkdir -p /opt/fmc_repository/Process; \
 
-    chown -R ncuser.ncuser /opt/fmc_repository /opt/fmc_entities
-    
+    git config --global alias.lg "log --graph --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(bold blue)<%an>%C(reset) %C(green)(%ar)%C(reset)' --abbrev-commit --date=relative";
+    git config --global push.default simple;
+    git config --global pull.rebase false;
+    mkdir -p /opt/fmc_entities;
+    mkdir -p /opt/fmc_repository/CommandDefinition;
+    mkdir -p /opt/fmc_repository/CommandDefinition/microservices;
+    mkdir -p /opt/fmc_repository/Configuration;
+    mkdir -p /opt/fmc_repository/Datafiles;
+    mkdir -p /opt/fmc_repository/Documentation;
+    mkdir -p /opt/fmc_repository/Firmware;
+    mkdir -p /opt/fmc_repository/License;
+    mkdir -p /opt/fmc_repository/Process;
+
+    chown -R ncuser.ncuser /opt/fmc_repository /opt/fmc_entities    
 }
 
 update_git_repo () {
@@ -49,7 +48,7 @@ update_git_repo () {
     REPO_DIR=$3
     DEFAULT_BRANCH=$4
     DEFAULT_DEV_BRANCH=$5
-    
+
     cd $REPO_BASE_DIR
     echo ">> "
     echo ">> $REPO_URL"
@@ -135,7 +134,7 @@ update_git_repo () {
         echo "> Back to working branch"
         git checkout $CURRENT_BR
         git stash pop
-    else 
+    else
         git clone $REPO_URL $REPO_DIR
         cd $REPO_DIR
         git checkout $DEFAULT_BRANCH;
@@ -149,24 +148,23 @@ update_git_repo () {
     echo ">> DONE"
 }
 
-
 update_all_github_repo() {
     echo "-------------------------------------------------------------------------------"
     echo " Update the github repositories "
     echo "-------------------------------------------------------------------------------"
     install_type=$1
     git config --global user.email devops@openmsa.co
-    
+
     if [[ $install_type = "all" || $install_type = "da" ]];
     then
         update_git_repo "https://github.com/openmsa/Adapters.git" "/opt/devops" "OpenMSA_Adapters" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
     fi
-    
+
     if [[ $install_type = "all" || $install_type = "ms" ]];
     then
         update_git_repo "https://github.com/openmsa/Microservices.git" "/opt/fmc_repository" "OpenMSA_MS" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
     fi
-    
+
     if [[ $install_type = "all" || $install_type = "wf" ]];
     then
         update_git_repo "https://github.com/openmsa/Workflows.git" "/opt/fmc_repository" "OpenMSA_WF" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
@@ -183,8 +181,8 @@ update_all_github_repo() {
     fi
 
     if [[ $install_type = "all" || $install_type = "quickstart" ]];
-    then    
-        update_git_repo "https://github.com/ubiqube/quickstart.git" "/opt/fmc_repository" "quickstart" $QUICKSTART_DEFAULT_BRANCH 
+    then
+        update_git_repo "https://github.com/ubiqube/quickstart.git" "/opt/fmc_repository" "quickstart" $QUICKSTART_DEFAULT_BRANCH
     fi
 }
 
@@ -198,60 +196,60 @@ install_python_sdk() {
 }
 
 install_microservices () {
-    
+
     echo "-------------------------------------------------------------------------------"
     echo " Install some MS from OpenMSA github repo"
     echo "-------------------------------------------------------------------------------"
-    cd /opt/fmc_repository/CommandDefinition/; 
+    cd /opt/fmc_repository/CommandDefinition/;
     echo "  >> ADVA"
-    ln -fsn ../OpenMSA_MS/ADVA ADVA; ln -fsn ../OpenMSA_MS/.meta_ADVA .meta_ADVA; 
+    ln -fsn ../OpenMSA_MS/ADVA ADVA; ln -fsn ../OpenMSA_MS/.meta_ADVA .meta_ADVA;
     echo "  >> ANSIBLE"
-    ln -fsn ../OpenMSA_MS/ANSIBLE ANSIBLE; ln -fsn ../OpenMSA_MS/.meta_ANSIBLE .meta_ANSIBLE; 
+    ln -fsn ../OpenMSA_MS/ANSIBLE ANSIBLE; ln -fsn ../OpenMSA_MS/.meta_ANSIBLE .meta_ANSIBLE;
     echo "  >> AWS"
-    ln -fsn ../OpenMSA_MS/AWS AWS; ln -fsn ../OpenMSA_MS/.meta_AWS .meta_AWS; 
+    ln -fsn ../OpenMSA_MS/AWS AWS; ln -fsn ../OpenMSA_MS/.meta_AWS .meta_AWS;
     echo "  >> CHECKPOINT"
-    ln -fsn ../OpenMSA_MS/CHECKPOINT CHECKPOINT; ln -fsn ../OpenMSA_MS/.meta_CHECKPOINT .meta_CHECKPOINT; 
+    ln -fsn ../OpenMSA_MS/CHECKPOINT CHECKPOINT; ln -fsn ../OpenMSA_MS/.meta_CHECKPOINT .meta_CHECKPOINT;
     echo "  >> CISCO"
-    ln -fsn ../OpenMSA_MS/CISCO CISCO; ln -fsn ../OpenMSA_MS/.meta_CISCO .meta_CISCO; 
+    ln -fsn ../OpenMSA_MS/CISCO CISCO; ln -fsn ../OpenMSA_MS/.meta_CISCO .meta_CISCO;
     echo "  >> CITRIX"
-    ln -fsn ../OpenMSA_MS/CITRIX CITRIX; ln -fsn ../OpenMSA_MS/.meta_CITRIX .meta_CITRIX; 
+    ln -fsn ../OpenMSA_MS/CITRIX CITRIX; ln -fsn ../OpenMSA_MS/.meta_CITRIX .meta_CITRIX;
     echo "  >> FLEXIWAN"
-    ln -fsn ../OpenMSA_MS/FLEXIWAN FLEXIWAN; ln -fsn ../OpenMSA_MS/.meta_FLEXIWAN .meta_FLEXIWAN; 
+    ln -fsn ../OpenMSA_MS/FLEXIWAN FLEXIWAN; ln -fsn ../OpenMSA_MS/.meta_FLEXIWAN .meta_FLEXIWAN;
     echo "  >> FORTINET"
-    ln -fsn ../OpenMSA_MS/FORTINET FORTINET; ln -fsn ../OpenMSA_MS/.meta_FORTINET .meta_FORTINET; 
+    ln -fsn ../OpenMSA_MS/FORTINET FORTINET; ln -fsn ../OpenMSA_MS/.meta_FORTINET .meta_FORTINET;
     echo "  >> JUNIPER"
     ln -fsn ../OpenMSA_MS/JUNIPER JUNIPER; ln -fsn ../OpenMSA_MS/.meta_JUNIPER .meta_JUNIPER;
     rm -rf  JUNIPER/SSG
     echo "  >> LINUX"
-    ln -fsn ../OpenMSA_MS/LINUX LINUX; ln -fsn ../OpenMSA_MS/.meta_LINUX .meta_LINUX; 
+    ln -fsn ../OpenMSA_MS/LINUX LINUX; ln -fsn ../OpenMSA_MS/.meta_LINUX .meta_LINUX;
     echo "  >> MIKROTIK"
-    ln -fsn ../OpenMSA_MS/MIKROTIK MIKROTIK; ln -fsn ../OpenMSA_MS/.meta_MIKROTIK .meta_MIKROTIK; 
+    ln -fsn ../OpenMSA_MS/MIKROTIK MIKROTIK; ln -fsn ../OpenMSA_MS/.meta_MIKROTIK .meta_MIKROTIK;
     echo "  >> OPENSTACK"
-    ln -fsn ../OpenMSA_MS/OPENSTACK OPENSTACK; ln -fsn ../OpenMSA_MS/.meta_OPENSTACK .meta_OPENSTACK; 
+    ln -fsn ../OpenMSA_MS/OPENSTACK OPENSTACK; ln -fsn ../OpenMSA_MS/.meta_OPENSTACK .meta_OPENSTACK;
     echo "  >> ONEACCESS"
-    ln -fsn ../OpenMSA_MS/ONEACCESS ONEACCESS; ln -fsn ../OpenMSA_MS/.meta_ONEACCESS .meta_ONEACCESS; 
+    ln -fsn ../OpenMSA_MS/ONEACCESS ONEACCESS; ln -fsn ../OpenMSA_MS/.meta_ONEACCESS .meta_ONEACCESS;
     echo "  >> PALOALTO"
-    ln -fsn ../OpenMSA_MS/PALOALTO PALOALTO; ln -fsn ../OpenMSA_MS/.meta_PALOALTO .meta_PALOALTO; 
+    ln -fsn ../OpenMSA_MS/PALOALTO PALOALTO; ln -fsn ../OpenMSA_MS/.meta_PALOALTO .meta_PALOALTO;
     echo "  >> PFSENSE"
-    ln -fsn ../OpenMSA_MS/PFSENSE PFSENSE; ln -fsn ../OpenMSA_MS/.meta_PFSENSE .meta_PFSENSE; 
+    ln -fsn ../OpenMSA_MS/PFSENSE PFSENSE; ln -fsn ../OpenMSA_MS/.meta_PFSENSE .meta_PFSENSE;
     echo "  >> REDFISHAPI"
-    ln -fsn ../OpenMSA_MS/REDFISHAPI REDFISHAPI; ln -fsn ../OpenMSA_MS/.meta_REDFISHAPI .meta_REDFISHAPI; 
+    ln -fsn ../OpenMSA_MS/REDFISHAPI REDFISHAPI; ln -fsn ../OpenMSA_MS/.meta_REDFISHAPI .meta_REDFISHAPI;
     echo "  >> REST"
-    ln -fsn ../OpenMSA_MS/REST REST; ln -fsn ../OpenMSA_MS/.meta_REST .meta_REST; 
+    ln -fsn ../OpenMSA_MS/REST REST; ln -fsn ../OpenMSA_MS/.meta_REST .meta_REST;
     echo "  >> ETSI-MANO"
     ln -fsn ../OpenMSA_MS/NFVO NFVO;  ln -fsn ../OpenMSA_MS/.meta_NFVO .meta_NFVO
     ln -fsn ../OpenMSA_MS/VNFM VNFM; ln -fsn ../OpenMSA_MS/.meta_VNFM .meta_VNFM
     ln -fsn ../OpenMSA_MS/KUBERNETES KUBERNETES; ln -fsn ../OpenMSA_MS/.meta_KUBERNETES .meta_KUBERNETES
     echo "  >> NETBOX"
-    ln -fsn ../OpenMSA_MS/NETBOX NETBOX; ln -fsn ../OpenMSA_MS/.meta_NETBOX .meta_NETBOX; 
+    ln -fsn ../OpenMSA_MS/NETBOX NETBOX; ln -fsn ../OpenMSA_MS/.meta_NETBOX .meta_NETBOX;
     echo "  >> DELL/REDFISH"
-    ln -fsn ../OpenMSA_MS/DELL DELL; ln -fsn ../OpenMSA_MS/.meta_DELL .meta_DELL; 
+    ln -fsn ../OpenMSA_MS/DELL DELL; ln -fsn ../OpenMSA_MS/.meta_DELL .meta_DELL;
     echo "  >> INTEL/REDFISH"
-    ln -fsn ../OpenMSA_MS/INTEL INTEL; ln -fsn ../OpenMSA_MS/.meta_INTEL .meta_INTEL; 
+    ln -fsn ../OpenMSA_MS/INTEL INTEL; ln -fsn ../OpenMSA_MS/.meta_INTEL .meta_INTEL;
     echo "  >> HP/REDFISH"
-    ln -fsn ../OpenMSA_MS/HP HP; ln -fsn ../OpenMSA_MS/.meta_HP .meta_HP; 
+    ln -fsn ../OpenMSA_MS/HP HP; ln -fsn ../OpenMSA_MS/.meta_HP .meta_HP;
     echo "  >> LANNER/IPMI"
-    ln -fsn ../OpenMSA_MS/LANNER LANNER; ln -fsn ../OpenMSA_MS/.meta_LANNER .meta_LANNER; 
+    ln -fsn ../OpenMSA_MS/LANNER LANNER; ln -fsn ../OpenMSA_MS/.meta_LANNER .meta_LANNER;
 
     echo "DONE"
 
@@ -262,13 +260,13 @@ install_workflows() {
     echo "-------------------------------------------------------------------------------"
     echo " Install some WF from OpenMSA github github repository"
     echo "-------------------------------------------------------------------------------"
-    cd /opt/fmc_repository/Process; \
+    cd /opt/fmc_repository/Process;
     echo "  >> WF references and libs"
-    ln -fsn ../OpenMSA_WF/Reference Reference; \
-    ln -fsn ../OpenMSA_WF/.meta_Reference .meta_Reference; \
+    ln -fsn ../OpenMSA_WF/Reference Reference;
+    ln -fsn ../OpenMSA_WF/.meta_Reference .meta_Reference;
     echo "  >> WF tutorials"
-    ln -fsn ../OpenMSA_WF/Tutorials Tutorials; \
-    ln -fsn ../OpenMSA_WF/.meta_Tutorials .meta_Tutorials; \
+    ln -fsn ../OpenMSA_WF/Tutorials Tutorials;
+    ln -fsn ../OpenMSA_WF/.meta_Tutorials .meta_Tutorials;
     echo "  >> BIOS_Automation"
     ln -fsn ../OpenMSA_WF/BIOS_Automation BIOS_Automation
     ln -fsn ../OpenMSA_WF/.meta_BIOS_Automation .meta_BIOS_Automation
@@ -300,36 +298,33 @@ install_workflows() {
     echo "-------------------------------------------------------------------------------"
     echo " Install mini lab setup WF from quickstart github repository"
     echo "-------------------------------------------------------------------------------"
-    ln -fsn ../quickstart/lab/msa_dev/resources/libraries/workflows/SelfDemoSetup SelfDemoSetup; \
-    ln -fsn ../quickstart/lab/msa_dev/resources/libraries/workflows/.meta_SelfDemoSetup .meta_SelfDemoSetup; \
+    ln -fsn ../quickstart/lab/msa_dev/resources/libraries/workflows/SelfDemoSetup SelfDemoSetup;
+    ln -fsn ../quickstart/lab/msa_dev/resources/libraries/workflows/.meta_SelfDemoSetup .meta_SelfDemoSetup;
 
     echo "DONE"
 
 }
 
-
 finalize_install() {
     echo "-------------------------------------------------------------------------------"
     echo " Removing OneAccess Netconf MS definition with advanced variable types"
     echo "-------------------------------------------------------------------------------"
-    rm -rf /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/Advanced 
+    rm -rf /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/Advanced
     rm -rf /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/.meta_Advanced
     echo "DONE"
 
     echo "-------------------------------------------------------------------------------"
     echo " update file owner to ncuser.ncuser"
     echo "-------------------------------------------------------------------------------"
-    chown -R ncuser:ncuser /opt/fmc_repository/*; 
-    if [[ $install_type = "all" || $install_type = "da" ]];
-    then 
-    chown -R ncuser.ncuser /opt/devops/OpenMSA_Adapters
-    chown -R ncuser.ncuser /opt/devops/OpenMSA_Adapters/adapters/*
-    chown -R ncuser.ncuser /opt/devops/OpenMSA_Adapters/vendor/*
+    chown -R ncuser:ncuser /opt/fmc_repository/*;
+    if [[ $install_type = "all" || $install_type = "da" ]]; then
+        chown -R ncuser.ncuser /opt/devops/OpenMSA_Adapters
+        chown -R ncuser.ncuser /opt/devops/OpenMSA_Adapters/adapters/*
+        chown -R ncuser.ncuser /opt/devops/OpenMSA_Adapters/vendor/*
     fi
 
     echo "DONE"
-    if [[ $install_type = "all" || $install_type = "da" ]];
-    then
+    if [[ $install_type = "all" || $install_type = "da" ]]; then
         echo "-------------------------------------------------------------------------------"
         echo " service restart"
         echo "-------------------------------------------------------------------------------"
@@ -360,7 +355,6 @@ usage() {
 }
 
 main() {
-
 
 	cmd=$1
 
