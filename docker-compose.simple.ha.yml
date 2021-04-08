@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:24c4e65fabcaa0e2e9ba3aecf5c22b1a0e5fd3b6
+    image: ubiqube/msa2-front:78a48263b4c821cbc7902649993a6ba183abd6f9
     depends_on:
       - msa_api
       - msa_ui
@@ -42,7 +42,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:214cdca5764e064c4d47a0eaa1f0181a8a195236
+    image: ubiqube/msa2-db:6944deb8c323d48530a34494cf8f492279970182
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -61,7 +61,7 @@ services:
         condition: on-failure
  
   msa_api:
-    image: ubiqube/msa2-api:3be83300c930b808686011aa91a02eb9d3bc20db
+    image: ubiqube/msa2-api:3bfa324bb08a49489f6c632e6882e96a9e1771d4
     depends_on:
       - db
     deploy:
@@ -90,7 +90,7 @@ services:
       - "/mnt/NASVolume/msa_api:/opt/ubi-jentreprise/generated/conf"
 
   msa_ui:
-    image: ubiqube/msa2-ui:304cc88a8ac7a34de22f9dfb04e851e18f5cdbf7
+    image: ubiqube/msa2-ui:9ec261d775a4664ac97d316067bbbd611f83b6cb
     depends_on:
       - msa_api
     deploy:
@@ -110,7 +110,7 @@ services:
 
 
   msa_sms:
-    image: ubiqube/msa2-sms:e96a7ccb0fb08ee40da296d8b84f814d462314f9
+    image: ubiqube/msa2-sms:dde1de7bafc1253bbf208603b9b1353476b92986
     depends_on:
       - db
     volumes:
@@ -126,14 +126,14 @@ services:
         max_replicas_per_node: 1
 
   msa_bud:
-    image: ubiqube/msa2-bud:2a368ab9efa42320ce8b5060d49b954b76dd323d
+    image: ubiqube/msa2-bud:bd904fbd4b3615581672d81f82fdd1959d9ffc93
     depends_on:
       - db
     deploy:
       replicas: 1
 
   msa_alarm:
-    image: ubiqube/msa2-alarm:d760b58a932d97ca31c57ea9c32b2fb062b79e4d
+    image: ubiqube/msa2-alarm:4887c3bcc71bf140ad8dbf1db36124b18a758134
     depends_on:
       - db
       - msa_es
@@ -183,7 +183,7 @@ services:
           - "node.role==manager"
           
   msa_ai_ml:
-    image: ubiqube/msa2-ai-ml:b6674a077108ed42ca1fb53b9b102bf187f82a65
+    image: ubiqube/msa2-ai-ml:0e29906a56a3bba49ffce28a5beb2ff23999f5e3
     ports:
       - "8000:8000"
     volumes:
@@ -216,7 +216,7 @@ services:
           - "node.role==manager"
 
   msa_dev:
-    image: ubiqube/msa2-linuxdev:f80e093f1bf8a1d9e5df8dfcc96aeba568ccc57f
+    image: ubiqube/msa2-linuxdev:100ea2783d66e544b3831e776091bed836ab18fe
     deploy:
       replicas: 1
       placement:
