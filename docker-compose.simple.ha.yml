@@ -8,7 +8,6 @@ services:
       - msa_api
       - msa_ui
       - camunda
-      - msa_ai_ml
     deploy:
       replicas: 2
       placement:
@@ -111,8 +110,8 @@ services:
     - FEATURE_MONITORING_PROFILES=true
     - FEATURE_SCHEDULE_WORKFLOWS=true
     - FEATURE_PROFILE_AUDIT_LOGS=true
-    - FEATURE_PERMISSION_PROFILES=false
-    - FEATURE_AI_ML=true
+    - FEATURE_PERMISSION_PROFILES=true
+    - FEATURE_AI_ML=false
 
   msa_sms:
     image: ubiqube/msa2-sms:0bf972885a5ca96655348787d5f88ef5e38b6d79
@@ -191,23 +190,6 @@ services:
         constraints:
           - "node.role==manager"
           
-  msa_ai_ml:
-    image: ubiqube/msa2-ai-ml:0e29906a56a3bba49ffce28a5beb2ff23999f5e3
-    ports:
-      - "8000:8000"
-    volumes:
-      - "/mnt/NASVolume/msa_ai_ml_db:/msa_proj/database"
-    networks:
-      default:
-        aliases:
-          - "msa-ai-ml"
-    deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.role==manager"          
-
   msa_cerebro:
     image: lmenezes/cerebro:0.9.2
     entrypoint:
