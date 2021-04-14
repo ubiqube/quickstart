@@ -26,6 +26,11 @@ services:
         published: 162
         protocol: udp
         mode: host
+      - target: 69
+        published: 69
+        protocol: udp
+        mode: host
+      - "5200-5200:5200-5200/udp"
    #
     # uncomment one of the 2 sections below when installing a custom certificate 
     # - Docker standard standalone installation
@@ -85,7 +90,7 @@ services:
     - FEATURE_SCHEDULE_WORKFLOWS=true
     - FEATURE_PROFILE_AUDIT_LOGS=true
     - FEATURE_PERMISSION_PROFILES=true
-    - FEATURE_AI_ML=false
+    - FEATURE_AI_ML=true
 
   msa_sms:
     container_name: msa_sms
@@ -101,8 +106,6 @@ services:
       - "rrd_repository:/opt/rrd"
       - "msa_sms_logs:/opt/sms/logs"
       - "msa_svn:/opt/svnroot"
-    ports:
-      - "69:69"
 
   msa_bud:
     container_name: msa_bud
