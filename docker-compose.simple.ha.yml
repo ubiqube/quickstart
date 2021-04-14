@@ -175,6 +175,10 @@ services:
     environment:
       ELASTICSEARCH_URL: http://msa_es:9200
       ELASTICSEARCH_HOSTS: http://msa_es:9200
+    networks:
+      default:
+        aliases:
+          - "msa-kibana"
     deploy:
       replicas: 1
       placement:
