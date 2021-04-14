@@ -160,7 +160,11 @@ services:
     environment:
       ELASTICSEARCH_URL: http://msa_es:9200
       ELASTICSEARCH_HOSTS: http://msa_es:9200
-
+    networks:
+      default:
+        aliases:
+          - "msa-kibana"
+          
   msa_ai_ml:
     image: ubiqube/msa2-ai-ml:0e29906a56a3bba49ffce28a5beb2ff23999f5e3
     ports:
