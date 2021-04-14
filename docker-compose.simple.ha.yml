@@ -32,6 +32,11 @@ services:
         published: 162
         protocol: udp
         mode: host
+      - target: 69
+        published: 69
+        protocol: udp
+        mode: host
+      - "5200-5200:5200-5200/udp"
     #
     # uncomment one of the 2 sections below when installing a custom certificate 
     # - Docker standard standalone installation
@@ -107,7 +112,7 @@ services:
     - FEATURE_SCHEDULE_WORKFLOWS=true
     - FEATURE_PROFILE_AUDIT_LOGS=true
     - FEATURE_PERMISSION_PROFILES=false
-
+    - FEATURE_AI_ML=true
 
   msa_sms:
     image: ubiqube/msa2-sms:0bf972885a5ca96655348787d5f88ef5e38b6d79
