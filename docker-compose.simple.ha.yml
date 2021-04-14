@@ -111,8 +111,8 @@ services:
     - FEATURE_MONITORING_PROFILES=true
     - FEATURE_SCHEDULE_WORKFLOWS=true
     - FEATURE_PROFILE_AUDIT_LOGS=true
-    - FEATURE_PERMISSION_PROFILES=false
-    - FEATURE_AI_ML=true
+    - FEATURE_PERMISSION_PROFILES=true
+    - FEATURE_AI_ML=false
 
   msa_sms:
     image: ubiqube/msa2-sms:0bf972885a5ca96655348787d5f88ef5e38b6d79
