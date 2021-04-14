@@ -8,7 +8,6 @@ services:
       - msa_api
       - msa_ui
       - camunda
-      - msa_ai_ml
     ports:
       - target: 80
         published: 80
@@ -90,7 +89,7 @@ services:
     - FEATURE_SCHEDULE_WORKFLOWS=true
     - FEATURE_PROFILE_AUDIT_LOGS=true
     - FEATURE_PERMISSION_PROFILES=true
-    - FEATURE_AI_ML=true
+    - FEATURE_AI_ML=false
 
   msa_sms:
     container_name: msa_sms
@@ -167,17 +166,6 @@ services:
       default:
         aliases:
           - "msa-kibana"
-          
-  msa_ai_ml:
-    image: ubiqube/msa2-ai-ml:0e29906a56a3bba49ffce28a5beb2ff23999f5e3
-    ports:
-      - "8000:8000"
-    volumes:
-      - "msa_ai_ml_db:/msa_proj/database"
-    networks:
-      default:
-        aliases:
-          - "msa-ai-ml"
 
   msa_dev:
     container_name: msa_dev
