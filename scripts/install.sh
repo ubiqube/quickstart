@@ -272,7 +272,7 @@ function getLibOptions(){
 
 function waitUpKibana(){
 	echo "Wait Kibana to be ready"
-        until [ $(curl -s -o /dev/null -L -w ''%{http_code}'' "http://$1:5601") == "200" ]
+        until [ $(curl -s -o /dev/null -L -w ''%{http_code}'' "http://$1:5601/kibana") == "200" ]
 	do
 		printf '.'
 		sleep 3
