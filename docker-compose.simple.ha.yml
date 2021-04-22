@@ -174,7 +174,7 @@ services:
       - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
 
   msa_kibana:
-    image: ubiqube/msa2-kibana:868fb6f9e3b5ab8a5a9a346b93b8779262d9e738
+    image: ubiqube/msa2-kibana:7c00eae761d891388ae09c455b3ed61d21779237
     ports:
       - "5601:5601"
     environment:
