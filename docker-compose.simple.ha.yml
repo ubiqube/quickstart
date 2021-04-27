@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:1444c4632d99047ad678e9ce67561749bbc9ad41
+    image: ubiqube/msa2-front:02723a6585a0d5452420426f0f448146841b9e32
     depends_on:
       - msa_api
       - msa_ui
@@ -95,7 +95,7 @@ services:
       - "/mnt/NASVolume/msa_api:/opt/ubi-jentreprise/generated/conf"
 
   msa_ui:
-    image: ubiqube/msa2-ui:d465f5fad1e8867002887cad47602dda14632d01
+    image: ubiqube/msa2-ui:4117605de58e1e39085d2df234ecfec85c849cef
     depends_on:
       - msa_api
     deploy:
