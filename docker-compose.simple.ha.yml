@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: openmsa/openmsa:msa2-front-2.4.0GA-1d1d0178e4923ba8883441dd494c1d146b352c03
+    image: openmsa/openmsa:msa2-front-2.4.0GA-d67cf6407dd81ad1b63f3d8d9f15947be4e592c1
     depends_on:
       - msa_api
       - msa_ui
@@ -95,7 +95,7 @@ services:
       - "/mnt/NASVolume/msa_api:/opt/ubi-jentreprise/generated/conf"
 
   msa_ui:
-    image: openmsa/openmsa:msa2-ui-2.4.0GA-aca86d6082ba4a532657fb2b880f2bc739a4adbe
+    image: openmsa/openmsa:msa2-ui-2.4.0GA-533c1bf94928ea7222365c0e7f958bf182d2c19b
     depends_on:
       - msa_api
     deploy:
