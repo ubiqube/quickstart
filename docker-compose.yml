@@ -3,11 +3,12 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.3.0GA-f70597cd7ca8e1cace46003615b3a1820b1ac515
+    image: openmsa/openmsa:msa2-front-2.4.0GA-d67cf6407dd81ad1b63f3d8d9f15947be4e592c1
     depends_on:
       - msa_api
       - msa_ui
       - camunda
+      - msa_ai_ml
     ports:
       - target: 80
         published: 80
@@ -25,6 +26,11 @@ services:
         published: 162
         protocol: udp
         mode: host
+      - target: 69
+        published: 69
+        protocol: udp
+        mode: host
+      - "5200-5200:5200-5200/udp"
    #
     # uncomment one of the 2 sections below when installing a custom certificate 
     # - Docker standard standalone installation
@@ -35,17 +41,20 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
   db:
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.3.0GA-821e804d7d10187284ecb41e8974e6e554829371
+    image: openmsa/openmsa:msa2-db-2.4.0GA-c1a84d3924bcfbf0c6fb1412a2b6f7ba1af01576
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
       POSTGRES_DB: POSTGRESQL
+      CAMUNDA_PASSWORD: camunda
+      CAMUNDA_DB: process-engine
+      CAMUNDA_USER: camunda
     volumes:
       - "msa_db:/var/lib/postgresql/data"
 
   msa_api:
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.3.0GA-925898510583b7c4a38d9ca86532bf68cc7d5319
+    image: openmsa/openmsa:msa2-api-2.4.0GA-702c96773c6fc60dc0ce4bf5a67c8501ae9ba4b6
     depends_on:
       - db
       - msa_es
@@ -68,7 +77,7 @@ services:
 
   msa_ui:
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.3.0GA-470b952ee72c30a8dccdfee31bf4368425d144bc
+    image: openmsa/openmsa:msa2-ui-2.4.0GA-533c1bf94928ea7222365c0e7f958bf182d2c19b
     depends_on:
       - msa_api
     environment:
@@ -80,11 +89,14 @@ services:
     - FEATURE_MONITORING_PROFILES=true
     - FEATURE_SCHEDULE_WORKFLOWS=true
     - FEATURE_PROFILE_AUDIT_LOGS=true
-    - FEATURE_PERMISSION_PROFILES=false
+    - FEATURE_PERMISSION_PROFILES=true
+    - FEATURE_AI_ML=false
 
   msa_sms:
     container_name: msa_sms
-    image: openmsa/openmsa:msa2-sms-2.3.0GA-302eb8b8f0ad17d7b431c40152707813986c6e77
+    image: openmsa/openmsa:msa2-sms-2.4.0GA-2d4632b64b8543fa461a8e9d8c7dc316f74c9ae9
+    cap_add:
+      - NET_ADMIN
     depends_on:
       - db
       - msa_es
@@ -96,24 +108,37 @@ services:
       - "rrd_repository:/opt/rrd"
       - "msa_sms_logs:/opt/sms/logs"
       - "msa_svn:/opt/svnroot"
-    ports:
-      - "69:69"
 
   msa_bud:
     container_name: msa_bud
-    image: openmsa/openmsa:msa2-bud-2.3.0GA-6449ea6cc905229a8e8b2686cf0b43a81f02e69d
+    image: openmsa/openmsa:msa2-bud-2.4.0GA-bd904fbd4b3615581672d81f82fdd1959d9ffc93
     depends_on:
       - db
     volumes:
       - "msa_bud_logs:/opt/bud/logs/"
 
+  msa_alarm:
+    container_name: msa_alarm
+    image: openmsa/openmsa:msa2-alarm-2.4.0GA-44d6c6ccce1b491fda81c43107f9557699df346c
+    depends_on:
+      - db
+      - msa_es
+
   camunda:
     container_name: camunda
     image: camunda/camunda-bpm-platform:7.13.0
+    environment:
+      DB_DRIVER: org.postgresql.Driver
+      DB_URL: 'jdbc:postgresql://db:5432/process-engine'
+      DB_USERNAME: camunda
+      DB_PASSWORD: camunda
+      DB_VALIDATE_ON_BORROW: 'true'
+      WAIT_FOR: 'db:5432'
+      WAIT_FOR_TIMEOUT: 60
 
   msa_es:
     container_name: msa_es
-    image: openmsa/openmsa:msa2-es-2.3.0GA-9c616a14ba0c35eb545da78bd40bf4f68d9d0d2c
+    image: openmsa/openmsa:msa2-es-2.4.0GA-efcce09bd86619311efcbe7c2262c53ada20be6c
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
@@ -134,17 +159,34 @@ services:
   
   msa_kibana:
     container_name: msa_kibana
-    image: openmsa/openmsa:msa2-kibana-2.3.0GA-868fb6f9e3b5ab8a5a9a346b93b8779262d9e738
+    image: openmsa/openmsa:msa2-kibana-2.4.0GA-7c00eae761d891388ae09c455b3ed61d21779237
+    depends_on:
+      - msa_es
     ports:
       - "5601:5601"
     environment:
       ELASTICSEARCH_URL: http://msa_es:9200
       ELASTICSEARCH_HOSTS: http://msa_es:9200
+    networks:
+      default:
+        aliases:
+          - "msa-kibana"
+          
+  msa_ai_ml:
+    image: openmsa/openmsa:msa2-ai-ml-2.4.0GA-0e29906a56a3bba49ffce28a5beb2ff23999f5e3
+    ports:
+      - "8000:8000"
+    volumes:
+      - "msa_ai_ml_db:/msa_proj/database"
+    networks:
+      default:
+        aliases:
+          - "msa-ai-ml"
 
   msa_dev:
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: openmsa/openmsa:msa2-linuxdev-2.3.0GA-73d93dc0779db3e7e22a11db6564c628d465d10e
+    image: openmsa/openmsa:msa2-linuxdev-2.4.0GA-0d5ca3981ff33eadd85a83852667994e53ceb300
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
@@ -155,7 +197,7 @@ services:
   linux_me:
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.3.0GA-7fc20ffaef77c39f402b6fcaa81b24540ee35850
+    image: openmsa/openmsa:msa2-linuxme-2.4.0GA-7fc20ffaef77c39f402b6fcaa81b24540ee35850
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -175,7 +217,8 @@ services:
   linux_me_2:
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.3.0GA-7fc20ffaef77c39f402b6fcaa81b24540ee35850
+    image: openmsa/openmsa:msa2-linuxme-2.4.0GA-7fc20ffaef77c39f402b6fcaa81b24540ee35850
+    #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
       - NET_RAW
@@ -204,6 +247,7 @@ volumes:
   msa_bud_logs:
   msa_front:
   msa_svn:
+  msa_ai_ml_db:
 
 networks:
   default:
