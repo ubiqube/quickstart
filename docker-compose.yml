@@ -113,10 +113,8 @@ services:
 
   msa_es:
     container_name: msa_es
-    #image: ubiqube/msa2-es:d9899d1f09809a40548f96211984647a8b4901fc
-    # use a custom image for compatibility with Filebeat 7.10.1
-    image: ubiqube/msa2-es:msa2-es-7.10.1
-   environment:
+    image: openmsa/openmsa:msa2-es-2.4.0-elasticsearch-7.12.1
+    environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
       - bootstrap.memory_lock=true
@@ -136,7 +134,9 @@ services:
   
   msa_kibana:
     container_name: msa_kibana
-    image: openmsa/openmsa:msa2-kibana-2.3.0GA-868fb6f9e3b5ab8a5a9a346b93b8779262d9e738
+    image: openmsa/openmsa:msa2-kibana-2.4.0-kibana-7.12.1
+    depends_on:
+      - msa_es
     ports:
       - "5601:5601"
     environment:
@@ -204,7 +204,7 @@ services:
      - /var/lib/docker/volumes/quickstart_msa_sms_logs/_data:/var/lib/docker/volumes/quickstart_msa_sms_logs/_data:ro
      - /var/lib/docker/volumes/quickstart_msa_api_logs/_data:/var/lib/docker/volumes/quickstart_msa_api_logs/_data:ro
     privileged: true
-     
+
 volumes:
   msa_api:
   msa_db:
@@ -218,8 +218,14 @@ volumes:
   msa_bud_logs:
   msa_front:
   msa_svn:
+<<<<<<< Updated upstream
   msa_fb:
   
+=======
+  msa_ai_ml_db:
+  msa_fb
+
+>>>>>>> Stashed changes
 networks:
   default:
     name: quickstart_default
