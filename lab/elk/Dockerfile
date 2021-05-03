@@ -1,4 +1,4 @@
-FROM docker.elastic.co/beats/filebeat:7.10.1
+FROM docker.elastic.co/beats/filebeat:7.12.1
 
 RUN usermod -u 1000 filebeat
 RUN usermod -g 1000 filebeat
