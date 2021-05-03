@@ -1,3 +1,6 @@
+filebeat.modules:
+- module: fortinet
+
 filebeat.inputs:
 - type: log
   paths:
