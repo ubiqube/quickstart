@@ -90,7 +90,7 @@ PID_1=${BASH_REMATCH[1]}
 [[ $PID2RAW =~ $reg ]]
 PID_2=${BASH_REMATCH[1]}
 
-echo "PIDS : $PID_1, $PID_2"
+#echo "PIDS : $PID_1, $PID_2"
 
 sleep 5
 ME1RAW=$(executeCurl $TOKEN 'GET' "/orchestration/v1/process-instance/$PID_1")
@@ -133,7 +133,7 @@ else
         reg='.*SID([0-9]+)'
         [[ $DASH_RAW =~ $reg ]]
         DASH_SERVICEID=${BASH_REMATCH[1]}
-        echo "Sevice ID $DASH_SERVICEID"
+        #echo "Sevice ID $DASH_SERVICEID"
 
         sleep 3
         HASH_RAW=$(executeCurl $TOKEN 'GET' "/orchestration/service/variables/$DASH_SERVICEID/Hash")
@@ -141,12 +141,12 @@ else
         reg='.*ash\s+:\s+(\w+)'
         [[ $HASH_RAW =~ $reg ]]
         HASH=${BASH_REMATCH[1]}
-        echo "KIB HAS $HASH"
+        #echo "KIB HAS $HASH"
 
         body='{"content":{"language":"en","drawerWidth":{"automationDetail":600},"tableRows":{"dashboard":12,"managedEntities":10,"automation":10,"configurations":10,"admin":10,"logs":10,"alarms":10,"monitoringProfiles":10,"permissionProfiles":10,"bpmOverview":10,"bpmDetails":10,"profileAuditLogs":10,"aiStates":10},"autoRefresh":60000,"dashboard":[{"style":"Dashboard Panel","type":"MSA Component","component":"Managed Entity Status","title":"Infrastructure","lg":6,"height":120},{"style":"Dashboard Panel","type":"MSA Component","component":"Automation","title":"Automation","lg":6,"height":120},{"style":"Dashboard Panel","type":"MSA Component","component":"Kibana Dashboard","title":"Dashboard","lg":12,"height":120,"extendedListValues":{"kibanaUrl":"<HASH>"}}]}}'
         body=${body/<HASH>/$HASH}
 
-        echo "BODY $body"
+        #echo "BODY $body"
         #executeCurl $TOKEN 'PUT' "/repository/file?uri=Datafiles/.NCLG1_UI_SETTINGS.json" \'"$body"\'
         executeCurl $TOKEN 'PUT' "/repository/file?uri=Datafiles/.NCLG1_UI_SETTINGS.json" '{"content":{"language":"en","drawerWidth":{"automationDetail":600},"tableRows":{"dashboard":12,"managedEntities":10,"automation":10,"configurations":10,"admin":10,"logs":10,"alarms":10,"monitoringProfiles":10,"permissionProfiles":10,"bpmOverview":10,"bpmDetails":10,"profileAuditLogs":10,"aiStates":10},"autoRefresh":60000,"dashboard":[{"style":"Dashboard Panel","type":"MSA Component","component":"Managed Entity Status","title":"Infrastructure","lg":6,"height":120},{"style":"Dashboard Panel","type":"MSA Component","component":"Automation","title":"Automation","lg":6,"height":120},{"style":"Dashboard Panel","type":"MSA Component","component":"Kibana Dashboard","title":"Dashboard","lg":12,"height":120,"extendedListValues":{"kibanaUrl":"'"$HASH"'"}}]}}'
 fi
