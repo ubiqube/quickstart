@@ -39,7 +39,7 @@ echo "-------------------------------------------------------"
 
 tenantExist=$(executeCurl $TOKEN 'GET' "/operator/v1/exists/$OPERATOR")
 if [[ $tenantExist == *"false"* ]]; then
-        executeCurl $TOKEN 'POST' "/operator/$OPERATOR?name=BladeRunner"
+        tenant=$(executeCurl $TOKEN 'POST' "/operator/$OPERATOR?name=BladeRunner")
 else
         echo "$OPERATOR already exists"
 fi
@@ -48,7 +48,7 @@ subTenantExist=$(executeCurl $TOKEN 'GET' "/customer/reference/TyrellCorp")
 if [[ $subTenantExist == *"actorId"* ]]; then
         echo "Subtenant Tyrell Corporation already exists"
 else
-        executeCurl $TOKEN 'POST' "/customer/$OPERATOR?name=Tyrell%20Corporation&reference=TyrellCorp" '{"name":"Tyrell Corporation"}'
+        subtenant=$(executeCurl $TOKEN 'POST' "/customer/$OPERATOR?name=Tyrell%20Corporation&reference=TyrellCorp" '{"name":"Tyrell Corporation"}')
 fi
 
 CUSTLIST=`curl -s -H "Content-Type:application/json" -H "Authorization: Bearer "$TOKEN -XGET http://msa_api:8480/ubi-api-rest/lookup/customers`
@@ -68,13 +68,13 @@ echo "--------------------------------------------------"
 echo "ATTACH WORKFLOWS TO CUSTOMER $CUSTID"
 echo "--------------------------------------------------"
 echo "> Self Demo Setup"
-curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://msa_api:8480/ubi-api-rest/orchestration/$CUSTID/service/attach?uri=Process/SelfDemoSetup/SelfDemoSetup.xml"
+wf=$(executeCurl $TOKEN 'POST' "/orchestration/$CUSTID/service/attach?uri=Process/SelfDemoSetup/SelfDemoSetup.xml")
 echo "> Simple Firewall Python"
-curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://msa_api:8480/ubi-api-rest/orchestration/$CUSTID/service/attach?uri=Process/Tutorials/python/Simple_Firewall/Simple_Firewall.xml"
+wf=$(executeCurl $TOKEN 'POST' "/orchestration/$CUSTID/service/attach?uri=Process/Tutorials/python/Simple_Firewall/Simple_Firewall.xml")
 echo "> Security Event Detection"
-curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://msa_api:8480/ubi-api-rest/orchestration/$CUSTID/service/attach?uri=Process/Tutorials/alarm/Alarm_Action/Alarm_Action.xml"
+wf=$(executeCurl $TOKEN 'POST' "/orchestration/$CUSTID/service/attach?uri=Process/Tutorials/alarm/Alarm_Action/Alarm_Action.xml")
 echo "> Dashboard Deployment"
-curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://msa_api:8480/ubi-api-rest/orchestration/$CUSTID/service/attach?uri=Process/Analytics/Kibana/kibana_dashboard.xml"
+wf=$(executeCurl $TOKEN 'POST' "/orchestration/$CUSTID/service/attach?uri=Process/Analytics/Kibana/kibana_dashboard.xml")
 
 echo "--------------------------------------------------"
 echo "CREATE DEMO DEVICES"
@@ -114,11 +114,11 @@ if [[ $pflExist == *"false"* ]]; then
 curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPOST "http://msa_api:8480/ubi-api-rest/profile/monitoring-profile/$CUSTIDONLY" \
    -d '{ "name":"Linux","externalReference": "TyrellMonitoringPfl","comment":"TyrellMonitoringPfl","graphRendererList":[{"id":0,"profileId":0,"name":"CPU","verticalLabel":"Percent","dataList":[{"horizontalLabel":"1 min","color":"#d33115","profileId":0,"rendererId":0,"snmpPollingData":null,"snmpPollingId":0},{"horizontalLabel":"5 min","color":"#dbdf00","profileId":0,"rendererId":0,"snmpPollingData":null,"snmpPollingId":1},{"horizontalLabel":"15 min","color":"#16a5a5","profileId":0,"rendererId":0,"snmpPollingData":null,"snmpPollingId":2}]},{"id":1,"profileId":0,"name":"Memory","verticalLabel":"kB","dataList":[{"horizontalLabel":"avail","color":"#fe9200","profileId":0,"rendererId":0,"snmpPollingData":null,"snmpPollingId":3},{"horizontalLabel":"totall free","color":"#dbdf00","profileId":0,"rendererId":0,"snmpPollingData":null,"snmpPollingId":4},{"horizontalLabel":"shared","color":"#68ccca","profileId":0,"rendererId":0,"snmpPollingData":null,"snmpPollingId":5},{"horizontalLabel":"buffer","color":"#aea1ff","profileId":0,"rendererId":0,"snmpPollingData":null,"snmpPollingId":6},{"horizontalLabel":"cached","color":"#fa28ff","profileId":0,"rendererId":0,"snmpPollingData":null,"snmpPollingId":7},{"horizontalLabel":"total real","color":"#653294","profileId":0,"rendererId":0,"snmpPollingData":null,"snmpPollingId":8}]},{"id":2,"profileId":0,"name":"Traffic","verticalLabel":"KPS","dataList":[{"horizontalLabel":"IN","color":"#68ccca","profileId":0,"rendererId":0,"snmpPollingData":null,"snmpPollingId":9},{"horizontalLabel":"OUT","color":"#fcdc00","profileId":0,"rendererId":0,"snmpPollingData":null,"snmpPollingId":10}]}],"snmpPollingList":[{"id":0,"name":"cpu_load_1min","oid":"1.3.6.1.4.1.2021.10.1.5.1","pollingType":"G","minValue":0,"maxValue":-1,"comment":"","thresholdComparator":"G","threshold":60,"thresholdFrequency":"M","profileId":0,"pollingPeriod":1},{"id":1,"name":"cpu_load_5min","oid":"1.3.6.1.4.1.2021.10.1.5.2","pollingType":"G","minValue":0,"maxValue":-1,"comment":"","thresholdComparator":"G","threshold":70,"thresholdFrequency":"M","profileId":0,"pollingPeriod":1},{"id":2,"name":"cpu_load_15min","oid":"1.3.6.1.4.1.2021.10.1.5.3","pollingType":"G","minValue":0,"maxValue":-1,"comment":"","thresholdComparator":"G","threshold":80,"thresholdFrequency":"M","profileId":0,"pollingPeriod":1},{"id":3,"name":"memAvailReal","oid":".1.3.6.1.4.1.2021.4.6.0","pollingType":"G","minValue":0,"maxValue":-1,"comment":"","thresholdComparator":"L","threshold":0,"thresholdFrequency":"M","profileId":0,"pollingPeriod":1},{"id":4,"name":"memTotalFree","oid":".1.3.6.1.4.1.2021.4.11.0","pollingType":"G","minValue":0,"maxValue":-1,"comment":"","thresholdComparator":"L","threshold":0,"thresholdFrequency":"M","profileId":0,"pollingPeriod":1},{"id":5,"name":"memShared","oid":".1.3.6.1.4.1.2021.4.13.0","pollingType":"G","minValue":0,"maxValue":-1,"comment":"","thresholdComparator":"L","threshold":0,"thresholdFrequency":"M","profileId":0,"pollingPeriod":1},{"id":6,"name":"memBuffer","oid":".1.3.6.1.4.1.2021.4.14.0","pollingType":"G","minValue":0,"maxValue":-1,"comment":"","thresholdComparator":"L","threshold":0,"thresholdFrequency":"M","profileId":0,"pollingPeriod":1},{"id":7,"name":"memCached","oid":".1.3.6.1.4.1.2021.4.15.0","pollingType":"G","minValue":0,"maxValue":-1,"comment":"","thresholdComparator":"L","threshold":0,"thresholdFrequency":"M","profileId":0,"pollingPeriod":1},{"id":8,"name":"memTotalReal","oid":".1.3.6.1.4.1.2021.4.5.0","pollingType":"G","minValue":0,"maxValue":-1,"comment":"","thresholdComparator":"L","threshold":0,"thresholdFrequency":"M","profileId":0,"pollingPeriod":1},{"id":9,"name":"eth0 IN","oid":"1.3.6.1.2.1.2.2.1.10.2","pollingType":"C","minValue":0,"maxValue":-1,"comment":"","thresholdComparator":"L","threshold":0,"thresholdFrequency":"M","profileId":0,"pollingPeriod":1},{"id":10,"name":"eth0 OUT","oid":"1.3.6.1.2.1.2.2.1.16.2","pollingType":"C","minValue":0,"maxValue":-1,"comment":"","thresholdComparator":"L","threshold":0,"thresholdFrequency":"M","profileId":0,"pollingPeriod":1}]}'
 else
-	echo "Monitoring profile already exists"
+        echo "Monitoring profile already exists"
 fi
 
-curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPUT "http://msa_api:8480/ubi-api-rest/profile/TyrellMonitoringPfl/attach?device=$ME1ID"
-curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$TOKEN -XPUT "http://msa_api:8480/ubi-api-rest/profile/TyrellMonitoringPfl/attach?device=$ME2ID"
+at1=$(executeCurl $TOKEN 'PUT' "/profile/TyrellMonitoringPfl/attach?device=$ME1ID")
+at2=$(executeCurl $TOKEN 'PUT' "/profile/TyrellMonitoringPfl/attach?device=$ME2ID")
 
 echo "-----------------------------------------------------"
 echo "CREATE AND CONFIGURE DASHBOARD"
@@ -148,5 +148,5 @@ else
 
         #echo "BODY $body"
         #executeCurl $TOKEN 'PUT' "/repository/file?uri=Datafiles/.NCLG1_UI_SETTINGS.json" \'"$body"\'
-        executeCurl $TOKEN 'PUT' "/repository/file?uri=Datafiles/.NCLG1_UI_SETTINGS.json" '{"content":{"language":"en","drawerWidth":{"automationDetail":600},"tableRows":{"dashboard":12,"managedEntities":10,"automation":10,"configurations":10,"admin":10,"logs":10,"alarms":10,"monitoringProfiles":10,"permissionProfiles":10,"bpmOverview":10,"bpmDetails":10,"profileAuditLogs":10,"aiStates":10},"autoRefresh":60000,"dashboard":[{"style":"Dashboard Panel","type":"MSA Component","component":"Managed Entity Status","title":"Infrastructure","lg":6,"height":120},{"style":"Dashboard Panel","type":"MSA Component","component":"Automation","title":"Automation","lg":6,"height":120},{"style":"Dashboard Panel","type":"MSA Component","component":"Kibana Dashboard","title":"Dashboard","lg":12,"height":120,"extendedListValues":{"kibanaUrl":"'"$HASH"'"}}]}}'
+        settings=$(executeCurl $TOKEN 'PUT' "/repository/file?uri=Datafiles/.NCLG1_UI_SETTINGS.json" '{"content":{"language":"en","drawerWidth":{"automationDetail":600},"tableRows":{"dashboard":12,"managedEntities":10,"automation":10,"configurations":10,"admin":10,"logs":10,"alarms":10,"monitoringProfiles":10,"permissionProfiles":10,"bpmOverview":10,"bpmDetails":10,"profileAuditLogs":10,"aiStates":10},"autoRefresh":60000,"dashboard":[{"style":"Dashboard Panel","type":"MSA Component","component":"Managed Entity Status","title":"Infrastructure","lg":6,"height":120},{"style":"Dashboard Panel","type":"MSA Component","component":"Automation","title":"Automation","lg":6,"height":120},{"style":"Dashboard Panel","type":"MSA Component","component":"Kibana Dashboard","title":"Dashboard","lg":12,"height":120,"extendedListValues":{"kibanaUrl":"'"$HASH"'"}}]}}')
 fi
