@@ -96,6 +96,12 @@ sleep 5
 ME1RAW=$(executeCurl $TOKEN 'GET' "/orchestration/v1/process-instance/$PID_1")
 ME2RAW=$(executeCurl $TOKEN 'GET' "/orchestration/v1/process-instance/$PID_2")
 
+reg='entites.exceptions.MAX_SITE_REACHED'
+if [[ $ME1RAW =~ $reg ]];then
+        echo "Warning : Not possible to create managed entities. Please check your license"
+        exit 1
+fi
+
 reg='.*(BLR[0-9]+)'
 [[ $ME1RAW =~ $reg ]]
 ME1ID=${BASH_REMATCH[1]}
