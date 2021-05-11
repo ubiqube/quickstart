@@ -3,7 +3,7 @@ set -e
 
 PROG=$(basename $0)
 
-target_version="2.4.0GA"
+target_version="2.4.1"
 force_option=false
 clean_option=false
 remove_orphans=false
@@ -48,7 +48,7 @@ standaloneInstall(){
 
 	docker-compose exec -T msa_dev rm -rf /opt/fmc_repository/Process/Reference
 
-	docker-compose exec -T msa_dev /usr/bin/install_libraries.sh $(getLibOptions)
+	docker-compose exec msa_dev /usr/bin/install_libraries.sh $(getLibOptions)
 
     	docker-compose restart msa_api
     	docker-compose restart msa_sms
