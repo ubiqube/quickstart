@@ -48,7 +48,7 @@ standaloneInstall(){
 
 	docker-compose exec -T msa_dev rm -rf /opt/fmc_repository/Process/Reference
 
-	docker-compose exec msa_dev /usr/bin/install_libraries.sh $(getLibOptions)
+	docker-compose exec -T msa_dev /usr/bin/install_libraries.sh $(getLibOptions)
 
     	docker-compose restart msa_api
     	docker-compose restart msa_sms
