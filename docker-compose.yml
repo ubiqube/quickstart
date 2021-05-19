@@ -3,7 +3,7 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.4.0GA-d67cf6407dd81ad1b63f3d8d9f15947be4e592c1
+    image: ubiqube/msa2-front:35e1f0f749bcd27f66d9c0f7146f7b097568440c
     depends_on:
       - msa_api
       - msa_ui
@@ -41,7 +41,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
   db:
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.4.0GA-c1a84d3924bcfbf0c6fb1412a2b6f7ba1af01576
+    image: ubiqube/msa2-db:c1a84d3924bcfbf0c6fb1412a2b6f7ba1af01576
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -54,7 +54,7 @@ services:
 
   msa_api:
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.4.0GA-702c96773c6fc60dc0ce4bf5a67c8501ae9ba4b6
+    image: ubiqube/msa2-api:27971068a86290a06cddeb01ec625a898f3fa624
     depends_on:
       - db
       - msa_es
@@ -77,7 +77,7 @@ services:
 
   msa_ui:
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.4.0GA-533c1bf94928ea7222365c0e7f958bf182d2c19b
+    image: ubiqube/msa2-ui:fa79d19c8df7a7149efd49d7deab83c52a9c00e5
     depends_on:
       - msa_api
     environment:
@@ -94,7 +94,7 @@ services:
 
   msa_sms:
     container_name: msa_sms
-    image: openmsa/openmsa:msa2-sms-2.4.0GA-2d4632b64b8543fa461a8e9d8c7dc316f74c9ae9
+    image: ubiqube/msa2-sms:c99af9c23cd06edfd1f3838eb50bdfa13c46fe62
     cap_add:
       - NET_ADMIN
     depends_on:
@@ -111,7 +111,7 @@ services:
 
   msa_bud:
     container_name: msa_bud
-    image: openmsa/openmsa:msa2-bud-2.4.0GA-bd904fbd4b3615581672d81f82fdd1959d9ffc93
+    image: ubiqube/msa2-bud:9bf487de2086785a716ae34d6b58eda16b90b235
     depends_on:
       - db
     volumes:
@@ -119,7 +119,7 @@ services:
 
   msa_alarm:
     container_name: msa_alarm
-    image: openmsa/openmsa:msa2-alarm-2.4.0GA-44d6c6ccce1b491fda81c43107f9557699df346c
+    image: ubiqube/msa2-alarm:1080a92753b113f959159dc01b7b0db48ab2d672
     depends_on:
       - db
       - msa_es
@@ -138,7 +138,7 @@ services:
 
   msa_es:
     container_name: msa_es
-    image: openmsa/openmsa:msa2-es-2.4.0GA-efcce09bd86619311efcbe7c2262c53ada20be6c
+    image: ubiqube/msa2-es:2858a6652465746456693d46fe57cbf5d4808dc5
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
@@ -159,7 +159,7 @@ services:
   
   msa_kibana:
     container_name: msa_kibana
-    image: openmsa/openmsa:msa2-kibana-2.4.0GA-7c00eae761d891388ae09c455b3ed61d21779237
+    image: ubiqube/msa2-kibana:7c00eae761d891388ae09c455b3ed61d21779237
     depends_on:
       - msa_es
     ports:
@@ -173,7 +173,7 @@ services:
           - "msa-kibana"
           
   msa_ai_ml:
-    image: openmsa/openmsa:msa2-ai-ml-2.4.0GA-0e29906a56a3bba49ffce28a5beb2ff23999f5e3
+    image: ubiqube/msa2-ai-ml:0e29906a56a3bba49ffce28a5beb2ff23999f5e3
     ports:
       - "8000:8000"
     volumes:
@@ -186,7 +186,7 @@ services:
   msa_dev:
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: openmsa/openmsa:msa2-linuxdev-2.4.0GA-0d5ca3981ff33eadd85a83852667994e53ceb300
+    image: ubiqube/msa2-linuxdev:88ca6e5a9c393ccf7f8fefb3c2441df97c2b2759
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
@@ -197,7 +197,7 @@ services:
   linux_me:
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.4.0GA-7fc20ffaef77c39f402b6fcaa81b24540ee35850
+    image: ubiqube/msa2-linuxme:7fc20ffaef77c39f402b6fcaa81b24540ee35850
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -217,7 +217,7 @@ services:
   linux_me_2:
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.4.0GA-7fc20ffaef77c39f402b6fcaa81b24540ee35850
+    image: ubiqube/msa2-linuxme:7fc20ffaef77c39f402b6fcaa81b24540ee35850
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
