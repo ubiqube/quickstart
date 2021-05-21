@@ -95,6 +95,8 @@ services:
   msa_sms:
     container_name: msa_sms
     image: ubiqube/msa2-sms:f72886e140caafc2fadb26f91280b5f6e984641d
+    cap_add:
+      - NET_ADMIN
     depends_on:
       - db
       - msa_es
