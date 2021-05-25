@@ -3,7 +3,7 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image: ubiqube/msa2-front:2789cb69883145c6c0f677923ccce3e87a11d3c9
+    image: openmsa/openmsa:msa2-front-2.4.1-05a825306e9859c35ba266511f127055e3df28c8
     depends_on:
       - msa_api
       - msa_ui
@@ -41,7 +41,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
   db:
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.4.0GA-c1a84d3924bcfbf0c6fb1412a2b6f7ba1af01576
+    image: openmsa/openmsa:msa2-db-2.4.1-63d701f1b1d668b9bec2345e46f7b943990b1061
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -54,7 +54,7 @@ services:
 
   msa_api:
     container_name: msa_api
-    image: ubiqube/msa2-api:f58f30fbce78e948619be995004d50b555c662b4
+    image: openmsa/openmsa:msa2-api-2.4.1-17617b5ccff2eeb270423bbfb21279e04005386b
     depends_on:
       - db
       - msa_es
@@ -77,7 +77,7 @@ services:
 
   msa_ui:
     container_name: msa_ui
-    image: ubiqube/msa2-ui:178824a2339a247a848f13e19fdf55513edea6b0
+    image: openmsa/openmsa:msa2-ui-2.4.1-178824a2339a247a848f13e19fdf55513edea6b0
     depends_on:
       - msa_api
     environment:
@@ -186,7 +186,7 @@ services:
   msa_dev:
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: ubiqube/msa2-linuxdev:6884ae6d39cec4a0633a981806f7ec013366b0c2
+    image: openmsa/openmsa:msa2-linuxdev-2.4.1-6884ae6d39cec4a0633a981806f7ec013366b0c2
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
@@ -197,7 +197,7 @@ services:
   linux_me:
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: ubiqube/msa2-linuxme:7fc20ffaef77c39f402b6fcaa81b24540ee35850
+    image: openmsa/openmsa:msa2-linuxme-2.4.0GA-7fc20ffaef77c39f402b6fcaa81b24540ee35850
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -217,7 +217,7 @@ services:
   linux_me_2:
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: ubiqube/msa2-linuxme:7fc20ffaef77c39f402b6fcaa81b24540ee35850
+    image: openmsa/openmsa:msa2-linuxme-2.4.0GA-7fc20ffaef77c39f402b6fcaa81b24540ee35850
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
