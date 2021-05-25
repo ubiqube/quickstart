@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: openmsa/openmsa:msa2-front-2.4.0GA-d67cf6407dd81ad1b63f3d8d9f15947be4e592c1
+    image: openmsa/openmsa:msa2-front-2.4.1-05a825306e9859c35ba266511f127055e3df28c8
     depends_on:
       - msa_api
       - msa_ui
@@ -47,7 +47,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: openmsa/openmsa:msa2-db-2.4.0GA-c1a84d3924bcfbf0c6fb1412a2b6f7ba1af01576
+    image: openmsa/openmsa:msa2-db-2.4.1-63d701f1b1d668b9bec2345e46f7b943990b1061
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -66,7 +66,7 @@ services:
         condition: on-failure
  
   msa_api:
-    image: openmsa/openmsa:msa2-api-2.4.0GA-702c96773c6fc60dc0ce4bf5a67c8501ae9ba4b6
+    image: openmsa/openmsa:msa2-api-2.4.1-17617b5ccff2eeb270423bbfb21279e04005386b
     depends_on:
       - db
     deploy:
@@ -95,7 +95,7 @@ services:
       - "/mnt/NASVolume/msa_api:/opt/ubi-jentreprise/generated/conf"
 
   msa_ui:
-    image: openmsa/openmsa:msa2-ui-2.4.0GA-533c1bf94928ea7222365c0e7f958bf182d2c19b
+    image: openmsa/openmsa:msa2-ui-2.4.1-178824a2339a247a848f13e19fdf55513edea6b0
     depends_on:
       - msa_api
     deploy:
@@ -227,7 +227,7 @@ services:
           - "node.role==manager"
 
   msa_dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.4.0GA-0d5ca3981ff33eadd85a83852667994e53ceb300
+    image: openmsa/openmsa:msa2-linuxdev-2.4.1-6884ae6d39cec4a0633a981806f7ec013366b0c2
     deploy:
       replicas: 1
       placement:
