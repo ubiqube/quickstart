@@ -391,6 +391,7 @@ main() {
             update_all_github_repo $cmd
             install_microservices;
             install_workflows;
+            install_adapters;
             install_python_sdk
 			;;
 		ms)
