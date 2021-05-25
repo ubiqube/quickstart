@@ -60,7 +60,7 @@ update_git_repo () {
         echo "> Current working branch: $CURRENT_BR"
         if [[ $ASSUME_YES == false && $CURRENT_BR == "master" ]];
         then
-            echo "> WARNING: your current branch is $CURRENT_BR, to be safe, you may want to switch to a working branch (default_dev_branch is the factory default for development)"
+            echo "> WARNING: your current branch is $CURRENT_BR, to be safe, you may want to switch to a working branch (default_dev_branch is the factory default for development) [y]/[N]"
             read -p  "> switch ? [y]/[N]" yn
             case $yn in
                 [Yy]* )
@@ -102,7 +102,7 @@ update_git_repo () {
             if [ $ASSUME_YES == false ];
             then
                 while true; do
-                echo "> merge $DEFAULT_BRANCH to current working branch $CURRENT_BR ?"
+                echo "> merge $DEFAULT_BRANCH to current working branch $CURRENT_BR ? [y]/[N]"
                 read -p  "[y]/[N]" yn
                 case $yn in
                     [Yy]* )

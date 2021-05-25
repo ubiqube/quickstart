@@ -3,7 +3,7 @@ set -e
 
 PROG=$(basename $0)
 
-target_version="2.4.0GA"
+target_version="2.4.1"
 force_option=false
 clean_option=false
 remove_orphans=false
@@ -52,6 +52,7 @@ standaloneInstall(){
 
     	docker-compose restart msa_api
     	docker-compose restart msa_sms
+	docker-compose restart msa_alarm
 	
 	echo "Starting crond on API container msa_api"
 	docker-compose exec -T -u root msa_api crond
@@ -96,6 +97,7 @@ haInstall(){
         ssh "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec $ha_dev_container_ref /bin/bash -c '/usr/bin/install_libraries.sh $(getLibOptions)'"
         docker service update --force "$ha_stack"_msa_api
         docker service update --force "$ha_stack"_msa_sms
+	docker service update --force "$ha_stack"_msa_alarm
 
         echo "############## Start CROND ############################################"
 	ha_api_node_ip=$(getHaNodeIp msa_api)
