@@ -3,7 +3,7 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image: ubiqube/msa2-front:64a7639929ebe196ef2edfafe4ed1b7387070b8a
+    image: ubiqube/msa2-front:4abb66d37aa288dc502d6cef7519ebbba2a2eade
     depends_on:
       - msa_api
       - msa_ui
@@ -54,7 +54,7 @@ services:
 
   msa_api:
     container_name: msa_api
-    image: ubiqube/msa2-api:6e11e94a79c237c8f6347ca69e5f59864d33e681
+    image: ubiqube/msa2-api:6b33a2d9686238ff7480b52f826004d64a4fbb5a
     depends_on:
       - db
       - msa_es
@@ -77,7 +77,7 @@ services:
 
   msa_ui:
     container_name: msa_ui
-    image: ubiqube/msa2-ui:e68d3c96c5c7daa4627591e2eb0cbe258a656695
+    image: ubiqube/msa2-ui:7fc1ca6ce419c3791ef867fb914dae1c928a32bd
     depends_on:
       - msa_api
     environment:
@@ -186,7 +186,7 @@ services:
   msa_dev:
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: ubiqube/msa2-linuxdev:88ca6e5a9c393ccf7f8fefb3c2441df97c2b2759
+    image: ubiqube/msa2-linuxdev:ab6d3ae624b8b0b1e25a3ccd54c3e4238e923868
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
