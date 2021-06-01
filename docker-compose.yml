@@ -3,7 +3,7 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image: ubiqube/msa2-front:430351338927f728d1dbfadd681e6af75c848ebe
+    image: ubiqube/msa2-front:37a3d228048211680c22469eebc7928d5bc15438
     depends_on:
       - msa_api
       - msa_ui
@@ -41,7 +41,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
   db:
     container_name: msa_db
-    image: ubiqube/msa2-db:fd71b5c466b8c79240da0808781fc8d00b9b7dfd
+    image: ubiqube/msa2-db:cd1c8b3f38618ee0f7be775057b5304797984614
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -54,7 +54,7 @@ services:
 
   msa_api:
     container_name: msa_api
-    image: ubiqube/msa2-api:6b33a2d9686238ff7480b52f826004d64a4fbb5a
+    image: ubiqube/msa2-api:8b308870c41314913346ba46af31a221411e995c
     depends_on:
       - db
       - msa_es
@@ -77,7 +77,7 @@ services:
 
   msa_ui:
     container_name: msa_ui
-    image: ubiqube/msa2-ui:7fc1ca6ce419c3791ef867fb914dae1c928a32bd
+    image: ubiqube/msa2-ui:532f78c9ad5991295af4d5178d7f06c3b6763eef
     depends_on:
       - msa_api
     environment:
@@ -94,7 +94,7 @@ services:
 
   msa_sms:
     container_name: msa_sms
-    image: ubiqube/msa2-sms:36218b5d326222e9d7401ae804e2543fe88014f7
+    image: ubiqube/msa2-sms:0f2065b62058e8fb21721ce6519eb2d3bf5efbef
     cap_add:
       - NET_ADMIN
     depends_on:
