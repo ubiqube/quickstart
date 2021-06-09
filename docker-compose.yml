@@ -152,13 +152,13 @@ services:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
       BASIC_AUTH_PWD: "N@X{M4tfw'5%)+35"
-      entrypoint:
-        - /opt/cerebro/bin/cerebro
-        - -Dhosts.0.host=http://msa_es:9200
-      depends_on:
-        - msa_es
-      ports:
-        - "9000:9000"
+    entrypoint:
+      - /opt/cerebro/bin/cerebro
+      - -Dhosts.0.host=http://msa_es:9200
+    depends_on:
+      - msa_es
+    ports:
+      - "9000:9000"
       
   msa_kibana:
     container_name: msa_kibana
