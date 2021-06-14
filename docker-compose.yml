@@ -3,7 +3,7 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image: ubiqube/msa2-front:d9b1afebcbd5d7611be543a686d4ee175a0abc46
+    image: ubiqube/msa2-front:875b0dbd82e5b73df78a45b95db3cb8c957fa602
     depends_on:
       - msa_api
       - msa_ui
@@ -41,7 +41,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
   db:
     container_name: msa_db
-    image: ubiqube/msa2-db:cd1c8b3f38618ee0f7be775057b5304797984614
+    image: ubiqube/msa2-db:2b54e1ae871962eb5849e98bdac549c219ff855e
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -54,7 +54,7 @@ services:
 
   msa_api:
     container_name: msa_api
-    image: ubiqube/msa2-api:26626bcceaf3fb48227749dc4f10809fd966b665
+    image: ubiqube/msa2-api:3fd7a784a0cddc481f8899e43f9db92f338ab7af
     depends_on:
       - db
       - msa_es
@@ -77,7 +77,7 @@ services:
 
   msa_ui:
     container_name: msa_ui
-    image: ubiqube/msa2-ui:532f78c9ad5991295af4d5178d7f06c3b6763eef
+    image: ubiqube/msa2-ui:919e5d48af80c02289465e1f846d65c35764efa8
     depends_on:
       - msa_api
     environment:
@@ -94,7 +94,7 @@ services:
 
   msa_sms:
     container_name: msa_sms
-    image: ubiqube/msa2-sms:d7e5ec9f32fcd99d21d8e99817487941776edce3
+    image: ubiqube/msa2-sms:5943fb23c6700552885507df5cb5defcb49db0b3
     cap_add:
       - NET_ADMIN
     depends_on:
@@ -138,7 +138,7 @@ services:
 
   msa_es:
     container_name: msa_es
-    image: ubiqube/msa2-es:2858a6652465746456693d46fe57cbf5d4808dc5
+    image: ubiqube/msa2-es:ff3e878c971f405774bc8c355805bd119cbdeacb
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
@@ -147,19 +147,22 @@ services:
       - "msa_es:/usr/share/elasticsearch/data"
 
   msa_cerebro:
-    container_name: msa_cerebro
-    image: lmenezes/cerebro:0.9.2
+    image: ubiqube/msa2-cerebro:bc1ea10586035ad1c1fcb1e2145d049c1e3449fe
+    environment:
+      AUTH_TYPE: basic
+      BASIC_AUTH_USER: cerebro
+      BASIC_AUTH_PWD: "N@X{M4tfw'5%)+35"
     entrypoint:
       - /opt/cerebro/bin/cerebro
       - -Dhosts.0.host=http://msa_es:9200
     depends_on:
       - msa_es
     ports:
-      - "9000:9000"
+    - "9000:9000"
   
   msa_kibana:
     container_name: msa_kibana
-    image: ubiqube/msa2-kibana:7c00eae761d891388ae09c455b3ed61d21779237
+    image: ubiqube/msa2-kibana:739bc67973f25ecbbce8970955a709d733ff2ede
     depends_on:
       - msa_es
     ports:
