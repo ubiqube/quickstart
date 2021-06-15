@@ -3,30 +3,30 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image: ubiqube/msa2-front:ab62d594e3a0b08ca1da39b8e72882535d076727
+    image: ubiqube/msa2-front:810300b6d03f9ba814e67cf3a4f6c1c704b23f87
     depends_on:
       - msa_api
       - msa_ui
       - camunda
       - msa_ai_ml
     ports:
-      - target: 80
+      - target: 8080
         published: 80
         protocol: tcp
         mode: host
-      - target: 443
+      - target: 8043
         published: 443
         protocol: tcp
         mode: host
-      - target: 514
+      - target: 8514
         published: 514
         protocol: udp
         mode: host
-      - target: 162
+      - target: 8162
         published: 162
         protocol: udp
         mode: host
-      - target: 69
+      - target: 8069
         published: 69
         protocol: udp
         mode: host
