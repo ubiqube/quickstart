@@ -3,7 +3,7 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image: ubiqube/msa2-front:810300b6d03f9ba814e67cf3a4f6c1c704b23f87
+    image: ubiqube/msa2-front:8ab9a9721058ab1dcd99836052b0b0f59a836ffe
     depends_on:
       - msa_api
       - msa_ui
@@ -41,7 +41,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
   db:
     container_name: msa_db
-    image: ubiqube/msa2-db:2b54e1ae871962eb5849e98bdac549c219ff855e
+    image: ubiqube/msa2-db:9beb33f9fb7ff838893043e2b1a26c13fc95d34a
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -54,7 +54,7 @@ services:
 
   msa_api:
     container_name: msa_api
-    image: ubiqube/msa2-api:3fd7a784a0cddc481f8899e43f9db92f338ab7af
+    image: ubiqube/msa2-api:3e65abfb3a1c71da8bdd1610609b6022c188869b
     depends_on:
       - db
       - msa_es
