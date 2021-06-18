@@ -67,6 +67,10 @@ standaloneInstall(){
 		docker-compose exec -T -w //usr/bin/ msa_dev bash -c './clean_old_topology_instances.sh'
 	fi
 
+	echo "Elasticsearch authentication setup"
+	docker-compose exec -T -u root -w //home/install/scripts/ msa_es bash -c './es_kibana_security_setup.sh'
+	echo "Done"
+
 	echo "Elasticsearch settings & mappings update"
 	docker-compose exec -T -u root -w //home/install/scripts/ msa_es bash -c './install.sh'
 	echo "Done"
@@ -114,6 +118,12 @@ haInstall(){
 		#echo "############### Removing old instances of topology ####################"
 		#ssh "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec $ha_dev_container_ref /bin/bash -c '/usr/bin/clean_old_topology_instances.sh'"
 	fi
+
+	echo "################ Elasticsearch authentication setup #############"
+	ha_es_node_ip=$(getHaNodeIp msa_es)
+        ha_es_container_ref=$(getHaContainerReference msa_es)
+        #echo "ES $ha_es_ip $ha_es_container_ref"
+        ssh $ssh_user@$ha_es_node_ip "docker exec -u root -w /home/install/scripts/ $ha_es_container_ref /bin/bash -c './es_kibana_security_setup.sh'"
 
 	echo "################ Elasticsearch settings & mappings update #############"
 	ha_es_node_ip=$(getHaNodeIp msa_es)
