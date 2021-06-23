@@ -3,7 +3,7 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image: ubiqube/msa2-front:8ab9a9721058ab1dcd99836052b0b0f59a836ffe
+    image: ubiqube/msa2-front:32c9626dd09612e16363b25defed93a88821bc2b
     depends_on:
       - msa_api
       - msa_ui
@@ -41,7 +41,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
   db:
     container_name: msa_db
-    image: ubiqube/msa2-db:9beb33f9fb7ff838893043e2b1a26c13fc95d34a
+    image: ubiqube/msa2-db:1b6251e37a52c1c4d62d4b7da6964e53b79b55eb
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -54,7 +54,7 @@ services:
 
   msa_api:
     container_name: msa_api
-    image: ubiqube/msa2-api:3e65abfb3a1c71da8bdd1610609b6022c188869b
+    image: ubiqube/msa2-api:10e7c9d9e9820ce2c6e2b1f98c673a5507bc8686
     depends_on:
       - db
       - msa_es
@@ -77,7 +77,7 @@ services:
 
   msa_ui:
     container_name: msa_ui
-    image: ubiqube/msa2-ui:b0b64984b8b5c86f6c98d53f8e1d5b6151c49f98
+    image: ubiqube/msa2-ui:7bdd89c5450309baece279d5d1ea1906c4b34c13
     depends_on:
       - msa_api
     environment:
@@ -125,8 +125,9 @@ services:
       - msa_es
 
   camunda:
-    container_name: camunda
-    image: camunda/camunda-bpm-platform:7.13.0
+    depends_on:
+      - db
+    image: ubiqube/msa2-camunda:dd7e57e887b5aefa6ed25aba537dbce0f4f6f2b8
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
@@ -176,7 +177,7 @@ services:
           - "msa-kibana"
           
   msa_ai_ml:
-    image: ubiqube/msa2-ai-ml:0e29906a56a3bba49ffce28a5beb2ff23999f5e3
+    image: ubiqube/msa2-ai-ml:7d4667a9038ba29140c929dfd9bc693d665eeca9
     ports:
       - "8000:8000"
     volumes:
