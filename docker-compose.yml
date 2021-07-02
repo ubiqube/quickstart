@@ -127,8 +127,8 @@ services:
   camunda:
     depends_on:
       - db
-      image: ubiqube/msa2-camunda:e8cd089949cdf40b3bb40709b51fbc0edd213a04
-      environment:
+    image: ubiqube/msa2-camunda:e8cd089949cdf40b3bb40709b51fbc0edd213a04
+    environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
       DB_USERNAME: camunda
