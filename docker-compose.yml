@@ -190,7 +190,7 @@ services:
   msa_dev:
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: ubiqube/msa2-linuxdev:ab6d3ae624b8b0b1e25a3ccd54c3e4238e923868
+    image: ubiqube/msa2-linuxdev:9b7d01f7777a3d48d40669500730b8c84f4355fa
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
