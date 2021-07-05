@@ -139,7 +139,7 @@ services:
 
   msa_es:
     container_name: msa_es
-    image: ubiqube/msa2-es:cf001f419eb08a2beb3e779daed0ca0f94be1d1c
+    image: ubiqube/msa2-es:6f75eb9cca640798820b7360900de4e48038a840
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
@@ -190,7 +190,7 @@ services:
   msa_dev:
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: ubiqube/msa2-linuxdev:9b7d01f7777a3d48d40669500730b8c84f4355fa
+    image: ubiqube/msa2-linuxdev:1f16359514fcc22ad0ff73d918b1eccd6272144f
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
