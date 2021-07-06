@@ -3,7 +3,7 @@ set -e
 
 PROG=$(basename $0)
 
-target_version="2.5.0RC1"
+target_version="2.5.0GA"
 force_option=false
 clean_option=false
 remove_orphans=false
@@ -67,8 +67,7 @@ standaloneInstall(){
 		docker-compose exec -T -w //usr/bin/ msa_dev bash -c './clean_old_topology_instances.sh'
 	fi
 
-	echo "Elasticsearch settings & mappings update"
-	docker-compose exec -T -u root -w //home/install/scripts/ msa_es bash -c './install.sh'
+	echo "Elasticsearch : .kibana_1 index regeneration"
 	docker-compose exec -T -u root -w //home/install/scripts/ msa_es bash -c './kibana_index_update.sh'
 	echo "Done"
 
@@ -116,11 +115,10 @@ haInstall(){
 		#ssh "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec $ha_dev_container_ref /bin/bash -c '/usr/bin/clean_old_topology_instances.sh'"
 	fi
 
-	echo "################ Elasticsearch settings & mappings update #############"
+	echo "################ Elasticsearch : .kibana_1 index regeneration #############"
 	ha_es_node_ip=$(getHaNodeIp msa_es)
         ha_es_container_ref=$(getHaContainerReference msa_es)
         #echo "ES $ha_es_ip $ha_es_container_ref"
-        ssh $ssh_user@$ha_es_node_ip "docker exec -u root -w /home/install/scripts/ $ha_es_container_ref /bin/bash -c './install.sh'"
         ssh $ssh_user@$ha_es_node_ip "docker exec -u root -w /home/install/scripts/ $ha_es_container_ref /bin/bash -c './kibana_index_update.sh'"
 
 	echo "################ Kibana configs & dashboard templates update ##########"
