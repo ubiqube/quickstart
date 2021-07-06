@@ -126,7 +126,7 @@ haInstall(){
         ha_kib_container_ref=$(getHaContainerReference msa_kib)
         #echo "KIBANA $ha_kib_ip $ha_kib_container_ref"
 	waitUpKibana $ha_kib_node_ip
-        ssh $ssh_user@$ha_kib_node_ip "docker exec -u root -w /home/install/ $ha_kib_container_ref /bin/bash -c 'php install_default_template_dash_and_visu.php'"
+        ssh $ssh_user@$ha_kib_node_ip "docker exec -u root -w /home/install/scripts $ha_kib_container_ref /bin/bash -c 'php install_default_template_dash_and_visu.php'"
 
 	echo "Upgrade done!"
 }
