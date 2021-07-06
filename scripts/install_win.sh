@@ -3,7 +3,7 @@ set -e
 
 PROG=$(basename $0)
 
-target_version="2.4.0GA"
+target_version="2.5.0GA"
 force_option=false
 clean_option=false
 remove_orphans=false
@@ -52,6 +52,7 @@ standaloneInstall(){
 
     	docker-compose restart msa_api
     	docker-compose restart msa_sms
+	docker-compose restart msa_alarm
 	
 	echo "Starting crond on API container msa_api"
 	docker-compose exec -T -u root msa_api crond
@@ -66,13 +67,13 @@ standaloneInstall(){
 		docker-compose exec -T -w //usr/bin/ msa_dev bash -c './clean_old_topology_instances.sh'
 	fi
 
-	echo "Elasticsearch settings & mappings update"
-	docker-compose exec -T -u root -w //home/install/scripts/ msa_es bash -c './install.sh'
+	echo "Elasticsearch : .kibana_1 index regeneration"
+	docker-compose exec -T -u root -w //home/install/scripts/ msa_es bash -c './kibana_index_update.sh'
 	echo "Done"
 
 	echo "Kibana configs & dashboard templates update"
 	waitUpKibana 127.0.0.1
-	docker-compose exec -T -u root -w //home/install/ msa_kibana bash -c 'php install_default_template_dash_and_visu.php'
+	docker-compose exec -T -u root -w //home/install/scripts msa_kibana bash -c 'php install_default_template_dash_and_visu.php'
 	echo "Done"
 
 	echo "Upgrade done!"
@@ -96,6 +97,7 @@ haInstall(){
         ssh "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec $ha_dev_container_ref /bin/bash -c '/usr/bin/install_libraries.sh $(getLibOptions)'"
         docker service update --force "$ha_stack"_msa_api
         docker service update --force "$ha_stack"_msa_sms
+	docker service update --force "$ha_stack"_msa_alarm
 
         echo "############## Start CROND ############################################"
 	ha_api_node_ip=$(getHaNodeIp msa_api)
@@ -113,18 +115,18 @@ haInstall(){
 		#ssh "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec $ha_dev_container_ref /bin/bash -c '/usr/bin/clean_old_topology_instances.sh'"
 	fi
 
-	echo "################ Elasticsearch settings & mappings update #############"
+	echo "################ Elasticsearch : .kibana_1 index regeneration #############"
 	ha_es_node_ip=$(getHaNodeIp msa_es)
         ha_es_container_ref=$(getHaContainerReference msa_es)
         #echo "ES $ha_es_ip $ha_es_container_ref"
-        ssh $ssh_user@$ha_es_node_ip "docker exec -u root -w /home/install/scripts/ $ha_es_container_ref /bin/bash -c './install.sh'"
+        ssh $ssh_user@$ha_es_node_ip "docker exec -u root -w /home/install/scripts/ $ha_es_container_ref /bin/bash -c './kibana_index_update.sh'"
 
 	echo "################ Kibana configs & dashboard templates update ##########"
         ha_kib_node_ip=$(getHaNodeIp msa_kib)
         ha_kib_container_ref=$(getHaContainerReference msa_kib)
         #echo "KIBANA $ha_kib_ip $ha_kib_container_ref"
 	waitUpKibana $ha_kib_node_ip
-        ssh $ssh_user@$ha_kib_node_ip "docker exec -u root -w /home/install/ $ha_kib_container_ref /bin/bash -c 'php install_default_template_dash_and_visu.php'"
+        ssh $ssh_user@$ha_kib_node_ip "docker exec -u root -w /home/install/scripts $ha_kib_container_ref /bin/bash -c 'php install_default_template_dash_and_visu.php'"
 
 	echo "Upgrade done!"
 }

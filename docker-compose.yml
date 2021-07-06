@@ -3,30 +3,30 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.4.0GA-d67cf6407dd81ad1b63f3d8d9f15947be4e592c1
+    image: ubiqube/msa2-front:a7edf08a058095b3a637b3e47138140f59415019
     depends_on:
       - msa_api
       - msa_ui
       - camunda
       - msa_ai_ml
     ports:
-      - target: 80
+      - target: 8080
         published: 80
         protocol: tcp
         mode: host
-      - target: 443
+      - target: 8043
         published: 443
         protocol: tcp
         mode: host
-      - target: 514
+      - target: 8514
         published: 514
         protocol: udp
         mode: host
-      - target: 162
+      - target: 8162
         published: 162
         protocol: udp
         mode: host
-      - target: 69
+      - target: 8069
         published: 69
         protocol: udp
         mode: host
@@ -41,7 +41,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
   db:
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.4.0GA-c1a84d3924bcfbf0c6fb1412a2b6f7ba1af01576
+    image: ubiqube/msa2-db:5a110d120d063d4892d0bf8f28916d6c51079b06
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -54,7 +54,7 @@ services:
 
   msa_api:
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.4.0GA-702c96773c6fc60dc0ce4bf5a67c8501ae9ba4b6
+    image: ubiqube/msa2-api:3a95b0b3fcda576b8223b7a39c78aa00d85f39aa
     depends_on:
       - db
       - msa_es
@@ -77,7 +77,7 @@ services:
 
   msa_ui:
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.4.0GA-533c1bf94928ea7222365c0e7f958bf182d2c19b
+    image: ubiqube/msa2-ui:29e10afec34b8ff3c05a599f4fd1e63c5ea4c34a
     depends_on:
       - msa_api
     environment:
@@ -90,11 +90,11 @@ services:
     - FEATURE_SCHEDULE_WORKFLOWS=true
     - FEATURE_PROFILE_AUDIT_LOGS=true
     - FEATURE_PERMISSION_PROFILES=true
-    - FEATURE_AI_ML=false
+    - FEATURE_AI_ML=true
 
   msa_sms:
     container_name: msa_sms
-    image: openmsa/openmsa:msa2-sms-2.4.0GA-2d4632b64b8543fa461a8e9d8c7dc316f74c9ae9
+    image: ubiqube/msa2-sms:aecacf29d0a05dea3f486f7ec8851963ecaa5a14
     cap_add:
       - NET_ADMIN
     depends_on:
@@ -111,7 +111,7 @@ services:
 
   msa_bud:
     container_name: msa_bud
-    image: openmsa/openmsa:msa2-bud-2.4.0GA-bd904fbd4b3615581672d81f82fdd1959d9ffc93
+    image: ubiqube/msa2-bud:c070f6960d2dec079f731444df91e1959ca302da
     depends_on:
       - db
     volumes:
@@ -119,14 +119,15 @@ services:
 
   msa_alarm:
     container_name: msa_alarm
-    image: openmsa/openmsa:msa2-alarm-2.4.0GA-44d6c6ccce1b491fda81c43107f9557699df346c
+    image: ubiqube/msa2-alarm:096080be6168e98f36aa103758d6ff85f3c2c75c
     depends_on:
       - db
       - msa_es
 
   camunda:
-    container_name: camunda
-    image: camunda/camunda-bpm-platform:7.13.0
+    depends_on:
+      - db
+    image: ubiqube/msa2-camunda:e8cd089949cdf40b3bb40709b51fbc0edd213a04
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
@@ -138,28 +139,32 @@ services:
 
   msa_es:
     container_name: msa_es
-    image: openmsa/openmsa:msa2-es-2.4.0GA-efcce09bd86619311efcbe7c2262c53ada20be6c
+    image: ubiqube/msa2-es:6f75eb9cca640798820b7360900de4e48038a840
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
-      - bootstrap.memory_lock=true
+      - "bootstrap.memory_lock=true"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     volumes:
       - "msa_es:/usr/share/elasticsearch/data"
 
   msa_cerebro:
-    container_name: msa_cerebro
-    image: lmenezes/cerebro:0.9.2
+    image: ubiqube/msa2-cerebro:bc1ea10586035ad1c1fcb1e2145d049c1e3449fe
+    environment:
+      AUTH_TYPE: basic
+      BASIC_AUTH_USER: cerebro
+      BASIC_AUTH_PWD: "N@X{M4tfw'5%)+35"
     entrypoint:
       - /opt/cerebro/bin/cerebro
       - -Dhosts.0.host=http://msa_es:9200
     depends_on:
       - msa_es
     ports:
-      - "9000:9000"
+    - "9000:9000"
   
   msa_kibana:
     container_name: msa_kibana
-    image: openmsa/openmsa:msa2-kibana-2.4.0GA-7c00eae761d891388ae09c455b3ed61d21779237
+    image: ubiqube/msa2-kibana:885875647c0cf223423fc1ec2abdd72c540de7ee
     depends_on:
       - msa_es
     ports:
@@ -173,7 +178,7 @@ services:
           - "msa-kibana"
           
   msa_ai_ml:
-    image: openmsa/openmsa:msa2-ai-ml-2.4.0GA-0e29906a56a3bba49ffce28a5beb2ff23999f5e3
+    image: ubiqube/msa2-ai-ml:8272287f92ca4b8817cd4c7428c6e683f89305ec
     ports:
       - "8000:8000"
     volumes:
@@ -186,7 +191,7 @@ services:
   msa_dev:
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: openmsa/openmsa:msa2-linuxdev-2.4.0GA-0d5ca3981ff33eadd85a83852667994e53ceb300
+    image: ubiqube/msa2-linuxdev:1f16359514fcc22ad0ff73d918b1eccd6272144f
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
@@ -197,7 +202,7 @@ services:
   linux_me:
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.4.0GA-7fc20ffaef77c39f402b6fcaa81b24540ee35850
+    image: ubiqube/msa2-linuxme:7fc20ffaef77c39f402b6fcaa81b24540ee35850
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -217,7 +222,7 @@ services:
   linux_me_2:
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.4.0GA-7fc20ffaef77c39f402b6fcaa81b24540ee35850
+    image: ubiqube/msa2-linuxme:7fc20ffaef77c39f402b6fcaa81b24540ee35850
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -268,4 +273,3 @@ networks:
     ipam:
       config:
         - subnet: 172.20.0.0/24
-
