@@ -3,7 +3,7 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image: ubiqube/msa2-front:9c3860989a45b2b87f813c83cddc9ac0e3cd46dc
+    image: ubiqube/msa2-front:d5c188d58591eb859ddbc848a23e0cf116918552
     depends_on:
       - msa_api
       - msa_ui
@@ -54,7 +54,7 @@ services:
 
   msa_api:
     container_name: msa_api
-    image: ubiqube/msa2-api:3351c763f998fc21895e3099b21d408ec45c968c
+    image: ubiqube/msa2-api:4e1dc9a7e24addb1348178232a17442e56e275d9
     depends_on:
       - db
       - msa_es
@@ -79,7 +79,7 @@ services:
 
   msa_ui:
     container_name: msa_ui
-    image: ubiqube/msa2-ui:e1f5862daf13d7a0bbedf66455e4648664537210
+    image: ubiqube/msa2-ui:9e39c3f945c8eb30ec84800fad93ceb9c87c736c
     depends_on:
       - msa_api
     environment:
@@ -96,7 +96,7 @@ services:
 
   msa_sms:
     container_name: msa_sms
-    image: ubiqube/msa2-sms:f198a504f4906937c1c25fc53fa6e68ab0e65f7c
+    image: ubiqube/msa2-sms:d2b9b06b8299ac8c4bddb1d27e12ebf765757356
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     cap_add:
@@ -115,7 +115,7 @@ services:
 
   msa_bud:
     container_name: msa_bud
-    image: ubiqube/msa2-bud:c070f6960d2dec079f731444df91e1959ca302da
+    image: ubiqube/msa2-bud:7228d5d1d41da4f0c146275ea8c3ffbdcb8d70eb
     depends_on:
       - db
     volumes:
@@ -123,7 +123,7 @@ services:
 
   msa_alarm:
     container_name: msa_alarm
-    image: ubiqube/msa2-alarm:096080be6168e98f36aa103758d6ff85f3c2c75c
+    image: ubiqube/msa2-alarm:f095e0811422d7decb68df3608601169b63029be
     depends_on:
       - db
       - msa_es
@@ -145,7 +145,7 @@ services:
 
   msa_es:
     container_name: msa_es
-    image: ubiqube/msa2-es:6f75eb9cca640798820b7360900de4e48038a840
+    image: ubiqube/msa2-es:a3477d6b0a9907fbfba193825710cf8d6ff73234
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
@@ -210,7 +210,7 @@ services:
   linux_me:
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: ubiqube/msa2-linuxme:7fc20ffaef77c39f402b6fcaa81b24540ee35850
+    image: ubiqube/msa2-linuxme:b831acacdef579420ee1abf70ef66655d969fcbb
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
