@@ -3,6 +3,7 @@
 USER="ncroot"
 PASSWORD="ubiqube"
 OPERATOR="BLR"
+
 function executeCurl(){
         token=$1
         method=$2
@@ -15,6 +16,7 @@ function executeCurl(){
         res=`curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$token -X $method "http://msa_api:8480/ubi-api-rest$apiPath" -d "$body"`
         echo $res
 }
+
 /usr/bin/wait_for_api.sh
 if [ $? -ne 0 ]; then
     echo "\nERROR: API unavailable"
@@ -30,18 +32,21 @@ TOKEN=$(php -r 'echo json_decode($argv[1])->token;' "$RESPONSE")
 echo "-------------------------------------------------------"
 echo "CREATE $OPERATOR TENANT AND CUSTOMER Tyrell Corporation"
 echo "-------------------------------------------------------"
+
 tenantExist=$(executeCurl $TOKEN 'GET' "/operator/v1/exists/$OPERATOR")
 if [[ $tenantExist == *"false"* ]]; then
         tenant=$(executeCurl $TOKEN 'POST' "/operator/$OPERATOR?name=BladeRunner")
 else
         echo "$OPERATOR already exists"
 fi
+
 subTenantExist=$(executeCurl $TOKEN 'GET' "/customer/reference/TyrellCorp")
 if [[ $subTenantExist == *"actorId"* ]]; then
         echo "Subtenant Tyrell Corporation already exists"
 else
         subtenant=$(executeCurl $TOKEN 'POST' "/customer/$OPERATOR?name=Tyrell%20Corporation&reference=TyrellCorp" '{"name":"Tyrell Corporation"}')
 fi
+
 CUSTLIST=`curl -s -H "Content-Type:application/json" -H "Authorization: Bearer "$TOKEN -XGET http://msa_api:8480/ubi-api-rest/lookup/customers`
 IFS='"' # set delimiter
 read -ra ADDR <<< "$CUSTLIST" # str is read into an array as tokens separated by IFS
@@ -51,6 +56,7 @@ for i in "${ADDR[@]}"; do # access each element of array
         CUSTID=$i
     fi
 done
+
 echo "Subtenant ID $CUSTID"
 echo "--------------------------------------------------"
 echo "ATTACH WORKFLOWS TO CUSTOMER $CUSTID"
@@ -63,10 +69,12 @@ echo "> Security Event Detection"
 wf=$(executeCurl $TOKEN 'POST' "/orchestration/$CUSTID/service/attach?uri=Process/Tutorials/alarm/Alarm_Action/Alarm_Action.xml")
 echo "> Dashboard Deployment"
 wf=$(executeCurl $TOKEN 'POST' "/orchestration/$CUSTID/service/attach?uri=Process/Analytics/Kibana/kibana_dashboard.xml")
+
 echo "--------------------------------------------------"
 echo "CREATE DEMO DEVICES"
 echo "--------------------------------------------------"
 CUSTIDONLY=${CUSTID//BLRA}
+
 PID1RAW=$(executeCurl $TOKEN 'POST' "/orchestration/service/execute/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FProcess_Setup" '{"manufacturer_id": "14020601",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",  "managed_device_name": "linux_me",  "model_id": "14020601",  "device_ip_address": "172.20.0.101",  "login": "msa", "hostname": "linux_me"}')
 PID2RAW=$(executeCurl $TOKEN 'POST' "/orchestration/service/execute/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FProcess_Setup" '{"manufacturer_id": "14020601",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",  "managed_device_name": "linux_me_2",  "model_id": "14020601",  "device_ip_address": "172.20.0.102",  "login": "msa", "hostname": "linux_me_2" }')
 reg='processInstanceId\s?:([0-9]+),'
@@ -88,6 +96,7 @@ fi
 reg='.*(BLR[0-9]+)'
 [[ $ME1RAW =~ $reg ]]
 ME1ID=${BASH_REMATCH[1]}
+
 [[ $ME2RAW =~ $reg ]]
 ME2ID=${BASH_REMATCH[1]}
 echo "ME IDS : $ME1ID , $ME2ID"

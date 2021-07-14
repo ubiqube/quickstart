@@ -247,6 +247,18 @@ services:
     hostname: linux_me_2
     privileged: true
 
+  # msa log collecting with ELK Filebeat
+  msa_fb:
+    container_name: msa_fb
+    environment:
+      - ELASTICSEARCH_HOSTS=msa_es
+      - KIBANA_HOST=msa_kibana
+    build: ./lab/elk
+    volumes:
+     - /var/lib/docker/volumes/quickstart_msa_sms_logs/_data:/var/lib/docker/volumes/quickstart_msa_sms_logs/_data:ro
+     - /var/lib/docker/volumes/quickstart_msa_api_logs/_data:/var/lib/docker/volumes/quickstart_msa_api_logs/_data:ro
+    privileged: true
+
 volumes:
   msa_api:
   msa_db:
@@ -261,6 +273,7 @@ volumes:
   msa_front:
   msa_svn:
   msa_ai_ml_db:
+  msa_fb:
 
 networks:
   default:
