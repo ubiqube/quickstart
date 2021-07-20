@@ -145,7 +145,7 @@ services:
 
   msa_es:
     container_name: msa_es
-    image: ubiqube/msa2-es:a3477d6b0a9907fbfba193825710cf8d6ff73234
+    image: ubiqube/msa2-es:38622cf63d1378a5f9606fce2336de4cf6b7b512
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
@@ -171,7 +171,7 @@ services:
   
   msa_kibana:
     container_name: msa_kibana
-    image: ubiqube/msa2-kibana:885875647c0cf223423fc1ec2abdd72c540de7ee
+    image: ubiqube/msa2-kibana:9453bc6a0a2f7f8a4a0f7d881d8743325bb5f30a
     depends_on:
       - msa_es
     ports:
