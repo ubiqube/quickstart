@@ -3,30 +3,30 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image: ubiqube/msa2-front:562336551f0ebc7cd2536b464379d296a5fe2718
+    image: ubiqube/msa2-front:786fbfd9fd5fb7279cd8b3a7ac4309b7199549f0
     depends_on:
       - msa_api
       - msa_ui
       - camunda
       - msa_ai_ml
     ports:
-      - target: 8080
+      - target: 80
         published: 80
         protocol: tcp
         mode: host
-      - target: 8043
+      - target: 443
         published: 443
         protocol: tcp
         mode: host
-      - target: 8514
+      - target: 514
         published: 514
         protocol: udp
         mode: host
-      - target: 8162
+      - target: 162
         published: 162
         protocol: udp
         mode: host
-      - target: 8069
+      - target: 69
         published: 69
         protocol: udp
         mode: host
@@ -41,7 +41,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
   db:
     container_name: msa_db
-    image: ubiqube/msa2-db:5daa40093b8298501e8a293bb38e45c0e1cfcf7a
+    image: ubiqube/msa2-db:4ae8b6525ba20b79bd70ea2e74df1c038da7bc96
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -54,7 +54,7 @@ services:
 
   msa_api:
     container_name: msa_api
-    image: ubiqube/msa2-api:36c241a07e7edb8a9811e92fc1a1f66679359dab
+    image: ubiqube/msa2-api:5366337f61899f4292e171344b8269eabf080da9
     depends_on:
       - db
       - msa_es
@@ -79,7 +79,7 @@ services:
 
   msa_ui:
     container_name: msa_ui
-    image: ubiqube/msa2-ui:0537744e7ca926f98d7d45b66326021f31d1f487
+    image: ubiqube/msa2-ui:7ecc10577a49303d9e8ed54c205dcfe4eb57e939
     depends_on:
       - msa_api
     environment:
@@ -96,7 +96,7 @@ services:
 
   msa_sms:
     container_name: msa_sms
-    image: ubiqube/msa2-sms:d2b9b06b8299ac8c4bddb1d27e12ebf765757356
+    image: ubiqube/msa2-sms:522031ef3f9f1cd00cef9b6a49d7915a2f50e03f
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     cap_add:
