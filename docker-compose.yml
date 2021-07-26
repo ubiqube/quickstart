@@ -3,7 +3,7 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image: ubiqube/msa2-front:4ce4ec3fa88e90f4f59b594d5033e4cb09a457b1
+    image: ubiqube/msa2-front:562336551f0ebc7cd2536b464379d296a5fe2718
     depends_on:
       - msa_api
       - msa_ui
@@ -41,7 +41,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
   db:
     container_name: msa_db
-    image: ubiqube/msa2-db:92e19c6e051e1bbaba4948741fd8f553aff4e407
+    image: ubiqube/msa2-db:5daa40093b8298501e8a293bb38e45c0e1cfcf7a
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -54,7 +54,7 @@ services:
 
   msa_api:
     container_name: msa_api
-    image: ubiqube/msa2-api:34ada046dbec68d7b16af574dc2426915ccea759
+    image: ubiqube/msa2-api:36c241a07e7edb8a9811e92fc1a1f66679359dab
     depends_on:
       - db
       - msa_es
@@ -79,7 +79,7 @@ services:
 
   msa_ui:
     container_name: msa_ui
-    image: ubiqube/msa2-ui:3656dbb4dd1df393d0b82a7b8fba1eb0a1d13418
+    image: ubiqube/msa2-ui:0537744e7ca926f98d7d45b66326021f31d1f487
     depends_on:
       - msa_api
     environment:
@@ -115,7 +115,7 @@ services:
 
   msa_bud:
     container_name: msa_bud
-    image: ubiqube/msa2-bud:7228d5d1d41da4f0c146275ea8c3ffbdcb8d70eb
+    image: ubiqube/msa2-bud:9c60fe972f4a55b68df42ccda9979cfd8d9f81e8
     depends_on:
       - db
     volumes:
@@ -123,7 +123,7 @@ services:
 
   msa_alarm:
     container_name: msa_alarm
-    image: ubiqube/msa2-alarm:f6755354e561918383506adcb0df9b90274c4530
+    image: ubiqube/msa2-alarm:ca517a8257461f07b38797937df6a9873555273c
     depends_on:
       - db
       - msa_es
@@ -152,6 +152,10 @@ services:
       - "bootstrap.memory_lock=true"
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     volumes:
       - "msa_es:/usr/share/elasticsearch/data"
 
@@ -172,8 +176,6 @@ services:
   msa_kibana:
     container_name: msa_kibana
     image: ubiqube/msa2-kibana:885875647c0cf223423fc1ec2abdd72c540de7ee
-    depends_on:
-      - msa_es
     ports:
       - "5601:5601"
     environment:
