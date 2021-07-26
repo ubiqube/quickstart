@@ -162,7 +162,7 @@ services:
       WAIT_FOR_TIMEOUT: 60
 
   msa_es:
-    image: ubiqube/msa2-es:2858a6652465746456693d46fe57cbf5d4808dc5
+    image: ubiqube/msa2-es:38622cf63d1378a5f9606fce2336de4cf6b7b512
     deploy:
       replicas: 1
       placement:
@@ -174,7 +174,7 @@ services:
       - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
 
   msa_kibana:
-    image: ubiqube/msa2-kibana:7c00eae761d891388ae09c455b3ed61d21779237
+    image: ubiqube/msa2-kibana:9453bc6a0a2f7f8a4a0f7d881d8743325bb5f30a
     depends_on:
       - msa_es
     ports:
