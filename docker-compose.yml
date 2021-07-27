@@ -3,7 +3,7 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image: ubiqube/msa2-front:786fbfd9fd5fb7279cd8b3a7ac4309b7199549f0
+    image: ubiqube/msa2-front:fac917a1f5d80cddc82bda593204d29121f2b792
     depends_on:
       - msa_api
       - msa_ui
@@ -54,7 +54,7 @@ services:
 
   msa_api:
     container_name: msa_api
-    image: ubiqube/msa2-api:5366337f61899f4292e171344b8269eabf080da9
+    image: ubiqube/msa2-api:125e941b6dcb6124d023d5c77163d43fe45cd739
     depends_on:
       - db
       - msa_es
@@ -79,7 +79,7 @@ services:
 
   msa_ui:
     container_name: msa_ui
-    image: ubiqube/msa2-ui:7ecc10577a49303d9e8ed54c205dcfe4eb57e939
+    image: ubiqube/msa2-ui:5eb8915bbf20bfd38f5e04f45c301244058ac740
     depends_on:
       - msa_api
     environment:
@@ -92,7 +92,7 @@ services:
     - FEATURE_SCHEDULE_WORKFLOWS=true
     - FEATURE_PROFILE_AUDIT_LOGS=true
     - FEATURE_PERMISSION_PROFILES=true
-    - FEATURE_AI_ML=false
+    - FEATURE_AI_ML=true
 
   msa_sms:
     container_name: msa_sms
@@ -203,7 +203,7 @@ services:
   msa_dev:
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: ubiqube/msa2-linuxdev:1f16359514fcc22ad0ff73d918b1eccd6272144f
+    image: ubiqube/msa2-linuxdev:a3496317fa4418785e23f8315adeecec125bb7dd
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
