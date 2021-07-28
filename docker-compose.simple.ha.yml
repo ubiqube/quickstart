@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:786fbfd9fd5fb7279cd8b3a7ac4309b7199549f0
+    image: openmsa/openmsa:msa2-front-2.5.0GA-fac917a1f5d80cddc82bda593204d29121f2b792
     depends_on:
       - msa_api
       - msa_ui
@@ -47,7 +47,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:cd1c8b3f38618ee0f7be775057b5304797984614
+    image: openmsa/openmsa:msa2-db-2.5.0GA-4ae8b6525ba20b79bd70ea2e74df1c038da7bc96
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -66,7 +66,7 @@ services:
         condition: on-failure
  
   msa_api:
-    image: ubiqube/msa2-api:26626bcceaf3fb48227749dc4f10809fd966b665
+    image: openmsa/openmsa:msa2-api-2.5.0GA-125e941b6dcb6124d023d5c77163d43fe45cd739
     depends_on:
       - db
     deploy:
@@ -95,7 +95,7 @@ services:
       - "/mnt/NASVolume/msa_api:/opt/ubi-jentreprise/generated/conf"
 
   msa_ui:
-    image: ubiqube/msa2-ui:532f78c9ad5991295af4d5178d7f06c3b6763eef
+    image: openmsa/openmsa:msa2-ui-2.5.0GA-5eb8915bbf20bfd38f5e04f45c301244058ac740
     depends_on:
       - msa_api
     deploy:
@@ -115,7 +115,7 @@ services:
     - FEATURE_AI_ML=false
 
   msa_sms:
-    image: ubiqube/msa2-sms:d7e5ec9f32fcd99d21d8e99817487941776edce3
+    image: openmsa/openmsa:msa2-sms-2.5.0GA-522031ef3f9f1cd00cef9b6a49d7915a2f50e03f
     depends_on:
       - db
     volumes:
@@ -131,14 +131,14 @@ services:
         max_replicas_per_node: 1
 
   msa_bud:
-    image: ubiqube/msa2-bud:9bf487de2086785a716ae34d6b58eda16b90b235
+    image: openmsa/openmsa:msa2-bud-2.5.0GA-9c60fe972f4a55b68df42ccda9979cfd8d9f81e8
     depends_on:
       - db
     deploy:
       replicas: 1
 
   msa_alarm:
-    image: ubiqube/msa2-alarm:1080a92753b113f959159dc01b7b0db48ab2d672
+    image: openmsa/openmsa:msa2-alarm-2.5.0GA-ca517a8257461f07b38797937df6a9873555273c
     depends_on:
       - db
       - msa_es
@@ -147,7 +147,7 @@ services:
 
 
   camunda:
-    image: camunda/camunda-bpm-platform:7.13.0
+    image: openmsa/openmsa:msa2-camunda-2.5.0GA-e8cd089949cdf40b3bb40709b51fbc0edd213a04
     deploy:
       replicas: 1
       placement:
@@ -162,7 +162,7 @@ services:
       WAIT_FOR_TIMEOUT: 60
 
   msa_es:
-    image: ubiqube/msa2-es:38622cf63d1378a5f9606fce2336de4cf6b7b512
+    image: openmsa/openmsa:msa2-es-2.5.0GA-38622cf63d1378a5f9606fce2336de4cf6b7b512
     deploy:
       replicas: 1
       placement:
@@ -174,7 +174,7 @@ services:
       - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
 
   msa_kibana:
-    image: ubiqube/msa2-kibana:9453bc6a0a2f7f8a4a0f7d881d8743325bb5f30a
+    image: openmsa/openmsa:msa2-kibana-2.5.0GA-9453bc6a0a2f7f8a4a0f7d881d8743325bb5f30a
     depends_on:
       - msa_es
     ports:
@@ -194,7 +194,7 @@ services:
           - "node.role==manager"
           
   msa_ai_ml:
-    image: ubiqube/msa2-ai-ml:0e29906a56a3bba49ffce28a5beb2ff23999f5e3
+    image: openmsa/openmsa:msa2-ai-ml-2.5.0GA-15db86c6b212ae4ccf7c49eac086659c53f903b2
     ports:
       - "8000:8000"
     volumes:
@@ -211,7 +211,7 @@ services:
           - "node.role==manager"          
 
   msa_cerebro:
-    image: lmenezes/cerebro:0.9.2
+    image: openmsa/openmsa:msa2-cerebro-2.5.0GA-bc1ea10586035ad1c1fcb1e2145d049c1e3449fe
     entrypoint:
       - /opt/cerebro/bin/cerebro
       - -Dhosts.0.host=http://msa_es:9200
@@ -227,7 +227,7 @@ services:
           - "node.role==manager"
 
   msa_dev:
-    image: ubiqube/msa2-linuxdev:ab6d3ae624b8b0b1e25a3ccd54c3e4238e923868
+    image: openmsa/openmsa:msa2-linuxdev-2.5.0GA-a3496317fa4418785e23f8315adeecec125bb7dd
     deploy:
       replicas: 1
       placement:
