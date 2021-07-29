@@ -190,7 +190,7 @@ main() {
 		echo "HA setup detected"
 	fi
 
-	if [ ! -z "$(docker ps | grep msa)" ]; then
+	if [ ! -z "$(docker ps -a | grep msa)" ]; then
         	if [ $ha_setup = true ]; then
 			ha_front_ip=$(getHaNodeIp msa_front)
 			current_version=$(curl -s -k -XGET "https://$ha_front_ip/msa_version/" | awk -F\" '{print $4}')
