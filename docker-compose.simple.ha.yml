@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: openmsa/openmsa:msa2-front-2.5.0GA-fac917a1f5d80cddc82bda593204d29121f2b792
+    image: openmsa/openmsa:msa2-front-2.5.0GA-b9c27f50a0d47b6f2c12cb2bd43519fae4bef018
     depends_on:
       - msa_api
       - msa_ui
@@ -228,7 +228,7 @@ services:
           - "node.role==manager"
 
   msa_dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.5.0GA-a3496317fa4418785e23f8315adeecec125bb7dd
+    image: openmsa/openmsa:msa2-linuxdev-2.5.0GA-724cb12438a33345e23ffecc4c04870cd9a29924
     deploy:
       replicas: 1
       placement:
