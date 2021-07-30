@@ -3,7 +3,7 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.5.0GA-b9c27f50a0d47b6f2c12cb2bd43519fae4bef018
+    image: ubiqube/msa2-front:48da587ca93644a1a5971c4d8655814e5df19b1d
     depends_on:
       - msa_api
       - msa_ui
@@ -191,7 +191,7 @@ services:
           - "msa-kibana"
           
   msa_ai_ml:
-    image: openmsa/openmsa:msa2-ai-ml-2.5.0GA-15db86c6b212ae4ccf7c49eac086659c53f903b2
+    image: ubiqube/msa2-ai-ml:e9dea0eaa35306113c2f4f91048da0e49bbe0cc1
     ports:
       - "8000:8000"
     volumes:
