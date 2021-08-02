@@ -90,6 +90,7 @@ haInstall(){
 	docker stack deploy --with-registry-auth -c docker-compose.simple.ha.yml $ha_stack
 	
 	echo "############## Install OpenMSA Libraries ##############################"
+	sleep 5
 	ha_dev_node_ip=$(getHaNodeIp msa_dev)
         ha_dev_container_ref=$(getHaContainerReference msa_dev)
         echo "DEV $ha_dev_ip $ha_dev_container_ref"
