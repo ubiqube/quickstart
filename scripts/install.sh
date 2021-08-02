@@ -93,7 +93,8 @@ haInstall(){
 	ha_dev_node_ip=$(getHaNodeIp msa_dev)
         ha_dev_container_ref=$(getHaContainerReference msa_dev)
         echo "DEV $ha_dev_ip $ha_dev_container_ref"
-        echo "Checking SSH access to $ha_dev_node_run with user $ssh_user on IP $ha_dev_node_ip to install libraries. If failed, please set SSH key"
+        echo "Checking SSH access to DEV container with user $ssh_user on IP $ha_dev_node_ip to install libraries. If failed, please set SSH key"
+	sleep 5
         ssh "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec $ha_dev_container_ref /bin/bash -c '/usr/bin/install_libraries.sh $(getLibOptions)'"
         docker service update --force "$ha_stack"_msa_api
         docker service update --force "$ha_stack"_msa_sms
