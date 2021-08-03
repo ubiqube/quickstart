@@ -65,6 +65,11 @@ standaloneInstall(){
 
 		echo "Removing old instances of topology"
 		docker-compose exec -T msa_dev /usr/bin/clean_old_topology_instances.sh
+
+	       echo "Remove AI ML database. Required on upgrades from 2.4"
+		docker-compose exec -T msa_ai_ml /bin/bash -c 'rm /msa_proj/database/db.sqlite3'
+		docker-compose restart msa_ai_ml
+
 	fi
 
 	echo "Elasticsearch : .kibana_1 index regeneration"
