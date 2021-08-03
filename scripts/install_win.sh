@@ -67,7 +67,7 @@ standaloneInstall(){
 		docker-compose exec -T -w //usr/bin/ msa_dev bash -c './clean_old_topology_instances.sh'
 		
 	        echo "Remove AI ML database. Required on upgrades from 2.4"
-		docker-compose exec -T -u root msa_ai_ml /bin/bash -c 'rm /msa_proj/database/db.sqlite3'
+		docker-compose exec -T -u root -w //usr/bin/ msa_ai_ml bash -c 'rm /msa_proj/database/db.sqlite3'
 		docker-compose restart msa_ai_ml
 
 	fi
