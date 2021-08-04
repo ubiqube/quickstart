@@ -79,7 +79,7 @@ services:
 
   msa_ui:
     container_name: msa_ui
-    image: ubiqube/msa2-ui:634ae9fd6eb9a25c337d08149827f0fcaa658ddc
+    image: openmsa/openmsa:msa2-ui-2.5.0GA-634ae9fd6eb9a25c337d08149827f0fcaa658ddc
     depends_on:
       - msa_api
     environment:
