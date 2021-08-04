@@ -3,7 +3,7 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image: ubiqube/msa2-front:3e05950c0b5e819abaaba6665ecda9bbb1af6df9
+    image: openmsa/openmsa:msa2-front-2.5.0GA-b33b8f42f22b450ee2b7ba45afa209bf2af2968f
     depends_on:
       - msa_api
       - msa_ui
@@ -97,7 +97,7 @@ services:
 
   msa_sms:
     container_name: msa_sms
-    image: ubiqube/msa2-sms:6eb380cea993ab99f735aa040d0c33fac3743da6
+    image: openmsa/openmsa:msa2-sms-2.5.0GA-8e8b3a179f8d356a73388c335bd0b95dcd8dbcb8
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     cap_add:
@@ -147,7 +147,7 @@ services:
 
   msa_es:
     container_name: msa_es
-    image: ubiqube/msa2-es:26576e026d6e745b7f537b7fd8a7eae6bbf0f376
+    image: openmsa/openmsa:msa2-es-2.5.0GA-26576e026d6e745b7f537b7fd8a7eae6bbf0f376
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
@@ -178,7 +178,7 @@ services:
   
   msa_kibana:
     container_name: msa_kibana
-    image: ubiqube/msa2-kibana:1e4a985d48c98986005ae16dfd50918fae78f470
+    image: openmsa/openmsa:msa2-kibana-2.5.0GA-1e4a985d48c98986005ae16dfd50918fae78f470
     depends_on:
       - msa_es
     ports:
@@ -194,7 +194,7 @@ services:
           
   msa_ai_ml:
     container_name: msa_ai_ml
-    image: ubiqube/msa2-ai-ml:e9dea0eaa35306113c2f4f91048da0e49bbe0cc1
+    image: openmsa/openmsa:msa2-ai-ml-2.5.0GA-e9dea0eaa35306113c2f4f91048da0e49bbe0cc1
     ports:
       - "8000:8000"
     volumes:
