@@ -132,7 +132,7 @@ services:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
   
   camunda:
-    container_name: camunda
+    container_name: msa_camunda
     depends_on:
       - db
     image: openmsa/openmsa:msa2-camunda-2.5.0GA-e8cd089949cdf40b3bb40709b51fbc0edd213a04
