@@ -132,6 +132,7 @@ services:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
   
   camunda:
+    container_name: camunda
     depends_on:
       - db
     image: openmsa/openmsa:msa2-camunda-2.5.0GA-e8cd089949cdf40b3bb40709b51fbc0edd213a04
@@ -161,6 +162,7 @@ services:
       - "msa_es:/usr/share/elasticsearch/data"
 
   msa_cerebro:
+    container_name: msa_cerebro
     image: openmsa/openmsa:msa2-cerebro-2.5.0GA-bc1ea10586035ad1c1fcb1e2145d049c1e3449fe
     environment:
       AUTH_TYPE: basic
@@ -191,6 +193,7 @@ services:
           - "msa-kibana"
           
   msa_ai_ml:
+    container_name: msa_ai_ml
     image: ubiqube/msa2-ai-ml:e9dea0eaa35306113c2f4f91048da0e49bbe0cc1
     ports:
       - "8000:8000"
