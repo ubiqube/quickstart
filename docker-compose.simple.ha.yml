@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:3e05950c0b5e819abaaba6665ecda9bbb1af6df9
+    image: openmsa/openmsa:msa2-front-2.5.0GA-b33b8f42f22b450ee2b7ba45afa209bf2af2968f
     depends_on:
       - msa_api
       - msa_ui
@@ -95,7 +95,7 @@ services:
       - "/mnt/NASVolume/msa_api:/opt/ubi-jentreprise/generated/conf"
 
   msa_ui:
-    image: ubiqube/msa2-ui:634ae9fd6eb9a25c337d08149827f0fcaa658ddc
+    image: openmsa/openmsa:msa2-ui-2.5.0GA-634ae9fd6eb9a25c337d08149827f0fcaa658ddc
     depends_on:
       - msa_api
     deploy:
@@ -116,7 +116,7 @@ services:
     - FEATURE_WORKFLOW_OWNER=false
 
   msa_sms:
-    image: ubiqube/msa2-sms:6eb380cea993ab99f735aa040d0c33fac3743da6
+    image: openmsa/openmsa:msa2-sms-2.5.0GA-8e8b3a179f8d356a73388c335bd0b95dcd8dbcb8
     depends_on:
       - db
     volumes:
@@ -163,7 +163,7 @@ services:
       WAIT_FOR_TIMEOUT: 60
 
   msa_es:
-    image: ubiqube/msa2-es:26576e026d6e745b7f537b7fd8a7eae6bbf0f376
+    image: openmsa/openmsa:msa2-es-2.5.0GA-26576e026d6e745b7f537b7fd8a7eae6bbf0f376
     deploy:
       replicas: 1
       placement:
@@ -175,7 +175,7 @@ services:
       - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
 
   msa_kibana:
-    image: ubiqube/msa2-kibana:1e4a985d48c98986005ae16dfd50918fae78f470
+    image: openmsa/openmsa:msa2-kibana-2.5.0GA-1e4a985d48c98986005ae16dfd50918fae78f470
     depends_on:
       - msa_es
     ports:
@@ -195,7 +195,7 @@ services:
           - "node.role==manager"
           
   msa_ai_ml:
-    image: openmsa/openmsa:msa2-ai-ml-2.5.0GA-15db86c6b212ae4ccf7c49eac086659c53f903b2
+    image: openmsa/openmsa:msa2-ai-ml-2.5.0GA-e9dea0eaa35306113c2f4f91048da0e49bbe0cc1
     ports:
       - "8000:8000"
     volumes:
