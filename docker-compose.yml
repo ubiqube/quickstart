@@ -69,14 +69,6 @@ services:
       - msa_es
     environment:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
-    entrypoint:
-      - /opt/jboss/wildfly/bin/standalone.sh
-      - -b
-      - 0.0.0.0
-      - -bmanagement
-      - 0.0.0.0
-      - -c
-      - ubiqube.xml
     volumes:
       - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_entities:/opt/fmc_entities"
