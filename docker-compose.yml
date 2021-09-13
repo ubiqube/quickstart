@@ -6,7 +6,7 @@ services:
     container_name: msa_front
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
-    image: ubiqube/msa2-front:586e7889402eb028a28365f114e7a7ec1ede80e3
+    image: ubiqube/msa2-front:af6adf138420f180d255be0edc45c89fe7739721
     depends_on:
       - msa_api
       - msa_ui
@@ -67,6 +67,7 @@ services:
     depends_on:
       - db
       - msa_es
+#      - msa_es_2
     environment:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
     volumes:
@@ -114,6 +115,7 @@ services:
     depends_on:
       - db
       - msa_es
+#      - msa_es_2
       - msa_dev
     volumes:
       - "msa_dev:/opt/devops/"
@@ -159,7 +161,6 @@ services:
       - "rrd_repository:/opt/rrd"
       - "msa_bulkfiles:/opt/sms/spool/parser"
 
-
   camunda:
     restart: unless-stopped
     container_name: msa_camunda
@@ -178,16 +179,24 @@ services:
   msa_es:
     restart: unless-stopped
     container_name: msa_es
-    image: ubiqube/msa2-es:38622cf63d1378a5f9606fce2336de4cf6b7b512
+    build: ./lab/msa_es
+    #image: ubiqube/msa2-es:fd10935db6567422d777c60e74d6b3f7dbc27e41
     environment:
-#      - "discovery.type=single-node"
+      - node.name=msa_es
+      - discovery.seed_hosts=msa_es,msa_es_2
+      - cluster.initial_master_nodes=msa_es,msa_es_2
+      - cluster.name=es_cluster
       - "script.painless.regex.enabled=true"
       - "bootstrap.memory_lock=true"
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
-      - node.name=elasticsearch01
-      - discovery.seed_hosts=elasticsearch02
-      - cluster.initial_master_nodes=elasticsearch01,elasticsearch02
+      - xpack.security.enabled=true
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate
+      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/server.pem
+      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/server.crt
+      - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/server.pem
+      - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/server.crt
     ulimits:
       memlock:
         soft: -1
@@ -198,23 +207,30 @@ services:
   msa_es_2:
     restart: unless-stopped
     container_name: msa_es_2
-    image: ubiqube/msa2-es:38622cf63d1378a5f9606fce2336de4cf6b7b512
+    build: ./lab/msa_es
+ #   image: ubiqube/msa2-es:fd10935db6567422d777c60e74d6b3f7dbc27e41
     environment:
-#      - "discovery.type=single-node"
+      - node.name=msa_es_2
+      - discovery.seed_hosts=msa_es,msa_es_2
+      - cluster.initial_master_nodes=msa_es,msa_es_2
+      - cluster.name=es_cluster
       - "script.painless.regex.enabled=true"
       - "bootstrap.memory_lock=true"
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
-      - node.name=elasticsearch02
-      - discovery.seed_hosts=elasticsearch01
-      - cluster.initial_master_nodes=elasticsearch01,elasticsearch02
+      - xpack.security.enabled=true
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate
+      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/server.pem
+      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/server.crt
+      - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/server.pem
+      - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/server.crt
     ulimits:
       memlock:
         soft: -1
         hard: -1
     volumes:
       - "msa_es_2:/usr/share/elasticsearch/data"
-
 
   msa_cerebro:
     restart: unless-stopped
