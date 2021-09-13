@@ -70,7 +70,6 @@ services:
     environment:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
     volumes:
-      - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "rrd_repository:/opt/rrd"
@@ -181,17 +180,41 @@ services:
     container_name: msa_es
     image: ubiqube/msa2-es:38622cf63d1378a5f9606fce2336de4cf6b7b512
     environment:
-      - "discovery.type=single-node"
+#      - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
       - "bootstrap.memory_lock=true"
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+      - node.name=elasticsearch01
+      - discovery.seed_hosts=elasticsearch02
+      - cluster.initial_master_nodes=elasticsearch01,elasticsearch02
     ulimits:
       memlock:
         soft: -1
         hard: -1
     volumes:
       - "msa_es:/usr/share/elasticsearch/data"
+
+  msa_es_2:
+    restart: unless-stopped
+    container_name: msa_es_2
+    image: ubiqube/msa2-es:38622cf63d1378a5f9606fce2336de4cf6b7b512
+    environment:
+#      - "discovery.type=single-node"
+      - "script.painless.regex.enabled=true"
+      - "bootstrap.memory_lock=true"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+      - node.name=elasticsearch02
+      - discovery.seed_hosts=elasticsearch01
+      - cluster.initial_master_nodes=elasticsearch01,elasticsearch02
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - "msa_es_2:/usr/share/elasticsearch/data"
+
 
   msa_cerebro:
     restart: unless-stopped
@@ -302,6 +325,7 @@ volumes:
   msa_entities:
   msa_repository:
   msa_es:
+  msa_es_2:
   rrd_repository:
   msa_api_logs:
   msa_sms_logs:
