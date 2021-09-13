@@ -75,8 +75,11 @@ services:
       - "msa_repository:/opt/fmc_repository"
       - "rrd_repository:/opt/rrd"
       - "msa_dev:/opt/devops/"
-      - "msa_api_logs:/opt/jboss/wildfly/standalone/log"
-      - "msa_api_logs:/opt/wildfly/logs/processLog"
+      - "msa_api_logs:/opt/wildfly/logs/"
+    networks:
+      default:
+        aliases:
+          - "msa-api"
 
   msa_ui:
     restart: unless-stopped
