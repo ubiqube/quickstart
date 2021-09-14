@@ -126,7 +126,7 @@ services:
 
   msa_bud:
     container_name: msa_bud
-    image: openmsa/openmsa:msa2-bud-2.5.0GA-9c60fe972f4a55b68df42ccda9979cfd8d9f81e8
+    image: ubiqube/msa2-bud:45d70aea590242b6bb4c17d408255d5f1d7aeba2
     depends_on:
       - db
     volumes:
