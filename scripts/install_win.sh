@@ -3,7 +3,7 @@ set -e
 
 PROG=$(basename $0)
 
-target_version="2.5.1"
+target_version="2.6.0RC1"
 force_option=false
 clean_option=false
 remove_orphans=false
