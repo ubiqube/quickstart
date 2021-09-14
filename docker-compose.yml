@@ -6,7 +6,7 @@ services:
     container_name: msa_front
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
-    image: ubiqube/msa2-front:8983fe3ae8359d88d4e97950685b03e59aa823e4
+    image: ubiqube/msa2-front:a67b5624bec13a4cd425abc8d97ea16b7a0a5cb7
     depends_on:
       - msa_api
       - msa_ui
@@ -246,7 +246,9 @@ services:
     restart: unless-stopped
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: ubiqube/msa2-linuxdev:ea79d56f42a21226c6b03af7206ce17ff34277eb
+    image: ubiqube/msa2-linuxdev:9c5c1fa774bd64c720237208fbadf694d0aed37d
+    depends_on:
+      - msa_es
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
