@@ -46,7 +46,7 @@ services:
     restart: unless-stopped
     container_name: msa_db
     image: ubiqube/msa2-db:388f5da6d9b847ba71148c1ea6a088289b2b03d1
-    command: postgres -c 'max_connections=800'
+    command: postgres -c 'max_connections=800' -c 'max_prepared_transactions=100'
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
     environment:
@@ -76,6 +76,7 @@ services:
       - "rrd_repository:/opt/rrd"
       - "msa_dev:/opt/devops/"
       - "msa_api_logs:/opt/wildfly/logs/"
+      - "msa_api_logs:/opt/wildfly/logs/processLog"
     networks:
       default:
         aliases:
