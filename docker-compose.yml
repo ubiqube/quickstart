@@ -76,6 +76,7 @@ services:
       - "rrd_repository:/opt/rrd"
       - "msa_dev:/opt/devops/"
       - "msa_api_logs:/opt/wildfly/logs/"
+      - "msa_api_logs:/opt/wildfly/logs/processLog"
     networks:
       default:
         aliases:
