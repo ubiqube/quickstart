@@ -164,7 +164,7 @@ services:
 
 
   camunda:
-    image: openmsa/openmsa:msa2-camunda-2.5.0GA-e8cd089949cdf40b3bb40709b51fbc0edd213a04
+    image: ubiqube/msa2-camunda:e8cd089949cdf40b3bb40709b51fbc0edd213a04
     deploy:
       replicas: 1
       placement:
