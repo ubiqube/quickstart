@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.9"
 
 services:
   msa_front:
@@ -67,7 +67,7 @@ services:
     depends_on:
       - db
       - msa_es
-#      - msa_es_2
+      - msa_es_2
     environment:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
     volumes:
@@ -177,11 +177,36 @@ services:
       WAIT_FOR: 'db:5432'
       WAIT_FOR_TIMEOUT: 60
 
+  create_certs:
+    restart: unless-stopped
+    container_name: create_certs
+    image: ubiqube/msa2-es:fd10935db6567422d777c60e74d6b3f7dbc27e41
+    command: >
+      bash -c '
+        openssl req -x509 -nodes -days 365 -subj "/C=CA/ST=QC/O=UBiqube/CN=msa2.ubiqube.com" -newkey rsa:2048 -keyout /usr/share/elasticsearch/config/certificates/server.pem -out    /usr/share/elasticsearch/config/certificates/server.crt
+        chown -R 1000:0 /usr/share/elasticsearch/config/certificates
+      '
+    user: "0"
+    working_dir: /usr/share/elasticsearch
+    volumes: 
+      - "certs:/usr/share/elasticsearch/config/certificates"
+
+  wait_until_ready:
+    restart: unless-stopped
+    container_name: wait_until_ready
+    image: ubiqube/msa2-es:fd10935db6567422d777c60e74d6b3f7dbc27e41
+    command: /usr/bin/true
+    depends_on: 
+      msa_es:
+        condition: service_healthy
+      msa_es_2:
+        condition: service_healthy
+
   msa_es:
     restart: unless-stopped
     container_name: msa_es
-    build: ./lab/msa_es
-    #image: ubiqube/msa2-es:fd10935db6567422d777c60e74d6b3f7dbc27e41
+    #build: ./lab/msa_es
+    image: ubiqube/msa2-es:fd10935db6567422d777c60e74d6b3f7dbc27e41
     environment:
       - node.name=msa_es
       - discovery.seed_hosts=msa_es,msa_es_2
@@ -194,22 +219,28 @@ services:
       - xpack.security.enabled=true
       - xpack.security.transport.ssl.enabled=true
       - xpack.security.transport.ssl.verification_mode=certificate
-      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/server.pem
-      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/server.crt
-      - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/server.pem
-      - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/server.crt
+      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
+      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
+      - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
+      - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
     ulimits:
       memlock:
         soft: -1
         hard: -1
     volumes:
       - "msa_es:/usr/share/elasticsearch/data"
+      - "certs:/usr/share/elasticsearch/config/certificates"
+    healthcheck:
+      test: curl --cacert /usr/share/elasticsearch/config/ca/ca.crt -s https://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   msa_es_2:
     restart: unless-stopped
     container_name: msa_es_2
-    build: ./lab/msa_es
- #   image: ubiqube/msa2-es:fd10935db6567422d777c60e74d6b3f7dbc27e41
+ #   build: ./lab/msa_es
+    image: ubiqube/msa2-es:fd10935db6567422d777c60e74d6b3f7dbc27e41
     environment:
       - node.name=msa_es_2
       - discovery.seed_hosts=msa_es,msa_es_2
@@ -222,16 +253,22 @@ services:
       - xpack.security.enabled=true
       - xpack.security.transport.ssl.enabled=true
       - xpack.security.transport.ssl.verification_mode=certificate
-      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/server.pem
-      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/server.crt
-      - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/server.pem
-      - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/server.crt
+      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
+      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
+      - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
+      - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
     ulimits:
       memlock:
         soft: -1
         hard: -1
     volumes:
       - "msa_es_2:/usr/share/elasticsearch/data"
+      - "certs:/usr/share/elasticsearch/config/certificates"
+    healthcheck:
+      test: curl --cacert /usr/share/elasticsearch/config/certificates/ca/ca.crt -s https://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   msa_cerebro:
     restart: unless-stopped
@@ -345,6 +382,7 @@ volumes:
   msa_repository:
   msa_es:
   msa_es_2:
+  certs:
   rrd_repository:
   msa_api_logs:
   msa_sms_logs:
