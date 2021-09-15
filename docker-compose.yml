@@ -6,7 +6,7 @@ services:
     container_name: msa_front
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
-    image: ubiqube/msa2-front:a67b5624bec13a4cd425abc8d97ea16b7a0a5cb7
+    image: ubiqube/msa2-front:c71bee092f1adfd0d11b158b0ef2fff01617213c
     depends_on:
       - msa_api
       - msa_ui
@@ -85,7 +85,7 @@ services:
   msa_ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:e8132f724ae2b0136f89338ad3294749ecbce098
+    image: ubiqube/msa2-ui:41ea827fb1b1ac0a072371289875b02db54c9438
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -161,7 +161,6 @@ services:
       - "rrd_repository:/opt/rrd"
       - "msa_bulkfiles:/opt/sms/spool/parser"
 
-
   camunda:
     restart: unless-stopped
     container_name: msa_camunda
@@ -180,7 +179,7 @@ services:
   msa_es:
     restart: unless-stopped
     container_name: msa_es
-    image: ubiqube/msa2-es:38622cf63d1378a5f9606fce2336de4cf6b7b512
+    image: ubiqube/msa2-es:6ff35ce0193dbd80f45ee06c2f38ed74a643468b
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
