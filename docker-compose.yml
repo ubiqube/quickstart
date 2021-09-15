@@ -116,7 +116,7 @@ services:
     depends_on:
       - db
       - msa_es
-#      - msa_es_2
+      - msa_es_2
       - msa_dev
     volumes:
       - "msa_dev:/opt/devops/"
