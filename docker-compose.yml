@@ -201,7 +201,7 @@ services:
         condition: service_healthy
       msa_es_2:
         condition: service_healthy
-
+ 
   msa_es:
     restart: unless-stopped
     container_name: msa_es
@@ -216,7 +216,7 @@ services:
       - "bootstrap.memory_lock=true"
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
-      - xpack.security.enabled=true
+      - xpack.security.enabled=false
       - xpack.security.transport.ssl.enabled=true
       - xpack.security.transport.ssl.verification_mode=certificate
       - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
@@ -250,7 +250,7 @@ services:
       - "bootstrap.memory_lock=true"
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
-      - xpack.security.enabled=true
+      - xpack.security.enabled=false
       - xpack.security.transport.ssl.enabled=true
       - xpack.security.transport.ssl.verification_mode=certificate
       - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
@@ -283,6 +283,7 @@ services:
       - -Dhosts.0.host=http://msa_es:9200
     depends_on:
       - msa_es
+      - msa_es_2
     ports:
     - "9000:9000"
   
@@ -290,8 +291,11 @@ services:
     restart: unless-stopped
     container_name: msa_kibana
     image: ubiqube/msa2-kibana:9453bc6a0a2f7f8a4a0f7d881d8743325bb5f30a
-    depends_on:
-      - msa_es
+    depends_on: 
+      msa_es:
+        condition: service_healthy
+      msa_es_2:
+        condition: service_healthy
     ports:
       - "5601:5601"
     environment:
@@ -382,6 +386,7 @@ volumes:
   msa_repository:
   msa_es:
   msa_es_2:
+  msa_es_3:
   certs:
   rrd_repository:
   msa_api_logs:
