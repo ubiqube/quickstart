@@ -67,10 +67,10 @@ services:
     depends_on:
       - db
       - msa_es
-      - msa_es_2
     environment:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
     volumes:
+      - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "rrd_repository:/opt/rrd"
@@ -116,7 +116,6 @@ services:
     depends_on:
       - db
       - msa_es
-      - msa_es_2
       - msa_dev
     volumes:
       - "msa_dev:/opt/devops/"
@@ -177,80 +176,22 @@ services:
       WAIT_FOR: 'db:5432'
       WAIT_FOR_TIMEOUT: 60
 
-  msa_es_create_certs:
-    restart: unless-stopped
-    container_name: msa_es_create_certs
-    image: ubiqube/ubi-centos8:latest
-    command: >
-      bash -c '
-        mkdir -p /usr/share/elasticsearch/config/certificates
-        openssl req -x509 -nodes -days 365 -subj "/C=CA/ST=QC/O=UBiqube/CN=msa2.ubiqube.com" -newkey rsa:2048 -keyout /usr/share/elasticsearch/config/certificates/server.pem -out    /usr/share/elasticsearch/config/certificates/server.crt
-        chown -R 1000:0 /usr/share/elasticsearch/config/certificates
-      '
-    user: "0"
-    working_dir: /usr/share/elasticsearch
-    volumes: 
-      - "certs:/usr/share/elasticsearch/config/certificates"
-
   msa_es:
     restart: unless-stopped
     container_name: msa_es
     image: ubiqube/msa2-es:6ff35ce0193dbd80f45ee06c2f38ed74a643468b
-    depends_on: 
-      - msa_es_create_certs
     environment:
-      - node.name=msa_es
-      - discovery.seed_hosts=msa_es,msa_es_2
-      - cluster.initial_master_nodes=msa_es,msa_es_2
-      - cluster.name=es_cluster
+      - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
       - "bootstrap.memory_lock=true"
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
-      - xpack.security.enabled=true
-      - xpack.security.transport.ssl.enabled=true
-      - xpack.security.transport.ssl.verification_mode=certificate
-      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
-      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
-      - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
-      - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
     ulimits:
       memlock:
         soft: -1
         hard: -1
     volumes:
       - "msa_es:/usr/share/elasticsearch/data"
-      - "certs:/usr/share/elasticsearch/config/certificates"
-
-  msa_es_2:
-    restart: unless-stopped
-    container_name: msa_es_2
-    image: ubiqube/msa2-es:6ff35ce0193dbd80f45ee06c2f38ed74a643468b
-    depends_on: 
-      - msa_es_create_certs
-    environment:
-      - node.name=msa_es_2
-      - discovery.seed_hosts=msa_es,msa_es_2
-      - cluster.initial_master_nodes=msa_es,msa_es_2
-      - cluster.name=es_cluster
-      - "script.painless.regex.enabled=true"
-      - "bootstrap.memory_lock=true"
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
-      - xpack.security.enabled=true
-      - xpack.security.transport.ssl.enabled=true
-      - xpack.security.transport.ssl.verification_mode=certificate
-      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
-      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
-      - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
-      - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - "msa_es_2:/usr/share/elasticsearch/data"
-      - "certs:/usr/share/elasticsearch/config/certificates"
 
   msa_cerebro:
     restart: unless-stopped
@@ -265,7 +206,6 @@ services:
       - -Dhosts.0.host=http://msa_es:9200
     depends_on:
       - msa_es
-      - msa_es_2
     ports:
     - "9000:9000"
   
@@ -273,11 +213,8 @@ services:
     restart: unless-stopped
     container_name: msa_kibana
     image: ubiqube/msa2-kibana:9453bc6a0a2f7f8a4a0f7d881d8743325bb5f30a
-    depends_on: 
-      msa_es:
-        condition: service_healthy
-      msa_es_2:
-        condition: service_healthy
+    depends_on:
+      - msa_es
     ports:
       - "5601:5601"
     environment:
@@ -367,9 +304,6 @@ volumes:
   msa_entities:
   msa_repository:
   msa_es:
-  msa_es_2:
-  msa_es_3:
-  certs:
   rrd_repository:
   msa_api_logs:
   msa_sms_logs:
@@ -387,4 +321,3 @@ networks:
         - subnet: 172.20.0.0/24
     driver_opts:
       encrypted: "true"
-    
