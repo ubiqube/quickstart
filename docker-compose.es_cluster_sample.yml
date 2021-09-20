@@ -6,7 +6,7 @@ services:
     container_name: msa_front
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
-    image: ubiqube/msa2-front:3c88f745642968a4fefb872666139519f31f3015
+    image: ubiqube/msa2-front:a0f311fda1656e3765e1cc61389be8b6866c365e
     depends_on:
       - msa_api
       - msa_ui
@@ -45,7 +45,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: ubiqube/msa2-db:388f5da6d9b847ba71148c1ea6a088289b2b03d1
+    image: ubiqube/msa2-db:1055b3b8c5df4581b650eb4e09c6950a0d9920f0
     command: postgres -c 'max_connections=800' -c 'max_prepared_transactions=100'
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -61,7 +61,7 @@ services:
   msa_api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:2f5f39783c08df93c91296d666a008e7754772bd
+    image: ubiqube/msa2-api:d6d036488a1a9721c3cb84946ded76c5d6116d0f
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     depends_on:
@@ -292,7 +292,7 @@ services:
   msa_ai_ml:
     restart: unless-stopped
     container_name: msa_ai_ml
-    image: ubiqube/msa2-ai-ml:ba37871404405314e836b4de85011d140b7d43cb
+    image: ubiqube/msa2-ai-ml:bfd53368bac6663b1a12a5fd16ce2e41945f875d
     healthcheck:
       test: ["CMD-SHELL", "python /msa_proj/health_check.py"]
     ports:
