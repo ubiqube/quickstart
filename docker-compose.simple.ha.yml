@@ -204,10 +204,6 @@ services:
       - bootstrap.memory_lock=true
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
     volumes:
       - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
 
