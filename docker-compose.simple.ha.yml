@@ -88,7 +88,6 @@ services:
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
-      - "/mnt/NASVolume/msa_api_logs:/opt/jboss/wildfly/standalone/log"
       - "/mnt/NASVolume/msa_api_logs:/opt/wildfly/logs/processLog"
 
   msa_ui:
