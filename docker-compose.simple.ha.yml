@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:a6e41da89e7e3eff34f331e7df83ed967e0a3261
+    image: ubiqube/msa2-front:5586495bd883418a03dc52134c52ca592c771ff1
     depends_on:
       - msa_api
       - msa_ui
@@ -91,7 +91,7 @@ services:
       - "/mnt/NASVolume/msa_api_logs:/opt/wildfly/logs/processLog"
 
   msa_ui:
-    image: ubiqube/msa2-ui:89ab56523a26e261c508326a13781969e6fff3c1
+    image: ubiqube/msa2-ui:e596422eab7fa91c0af06c2ac2b746da5cf397d9
     depends_on:
       - msa_api
     healthcheck:
