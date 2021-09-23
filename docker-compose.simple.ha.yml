@@ -59,6 +59,7 @@ services:
       CAMUNDA_PASSWORD: camunda
       CAMUNDA_DB: process-engine
       CAMUNDA_USER: camunda
+      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - "/mnt/NASVolume/msa_db:/var/lib/postgresql/data"
     deploy:
