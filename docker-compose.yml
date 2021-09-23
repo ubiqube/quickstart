@@ -3,7 +3,7 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.5.1-1453fc2ea9acad0164742c021d8fc9fdd33d1f76
+    image: openmsa/openmsa:msa2-front-2.5.2-47fe9e68b919156a2921353abb5faf51897b27ce
     depends_on:
       - msa_api
       - msa_ui
@@ -54,7 +54,7 @@ services:
 
   msa_api:
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.5.0GA-125e941b6dcb6124d023d5c77163d43fe45cd739
+    image: openmsa/openmsa:msa2-api-2.5.2-ac12f5568548ba6660296c5c08d00451e3ef994b
     depends_on:
       - db
       - msa_es
@@ -97,7 +97,7 @@ services:
 
   msa_sms:
     container_name: msa_sms
-    image: openmsa/openmsa:msa2-sms-2.5.0GA-8e8b3a179f8d356a73388c335bd0b95dcd8dbcb8
+    image: openmsa/openmsa:msa2-sms-2.5.2-a510d9fc32b323701dd1ffe3ebd2f0a0267c0d06
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     cap_add:
