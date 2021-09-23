@@ -90,7 +90,10 @@ services:
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/msa_api_logs:/opt/wildfly/logs/processLog"
-
+    networks:
+      default:
+        aliases:
+          - "msa-api"
   msa_ui:
     image: ubiqube/msa2-ui:cfaa84a94bce513edd1e1c38f5b0ec5336cf9bd5
     depends_on:
@@ -235,16 +238,16 @@ services:
       - "8000:8000"
     volumes:
       - "/mnt/NASVolume/msa_ai_ml_db:/msa_proj/database"
-    networks:
-      default:
-        aliases:
-          - "msa-ai-ml"
     deploy:
       replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
           - "node.role==manager"
+    networks:
+      default:
+        aliases:
+          - "msa-ai-ml"
 
   msa_cerebro:
     image: ubiqube/msa2-cerebro:914750e000db1343d9972bfa6652da1efe4aa32f
