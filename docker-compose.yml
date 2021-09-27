@@ -4,10 +4,9 @@ services:
   msa_front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:693f55e94c65b8347aa38f57ebd200daf0eaf28d
+    image: ubiqube/msa2-front:8e0f71f6371cdfc23622fdf1fe5f675109539eed
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
-    command: ["/usr/local/bin/wait-for-it.sh -t 60 msa-api:8480 && nginx -g 'daemon off;'"]
     depends_on:
       - msa_api
       - msa_ui
@@ -253,7 +252,6 @@ services:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
-      - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_dev:/opt/devops/"
       
   linux_me:
