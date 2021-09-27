@@ -29,19 +29,6 @@ standaloneInstall(){
 		else
 			docker-compose down --remove-orphans 
 		fi
-		
-		############ For 2.2 upgrade
-		if [ ! -z "$(docker volume ls | grep msa_sms_php)" ]; then
-			sms_php_vol=$(docker volume ls | awk '{print $2}' | grep msa_sms_php)
-		echo "Recreating Core Engine (msa_sms) volume $sms_php_vol"
-		docker volume rm $sms_php_vol
-		fi
-
-		if [ ! -z "$(docker volume ls | grep msa_sms_devices)" ]; then
-			sms_devices_vol=$(docker volume ls | awk '{print $2}' | grep msa_sms_devices)
-		echo "Recreating Core Engine (sms_devices) volume $sms_devices_vol"
-		docker volume rm $sms_devices_vol
-		fi
 	fi	
 
     	docker-compose up -d --build
@@ -59,17 +46,9 @@ standaloneInstall(){
 	echo "Done"
     
     	if [ $fresh_setup = false ] ; then
-		############ For 2.3 upgrade
-		echo "Migrating old BPMs from DataFile to BPM repository"
-		docker-compose exec -T -w //usr/bin/ msa_dev bash -c './migrate_bpmn.sh -r'
-
-		echo "Removing old instances of topology"
-		docker-compose exec -T -w //usr/bin/ msa_dev bash -c './clean_old_topology_instances.sh'
-		
 	        echo "Remove AI ML database. Required on upgrades from 2.4"
 		docker-compose exec -T -u root -w //usr/bin/ msa_ai_ml bash -c 'rm /msa_proj/database/db.sqlite3'
 		docker-compose restart msa_ai_ml
-
 	fi
 
 	echo "Elasticsearch : .kibana_1 index regeneration"
@@ -111,14 +90,6 @@ haInstall(){
         #res=$(ssh "-o BatchMode=Yes" $ssh_user@$ha_api_node_ip "docker exec -u root $ha_api_container_ref 'ps -edf | crond'")
         #echo "CROND started : $res"
         ssh "-o BatchMode=Yes" $ssh_user@$ha_api_node_ip "docker exec -u root $ha_api_container_ref crond"
-
-	if [ $fresh_setup = false ] ; then
-		echo "############### Migrating old BPMs from DataFile to BPM repository ####"
-		ssh "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec $ha_dev_container_ref /bin/bash -c '/usr/bin/migrate_bpmn.sh -r'"
-
-		#echo "############### Removing old instances of topology ####################"
-		#ssh "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec $ha_dev_container_ref /bin/bash -c '/usr/bin/clean_old_topology_instances.sh'"
-	fi
 
 	echo "################ Elasticsearch : .kibana_1 index regeneration #############"
 	ha_es_node_ip=$(getHaNodeIp msa_es)
