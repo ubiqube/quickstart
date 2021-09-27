@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:e2d83cad4be97ffe8fbd67165eaa1a56d9968f98
+    image: ubiqube/msa2-front:e898adf3b00ce2f40e07c34ed4a8e009bc34b48c
     depends_on:
       - msa_api
       - msa_ui
@@ -71,7 +71,7 @@ services:
         condition: on-failure
  
   msa_api:
-    image: ubiqube/msa2-api:2d4ad1cc64fbe5ef90d42a0a702c60462bd56144
+    image: ubiqube/msa2-api:cf9bf55a471abb1f6f3bc763113205a1ab4c7d9d
     depends_on:
       - db
     healthcheck:
@@ -95,7 +95,7 @@ services:
         aliases:
           - "msa-api"
   msa_ui:
-    image: ubiqube/msa2-ui:cfaa84a94bce513edd1e1c38f5b0ec5336cf9bd5
+    image: ubiqube/msa2-ui:de3e0b8343f8410543a448394cf87fb20a01387d
     depends_on:
       - msa_api
     healthcheck:
@@ -151,6 +151,8 @@ services:
       - db
       - msa_api
     image: ubiqube/msa2-alarm:7590120a9ac0d3c07bef938631d5ce72449e5a5c
+    healthcheck:
+      test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     deploy:
@@ -159,11 +161,13 @@ services:
         max_replicas_per_node: 1
 
   msa_monitoring:
+    image: ubiqube/msa2-monitoring:4ddb0667187a20e3163a5d384bade501a47d7919
+    healthcheck:
+      test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
       - db
       - msa_es
       - msa_dev
-    image: ubiqube/msa2-monitoring:4ddb0667187a20e3163a5d384bade501a47d7919
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     volumes:

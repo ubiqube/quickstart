@@ -4,7 +4,7 @@ services:
   msa_front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:56bfd1ba8ea7a377f3171f665780767a38bbe8ad
+    image: ubiqube/msa2-front:e898adf3b00ce2f40e07c34ed4a8e009bc34b48c
     command: ["/usr/local/bin/wait-for-it.sh -t 60 msa-api:8480 && nginx -g 'daemon off;'"]
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
@@ -63,7 +63,7 @@ services:
   msa_api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:2d4ad1cc64fbe5ef90d42a0a702c60462bd56144
+    image: ubiqube/msa2-api:cf9bf55a471abb1f6f3bc763113205a1ab4c7d9d
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     depends_on:
@@ -87,7 +87,7 @@ services:
   msa_ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:68a5542cfd6c22a4801bf8b371225ca66fe69ddb
+    image: ubiqube/msa2-ui:de3e0b8343f8410543a448394cf87fb20a01387d
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -141,6 +141,8 @@ services:
     restart: unless-stopped
     container_name: msa_alarm
     image: ubiqube/msa2-alarm:7590120a9ac0d3c07bef938631d5ce72449e5a5c
+    healthcheck:
+      test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     depends_on:
       - db
       - msa_es
@@ -149,11 +151,13 @@ services:
   
   msa_monitoring:
     restart: unless-stopped
+    image: ubiqube/msa2-monitoring:4ddb0667187a20e3163a5d384bade501a47d7919
+    healthcheck:
+      test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
       - db
       - msa_es
       - msa_dev
-    image: ubiqube/msa2-monitoring:4ddb0667187a20e3163a5d384bade501a47d7919
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     volumes:
