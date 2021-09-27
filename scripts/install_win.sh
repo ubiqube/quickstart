@@ -46,14 +46,14 @@ standaloneInstall(){
 	echo "Done"
     
     	if [ $fresh_setup = false ] ; then
-	        echo "Remove AI ML database. Required on upgrades from 2.4"
-		docker-compose exec -T -u root -w //usr/bin/ msa_ai_ml bash -c 'rm /msa_proj/database/db.sqlite3'
-		docker-compose restart msa_ai_ml
-	fi
+	      echo "Remove AI ML database. Required on upgrades from 2.4"
+		    docker-compose exec -T -u root -w //usr/bin/ msa_ai_ml bash -c 'rm /msa_proj/database/db.sqlite3'
+		    docker-compose restart msa_ai_ml
 
-	echo "Elasticsearch : .kibana_1 index regeneration"
-	docker-compose exec -T -u root -w //home/install/scripts/ msa_es bash -c './kibana_index_update.sh'
-	echo "Done"
+	      echo "Elasticsearch : .kibana_1 index regeneration"
+	      docker-compose exec -T -u root -w //home/install/scripts/ msa_es bash -c './kibana_index_update.sh'
+	      echo "Done"
+	fi
 
 	echo "Kibana configs & dashboard templates update"
 	waitUpKibana 127.0.0.1
@@ -91,11 +91,13 @@ haInstall(){
         #echo "CROND started : $res"
         ssh "-o BatchMode=Yes" $ssh_user@$ha_api_node_ip "docker exec -u root $ha_api_container_ref crond"
 
-	echo "################ Elasticsearch : .kibana_1 index regeneration #############"
-	ha_es_node_ip=$(getHaNodeIp msa_es)
-        ha_es_container_ref=$(getHaContainerReference msa_es)
-        #echo "ES $ha_es_ip $ha_es_container_ref"
-        ssh $ssh_user@$ha_es_node_ip "docker exec -u root -w /home/install/scripts/ $ha_es_container_ref /bin/bash -c './kibana_index_update.sh'"
+  if [ $fresh_setup = false ] ; then
+      echo "################ Elasticsearch : .kibana_1 index regeneration #############"
+	    ha_es_node_ip=$(getHaNodeIp msa_es)
+      ha_es_container_ref=$(getHaContainerReference msa_es)
+      #echo "ES $ha_es_ip $ha_es_container_ref"
+      ssh $ssh_user@$ha_es_node_ip "docker exec -u root -w /home/install/scripts/ $ha_es_container_ref /bin/bash -c './kibana_index_update.sh'"
+  fi
 
 	echo "################ Kibana configs & dashboard templates update ##########"
         ha_kib_node_ip=$(getHaNodeIp msa_kib)
