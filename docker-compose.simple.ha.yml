@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:8e0f71f6371cdfc23622fdf1fe5f675109539eed
+    image: ubiqube/msa2-front:e2d83cad4be97ffe8fbd67165eaa1a56d9968f98
     depends_on:
       - msa_api
       - msa_ui
@@ -49,10 +49,11 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:1055b3b8c5df4581b650eb4e09c6950a0d9920f0
+    image: ubiqube/msa2-db:a344d748b21e79e5092e4d0fe31fdada61845156
     command: postgres -c 'max_connections=800' -c "max_prepared_transactions=100"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
+      timeout: 60s
     environment:
       POSTGRES_PASSWORD: my_db_password
       POSTGRES_DB: POSTGRESQL
@@ -70,7 +71,7 @@ services:
         condition: on-failure
  
   msa_api:
-    image: ubiqube/msa2-api:7acc75cf750de4c248c4cf52ccf38aa06a672e11
+    image: ubiqube/msa2-api:2d4ad1cc64fbe5ef90d42a0a702c60462bd56144
     depends_on:
       - db
     healthcheck:
@@ -195,6 +196,12 @@ services:
 
   msa_es:
     image: ubiqube/msa2-es:6ff35ce0193dbd80f45ee06c2f38ed74a643468b
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=' localhost:9200/_cluster/health  | grep green || false"]
+      timeout: 2s
+      retries: 10
+      interval: 10s
+      start_period: 30s 
     deploy:
       replicas: 1
       placement:

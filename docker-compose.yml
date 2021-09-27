@@ -4,7 +4,8 @@ services:
   msa_front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:8e0f71f6371cdfc23622fdf1fe5f675109539eed
+    image: ubiqube/msa2-front:56bfd1ba8ea7a377f3171f665780767a38bbe8ad
+    command: ["/usr/local/bin/wait-for-it.sh -t 60 msa-api:8480 && nginx -g 'daemon off;'"]
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -49,6 +50,7 @@ services:
     command: postgres -c 'max_connections=800' -c 'max_prepared_transactions=100'
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
+      timeout: 60s
     environment:
       POSTGRES_PASSWORD: my_db_password
       POSTGRES_DB: POSTGRESQL
@@ -61,7 +63,7 @@ services:
   msa_api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:7acc75cf750de4c248c4cf52ccf38aa06a672e11
+    image: ubiqube/msa2-api:2d4ad1cc64fbe5ef90d42a0a702c60462bd56144
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     depends_on:
@@ -180,12 +182,19 @@ services:
     restart: unless-stopped
     container_name: msa_es
     image: ubiqube/msa2-es:6ff35ce0193dbd80f45ee06c2f38ed74a643468b
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=' localhost:9200/_cluster/health  | grep green || false"]
+      timeout: 2s
+      retries: 10
+      interval: 10s
+      start_period: 30s 
     environment:
-      - "discovery.type=single-node"
-      - "script.painless.regex.enabled=true"
-      - "bootstrap.memory_lock=true"
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+      - discovery.type=single-node
+      - script.painless.regex.enabled=true
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      - xpack.security.enabled=true
     ulimits:
       memlock:
         soft: -1
@@ -220,7 +229,7 @@ services:
     environment:
       - ELASTICSEARCH_URL=http://msa_es:9200
       - ELASTICSEARCH_HOSTS=http://msa_es:9200
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     networks:
       default:
         aliases:
