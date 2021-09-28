@@ -284,7 +284,7 @@ services:
           - "node.role==manager"
 
   msa_dev:
-    image: ubiqube/msa2-linuxdev:9c5c1fa774bd64c720237208fbadf694d0aed37d
+    image: ubiqube/msa2-linuxdev:fc6ad45c302eb1702a60a3bc331c8a07eac0fda6
     depends_on:
       - msa_es
     deploy:
