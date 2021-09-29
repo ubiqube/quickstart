@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:e898adf3b00ce2f40e07c34ed4a8e009bc34b48c
+    image: ubiqube/msa2-front:e315a056ba13b4a4747526f57756641df2163c50
     depends_on:
       - msa_api
       - msa_ui
@@ -245,7 +245,7 @@ services:
           - "node.role==manager"
           
   msa_ai_ml:
-    image: ubiqube/msa2-ai-ml:bfd53368bac6663b1a12a5fd16ce2e41945f875d
+    image: ubiqube/msa2-ai-ml:63c7fab8c111b6cc85da049f45ebc6175a9b269a
     healthcheck:
       test: ["CMD-SHELL", "python /msa_proj/health_check.py"]
     ports:

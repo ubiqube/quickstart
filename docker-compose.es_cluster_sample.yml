@@ -6,7 +6,7 @@ services:
     container_name: msa_front
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
-    image: ubiqube/msa2-front:e898adf3b00ce2f40e07c34ed4a8e009bc34b48c
+    image: ubiqube/msa2-front:e315a056ba13b4a4747526f57756641df2163c50
     command: ["/usr/local/bin/wait-for-it.sh -t 60 msa-api:8480 && nginx -g 'daemon off;'"]
     depends_on:
       - msa_api
@@ -304,7 +304,7 @@ services:
   msa_ai_ml:
     restart: unless-stopped
     container_name: msa_ai_ml
-    image: ubiqube/msa2-ai-ml:bfd53368bac6663b1a12a5fd16ce2e41945f875d
+    image: ubiqube/msa2-ai-ml:63c7fab8c111b6cc85da049f45ebc6175a9b269a
     healthcheck:
       test: ["CMD-SHELL", "python /msa_proj/health_check.py"]
     ports:
