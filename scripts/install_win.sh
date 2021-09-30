@@ -78,7 +78,7 @@ haInstall(){
         ha_dev_container_ref=$(getHaContainerReference msa_dev)
         echo "DEV $ha_dev_ip $ha_dev_container_ref"
         echo "Checking SSH access to $ha_dev_node_run with user $ssh_user on IP $ha_dev_node_ip to install libraries. If failed, please set SSH key"
-        ssh "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec $ha_dev_container_ref /bin/bash -c '/usr/bin/install_libraries.sh $(getLibOptions)'"
+        ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec -it $ha_dev_container_ref /bin/bash -c '/usr/bin/install_libraries.sh $(getLibOptions)'"
         docker service update --force "$ha_stack"_msa_api
         docker service update --force "$ha_stack"_msa_sms
 	docker service update --force "$ha_stack"_msa_alarm
@@ -87,24 +87,30 @@ haInstall(){
 	ha_api_node_ip=$(getHaNodeIp msa_api)
         ha_api_container_ref=$(getHaContainerReference msa_api)
         #echo "API $ha_api_ip $ha_api_container_ref"
-        #res=$(ssh "-o BatchMode=Yes" $ssh_user@$ha_api_node_ip "docker exec -u root $ha_api_container_ref 'ps -edf | crond'")
+        #res=$(ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_api_node_ip "docker exec -it -u root $ha_api_container_ref 'ps -edf | crond'")
         #echo "CROND started : $res"
-        ssh "-o BatchMode=Yes" $ssh_user@$ha_api_node_ip "docker exec -u root $ha_api_container_ref crond"
+        ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_api_node_ip "docker exec -it -u root $ha_api_container_ref crond"
 
-  if [ $fresh_setup = false ] ; then
-      echo "################ Elasticsearch : .kibana_1 index regeneration #############"
-	    ha_es_node_ip=$(getHaNodeIp msa_es)
-      ha_es_container_ref=$(getHaContainerReference msa_es)
-      #echo "ES $ha_es_ip $ha_es_container_ref"
-      ssh $ssh_user@$ha_es_node_ip "docker exec -u root -w /home/install/scripts/ $ha_es_container_ref /bin/bash -c './kibana_index_update.sh'"
-  fi
+	if [ $fresh_setup = false ] ; then
+		echo "############### Migrating old BPMs from DataFile to BPM repository ####"
+		ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec -it $ha_dev_container_ref /bin/bash -c '/usr/bin/migrate_bpmn.sh -r'"
+
+		#echo "############### Removing old instances of topology ####################"
+		#ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec -it $ha_dev_container_ref /bin/bash -c '/usr/bin/clean_old_topology_instances.sh'"
+	fi
+
+	echo "################ Elasticsearch : .kibana_1 index regeneration #############"
+	ha_es_node_ip=$(getHaNodeIp msa_es)
+        ha_es_container_ref=$(getHaContainerReference msa_es)
+        #echo "ES $ha_es_ip $ha_es_container_ref"
+        ssh $ssh_user@$ha_es_node_ip "docker exec -it -u root -w /home/install/scripts/ $ha_es_container_ref /bin/bash -c './kibana_index_update.sh'"
 
 	echo "################ Kibana configs & dashboard templates update ##########"
         ha_kib_node_ip=$(getHaNodeIp msa_kib)
         ha_kib_container_ref=$(getHaContainerReference msa_kib)
         #echo "KIBANA $ha_kib_ip $ha_kib_container_ref"
 	waitUpKibana $ha_kib_node_ip
-        ssh $ssh_user@$ha_kib_node_ip "docker exec -u root -w /home/install/scripts $ha_kib_container_ref /bin/bash -c 'php install_default_template_dash_and_visu.php'"
+        ssh $ssh_user@$ha_kib_node_ip "docker exec -it -u root -w /home/install/scripts $ha_kib_container_ref /bin/bash -c 'php install_default_template_dash_and_visu.php'"
 
 	echo "Upgrade done!"
 }
@@ -115,7 +121,7 @@ miniLabCreation(){
 	else
 		ha_dev_node_ip=$(getHaNodeIp msa_dev)
         	ha_dev_container_ref=$(getHaContainerReference msa_dev)
-	        ssh "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec $ha_dev_container_ref /usr/bin/create_mini_lab.sh"
+	        ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec -it $ha_dev_container_ref /usr/bin/create_mini_lab.sh"
 	fi
 }
 
