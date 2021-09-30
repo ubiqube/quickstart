@@ -6,7 +6,7 @@ services:
     container_name: msa_front
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
-    image: ubiqube/msa2-front:e315a056ba13b4a4747526f57756641df2163c50
++    image: ubiqube/msa2-front:63105f5d4b722c05f5449d25d0e05675a20aa785
     command: ["/usr/local/bin/wait-for-it.sh -t 60 msa-api:8480 && nginx -g 'daemon off;'"]
     depends_on:
       - msa_api
