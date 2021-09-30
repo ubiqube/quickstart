@@ -4,7 +4,7 @@ services:
   msa_front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:42806f815c75a67f3b7761f207684d6658bbc554
+    image: ubiqube/msa2-front:b47f7f027c6d23c831dbcc4e608f37190caeaa23
     #command: ["/usr/local/bin/wait-for-it.sh -t 60 msa-api:8480 && nginx -g 'daemon off;'"]
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
@@ -63,7 +63,7 @@ services:
   msa_api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:70c8dae0d3adeda1daa6adb7b580abb8d689a725
+    image: ubiqube/msa2-api:d781be7c016ae72e59745f10153fa6dd3ee68c98
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     depends_on:
@@ -196,13 +196,8 @@ services:
       - discovery.type=single-node
       - script.painless.regex.enabled=true
       - bootstrap.memory_lock=true
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - xpack.security.enabled=true
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
     volumes:
       - "msa_es:/usr/share/elasticsearch/data"
 
@@ -225,7 +220,7 @@ services:
   msa_kibana:
     restart: unless-stopped
     container_name: msa_kibana
-    image: ubiqube/msa2-kibana:9453bc6a0a2f7f8a4a0f7d881d8743325bb5f30a
+    image: ubiqube/msa2-kibana:ecf9e1e2c9a09df20b04689dcdfee50679de8c83
     depends_on:
       - msa_es
     ports:
