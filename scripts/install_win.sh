@@ -100,17 +100,17 @@ haInstall(){
 	fi
 
 	echo "################ Elasticsearch : .kibana_1 index regeneration #############"
-	ha_es_node_ip=$(getHaNodeIp msa_es)
+		ha_es_node_ip=$(getHaNodeIp msa_es)
         ha_es_container_ref=$(getHaContainerReference msa_es)
         #echo "ES $ha_es_ip $ha_es_container_ref"
-        ssh -tt $ssh_user@$ha_es_node_ip "docker exec -it -u root -w /home/install/scripts/ $ha_es_container_ref /bin/bash -c './kibana_index_update.sh'"
+        ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_es_node_ip "docker exec -it -u root -w /home/install/scripts/ $ha_es_container_ref /bin/bash -c './kibana_index_update.sh'"
 
 	echo "################ Kibana configs & dashboard templates update ##########"
         ha_kib_node_ip=$(getHaNodeIp msa_kib)
         ha_kib_container_ref=$(getHaContainerReference msa_kib)
         #echo "KIBANA $ha_kib_ip $ha_kib_container_ref"
 	waitUpKibana $ha_kib_node_ip
-        ssh -tt $ssh_user@$ha_kib_node_ip "docker exec -it -u root -w /home/install/scripts $ha_kib_container_ref /bin/bash -c 'php install_default_template_dash_and_visu.php'"
+        ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_kib_node_ip "docker exec -it -u root -w /home/install/scripts $ha_kib_container_ref /bin/bash -c 'php install_default_template_dash_and_visu.php'"
 
 	echo "Upgrade done!"
 }
