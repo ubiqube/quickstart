@@ -10,7 +10,7 @@ remove_orphans=false
 fresh_setup=false
 ha_setup=false
 mini_lab=false
-ssh_user=root
+ssh_user=$USER
 
 
 install(){
