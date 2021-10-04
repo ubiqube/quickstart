@@ -6,8 +6,8 @@ services:
     container_name: msa_front
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
-+    image: ubiqube/msa2-front:932b75829a79273615ab6653f0cc752c65a37e9a
-    command: ["/usr/local/bin/wait-for-it.sh -t 60 msa-api:8480 && nginx -g 'daemon off;'"]
+    image: ubiqube/msa2-front:a19baec0719af9ceb8a3d20dc65b4c9835936758
+    #command: ["/usr/local/bin/wait-for-it.sh -t 60 msa-api:8480 && nginx -g 'daemon off;'"]
     depends_on:
       - msa_api
       - msa_ui
@@ -46,7 +46,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: ubiqube/msa2-db:a344d748b21e79e5092e4d0fe31fdada61845156
+    image: ubiqube/msa2-db:5e75c8e448b3c366ce514d00923128817fdb8d47
     command: postgres -c 'max_connections=800' -c 'max_prepared_transactions=100'
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -63,7 +63,7 @@ services:
   msa_api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:cf9bf55a471abb1f6f3bc763113205a1ab4c7d9d
+    image: ubiqube/msa2-api:dc012c45003478f91839556a059ab5a001dab591
       healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     depends_on:
@@ -108,7 +108,7 @@ services:
   msa_sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:71ea85e51f45ed69ad9a1e857458efc35863050b
+    image: ubiqube/msa2-sms:0c0a73ec804d604544ce86b1fe45dc2efa245162
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -130,7 +130,7 @@ services:
   msa_bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: ubiqube/msa2-bud:45d70aea590242b6bb4c17d408255d5f1d7aeba2
+    image: ubiqube/msa2-bud:4b04ecff71a5009de004bc16e78d8b69a212d8ae
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -141,7 +141,7 @@ services:
   msa_alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: ubiqube/msa2-alarm:7590120a9ac0d3c07bef938631d5ce72449e5a5c
+    image: ubiqube/msa2-alarm:d4255679b87051afc998cf791139b19b77b4f124
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -201,9 +201,9 @@ services:
   msa_es:
     restart: unless-stopped
     container_name: msa_es
-    image: ubiqube/msa2-es:6ff35ce0193dbd80f45ee06c2f38ed74a643468b
+    image: ubiqube/msa2-es:fe57dfc7ecc70dff2feac67fc3b343bc5fbdba11
     healthcheck:
-      test: ["CMD-SHELL", "curl -f -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=' localhost:9200/_cluster/health  | grep green || false"]
+      test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
       retries: 10
       interval: 10s
@@ -226,10 +226,6 @@ services:
       - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
       - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
       - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
     volumes:
       - "msa_es:/usr/share/elasticsearch/data"
       - "certs:/usr/share/elasticsearch/config/certificates"
@@ -237,7 +233,9 @@ services:
   msa_es_2:
     restart: unless-stopped
     container_name: msa_es_2
-    image: ubiqube/msa2-es:6ff35ce0193dbd80f45ee06c2f38ed74a643468b
+    image: ubiqube/msa2-es:fe57dfc7ecc70dff2feac67fc3b343bc5fbdba11
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
     depends_on: 
       - msa_es_create_certs
     environment:
@@ -256,10 +254,6 @@ services:
       - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
       - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
       - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
     volumes:
       - "msa_es_2:/usr/share/elasticsearch/data"
       - "certs:/usr/share/elasticsearch/config/certificates"
