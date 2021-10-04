@@ -68,9 +68,6 @@ services:
       - "/mnt/NASVolume/msa_db:/var/lib/postgresql/data"
     deploy:
       replicas: 1
-      placement:
-        constraints:
-          - "node.role==worker"
       restart_policy:
         condition: on-failure
  
@@ -84,8 +81,6 @@ services:
       replicas: 1
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.role==worker"
       update_config:
         parallelism: 1
       restart_policy:
@@ -144,8 +139,6 @@ services:
       replicas: 1
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.role==worker"
 
   msa_bud:
     image: ubiqube/msa2-bud:4b04ecff71a5009de004bc16e78d8b69a212d8ae
@@ -153,6 +146,8 @@ services:
       - db
     deploy:
       replicas: 1
+      placement:
+        max_replicas_per_node: 1
 
   msa_alarm:
     depends_on:
@@ -167,8 +162,6 @@ services:
       replicas: 1
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.role==worker"
 
   msa_monitoring:
     image: ubiqube/msa2-monitoring:4e6ef663e040933be108bc71627799134bda7d0b
@@ -190,8 +183,6 @@ services:
       replicas: 1
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.role==worker"
 
   camunda:
     depends_on:
@@ -201,8 +192,6 @@ services:
       replicas: 1
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.role==worker"
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
@@ -224,8 +213,6 @@ services:
       replicas: 1
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.role==worker"
     environment:
       - discovery.type=single-node
       - script.painless.regex.enabled=true
@@ -253,8 +240,6 @@ services:
       replicas: 1
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.role==worker"
           
   msa_ai_ml:
     image: ubiqube/msa2-ai-ml:63c7fab8c111b6cc85da049f45ebc6175a9b269a
@@ -268,8 +253,6 @@ services:
       replicas: 1
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.role==worker"
     networks:
       default:
         aliases:
@@ -292,8 +275,6 @@ services:
       replicas: 1
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.role==worker"
 
   msa_dev:
     image: ubiqube/msa2-linuxdev:fc6ad45c302eb1702a60a3bc331c8a07eac0fda6
@@ -302,8 +283,7 @@ services:
     deploy:
       replicas: 1
       placement:
-        constraints:
-          - "node.role==worker"
+        max_replicas_per_node: 1
     volumes:
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
