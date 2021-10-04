@@ -151,8 +151,6 @@ services:
     image: ubiqube/msa2-bud:4b04ecff71a5009de004bc16e78d8b69a212d8ae
     depends_on:
       - db
-    healthcheck:
-      test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
     deploy:
       replicas: 1
 
@@ -173,7 +171,7 @@ services:
           - "node.role==worker"
 
   msa_monitoring:
-    image: ubiqube/msa2-monitoring:f11f25ba14a5316aac314eade61a728cbdd31da2
+    image: ubiqube/msa2-monitoring:4e6ef663e040933be108bc71627799134bda7d0b
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
