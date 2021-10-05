@@ -57,7 +57,9 @@ services:
     command: postgres -c 'max_connections=800' -c "max_prepared_transactions=100"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
       timeout: 60s
+      retries: 5
     environment:
       POSTGRES_PASSWORD: my_db_password
       POSTGRES_DB: POSTGRESQL
