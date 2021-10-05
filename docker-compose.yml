@@ -200,8 +200,13 @@ services:
       - bootstrap.memory_lock=true
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - xpack.security.enabled=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     volumes:
       - "msa_es:/usr/share/elasticsearch/data"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
 
   msa_cerebro:
     restart: unless-stopped
