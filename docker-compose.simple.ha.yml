@@ -164,6 +164,8 @@ services:
       replicas: 1
       placement:
         max_replicas_per_node: 1
+    volumes:
+      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
 
   msa_monitoring:
     image: ubiqube/msa2-monitoring:4e6ef663e040933be108bc71627799134bda7d0b
@@ -181,6 +183,7 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
       - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
+      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
     deploy:
       replicas: 1
       placement:
