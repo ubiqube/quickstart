@@ -4,7 +4,7 @@ services:
   msa_front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:b271a5e9f8b730afd64dc78683392362ec50ae13
+    image: ubiqube/msa2-front:d4514d018107b941aeb33fd6f798feea76ba4d97
     #command: ["/usr/local/bin/wait-for-it.sh -t 60 msa-api:8480 && nginx -g 'daemon off;'"]
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
@@ -89,7 +89,7 @@ services:
   msa_ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:9b2bc5c0689389eba9cb9b484aae1d70b7b1931f
+    image: ubiqube/msa2-ui:f644ea04d3b00144546f8e5c332d732c3fe1c692
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
