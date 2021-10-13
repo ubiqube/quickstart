@@ -254,10 +254,6 @@ services:
       - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
       - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
 #      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
-    networks:
-      default:
-        aliases:
-          - "msa_es"
     volumes:
       - "/mnt/NASVolume/msa_es_node_1:/usr/share/elasticsearch/data"
       - "/mnt/NASVolume/msa_es_certs:/usr/share/elasticsearch/config/certificates"
@@ -292,10 +288,6 @@ services:
       - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
       - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
 #      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
-    networks:
-      default:
-        aliases:
-          - "msa_es_2"
     volumes:
       - "/mnt/NASVolume/msa_es_node_2:/usr/share/elasticsearch/data"
       - "/mnt/NASVolume/msa_es_certs:/usr/share/elasticsearch/config/certificates"
