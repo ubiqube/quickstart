@@ -210,10 +210,6 @@ services:
 
   msa_es_create_certs:
     image: ubiqube/ubi-centos8:latest
-    deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
     command: >
       bash -c '
         mkdir -p /usr/share/elasticsearch/config/certificates
