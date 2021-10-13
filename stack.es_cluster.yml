@@ -312,9 +312,6 @@ services:
       - -Dhosts.0.host=http://msa_es:9200
     depends_on:
       - msa_es
-    networks:
-      - default
-      - elk
     ports:
       - "9000:9000"
     deploy:
