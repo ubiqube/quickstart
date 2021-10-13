@@ -258,39 +258,6 @@ services:
       - "/mnt/NASVolume/msa_es_node_1:/usr/share/elasticsearch/data"
       - "/mnt/NASVolume/msa_es_certs:/usr/share/elasticsearch/config/certificates"
 
-  msa_es_2:
-    image: ubiqube/msa2-es:fe57dfc7ecc70dff2feac67fc3b343bc5fbdba11
-    healthcheck:
-      test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
-      timeout: 2s
-      retries: 10
-      interval: 10s
-      start_period: 30s 
-    deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-    depends_on: 
-      - msa_es_create_certs
-    environment:
-      - node.name=msa_es_2
-      - discovery.seed_hosts=msa_es,msa_es_2
-      - cluster.initial_master_nodes=msa_es,msa_es_2
-      - cluster.name=es_cluster
-      - "script.painless.regex.enabled=true"
-#      - "bootstrap.memory_lock=true"
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
-      - xpack.security.enabled=true
-      - xpack.security.transport.ssl.enabled=true
-      - xpack.security.transport.ssl.verification_mode=certificate
-      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
-      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
-      - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
-      - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
-#      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
-    volumes:
-      - "/mnt/NASVolume/msa_es_node_2:/usr/share/elasticsearch/data"
-      - "/mnt/NASVolume/msa_es_certs:/usr/share/elasticsearch/config/certificates"
 
   msa_kibana:
     image: ubiqube/msa2-kibana:ecf9e1e2c9a09df20b04689dcdfee50679de8c83
