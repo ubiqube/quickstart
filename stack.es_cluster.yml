@@ -240,7 +240,7 @@ services:
       - msa_es_create_certs
     environment:
       - node.name=master_1
-      - node.role=master
+      - node.roles=master
       - discovery.seed_hosts=master_1,data_1
       - cluster.initial_master_nodes=master_1
       - cluster.name=es_cluster
@@ -275,7 +275,7 @@ services:
       - msa_es_master_1
     environment:
       - node.name=data_1
-      - node.role=data
+      - node.roles=data
       - discovery.seed_hosts=master_1,data_1
       - cluster.initial_master_nodes=master_1
       - cluster.name=es_cluster
