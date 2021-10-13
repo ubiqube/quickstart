@@ -262,7 +262,7 @@ services:
       - "/mnt/NASVolume/msa_es_node_1:/usr/share/elasticsearch/data"
       - "/mnt/NASVolume/msa_es_certs:/usr/share/elasticsearch/config/certificates"
 
-  msa_es_node_2:
+  msa_es_2:
     image: ubiqube/msa2-es:fe57dfc7ecc70dff2feac67fc3b343bc5fbdba11
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
