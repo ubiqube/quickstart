@@ -239,9 +239,9 @@ services:
     depends_on: 
       - msa_es_create_certs
     environment:
-      - node.name=msa-es
-      - discovery.seed_hosts=msa-es,msa-es-2
-      - cluster.initial_master_nodes=msa-es,msa-es-2
+      - node.name=msa_es
+      - discovery.seed_hosts=msa_es,msa_es_2
+      - cluster.initial_master_nodes=msa_es,msa_es_2
       - cluster.name=es_cluster
       - "script.painless.regex.enabled=true"
 #      - "bootstrap.memory_lock=true"
@@ -257,7 +257,7 @@ services:
     networks:
       default:
         aliases:
-          - "msa-es"
+          - "msa_es"
     volumes:
       - "/mnt/NASVolume/msa_es_node_1:/usr/share/elasticsearch/data"
       - "/mnt/NASVolume/msa_es_certs:/usr/share/elasticsearch/config/certificates"
@@ -277,9 +277,9 @@ services:
     depends_on: 
       - msa_es_create_certs
     environment:
-      - node.name=msa-es-2
-      - discovery.seed_hosts=msa-es,msa-es-2
-      - cluster.initial_master_nodes=msa-es,msa-es-2
+      - node.name=msa_es_2
+      - discovery.seed_hosts=msa_es,msa_es_2
+      - cluster.initial_master_nodes=msa_es,msa_es_2
       - cluster.name=es_cluster
       - "script.painless.regex.enabled=true"
 #      - "bootstrap.memory_lock=true"
@@ -295,7 +295,7 @@ services:
     networks:
       default:
         aliases:
-          - "msa-es-2"
+          - "msa_es_2"
     volumes:
       - "/mnt/NASVolume/msa_es_node_2:/usr/share/elasticsearch/data"
       - "/mnt/NASVolume/msa_es_certs:/usr/share/elasticsearch/config/certificates"
