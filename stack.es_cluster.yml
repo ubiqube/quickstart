@@ -239,7 +239,7 @@ services:
     depends_on: 
       - msa_es_create_certs
     environment:
-      - node.name=master_1
+      - node.name=master-1
       - node.roles=master
       - discovery.seed_hosts=master-1,data-1
       - cluster.initial_master_nodes=master-1
