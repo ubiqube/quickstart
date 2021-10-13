@@ -240,7 +240,7 @@ services:
       - msa_es_create_certs
     environment:
       - node.name=master_1
-      - node.roles=master
+      - node.roles=[ master ]
       - discovery.seed_hosts=master_1,data_1
       - cluster.initial_master_nodes=master_1
       - cluster.name=es_cluster
@@ -256,7 +256,7 @@ services:
       - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
 #      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
     volumes:
-      - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
+      - "/mnt/NASVolume/msa_es_master_1:/usr/share/elasticsearch/data"
       - "/mnt/NASVolume/msa_es_certs:/usr/share/elasticsearch/config/certificates"
 
   msa_es_data_1:
@@ -276,7 +276,7 @@ services:
       - msa_es_master_1
     environment:
       - node.name=data_1
-      - node.roles=data
+      - node.roles=[ data ]
       - discovery.seed_hosts=master_1,data_1
       - cluster.initial_master_nodes=master_1
       - cluster.name=es_cluster
@@ -292,7 +292,7 @@ services:
       - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
 #      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
     volumes:
-      - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
+      - "/mnt/NASVolume/msa_es_data_1:/usr/share/elasticsearch/data"
       - "/mnt/NASVolume/msa_es_certs:/usr/share/elasticsearch/config/certificates"
 
   msa_kibana:
