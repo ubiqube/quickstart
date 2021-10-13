@@ -245,7 +245,7 @@ services:
       - cluster.initial_master_nodes=master_1
       - cluster.name=es_cluster
       - "script.painless.regex.enabled=true"
-      - "bootstrap.memory_lock=true"
+#      - "bootstrap.memory_lock=true"
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
       - xpack.security.enabled=true
       - xpack.security.transport.ssl.enabled=true
@@ -254,7 +254,7 @@ services:
       - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
       - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
       - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
-      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
+#      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
     volumes:
       - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
       - "/mnt/NASVolume/msa_es_certs:/usr/share/elasticsearch/config/certificates"
@@ -281,7 +281,7 @@ services:
       - cluster.initial_master_nodes=master_1
       - cluster.name=es_cluster
       - "script.painless.regex.enabled=true"
-      - "bootstrap.memory_lock=true"
+#      - "bootstrap.memory_lock=true"
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
       - xpack.security.enabled=true
       - xpack.security.transport.ssl.enabled=true
@@ -290,7 +290,7 @@ services:
       - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
       - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
       - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
-      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
+#      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
     volumes:
       - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
       - "/mnt/NASVolume/msa_es_certs:/usr/share/elasticsearch/config/certificates"
