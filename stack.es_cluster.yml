@@ -210,7 +210,6 @@ services:
 
   msa_es_create_certs:
     restart: unless-stopped
-    container_name: msa_es_create_certs
     image: ubiqube/ubi-centos8:latest
     command: >
       bash -c '
@@ -225,7 +224,6 @@ services:
 
   msa_es_master_1:
     restart: unless-stopped
-    container_name: msa_es_master_1
     image: ubiqube/msa2-es:fe57dfc7ecc70dff2feac67fc3b343bc5fbdba11
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
@@ -260,7 +258,6 @@ services:
 
   msa_es_data_1:
     restart: unless-stopped
-    container_name: msa_es_data_1
     image: ubiqube/msa2-es:fe57dfc7ecc70dff2feac67fc3b343bc5fbdba11
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
