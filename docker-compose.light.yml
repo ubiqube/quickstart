@@ -1,0 +1,235 @@
+version: "3.8"
+
+services:
+  msa_front:
+    container_name: msa_front
+    image: openmsa/openmsa:msa2-front-2.5.2-47fe9e68b919156a2921353abb5faf51897b27ce
+    depends_on:
+      - msa_api
+      - msa_ui
+      - camunda
+    ports:
+      - target: 80
+        published: 80
+        protocol: tcp
+        mode: host
+      - target: 443
+        published: 443
+        protocol: tcp
+        mode: host
+      - target: 514
+        published: 514
+        protocol: udp
+        mode: host
+      - target: 162
+        published: 162
+        protocol: udp
+        mode: host
+      - target: 69
+        published: 69
+        protocol: udp
+        mode: host
+      - "5200-5200:5200-5200/udp"
+
+    # uncomment one of the 2 sections below when installing a custom certificate
+    # - Docker standard standalone installation
+    #volumes:
+    #    - "msa_front:/etc/nginx/ssl"
+    # - Docker Swarm HA installation
+    #volumes:
+    #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
+
+  db:
+    container_name: msa_db
+    image: openmsa/openmsa:msa2-db-2.5.0GA-4ae8b6525ba20b79bd70ea2e74df1c038da7bc96
+    command: postgres -c 'max_connections=800'
+    environment:
+      POSTGRES_PASSWORD: my_db_password
+      POSTGRES_DB: POSTGRESQL
+      CAMUNDA_PASSWORD: camunda
+      CAMUNDA_DB: process-engine
+      CAMUNDA_USER: camunda
+    volumes:
+      - "msa_db:/var/lib/postgresql/data"
+
+  msa_api:
+    container_name: msa_api
+    image: openmsa/openmsa:msa2-api-2.5.2-ac12f5568548ba6660296c5c08d00451e3ef994b
+    depends_on:
+      - db
+      - msa_es
+    environment:
+      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+    entrypoint:
+      - /opt/jboss/wildfly/bin/standalone.sh
+      - -b
+      - 0.0.0.0
+      - -bmanagement
+      - 0.0.0.0
+      - -c
+      - ubiqube.xml
+    volumes:
+      - "msa_api:/opt/ubi-jentreprise/generated/conf"
+      - "msa_entities:/opt/fmc_entities"
+      - "msa_repository:/opt/fmc_repository"
+      - "rrd_repository:/opt/rrd"
+      - "msa_dev:/opt/devops/"
+      - "msa_api_logs:/opt/jboss/wildfly/standalone/log"
+      - "msa_api_logs:/opt/wildfly/logs/processLog"
+
+  msa_ui:
+    container_name: msa_ui
+    image: openmsa/openmsa:msa2-ui-2.5.1-54c817473a877e78d5781743a6466d4f6bb229e0
+    depends_on:
+      - msa_api
+    environment:
+    - FEATURE_ADMIN=true
+    - FEATURE_CONNECTION_STATUS=true
+    - FEATURE_ALARMS=true
+    - FEATURE_LICENCE=true
+    - FEATURE_TOPOLOGY=true
+    - FEATURE_MONITORING_PROFILES=true
+    - FEATURE_SCHEDULE_WORKFLOWS=true
+    - FEATURE_PROFILE_AUDIT_LOGS=true
+    - FEATURE_PERMISSION_PROFILES=true
+    - FEATURE_AI_ML=true
+    - FEATURE_WORKFLOW_OWNER=false
+
+  msa_sms:
+    container_name: msa_sms
+    image: openmsa/openmsa:msa2-sms-2.5.2-a510d9fc32b323701dd1ffe3ebd2f0a0267c0d06
+    environment:
+      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+    cap_add:
+      - NET_ADMIN
+    depends_on:
+      - db
+      - msa_es
+      - msa_dev
+    volumes:
+      - "msa_dev:/opt/devops/"
+      - "msa_entities:/opt/fmc_entities"
+      - "msa_repository:/opt/fmc_repository"
+      - "rrd_repository:/opt/rrd"
+      - "msa_sms_logs:/opt/sms/logs"
+      - "msa_svn:/opt/svnroot"
+
+  msa_bud:
+    container_name: msa_bud
+    image: openmsa/openmsa:msa2-bud-2.5.0GA-9c60fe972f4a55b68df42ccda9979cfd8d9f81e8
+    depends_on:
+      - db
+    volumes:
+      - "msa_bud_logs:/opt/bud/logs/"
+
+  msa_alarm:
+    container_name: msa_alarm
+    image: openmsa/openmsa:msa2-alarm-2.5.0GA-ca517a8257461f07b38797937df6a9873555273c
+    depends_on:
+      - db
+      - msa_es
+    environment:
+      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+  
+  camunda:
+    container_name: msa_camunda
+    depends_on:
+      - db
+    image: openmsa/openmsa:msa2-camunda-2.5.0GA-e8cd089949cdf40b3bb40709b51fbc0edd213a04
+    environment:
+      DB_DRIVER: org.postgresql.Driver
+      DB_URL: 'jdbc:postgresql://db:5432/process-engine'
+      DB_USERNAME: camunda
+      DB_PASSWORD: camunda
+      DB_VALIDATE_ON_BORROW: 'true'
+      WAIT_FOR: 'db:5432'
+      WAIT_FOR_TIMEOUT: 60
+
+  msa_es:
+    container_name: msa_es
+    image: openmsa/openmsa:msa2-es-2.5.0GA-26576e026d6e745b7f537b7fd8a7eae6bbf0f376
+    environment:
+      - "discovery.type=single-node"
+      - "script.painless.regex.enabled=true"
+      - "bootstrap.memory_lock=true"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - "msa_es:/usr/share/elasticsearch/data"
+
+  msa_dev:
+    container_name: msa_dev
+    image: openmsa/openmsa:msa2-linuxdev-2.5.0GA-724cb12438a33345e23ffecc4c04870cd9a29924
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+      - "msa_entities:/opt/fmc_entities"
+      - "msa_repository:/opt/fmc_repository"
+      - "msa_api:/opt/ubi-jentreprise/generated/conf"
+      - "msa_dev:/opt/devops/"
+      
+  linux_me:
+    container_name: linux_me
+    # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
+    image: openmsa/openmsa:msa2-linuxme-2.5.0GA-b831acacdef579420ee1abf70ef66655d969fcbb
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - DAC_READ_SEARCH
+      - sys_rawio
+    ports:
+      - "2224:22"
+    devices:                     # required for dmidecode used by polld/asset
+      - "/dev/mem:/dev/mem"
+    networks:
+      default:
+        ipv4_address: 172.20.0.101
+    hostname: linux_me
+    privileged: true
+
+  linux_me_2:
+    container_name: linux_me_2
+    # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
+    image: openmsa/openmsa:msa2-linuxme-2.5.0GA-b831acacdef579420ee1abf70ef66655d969fcbb
+    #build: ./lab/linux.me
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - DAC_READ_SEARCH
+      - sys_rawio
+    ports:
+      - "2225:22"
+    devices:                     # required for dmidecode used by polld/asset
+      - "/dev/mem:/dev/mem"
+    networks:
+      default:
+        ipv4_address: 172.20.0.102
+    hostname: linux_me_2
+    privileged: true
+
+volumes:
+  msa_api:
+  msa_db:
+  msa_dev:
+  msa_entities:
+  msa_repository:
+  msa_es:
+  rrd_repository:
+  msa_api_logs:
+  msa_sms_logs:
+  msa_bud_logs:
+  msa_front:
+  msa_svn:
+
+networks:
+  default:
+    name: quickstart_default
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+    driver_opts:
+      encrypted: "true"
+    
