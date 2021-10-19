@@ -4,7 +4,7 @@ services:
   msa_front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:d7df2b2b08ea41846839d2dd25bd600070787c81
+    image: ubiqube/msa2-front:ddf89b2c574dce794be329643598ce8726ca8807
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -45,7 +45,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: ubiqube/msa2-db:5e75c8e448b3c366ce514d00923128817fdb8d47
+    image: ubiqube/msa2-db:c00fdfaa09c44105f71a0e2d21467a9458f63921
     command: postgres -c 'max_connections=800' -c 'max_prepared_transactions=100'
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -64,7 +64,7 @@ services:
   msa_api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:a56686e2c14c70e6d967db65263ecd566f3e4150
+    image: ubiqube/msa2-api:8e5d1c5f620c4581aa027a3899d96eb498b2b2a1
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     depends_on:
@@ -130,7 +130,7 @@ services:
   msa_bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: ubiqube/msa2-bud:4b04ecff71a5009de004bc16e78d8b69a212d8ae
+    image: ubiqube/msa2-bud:7fa39b2f94a5f6dcb2190e3f680dcb8fc76992af
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -177,7 +177,7 @@ services:
     container_name: msa_camunda
     depends_on:
       - db
-    image: ubiqube/msa2-camunda:e8cd089949cdf40b3bb40709b51fbc0edd213a04
+    image: ubiqube/msa2-camunda:b839a640c1396f27a538c6e633d47ad93796a9e4
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
@@ -214,7 +214,7 @@ services:
   msa_cerebro:
     restart: unless-stopped
     container_name: msa_cerebro
-    image: ubiqube/msa2-cerebro:bc1ea10586035ad1c1fcb1e2145d049c1e3449fe
+    image: ubiqube/msa2-cerebro:914750e000db1343d9972bfa6652da1efe4aa32f
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -230,7 +230,7 @@ services:
   msa_kibana:
     restart: unless-stopped
     container_name: msa_kibana
-    image: ubiqube/msa2-kibana:ecf9e1e2c9a09df20b04689dcdfee50679de8c83
+    image: ubiqube/msa2-kibana:889ad77f59c794d151f489a5bcbf3c13023d1ca4
     depends_on:
       - msa_es
     ports:

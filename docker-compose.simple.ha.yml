@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:d7df2b2b08ea41846839d2dd25bd600070787c81
+    image: ubiqube/msa2-front:ddf89b2c574dce794be329643598ce8726ca8807
     depends_on:
       - msa_api
       - msa_ui
@@ -53,7 +53,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:5e75c8e448b3c366ce514d00923128817fdb8d47
+    image: ubiqube/msa2-db:c00fdfaa09c44105f71a0e2d21467a9458f63921
     command: postgres -c 'max_connections=800' -c "max_prepared_transactions=100"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -74,7 +74,7 @@ services:
         condition: on-failure
  
   msa_api:
-    image: ubiqube/msa2-api:a56686e2c14c70e6d967db65263ecd566f3e4150
+    image: ubiqube/msa2-api:8e5d1c5f620c4581aa027a3899d96eb498b2b2a1
     depends_on:
       - db
     healthcheck:
@@ -145,7 +145,7 @@ services:
         max_replicas_per_node: 1
 
   msa_bud:
-    image: ubiqube/msa2-bud:4b04ecff71a5009de004bc16e78d8b69a212d8ae
+    image: ubiqube/msa2-bud:7fa39b2f94a5f6dcb2190e3f680dcb8fc76992af
     depends_on:
       - db
     deploy:
@@ -230,7 +230,7 @@ services:
       - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
 
   msa_kibana:
-    image: ubiqube/msa2-kibana:ecf9e1e2c9a09df20b04689dcdfee50679de8c83
+    image: ubiqube/msa2-kibana:889ad77f59c794d151f489a5bcbf3c13023d1ca4
     depends_on:
       - msa_es
     ports:
@@ -284,7 +284,7 @@ services:
         max_replicas_per_node: 1
 
   msa_dev:
-    image: ubiqube/msa2-linuxdev:fc6ad45c302eb1702a60a3bc331c8a07eac0fda6
+    image: ubiqube/msa2-linuxdev:8f580df6480d41bf92f7a88085f4293ee03f14f4
     depends_on:
       - msa_es
     deploy:
