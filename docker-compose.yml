@@ -276,7 +276,7 @@ services:
     restart: unless-stopped
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: ubiqube/msa2-linuxme:b831acacdef579420ee1abf70ef66655d969fcbb
+    image: openmsa/openmsa:msa2-linuxme-2.6.0GA-b831acacdef579420ee1abf70ef66655d969fcbb
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -297,7 +297,7 @@ services:
     restart: unless-stopped
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: ubiqube/msa2-linuxme:b831acacdef579420ee1abf70ef66655d969fcbb
+    image: openmsa/openmsa:msa2-linuxme-2.6.0GA-b831acacdef579420ee1abf70ef66655d969fcbb
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
