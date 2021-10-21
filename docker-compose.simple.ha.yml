@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: openmsa/openmsa:msa2-front-2.6.0GA-1a0d82c70bc669df28b4ec1c3da82dc64e9b9380
+    image: openmsa/openmsa:msa2-front-2.6.0GA-53fccabe18a0015253d7d7051e1e54ccab99560a
     depends_on:
       - msa_api
       - msa_ui
@@ -224,7 +224,7 @@ services:
       - discovery.type=single-node
       - script.painless.regex.enabled=true
       - bootstrap.memory_lock=true
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - ES_JAVA_OPTS=-Xms512m -Xmx1024m
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     volumes:
       - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
