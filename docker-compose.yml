@@ -4,7 +4,7 @@ services:
   msa_front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.6.0GA-1a0d82c70bc669df28b4ec1c3da82dc64e9b9380
+    image: openmsa/openmsa:msa2-front-2.6.0GA-53fccabe18a0015253d7d7051e1e54ccab99560a
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -203,7 +203,7 @@ services:
       - bootstrap.memory_lock=true
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - xpack.security.enabled=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx1024m"
     volumes:
       - "msa_es:/usr/share/elasticsearch/data"
     ulimits:
