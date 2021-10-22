@@ -40,7 +40,7 @@ else
 fi
 
 if [ -z "$2" ]; then
-    MSA_IP=msa_api
+    MSA_IP=msa-api
 else
     MSA_IP=$2
 fi

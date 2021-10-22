@@ -3,14 +3,14 @@ set -e
 
 PROG=$(basename $0)
 
-target_version="2.5.2"
+target_version="2.6.0"
 force_option=false
 clean_option=false
 remove_orphans=false
 fresh_setup=false
 ha_setup=false
 mini_lab=false
-ssh_user=root
+ssh_user=$USER
 
 
 install(){
@@ -29,52 +29,31 @@ standaloneInstall(){
 		else
 			docker-compose down --remove-orphans 
 		fi
-		
-		############ For 2.2 upgrade
-		if [ ! -z "$(docker volume ls | grep msa_sms_php)" ]; then
-			sms_php_vol=$(docker volume ls | awk '{print $2}' | grep msa_sms_php)
-		echo "Recreating Core Engine (msa_sms) volume $sms_php_vol"
-		docker volume rm $sms_php_vol
-		fi
-
-		if [ ! -z "$(docker volume ls | grep msa_sms_devices)" ]; then
-			sms_devices_vol=$(docker volume ls | awk '{print $2}' | grep msa_sms_devices)
-		echo "Recreating Core Engine (sms_devices) volume $sms_devices_vol"
-		docker volume rm $sms_devices_vol
-		fi
 	fi	
 
-    	docker-compose up -d --build
+    docker-compose up -d --build
 
 	docker-compose exec -T msa_dev rm -rf /opt/fmc_repository/Process/Reference
 
 	docker-compose exec -T msa_dev /usr/bin/install_libraries.sh $(getLibOptions)
 
-    	docker-compose restart msa_api
-    	docker-compose restart msa_sms
+    docker-compose restart msa_api
+    docker-compose restart msa_sms
 	docker-compose restart msa_alarm
 	
 	echo "Starting crond on API container msa_api"
 	docker-compose exec -T -u root msa_api crond
 	echo "Done"
     
-    	if [ $fresh_setup = false ] ; then
-		############ For 2.3 upgrade
-		echo "Migrating old BPMs from DataFile to BPM repository"
-		docker-compose exec -T msa_dev /usr/bin/migrate_bpmn.sh -r
-
-		echo "Removing old instances of topology"
-		docker-compose exec -T msa_dev /usr/bin/clean_old_topology_instances.sh
-
-	       echo "Remove AI ML database. Required on upgrades from 2.4"
+    if [ $fresh_setup = false ] ; then
+	    echo "Remove AI ML database. Required on upgrades from 2.4"
 		docker-compose exec -T -u root msa_ai_ml /bin/bash -c 'rm /msa_proj/database/db.sqlite3'
 		docker-compose restart msa_ai_ml
 
+		echo "Elasticsearch : .kibana_1 index regeneration"
+		docker-compose exec -T -u root -w /home/install/scripts/ msa_es bash -c './kibana_index_update.sh'
+		echo "Done"
 	fi
-
-	echo "Elasticsearch : .kibana_1 index regeneration"
-	docker-compose exec -T -u root -w /home/install/scripts/ msa_es bash -c './kibana_index_update.sh'
-	echo "Done"
 
 	echo "Kibana configs & dashboard templates update"
 	waitUpKibana 127.0.0.1
@@ -97,43 +76,37 @@ haInstall(){
 	echo "############## Install OpenMSA Libraries ##############################"
 	sleep 5
 	ha_dev_node_ip=$(getHaNodeIp msa_dev)
-        ha_dev_container_ref=$(getHaContainerReference msa_dev)
-        echo "DEV $ha_dev_ip $ha_dev_container_ref"
-        echo "Checking SSH access to DEV container with user $ssh_user on IP $ha_dev_node_ip to install libraries. If failed, please set SSH key"
+    ha_dev_container_ref=$(getHaContainerReference msa_dev)
+    echo "DEV $ha_dev_ip $ha_dev_container_ref"
+    echo "Checking SSH access to DEV container with user $ssh_user on IP $ha_dev_node_ip to install libraries. If failed, please set SSH key"
 	sleep 5
-        ssh "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec $ha_dev_container_ref /bin/bash -c '/usr/bin/install_libraries.sh $(getLibOptions)'"
-        docker service update --force "$ha_stack"_msa_api
-        docker service update --force "$ha_stack"_msa_sms
+    ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec -it $ha_dev_container_ref /bin/bash -c '/usr/bin/install_libraries.sh $(getLibOptions)'"
+    docker service update --force "$ha_stack"_msa_api
+    docker service update --force "$ha_stack"_msa_sms
 	docker service update --force "$ha_stack"_msa_alarm
 
-        echo "############## Start CROND ############################################"
+    echo "############## Start CROND ############################################"
 	ha_api_node_ip=$(getHaNodeIp msa_api)
-        ha_api_container_ref=$(getHaContainerReference msa_api)
-        #echo "API $ha_api_ip $ha_api_container_ref"
-        #res=$(ssh "-o BatchMode=Yes" $ssh_user@$ha_api_node_ip "docker exec -u root $ha_api_container_ref 'ps -edf | crond'")
-        #echo "CROND started : $res"
-        ssh "-o BatchMode=Yes" $ssh_user@$ha_api_node_ip "docker exec -u root $ha_api_container_ref crond"
+    ha_api_container_ref=$(getHaContainerReference msa_api)
+    #echo "API $ha_api_ip $ha_api_container_ref"
+    #res=$(ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_api_node_ip "docker exec -it -u root $ha_api_container_ref 'ps -edf | crond'")
+    #echo "CROND started : $res"
+    ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_api_node_ip "docker exec -it -u root $ha_api_container_ref crond"
 
 	if [ $fresh_setup = false ] ; then
-		echo "############### Migrating old BPMs from DataFile to BPM repository ####"
-		ssh "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec $ha_dev_container_ref /bin/bash -c '/usr/bin/migrate_bpmn.sh -r'"
-
-		#echo "############### Removing old instances of topology ####################"
-		#ssh "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec $ha_dev_container_ref /bin/bash -c '/usr/bin/clean_old_topology_instances.sh'"
+		echo "################ Elasticsearch : .kibana_1 index regeneration #############"
+		ha_es_node_ip=$(getHaNodeIp msa_es)
+    		ha_es_container_ref=$(getHaContainerReference msa_es)
+    		#echo "ES $ha_es_ip $ha_es_container_ref"
+    		ssh  -tt "-o BatchMode=Yes" $ssh_user@$ha_es_node_ip "docker exec -it -u root -w /home/install/scripts/ $ha_es_container_ref /bin/bash -c './kibana_index_update.sh'"
 	fi
 
-	echo "################ Elasticsearch : .kibana_1 index regeneration #############"
-	ha_es_node_ip=$(getHaNodeIp msa_es)
-        ha_es_container_ref=$(getHaContainerReference msa_es)
-        #echo "ES $ha_es_ip $ha_es_container_ref"
-        ssh $ssh_user@$ha_es_node_ip "docker exec -u root -w /home/install/scripts/ $ha_es_container_ref /bin/bash -c './kibana_index_update.sh'"
-
 	echo "################ Kibana configs & dashboard templates update ##########"
-        ha_kib_node_ip=$(getHaNodeIp msa_kib)
-        ha_kib_container_ref=$(getHaContainerReference msa_kib)
-        #echo "KIBANA $ha_kib_ip $ha_kib_container_ref"
-	waitUpKibana $ha_kib_node_ip
-        ssh $ssh_user@$ha_kib_node_ip "docker exec -u root -w /home/install/scripts $ha_kib_container_ref /bin/bash -c 'php install_default_template_dash_and_visu.php'"
+    ha_kib_node_ip=$(getHaNodeIp msa_kib)
+    ha_kib_container_ref=$(getHaContainerReference msa_kib)
+    #echo "KIBANA $ha_kib_ip $ha_kib_container_ref"
+    waitUpKibana $ha_kib_node_ip
+    ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_kib_node_ip "docker exec -it -u root -w /home/install/scripts $ha_kib_container_ref /bin/bash -c 'php install_default_template_dash_and_visu.php'"
 
 	echo "Upgrade done!"
 }
@@ -143,8 +116,8 @@ miniLabCreation(){
 		docker-compose exec -T msa_dev /usr/bin/create_mini_lab.sh
 	else
 		ha_dev_node_ip=$(getHaNodeIp msa_dev)
-        	ha_dev_container_ref=$(getHaContainerReference msa_dev)
-	        ssh "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec $ha_dev_container_ref /usr/bin/create_mini_lab.sh"
+        ha_dev_container_ref=$(getHaContainerReference msa_dev)
+	    ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec -it $ha_dev_container_ref /usr/bin/create_mini_lab.sh"
 	fi
 }
 
