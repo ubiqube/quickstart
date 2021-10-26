@@ -20,7 +20,7 @@ POS="\033[1000D\033[2C"
 
 for (( c=1; c<=60; c++ ))
 do  
-    HTTP_STATUS=$(curl -m 1 --connect-timeout 1 -k -s -I -o /dev/null -w ''%{http_code}'' http://msa-api:8480/actuator/health)
+    HTTP_STATUS=$(curl -m 1 --connect-timeout 1 -k -s -I -o /dev/null -w ''%{http_code}'' https://msa_front/ubi-api-ping/)
     if [ $HTTP_STATUS == "200" ]
     then 
         break 2
