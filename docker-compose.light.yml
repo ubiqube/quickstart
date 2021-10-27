@@ -3,7 +3,7 @@ version: "3.8"
 services:
   msa_front:
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.5.2-47fe9e68b919156a2921353abb5faf51897b27ce
+    image: openmsa/openmsa:msa2-front-2.6.0GA-53fccabe18a0015253d7d7051e1e54ccab99560a
     depends_on:
       - msa_api
       - msa_ui
@@ -41,7 +41,7 @@ services:
 
   db:
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.5.0GA-4ae8b6525ba20b79bd70ea2e74df1c038da7bc96
+    image: openmsa/openmsa:msa2-db-2.6.0GA-c00fdfaa09c44105f71a0e2d21467a9458f63921
     command: postgres -c 'max_connections=800'
     environment:
       POSTGRES_PASSWORD: my_db_password
@@ -54,7 +54,7 @@ services:
 
   msa_api:
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.5.2-ac12f5568548ba6660296c5c08d00451e3ef994b
+    image: openmsa/openmsa:msa2-api-2.6.0GA-1c3719943677f169537fd0a120d7aa9ff6fa4d6b
     depends_on:
       - db
       - msa_es
@@ -79,7 +79,7 @@ services:
 
   msa_ui:
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.5.1-54c817473a877e78d5781743a6466d4f6bb229e0
+    image: openmsa/openmsa:msa2-ui-2.6.0GA-493a8f2cd64667cca1b26989d140bbf9c0fd295a
     depends_on:
       - msa_api
     environment:
@@ -97,7 +97,7 @@ services:
 
   msa_sms:
     container_name: msa_sms
-    image: openmsa/openmsa:msa2-sms-2.5.2-a510d9fc32b323701dd1ffe3ebd2f0a0267c0d06
+    image: openmsa/openmsa:msa2-sms-2.6.0GA-5a4e5155ef123e0475e7ee9ba7f39b1255360997
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     cap_add:
@@ -116,7 +116,7 @@ services:
 
   msa_bud:
     container_name: msa_bud
-    image: openmsa/openmsa:msa2-bud-2.5.0GA-9c60fe972f4a55b68df42ccda9979cfd8d9f81e8
+    image: openmsa/openmsa:msa2-bud-2.6.0GA-7fa39b2f94a5f6dcb2190e3f680dcb8fc76992af
     depends_on:
       - db
     volumes:
@@ -124,7 +124,7 @@ services:
 
   msa_alarm:
     container_name: msa_alarm
-    image: openmsa/openmsa:msa2-alarm-2.5.0GA-ca517a8257461f07b38797937df6a9873555273c
+    image: openmsa/openmsa:msa2-alarm-2.6.0GA-d4255679b87051afc998cf791139b19b77b4f124
     depends_on:
       - db
       - msa_es
@@ -135,7 +135,7 @@ services:
     container_name: msa_camunda
     depends_on:
       - db
-    image: openmsa/openmsa:msa2-camunda-2.5.0GA-e8cd089949cdf40b3bb40709b51fbc0edd213a04
+    image: openmsa/openmsa:msa2-camunda-2.6.0GA-b839a640c1396f27a538c6e633d47ad93796a9e4
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
@@ -147,7 +147,7 @@ services:
 
   msa_es:
     container_name: msa_es
-    image: openmsa/openmsa:msa2-es-2.5.0GA-26576e026d6e745b7f537b7fd8a7eae6bbf0f376
+    image: openmsa/openmsa:msa2-es-2.6.0GA-fe57dfc7ecc70dff2feac67fc3b343bc5fbdba11
     environment:
       - "discovery.type=single-node"
       - "script.painless.regex.enabled=true"
@@ -163,7 +163,7 @@ services:
 
   msa_dev:
     container_name: msa_dev
-    image: openmsa/openmsa:msa2-linuxdev-2.5.0GA-724cb12438a33345e23ffecc4c04870cd9a29924
+    image: openmsa/openmsa:msa2-linuxdev-2.6.0GA-8f580df6480d41bf92f7a88085f4293ee03f14f4
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
@@ -174,7 +174,7 @@ services:
   linux_me:
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.5.0GA-b831acacdef579420ee1abf70ef66655d969fcbb
+    image: openmsa/openmsa:msa2-linuxme-2.6.0GA-b831acacdef579420ee1abf70ef66655d969fcbb
     cap_add:
       - NET_ADMIN
       - NET_RAW
