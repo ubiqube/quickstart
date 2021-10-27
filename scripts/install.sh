@@ -52,6 +52,7 @@ standaloneInstall(){
 
 		echo "Elasticsearch : .kibana_1 index regeneration"
 		docker-compose exec -T -u root -w /home/install/scripts/ msa_es bash -c './kibana_index_update.sh'
+		docker-compose restart msa_kibana
 		echo "Done"
 	fi
 
@@ -83,7 +84,7 @@ haInstall(){
     ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec -it $ha_dev_container_ref /bin/bash -c '/usr/bin/install_libraries.sh $(getLibOptions)'"
     docker service update --force "$ha_stack"_msa_api
     docker service update --force "$ha_stack"_msa_sms
-	docker service update --force "$ha_stack"_msa_alarm
+    docker service update --force "$ha_stack"_msa_alarm
 
     echo "############## Start CROND ############################################"
 	ha_api_node_ip=$(getHaNodeIp msa_api)
@@ -99,6 +100,7 @@ haInstall(){
     		ha_es_container_ref=$(getHaContainerReference msa_es)
     		#echo "ES $ha_es_ip $ha_es_container_ref"
     		ssh  -tt "-o BatchMode=Yes" $ssh_user@$ha_es_node_ip "docker exec -it -u root -w /home/install/scripts/ $ha_es_container_ref /bin/bash -c './kibana_index_update.sh'"
+		docker service update --force "$ha_stack"_msa_kibana
 	fi
 
 	echo "################ Kibana configs & dashboard templates update ##########"
