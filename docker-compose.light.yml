@@ -2,8 +2,11 @@ version: "3.8"
 
 services:
   msa_front:
+    restart: unless-stopped
     container_name: msa_front
     image: openmsa/openmsa:msa2-front-2.6.0GA-53fccabe18a0015253d7d7051e1e54ccab99560a
+    healthcheck:
+      test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
       - msa_api
       - msa_ui
@@ -38,11 +41,16 @@ services:
     # - Docker Swarm HA installation
     #volumes:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
-
   db:
+    restart: unless-stopped
     container_name: msa_db
     image: openmsa/openmsa:msa2-db-2.6.0GA-c00fdfaa09c44105f71a0e2d21467a9458f63921
-    command: postgres -c 'max_connections=800'
+    command: postgres -c 'max_connections=800' -c 'max_prepared_transactions=100'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
     environment:
       POSTGRES_PASSWORD: my_db_password
       POSTGRES_DB: POSTGRESQL
@@ -53,33 +61,35 @@ services:
       - "msa_db:/var/lib/postgresql/data"
 
   msa_api:
+    restart: unless-stopped
     container_name: msa_api
     image: openmsa/openmsa:msa2-api-2.6.0GA-1c3719943677f169537fd0a120d7aa9ff6fa4d6b
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     depends_on:
       - db
       - msa_es
     environment:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
-    entrypoint:
-      - /opt/jboss/wildfly/bin/standalone.sh
-      - -b
-      - 0.0.0.0
-      - -bmanagement
-      - 0.0.0.0
-      - -c
-      - ubiqube.xml
     volumes:
       - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "rrd_repository:/opt/rrd"
       - "msa_dev:/opt/devops/"
-      - "msa_api_logs:/opt/jboss/wildfly/standalone/log"
+      - "msa_api_logs:/opt/wildfly/logs/"
       - "msa_api_logs:/opt/wildfly/logs/processLog"
+    networks:
+      default:
+        aliases:
+          - "msa-api"
 
   msa_ui:
+    restart: unless-stopped
     container_name: msa_ui
     image: openmsa/openmsa:msa2-ui-2.6.0GA-493a8f2cd64667cca1b26989d140bbf9c0fd295a
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
       - msa_api
     environment:
@@ -96,8 +106,11 @@ services:
     - FEATURE_WORKFLOW_OWNER=false
 
   msa_sms:
+    restart: unless-stopped
     container_name: msa_sms
     image: openmsa/openmsa:msa2-sms-2.6.0GA-5a4e5155ef123e0475e7ee9ba7f39b1255360997
+    healthcheck:
+      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     cap_add:
@@ -115,23 +128,52 @@ services:
       - "msa_svn:/opt/svnroot"
 
   msa_bud:
+    restart: unless-stopped
     container_name: msa_bud
     image: openmsa/openmsa:msa2-bud-2.6.0GA-7fa39b2f94a5f6dcb2190e3f680dcb8fc76992af
+    healthcheck:
+      test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
     depends_on:
       - db
     volumes:
       - "msa_bud_logs:/opt/bud/logs/"
 
   msa_alarm:
+    restart: unless-stopped
     container_name: msa_alarm
     image: openmsa/openmsa:msa2-alarm-2.6.0GA-d4255679b87051afc998cf791139b19b77b4f124
+    healthcheck:
+      test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     depends_on:
       - db
       - msa_es
     environment:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+    volumes:
+      - "msa_sms_logs:/opt/sms/logs"
   
+  msa_monitoring:
+    restart: unless-stopped
+    container_name: msa_monitoring
+    image: openmsa/openmsa:msa2-monitoring-2.6.0GA-4e6ef663e040933be108bc71627799134bda7d0b
+    healthcheck:
+      test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
+    depends_on:
+      - db
+      - msa_es
+      - msa_dev
+    environment:
+      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+    volumes:
+      - "msa_dev:/opt/devops/"
+      - "msa_entities:/opt/fmc_entities"
+      - "msa_repository:/opt/fmc_repository"
+      - "rrd_repository:/opt/rrd"
+      - "msa_bulkfiles:/opt/sms/spool/parser"
+      - "msa_sms_logs:/opt/sms/logs"
+
   camunda:
+    restart: unless-stopped
     container_name: msa_camunda
     depends_on:
       - db
@@ -146,32 +188,43 @@ services:
       WAIT_FOR_TIMEOUT: 60
 
   msa_es:
+    restart: unless-stopped
     container_name: msa_es
     image: openmsa/openmsa:msa2-es-2.6.0GA-fe57dfc7ecc70dff2feac67fc3b343bc5fbdba11
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
+      timeout: 2s
+      retries: 10
+      interval: 10s
+      start_period: 30s 
     environment:
-      - "discovery.type=single-node"
-      - "script.painless.regex.enabled=true"
-      - "bootstrap.memory_lock=true"
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+      - discovery.type=single-node
+      - script.painless.regex.enabled=true
+      - bootstrap.memory_lock=true
+      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      - xpack.security.enabled=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx1024m"
+    volumes:
+      - "msa_es:/usr/share/elasticsearch/data"
     ulimits:
       memlock:
         soft: -1
         hard: -1
-    volumes:
-      - "msa_es:/usr/share/elasticsearch/data"
 
   msa_dev:
+    restart: unless-stopped
     container_name: msa_dev
     image: openmsa/openmsa:msa2-linuxdev-2.6.0GA-8f580df6480d41bf92f7a88085f4293ee03f14f4
+    depends_on:
+      - msa_es
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
-      - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_dev:/opt/devops/"
       
   linux_me:
+    restart: unless-stopped
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
     image: openmsa/openmsa:msa2-linuxme-2.6.0GA-b831acacdef579420ee1abf70ef66655d969fcbb
@@ -191,6 +244,7 @@ services:
     privileged: true
 
   linux_me_2:
+    restart: unless-stopped
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
     image: openmsa/openmsa:msa2-linuxme-2.6.0GA-b831acacdef579420ee1abf70ef66655d969fcbb
@@ -223,6 +277,7 @@ volumes:
   msa_bud_logs:
   msa_front:
   msa_svn:
+  msa_bulkfiles:
 
 networks:
   default:
@@ -232,4 +287,3 @@ networks:
         - subnet: 172.20.0.0/24
     driver_opts:
       encrypted: "true"
-    
