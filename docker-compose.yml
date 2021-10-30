@@ -4,7 +4,7 @@ services:
   msa_front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.6.0GA-53fccabe18a0015253d7d7051e1e54ccab99560a
+    image: ubiqube/msa2-front:742e4bfb74c443f59c1f42dd97e9b78990b2c649
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -64,7 +64,7 @@ services:
   msa_api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.6.0GA-1c3719943677f169537fd0a120d7aa9ff6fa4d6b
+    image: ubiqube/msa2-api:f37513449465f87283dccc55ab7d04930bf90acf
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     depends_on:
@@ -88,7 +88,7 @@ services:
   msa_ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.6.0GA-493a8f2cd64667cca1b26989d140bbf9c0fd295a
+    image: ubiqube/msa2-ui:8209f759e2d1fe2db58e2b66fc6a1116170efe65
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -109,7 +109,7 @@ services:
   msa_sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: openmsa/openmsa:msa2-sms-2.6.0GA-5a4e5155ef123e0475e7ee9ba7f39b1255360997
+    image: ubiqube/msa2-sms:c3d97a22547be18edbce5568e2093131061bbdfd
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -190,7 +190,7 @@ services:
   msa_es:
     restart: unless-stopped
     container_name: msa_es
-    image: ubiqube/msa2-es:132fdb1b91f350d3ee4f809847229cca95d2c326
+    image: ubiqube/msa2-es:7d2ae7e7b7a055119c229d4a10c8ac5c5ff9a23e
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
@@ -262,8 +262,8 @@ services:
   msa_dev:
     restart: unless-stopped
     container_name: msa_dev
-    #build: ./lab/msa_dev
-    image: openmsa/openmsa:msa2-linuxdev-2.6.0GA-8f580df6480d41bf92f7a88085f4293ee03f14f4
+    build: ./lab/msa_dev
+    #image: openmsa/openmsa:msa2-linuxdev-2.6.0GA-8f580df6480d41bf92f7a88085f4293ee03f14f4
     depends_on:
       - msa_es
     volumes:

@@ -9,6 +9,8 @@ QUICKSTART_DEFAULT_BRANCH=master
 INSTALL_LICENSE=false
 ASSUME_YES=false
 
+TAG_WF_KIBANA_DASHBOARD=MSA-2.6.0
+
 install_license() {
 
     if [ $INSTALL_LICENSE == true  ];
@@ -42,12 +44,13 @@ init_intall() {
 }
 
 update_git_repo () {
-
+set -x
     REPO_URL=$1
     REPO_BASE_DIR=$2
     REPO_DIR=$3
     DEFAULT_BRANCH=$4
     DEFAULT_DEV_BRANCH=$5
+    TAG=$6
 
     cd $REPO_BASE_DIR
     echo ">> "
@@ -58,9 +61,9 @@ update_git_repo () {
         ## get current branch and store in variable CURRENT_BR
         CURRENT_BR=`git rev-parse --abbrev-ref HEAD`
         echo "> Current working branch: $CURRENT_BR"
-        if [[ $ASSUME_YES == false && $CURRENT_BR == "master" ]];
+        if [[ $ASSUME_YES == false && "$CURRENT_BR" == "master" ]];
         then
-            echo "> WARNING: your current branch is $CURRENT_BR, to be safe, you may want to switch to a working branch (default_dev_branch is the factory default for development) [y]/[N]"
+            echo "> WARNING: your current branch is $CURRENT_BR, to be safe, you may want to switch to a working branch (default_dev_branch is the factory default for development)"
             read -p  "> switch ? [y]/[N]" yn
             case $yn in
                 [Yy]* )
@@ -92,52 +95,76 @@ update_git_repo () {
                    ;;
             esac
         fi
-        git stash
-        echo "> Checking merge $DEFAULT_BRANCH to $CURRENT_BR"
-        git merge --no-commit --no-ff $DEFAULT_BRANCH
-        CAN_MERGE=$?
-        if [ $CAN_MERGE == 0 ];
-        then
-            echo "> Auto-merge $DEFAULT_BRANCH to $CURRENT_BR is possible"
-            if [ $ASSUME_YES == false ];
-            then
-                while true; do
-                echo "> merge $DEFAULT_BRANCH to current working branch $CURRENT_BR ? [y]/[N]"
-                read -p  "[y]/[N]" yn
-                case $yn in
-                    [Yy]* )
-                        git pull origin $DEFAULT_BRANCH --prune; break
-                    ;;
-                    [Nn]* ) 
-                        echo "> skip merge "
-                        break
-                    ;;
-                    * ) 
-                        echo "Please answer yes or no."
-                    ;;
-                esac
-                done
-            else
-                git pull origin $DEFAULT_BRANCH --prune
-            fi
-        else
-            echo "> WARN: conflict found when merging $DEFAULT_BRANCH to $CURRENT_BR."
-            echo ">       auto-merge not possible"
-            echo ">       login to the container msa_dev and merge manually if merge is needed"
-            echo ">       git repository at $REPO_BASE_DIR/$REPO_DIR"
-            git merge --abort
-        fi;
 
-       echo "> Check out $DEFAULT_BRANCH and get the latest code"
-        git checkout $DEFAULT_BRANCH;
-        git pull;
-        echo "> Back to working branch"
-        git checkout $CURRENT_BR
-        git stash pop
+        if [[ $ASSUME_YES == false && "$TAG" != "" ]];
+        then
+            echo "> listing branches"
+            git branch --list MSA-*
+            echo "> listing tags"
+            git tag -l MSA-*
+            echo "> checkout and pull master and delete local branch created for the tag $TAG"
+            git checkout master
+            git pull
+            git rev-parse --verify $TAG
+            git branch -D $TAG
+            echo "> Create a new branch: $TAG based on the tag $TAG"
+            git checkout tags/$TAG -b $TAG
+        elif [[ $ASSUME_YES == false && "$DEFAULT_BRANCH" != "" ]];
+        then
+            git stash
+            echo "> Checking merge $DEFAULT_BRANCH to $CURRENT_BR"
+            git merge --no-commit --no-ff $DEFAULT_BRANCH
+            CAN_MERGE=$?
+            if [ $CAN_MERGE == 0 ];
+            then
+                echo "> Auto-merge $DEFAULT_BRANCH to $CURRENT_BR is possible"
+                if [ $ASSUME_YES == false ];
+                then
+                    while true; do
+                    echo "> merge $DEFAULT_BRANCH to current working branch $CURRENT_BR ?"
+                    read -p  "[y]/[N]" yn
+                    case $yn in
+                        [Yy]* )
+                            git pull origin $DEFAULT_BRANCH --prune; break
+                        ;;
+                        [Nn]* ) 
+                            echo "> skip merge "
+                            break
+                        ;;
+                        * ) 
+                            echo "Please answer yes or no."
+                        ;;
+                    esac
+                    done
+                else
+                    git pull origin $DEFAULT_BRANCH --prune
+                fi
+            else
+                echo "> ERROR: conflict found when merging $DEFAULT_BRANCH to $CURRENT_BR."
+                echo ">       auto-merge not possible"
+                echo ">       login to the container msa_dev and merge manually if merge is needed"
+                echo ">       relaunch install_libraries after merge is done"
+                echo ">       git repository at $REPO_BASE_DIR/$REPO_DIR"
+                git merge --abort
+                exit 1
+            fi;
+            echo "> Check out $DEFAULT_BRANCH and get the latest code"
+            git checkout $DEFAULT_BRANCH;
+            git pull;
+            echo "> Back to working branch"
+            git checkout $CURRENT_BR
+            git stash pop
+        fi;
     else
         git clone $REPO_URL $REPO_DIR
         cd $REPO_DIR
         git checkout $DEFAULT_BRANCH;
+        if [ "$TAG" != ""  ];
+        then
+            echo "> Create a new branch: $TAG based on the tag $TAG"
+            git checkout tags/$TAG -b $TAG
+        fi
+
         if [ "$DEFAULT_DEV_BRANCH" != ""  ];
         then
             echo "> Create a new developement branch: $DEFAULT_DEV_BRANCH based on $DEFAULT_BRANCH"
@@ -154,6 +181,12 @@ update_all_github_repo() {
     echo "-------------------------------------------------------------------------------"
     install_type=$1
     git config --global user.email devops@openmsa.co
+
+    if [[ $install_type = "kibana_dashboard" ]];
+    then
+        update_git_repo "https://github.com/openmsa/workflow_kibana.git" "/opt/fmc_repository" "OpenMSA_Workflow_Kibana" $GITHUB_DEFAULT_BRANCH "" $TAG_WF_KIBANA_DASHBOARD
+    fi
+
 
     if [[ $install_type = "all" || $install_type = "da" ]];
     then
@@ -286,13 +319,16 @@ install_workflows() {
     ln -fsn ../OpenMSA_WF/Topology Topology
     ln -fsn ../OpenMSA_WF/.meta_Topology .meta_Topology
     echo "  >> Analytics"
-    ln -fsn ../OpenMSA_WF/Analytics Analytics
+    ln -fsn ../OpenMSA_Workflow_Kibana/Analytics Analytics
     echo "  >> MSA / Utils"
     ln -fsn ../OpenMSA_WF/Utils/Manage_Device_Conf_Variables Manage_Device_Conf_Variables
     ln -fsn ../OpenMSA_WF/Utils/.meta_Manage_Device_Conf_Variables .meta_Manage_Device_Conf_Variables
     echo "  >> MSA / Utils"
     ln -fsn ../OpenMSA_WF/BIOS_Automation BIOS_Automation
     ln -fsn ../OpenMSA_WF/.meta_BIOS_Automation .meta_BIOS_Automation
+    echo "  >> AI ML Upgrade MSA"
+    ln -fsn ../OpenMSA_WF/Upgrade_MSActivator Upgrade_MSActivator
+    ln -fsn ../OpenMSA_WF/.meta_Upgrade_MSActivator .meta_Upgrade_MSActivator
 
 
     echo "-------------------------------------------------------------------------------"
@@ -307,24 +343,17 @@ install_workflows() {
 
 finalize_install() {
     echo "-------------------------------------------------------------------------------"
-    echo " Removing OneAccess Netconf MS definition with advanced variable types"
-    echo "-------------------------------------------------------------------------------"
-    rm -rf /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/Advanced
-    rm -rf /opt/fmc_repository/OpenMSA_MS/ONEACCESS/Netconf/.meta_Advanced
-    echo "DONE"
-
-    echo "-------------------------------------------------------------------------------"
     echo " update file owner to ncuser.ncuser"
     echo "-------------------------------------------------------------------------------"
     chown -R ncuser:ncuser /opt/fmc_repository/*;
-    if [[ $install_type = "all" || $install_type = "da" ]]; then
+    if [[ "$install_type" = "all" || "$install_type" = "da" ]]; then
         chown -R ncuser.ncuser /opt/devops/OpenMSA_Adapters
         chown -R ncuser.ncuser /opt/devops/OpenMSA_Adapters/adapters/*
         chown -R ncuser.ncuser /opt/devops/OpenMSA_Adapters/vendor/*
     fi
 
     echo "DONE"
-    if [[ $install_type = "all" || $install_type = "da" ]]; then
+    if [[ "$install_type" = "all" || "$install_type" = "da" ]]; then
         echo "-------------------------------------------------------------------------------"
         echo " service restart"
         echo "-------------------------------------------------------------------------------"
@@ -385,13 +414,19 @@ main() {
     done   
 
 	case $cmd in
+
+        kibana_dashboard)
+            install_license $option
+            init_intall
+            update_all_github_repo $cmd
+            install_workflows
+            ;;       
 		all)
             install_license $option
             init_intall
             update_all_github_repo $cmd
-            install_microservices;
-            install_workflows;
-            install_adapters;
+            install_microservices
+            install_workflows
             install_python_sdk
 			;;
 		ms)
