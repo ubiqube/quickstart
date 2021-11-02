@@ -37,7 +37,7 @@ standaloneInstall(){
         fi
     fi
 
-    docker-compose up -d --build
+        docker-compose up -d --build
 
     docker-compose exec -T msa_dev rm -rf /opt/fmc_repository/Process/Reference
 

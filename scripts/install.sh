@@ -215,19 +215,19 @@ main() {
         fi
 
         while true; do
-        action="upgrade to"
-        if [ $fresh_setup = true ]; then
-            action="install a new"
-        fi
+            action="upgrade to"
+            if [ $fresh_setup = true ]; then
+                action="install a new"
+            fi
 
-        if [[ $current_version =~ $target_version ]]; then
-            echo "Looks like the installation has not finished properly"
-            echo -n "Do you want to relaunch installtion? [y]/[N] "
-            read yn
-        else
-            echo -n "Are you sure you want to $action $target_version? [y]/[N] "
-            read yn
-        fi
+            if [[ $current_version =~ $target_version ]]; then
+                echo "Looks like the installation has not finished properly"
+                echo -n "Do you want to relaunch installtion? [y]/[N] "
+                read yn
+            else
+                echo -n "Are you sure you want to $action $target_version? [y]/[N] "
+                read yn
+            fi
             case $yn in
                 [Yy]* ) install; break;;
                 [Nn]* ) exit;;
