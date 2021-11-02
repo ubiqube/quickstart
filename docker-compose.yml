@@ -45,7 +45,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.6.0GA-c00fdfaa09c44105f71a0e2d21467a9458f63921
+    image: ubiqube/msa2-db:c00fdfaa09c44105f71a0e2d21467a9458f63921
     command: postgres -c 'max_connections=800' -c 'max_prepared_transactions=100'
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
