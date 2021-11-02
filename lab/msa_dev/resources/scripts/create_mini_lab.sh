@@ -125,5 +125,63 @@ else
         body=${body/<HASH>/$HASH}
         #echo "BODY $body"
         #executeCurl $TOKEN 'PUT' "/repository/file?uri=Datafiles/.NCLG1_UI_SETTINGS.json" \'"$body"\'
-        settings=$(executeCurl $TOKEN 'PUT' "/repository/file?uri=Datafiles/.NCLG1_UI_SETTINGS.json" '{"content":{"language":"en","drawerWidth":{"automationDetail":600},"tableRows":{"dashboard":12,"managedEntities":10,"automation":10,"configurations":10,"admin":10,"logs":10,"alarms":10,"monitoringProfiles":10,"permissionProfiles":10,"bpmOverview":10,"bpmDetails":10,"profileAuditLogs":10,"aiStates":10},"autoRefresh":60000,"dashboard":[{"style":"Dashboard Panel","type":"MSA Component","component":"Managed Entity Status","title":"Infrastructure","lg":6,"height":120},{"style":"Dashboard Panel","type":"MSA Component","component":"Automation","title":"Automation","lg":6,"height":120},{"style":"Dashboard Panel","type":"MSA Component","component":"Kibana Dashboard","title":"Dashboard","lg":12,"height":120,"extendedListValues":{"kibanaUrl":"'"$HASH"'"}}]}}')
+        settings=$(executeCurl $TOKEN 'PUT' "/repository/file?uri=Datafiles/.NCLG1_UI_SETTINGS.json" '
+        {
+        	"content": {
+        		"language": "en",
+        		"drawerWidth": {
+        			"automationDetail": 600
+        		},
+        		"tableRows": {
+        			"dashboard": 12,
+        			"managedEntities": 10,
+        			"automation": 10,
+        			"configurations": 10,
+        			"admin": 10,
+        			"logs": 10,
+        			"alarms": 10,
+        			"monitoringProfiles": 10,
+        			"permissionProfiles": 10,
+        			"bpmOverview": 10,
+        			"bpmDetails": 10,
+        			"profileAuditLogs": 10,
+        			"aiStates": 10
+        		},
+                        "tableSortKey": { "automation": "lastupdated" },
+                        "tableSortOrder": { "automation": 0 },
+                        "autoRefresh": { // This is the right one
+                                "managedEntityStatus": 60,
+                                "ping": 5,
+                                "notification": 60,
+                                "pollingInterval": 2,
+                                "topology": 30
+                        },
+        		"dashboard": [{
+        			"style": "Dashboard Panel",
+        			"type": "MSA Component",
+        			"component": "Managed Entity Status",
+        			"title": "Infrastructure",
+        			"lg": 6,
+        			"height": 120
+        		}, {
+        			"style": "Dashboard Panel",
+        			"type": "MSA Component",
+        			"component": "Automation",
+        			"title": "Automation",
+        			"lg": 6,
+        			"height": 120
+        		}, {
+        			"style": "Dashboard Panel",
+        			"type": "MSA Component",
+        			"component": "Kibana Dashboard",
+        			"title": "Dashboard",
+        			"lg": 12,
+        			"height": 120,
+        			"extendedListValues": {
+        				"kibanaUrl": "'"$HASH"'"
+        			}
+        		}]
+        	}
+        }        
+        ')
 fi
