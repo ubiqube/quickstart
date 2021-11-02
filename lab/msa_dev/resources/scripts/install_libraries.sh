@@ -11,7 +11,9 @@ ASSUME_YES=false
 
 TAG_WF_KIBANA_DASHBOARD=MSA-2.6.0
 TAG_WF_TOPOLOGY=MSA-2.6.0
-TAG_PYTHON_SDK_TOPOLOGY=MSA-2.6.0
+TAG_PYTHON_SDK=MSA-2.6.0
+TAG_PHP_SDK=MSA-2.6.0
+
 
 install_license() {
 
@@ -206,6 +208,7 @@ update_all_github_repo() {
         update_git_repo "https://github.com/openmsa/workflow_kibana.git" "/opt/fmc_repository" "OpenMSA_Workflow_Kibana" $GITHUB_DEFAULT_BRANCH "" $TAG_WF_KIBANA_DASHBOARD
         update_git_repo "https://github.com/openmsa/workflow_topology.git" "/opt/fmc_repository" "OpenMSA_Workflow_Topology" $GITHUB_DEFAULT_BRANCH "" $TAG_WF_TOPOLOGY
         update_git_repo "https://github.com/openmsa/Workflows.git" "/opt/fmc_repository" "OpenMSA_WF" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
+        update_git_repo "https://github.com/openmsa/php-sdk.git" "/opt/fmc_repository" "php_sdk" $GITHUB_DEFAULT_BRANCH "" $TAG_PHP_SDK
     fi
 
     if [[ $install_type = "all" || $install_type = "mano" ]];
@@ -215,7 +218,7 @@ update_all_github_repo() {
 
     if [[ $install_type = "all" || $install_type = "py" ]];
     then
-        update_git_repo "https://github.com/openmsa/python-sdk.git" "/tmp/" "python_sdk" "develop" "" $TAG_PYTHON_SDK_TOPOLOGY
+        update_git_repo "https://github.com/openmsa/python-sdk.git" "/tmp/" "python_sdk" "develop" "" $TAG_PYTHON_SDK
     fi
 
     if [[ $install_type = "all" || $install_type = "quickstart" ]];
@@ -300,8 +303,8 @@ install_workflows() {
     echo "-------------------------------------------------------------------------------"
     cd /opt/fmc_repository/Process;
     echo "  >> WF references and libs"
-    ln -fsn ../OpenMSA_WF/Reference Reference;
-    ln -fsn ../OpenMSA_WF/.meta_Reference .meta_Reference;
+    ln -fsn ../php_sdk/Reference Reference;
+    ln -fsn ../php_sdk/.meta_Reference .meta_Reference;
     echo "  >> WF tutorials"
     ln -fsn ../OpenMSA_WF/Tutorials Tutorials;
     ln -fsn ../OpenMSA_WF/.meta_Tutorials .meta_Tutorials;
