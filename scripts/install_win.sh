@@ -12,8 +12,13 @@ ha_setup=false
 mini_lab=false
 ssh_user=root
 
+file_upgrade='.upgrade_unfinished'
+
 
 install(){
+    # mark that upgrade/installion is in progress
+    touch ${file_upgrade}
+
     if [ $ha_setup = false ] ; then
         standaloneInstall
     else
@@ -60,7 +65,7 @@ standaloneInstall(){
     docker-compose exec -T -u root -w //home/install/scripts msa_kibana bash -c 'php install_default_template_dash_and_visu.php'
     echo "Done"
 
-    echo "Upgrade done!"
+    upgrade_done()
 }
 
 haInstall(){
@@ -71,6 +76,7 @@ haInstall(){
         ha_stack="ha"
         echo "No stack found. Fresh HA installation"
     fi
+
     docker stack deploy --with-registry-auth -c docker-compose.simple.ha.yml $ha_stack
 
     echo "############## Install OpenMSA Libraries ##############################"
@@ -106,7 +112,15 @@ haInstall(){
     waitUpKibana $ha_kib_node_ip
         ssh -tt $ssh_user@$ha_kib_node_ip "docker exec -it -u root -w /home/install/scripts $ha_kib_container_ref /bin/bash -c 'php install_default_template_dash_and_visu.php'"
 
+    upgrade_done()
+}
+
+upgrade_done(){
     echo "Upgrade done!"
+    if [ -f "${file_upgrade}" ]; then
+        # installation is sucessful, remove file
+        rm "${file_upgrade}" > /dev/null
+    fi
 }
 
 miniLabCreation(){
@@ -187,9 +201,10 @@ main() {
 
 
         if [ $force_option = false ] ; then
-        if [[ $current_version =~ $target_version ]]; then
-                    echo "Already up to date: nothing to do"
-            exit
+        if [[ $current_version =~ $target_version ]] || [ ! -f "${file_upgrade}" ]; then
+                echo "Already up to date: nothing to do"
+                exit
+            fi
         fi
 
         while true; do
