@@ -9,7 +9,7 @@ QUICKSTART_DEFAULT_BRANCH=master
 INSTALL_LICENSE=false
 ASSUME_YES=false
 
-TAG_WF_KIBANA_DASHBOARD=MSA-2.6.0
+TAG_WF_KIBANA_DASHBOARD=MSA-2.6.1
 
 install_license() {
 
@@ -98,15 +98,21 @@ set -x
 
         if [[ $ASSUME_YES == false && "$TAG" != "" ]];
         then
-            echo "> listing branches"
+            echo "> installing version $TAG for $REPO_DIR"
+            echo "> existing release branches"
             git branch --list MSA-*
-            echo "> listing tags"
+            echo "> existing release tags:"
             git tag -l MSA-*
-            echo "> checkout and pull master and delete local branch created for the tag $TAG"
+            echo "> checkout and pull master"
             git checkout master
             git pull
-            git rev-parse --verify $TAG
-            git branch -D $TAG
+
+            if [ `git branch --list $TAG` ]
+            then
+                echo "> local branch $branch_name already exists."
+                echo "> delete the local branch created for the tag $TAG"
+                git branch -D $TAG
+            fi
             echo "> Create a new branch: $TAG based on the tag $TAG"
             git checkout tags/$TAG -b $TAG
         elif [[ $ASSUME_YES == false && "$DEFAULT_BRANCH" != "" ]];
@@ -173,6 +179,7 @@ set -x
     fi;
     echo ">>"
     echo ">> DONE"
+    set +x
 }
 
 update_all_github_repo() {
