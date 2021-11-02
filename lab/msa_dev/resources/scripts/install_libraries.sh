@@ -11,6 +11,7 @@ ASSUME_YES=false
 
 TAG_WF_KIBANA_DASHBOARD=MSA-2.6.0
 TAG_WF_TOPOLOGY=MSA-2.6.0
+TAG_PYTHON_SDK_TOPOLOGY=MSA-2.6.0
 
 install_license() {
 
@@ -214,7 +215,7 @@ update_all_github_repo() {
 
     if [[ $install_type = "all" || $install_type = "py" ]];
     then
-        update_git_repo "https://github.com/openmsa/python-sdk.git" "/tmp/" "python_sdk" "develop" "default_dev_branch"
+        update_git_repo "https://github.com/openmsa/python-sdk.git" "/tmp/" "python_sdk" "develop" "" $TAG_PYTHON_SDK_TOPOLOGY
     fi
 
     if [[ $install_type = "all" || $install_type = "quickstart" ]];
