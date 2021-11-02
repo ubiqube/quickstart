@@ -13,7 +13,8 @@ TAG_WF_KIBANA_DASHBOARD=MSA-2.6.0
 TAG_WF_TOPOLOGY=MSA-2.6.0
 TAG_PYTHON_SDK=MSA-2.6.0
 TAG_PHP_SDK=MSA-2.6.0
-
+TAG_WF_ETSI_MANO=MSA-2.6.0
+TAG_ADAPTER=MSA-2.6.0
 
 install_license() {
 
@@ -48,7 +49,6 @@ init_intall() {
 }
 
 update_git_repo () {
-set -x
     REPO_URL=$1
     REPO_BASE_DIR=$2
     REPO_DIR=$3
@@ -183,7 +183,6 @@ set -x
     fi;
     echo ">>"
     echo ">> DONE"
-    set +x
 }
 
 update_all_github_repo() {
@@ -195,7 +194,7 @@ update_all_github_repo() {
 
     if [[ $install_type = "all" || $install_type = "da" ]];
     then
-        update_git_repo "https://github.com/openmsa/Adapters.git" "/opt/devops" "OpenMSA_Adapters" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
+        update_git_repo "https://github.com/openmsa/Adapters.git" "/opt/devops" "OpenMSA_Adapters" $GITHUB_DEFAULT_BRANCH "" $TAG_ADAPTER
     fi
 
     if [[ $install_type = "all" || $install_type = "ms" ]];
@@ -213,7 +212,7 @@ update_all_github_repo() {
 
     if [[ $install_type = "all" || $install_type = "mano" ]];
     then
-       update_git_repo "https://github.com/openmsa/etsi-mano.git" "/opt/fmc_repository" "OpenMSA_MANO" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
+       update_git_repo "https://github.com/openmsa/etsi-mano.git" "/opt/fmc_repository" "OpenMSA_MANO" $GITHUB_DEFAULT_BRANCH "" $TAG_WF_ETSI_MANO
     fi
 
     if [[ $install_type = "all" || $install_type = "py" ]];
