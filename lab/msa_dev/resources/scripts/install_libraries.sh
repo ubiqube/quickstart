@@ -9,7 +9,8 @@ QUICKSTART_DEFAULT_BRANCH=master
 INSTALL_LICENSE=false
 ASSUME_YES=false
 
-TAG_WF_KIBANA_DASHBOARD=MSA-2.6.1
+TAG_WF_KIBANA_DASHBOARD=MSA-2.6.0
+TAG_WF_TOPOLOGY=MSA-2.6.0
 
 install_license() {
 
@@ -189,12 +190,6 @@ update_all_github_repo() {
     install_type=$1
     git config --global user.email devops@openmsa.co
 
-    if [[ $install_type = "kibana_dashboard" ]];
-    then
-        update_git_repo "https://github.com/openmsa/workflow_kibana.git" "/opt/fmc_repository" "OpenMSA_Workflow_Kibana" $GITHUB_DEFAULT_BRANCH "" $TAG_WF_KIBANA_DASHBOARD
-    fi
-
-
     if [[ $install_type = "all" || $install_type = "da" ]];
     then
         update_git_repo "https://github.com/openmsa/Adapters.git" "/opt/devops" "OpenMSA_Adapters" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
@@ -207,6 +202,8 @@ update_all_github_repo() {
 
     if [[ $install_type = "all" || $install_type = "wf" ]];
     then
+        update_git_repo "https://github.com/openmsa/workflow_kibana.git" "/opt/fmc_repository" "OpenMSA_Workflow_Kibana" $GITHUB_DEFAULT_BRANCH "" $TAG_WF_KIBANA_DASHBOARD
+        update_git_repo "https://github.com/openmsa/workflow_topology.git" "/opt/fmc_repository" "OpenMSA_Workflow_Topology" $GITHUB_DEFAULT_BRANCH "" $TAG_WF_TOPOLOGY
         update_git_repo "https://github.com/openmsa/Workflows.git" "/opt/fmc_repository" "OpenMSA_WF" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
     fi
 
@@ -322,11 +319,12 @@ install_workflows() {
     echo "  >> Public Cloud - AWS"
     ln -fsn ../OpenMSA_WF/Public_Cloud Public_Cloud
     ln -fsn ../OpenMSA_WF/.meta_Public_Cloud .meta_Public_Cloud
-    echo "  >> Topology"
-    ln -fsn ../OpenMSA_WF/Topology Topology
-    ln -fsn ../OpenMSA_WF/.meta_Topology .meta_Topology
-    echo "  >> Analytics"
+    echo "  >> Topology $TAG_WF_TOPOLOGY"
+    ln -fsn ../OpenMSA_Workflow_Topology/Topology Topology
+    ln -fsn ../OpenMSA_Workflow_Topology/.meta_Topology .meta_Topology
+    echo "  >> Analytics $TAG_WF_KIBANA_DASHBOARD"
     ln -fsn ../OpenMSA_Workflow_Kibana/Analytics Analytics
+    ln -fsn ../OpenMSA_Workflow_Kibana/.meta_Analytics .meta_Analytics
     echo "  >> MSA / Utils"
     ln -fsn ../OpenMSA_WF/Utils/Manage_Device_Conf_Variables Manage_Device_Conf_Variables
     ln -fsn ../OpenMSA_WF/Utils/.meta_Manage_Device_Conf_Variables .meta_Manage_Device_Conf_Variables
