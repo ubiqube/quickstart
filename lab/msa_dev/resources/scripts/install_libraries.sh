@@ -8,15 +8,19 @@ GITHUB_DEFAULT_BRANCH=master
 QUICKSTART_DEFAULT_BRANCH=master
 INSTALL_LICENSE=false
 ASSUME_YES=false
-TAG_WF_KIBANA_DASHBOARD=v2.6.0
-TAG_WF_TOPOLOGY=v2.6.0
-TAG_PYTHON_SDK=v2.6.0
-TAG_PHP_SDK=v2.6.0
-TAG_WF_ETSI_MANO=v2.6.0
-TAG_ADAPTER=v2.6.0
-TAG_WORKFLOWS=v2.6.0
-TAG_MICROSERVICES=v2.6.0
-TAG_WF_MINILAB=v2.6.0
+
+#
+# versioning of the libraries that are installed by the script
+#
+TAG_WF_KIBANA_DASHBOARD=v2.6.0      # https://github.com/openmsa/workflow_kibana
+TAG_WF_TOPOLOGY=v2.6.0              # https://github.com/openmsa/workflow_topology
+TAG_PYTHON_SDK=v2.6.0               # https://github.com/openmsa/python-sdk
+TAG_PHP_SDK=v2.6.0                  # https://github.com/openmsa/php-sdk
+TAG_WF_ETSI_MANO=v2.6.0             # https://github.com/openmsa/etsi-mano
+TAG_ADAPTER=v2.6.0                  # https://github.com/openmsa/Adapters
+TAG_WORKFLOWS=v2.6.0                # https://github.com/openmsa/Workflows
+TAG_MICROSERVICES=v2.6.0            # https://github.com/openmsa/Microservices
+TAG_WF_MINILAB=v2.6.0               # https://github.com/ubiqube/workflow_quickstart_minilab
 
 install_license() {
 
