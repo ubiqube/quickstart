@@ -138,7 +138,7 @@ update_git_repo () {
         git clone $REPO_URL $REPO_DIR
         cd $REPO_DIR
         git checkout $DEFAULT_BRANCH;
-        if [ "$DEFAULT_DEV_BRANCH" != ""  ];
+        if [ $DEFAULT_DEV_BRANCH != ""  ];
         then
             echo "> Create a new developement branch: $DEFAULT_DEV_BRANCH based on $DEFAULT_BRANCH"
             git checkout -b $DEFAULT_DEV_BRANCH
