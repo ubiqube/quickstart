@@ -262,8 +262,8 @@ services:
   msa_dev:
     restart: unless-stopped
     container_name: msa_dev
-    build: ./lab/msa_dev
-    #image: openmsa/openmsa:msa2-linuxdev-2.6.0GA-8f580df6480d41bf92f7a88085f4293ee03f14f4
+    #build: ./lab/msa_dev
+    image: openmsa/openmsa:msa2-linuxdev-2.6.0GA-8f580df6480d41bf92f7a88085f4293ee03f14f4
     depends_on:
       - msa_es
     volumes:
