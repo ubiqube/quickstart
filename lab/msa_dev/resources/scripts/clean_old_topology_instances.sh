@@ -10,7 +10,7 @@ if [ $? -ne 0 ]; then
 fi
 
 
-RESPONSE=`curl -s -k -H 'Content-Type: application/json' -XPOST http://msa-api:8480/ubi-api-rest/auth/token -d '{"username":"ncroot", "password":"ubiqube" }'`
+RESPONSE=`curl -s -k -H 'Content-Type: application/json' -XPOST http://msa_api:8480/ubi-api-rest/auth/token -d '{"username":"ncroot", "password":"ubiqube" }'`
 if [ -z "$RESPONSE" ]
 then
       echo "Authentication API error"
@@ -18,25 +18,25 @@ then
 fi
 TOKEN=$(php -r 'echo json_decode($argv[1])->token;' "$RESPONSE")
 
-CUSTOMERS=`curl --location -s -k -H "Authorization: Bearer "$TOKEN -XGET http://msa-api:8480/ubi-api-rest/lookup/customers`
+CUSTOMERS=`curl --location -s -k -H "Authorization: Bearer "$TOKEN -XGET http://msa_api:8480/ubi-api-rest/lookup/customers`
 
 CUSTOMERIDS=`echo $CUSTOMERS | grep -Eo '"ubiId"[^,]*' | grep -Eo '[^:]*$' | sed 's/"//g'`
 
 for CUSTOMER in ${CUSTOMERIDS}
 do
-	INSTANCES=`curl --location -s -k -H "Authorization: Bearer "$TOKEN -XGET http://msa-api:8480/ubi-api-rest/orchestration/${CUSTOMER}/service/instance`
+	INSTANCES=`curl --location -s -k -H "Authorization: Bearer "$TOKEN -XGET http://msa_api:8480/ubi-api-rest/orchestration/${CUSTOMER}/service/instance`
 
 	INSTANCEIDS=`echo $INSTANCES | grep -Eo '"id"[^,]*' | grep -Eo '[^:]*$' | sed 's/"//g'`
 
 	for INSTANCE in ${INSTANCEIDS}
 	do
-		INSTANCE_DETAILS=`curl --location -s -k -H "Authorization: Bearer "$TOKEN -XGET http://msa-api:8480/ubi-api-rest/orchestration/${CUSTOMER}/service/instance/${INSTANCE}`
+		INSTANCE_DETAILS=`curl --location -s -k -H "Authorization: Bearer "$TOKEN -XGET http://msa_api:8480/ubi-api-rest/orchestration/${CUSTOMER}/service/instance/${INSTANCE}`
 
         INSTANCE_NAME=`echo $INSTANCE_DETAILS | grep -Eo '"name"[^,]*' | grep -Eo '[^:]*$' | sed 's/"//g'`
 
         if [[ $INSTANCE_NAME == *"Topology"* ]]; then
 
-        	curl --location -s -k -H "Authorization: Bearer "$TOKEN -XDELETE http://msa-api:8480/ubi-api-rest/orchestration/v1/service/instance/${INSTANCE}
+        	curl --location -s -k -H "Authorization: Bearer "$TOKEN -XDELETE http://msa_api:8480/ubi-api-rest/orchestration/v1/service/instance/${INSTANCE}
         fi
     done
 done

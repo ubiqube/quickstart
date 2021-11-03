@@ -12,7 +12,7 @@ function executeCurl(){
         echo "Method $method"
         echo "apiPath $apiPath"
         echo "body $body"
-        res=`curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$token -X $method "http://msa-api:8480/ubi-api-rest$apiPath" -d "$body"`
+        res=`curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$token -X $method "http://msa_api:8480/ubi-api-rest$apiPath" -d "$body"`
         echo $res
 }
 /usr/bin/wait_for_api.sh
@@ -20,7 +20,7 @@ if [ $? -ne 0 ]; then
     echo "\nERROR: API unavailable"
     exit 1
 fi
-RESPONSE=`curl -s -H 'Content-Type: application/json' -XPOST http://msa-api:8480/ubi-api-rest/auth/token -d '{"username":"ncroot", "password":"ubiqube" }'`
+RESPONSE=`curl -s -H 'Content-Type: application/json' -XPOST http://msa_api:8480/ubi-api-rest/auth/token -d '{"username":"ncroot", "password":"ubiqube" }'`
 if [ -z "$RESPONSE" ]
 then
       echo "Authentication API error"
@@ -42,7 +42,7 @@ if [[ $subTenantExist == *"actorId"* ]]; then
 else
         subtenant=$(executeCurl $TOKEN 'POST' "/customer/$OPERATOR?name=Tyrell%20Corporation&reference=TyrellCorp" '{"name":"Tyrell Corporation"}')
 fi
-CUSTLIST=`curl -s -H "Content-Type:application/json" -H "Authorization: Bearer "$TOKEN -XGET http://msa-api:8480/ubi-api-rest/lookup/customers`
+CUSTLIST=`curl -s -H "Content-Type:application/json" -H "Authorization: Bearer "$TOKEN -XGET http://msa_api:8480/ubi-api-rest/lookup/customers`
 IFS='"' # set delimiter
 read -ra ADDR <<< "$CUSTLIST" # str is read into an array as tokens separated by IFS
 for i in "${ADDR[@]}"; do # access each element of array
