@@ -124,7 +124,7 @@ update_git_repo () {
             fi
             git stash
             git checkout master
-            gut pull
+            git pull
             if [ `git branch --list $TAG` ]
             then
                 echo "> local branch $branch_name already exists."
