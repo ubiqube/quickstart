@@ -9,12 +9,18 @@ QUICKSTART_DEFAULT_BRANCH=master
 INSTALL_LICENSE=false
 ASSUME_YES=false
 
-TAG_WF_KIBANA_DASHBOARD=MSA-2.6.0
-TAG_WF_TOPOLOGY=MSA-2.6.0
-TAG_PYTHON_SDK=MSA-2.6.0
-TAG_PHP_SDK=MSA-2.6.0
-TAG_WF_ETSI_MANO=MSA-2.6.0
-TAG_ADAPTER=MSA-2.6.0
+#
+# versioning of the libraries that are installed by the script
+#
+TAG_WF_KIBANA_DASHBOARD=v2.6.0      # https://github.com/openmsa/workflow_kibana
+TAG_WF_TOPOLOGY=v2.6.0              # https://github.com/openmsa/workflow_topology
+TAG_PYTHON_SDK=v2.6.0               # https://github.com/openmsa/python-sdk
+TAG_PHP_SDK=v2.6.0                  # https://github.com/openmsa/php-sdk
+TAG_WF_ETSI_MANO=v2.6.0             # https://github.com/openmsa/etsi-mano
+TAG_ADAPTER=v2.6.0                  # https://github.com/openmsa/Adapters
+TAG_WORKFLOWS=v2.6.0                # https://github.com/openmsa/Workflows
+TAG_MICROSERVICES=v2.6.0            # https://github.com/openmsa/Microservices
+TAG_WF_MINILAB=v2.6.0               # https://github.com/ubiqube/workflow_quickstart_minilab
 
 install_license() {
 
@@ -55,10 +61,17 @@ update_git_repo () {
     DEFAULT_BRANCH=$4
     DEFAULT_DEV_BRANCH=$5
     TAG=$6
+    RESET_REPO=$7
 
     cd $REPO_BASE_DIR
     echo ">> "
     echo ">> $REPO_URL"
+    if [ "$RESET_REPO" == true ];
+    then
+        echo "> deleting repository"
+        rm -rf $REPO_DIR
+    fi
+
     if [ -d $REPO_DIR ]; 
     then 
         cd $REPO_DIR
@@ -103,14 +116,26 @@ update_git_repo () {
         if [[ $ASSUME_YES == false && "$TAG" != "" ]];
         then
             echo "> installing version $TAG for $REPO_DIR"
-            echo "> existing release branches"
-            git branch --list MSA-*
-            echo "> existing release tags:"
-            git tag -l MSA-*
-            echo "> checkout and pull master"
+            echo "> available release branches"
+            git branch --list v*
+            git fetch --tags
+            echo "> available release tags:"
+            git tag -l v*
+            if [ ! `git tag --list $TAG` ]
+            then
+                echo "> WARNING: tag $TAG not found, current branch is $CURRENT_BR"
+                echo  "> (c) Cancel installation" 
+                echo  "> (I) Ignore and keep existing version - default"
+                read -p  "[I]/[c]" resp
+                if [[ $resp != "" && $resp == "c" ]];
+                then
+                    echo "> cancelling installation, exiting... "
+                    exit 0
+                fi
+            fi
+            git stash
             git checkout master
             git pull
-
             if [ `git branch --list $TAG` ]
             then
                 echo "> local branch $branch_name already exists."
@@ -118,7 +143,7 @@ update_git_repo () {
                 git branch -D $TAG
             fi
             echo "> Create a new branch: $TAG based on the tag $TAG"
-            git checkout tags/$TAG -b $TAG
+            git checkout tags/$TAG -b $TAG         
         elif [[ $ASSUME_YES == false && "$DEFAULT_BRANCH" != "" ]];
         then
             git stash
@@ -194,43 +219,48 @@ update_all_github_repo() {
 
     if [[ $install_type = "all" || $install_type = "da" ]];
     then
-        update_git_repo "https://github.com/openmsa/Adapters.git" "/opt/devops" "OpenMSA_Adapters" $GITHUB_DEFAULT_BRANCH "" $TAG_ADAPTER
+        update_git_repo "https://github.com/openmsa/Adapters.git" "/opt/devops" "OpenMSA_Adapters" $GITHUB_DEFAULT_BRANCH "" $TAG_ADAPTER false
     fi
 
     if [[ $install_type = "all" || $install_type = "ms" ]];
     then
-        update_git_repo "https://github.com/openmsa/Microservices.git" "/opt/fmc_repository" "OpenMSA_MS" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
+        update_git_repo "https://github.com/openmsa/Microservices.git" "/opt/fmc_repository" "OpenMSA_MS" $GITHUB_DEFAULT_BRANCH "" $TAG_MICROSERVICES false
     fi
 
     if [[ $install_type = "all" || $install_type = "wf" ]];
     then
-        update_git_repo "https://github.com/openmsa/workflow_kibana.git" "/opt/fmc_repository" "OpenMSA_Workflow_Kibana" $GITHUB_DEFAULT_BRANCH "" $TAG_WF_KIBANA_DASHBOARD
-        update_git_repo "https://github.com/openmsa/workflow_topology.git" "/opt/fmc_repository" "OpenMSA_Workflow_Topology" $GITHUB_DEFAULT_BRANCH "" $TAG_WF_TOPOLOGY
-        update_git_repo "https://github.com/openmsa/Workflows.git" "/opt/fmc_repository" "OpenMSA_WF" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
-        update_git_repo "https://github.com/openmsa/php-sdk.git" "/opt/fmc_repository" "php_sdk" $GITHUB_DEFAULT_BRANCH "" $TAG_PHP_SDK
+        update_git_repo "https://github.com/openmsa/workflow_kibana.git" "/opt/fmc_repository" "OpenMSA_Workflow_Kibana" $GITHUB_DEFAULT_BRANCH "" $TAG_WF_KIBANA_DASHBOARD false
+        update_git_repo "https://github.com/openmsa/workflow_topology.git" "/opt/fmc_repository" "OpenMSA_Workflow_Topology" $GITHUB_DEFAULT_BRANCH "" $TAG_WF_TOPOLOGY false
+        update_git_repo "https://github.com/openmsa/Workflows.git" "/opt/fmc_repository" "OpenMSA_WF" $GITHUB_DEFAULT_BRANCH "" $TAG_WORKFLOWS false
+        update_git_repo "https://github.com/openmsa/php-sdk.git" "/opt/fmc_repository" "php_sdk" $GITHUB_DEFAULT_BRANCH "" $TAG_PHP_SDK false
+        update_git_repo "https://github.com/ubiqube/workflow_quickstart_minilab.git" "/opt/fmc_repository" "workflow_quickstart_minilab" $GITHUB_DEFAULT_BRANCH "" $TAG_WF_MINILAB true
+
     fi
 
     if [[ $install_type = "all" || $install_type = "mano" ]];
     then
-       update_git_repo "https://github.com/openmsa/etsi-mano.git" "/opt/fmc_repository" "OpenMSA_MANO" $GITHUB_DEFAULT_BRANCH "" $TAG_WF_ETSI_MANO
+       update_git_repo "https://github.com/openmsa/etsi-mano.git" "/opt/fmc_repository" "OpenMSA_MANO" $GITHUB_DEFAULT_BRANCH "" $TAG_WF_ETSI_MANO false
     fi
 
     if [[ $install_type = "all" || $install_type = "py" ]];
     then
-        update_git_repo "https://github.com/openmsa/python-sdk.git" "/tmp/" "python_sdk" "develop" "" $TAG_PYTHON_SDK
+        update_git_repo "https://github.com/openmsa/python-sdk.git" "/tmp/" "python_sdk" "develop" "" $TAG_PYTHON_SDK false
     fi
 
-    if [[ $install_type = "all" || $install_type = "quickstart" ]];
-    then
-        update_git_repo "https://github.com/ubiqube/quickstart.git" "/opt/fmc_repository" "quickstart" $QUICKSTART_DEFAULT_BRANCH
-    fi
+#    if [[ $install_type = "all" || $install_type = "quickstart" ]];
+#    then
+#        update_git_repo "https://github.com/ubiqube/quickstart.git" "/opt/fmc_repository" "quickstart" $QUICKSTART_DEFAULT_BRANCH "" "" true
+#    fi
 }
 
 install_python_sdk() {
+    echo "-------------------------------------------------------------------------------"
+    echo " Install python SDK"
+    echo "-------------------------------------------------------------------------------"
     mkdir -p /opt/fmc_repository/Process/PythonReference/custom
     touch /opt/fmc_repository/Process/PythonReference/custom/__init__.py
     pushd /tmp/python_sdk
-    python3 setup.py install --install-lib='/opt/fmc_repository/Process/PythonReference'
+    python3 setup.py -q install  --install-lib='/opt/fmc_repository/Process/PythonReference'
     popd
     rm -rf /tmp/python_sdk
 }
@@ -342,8 +372,9 @@ install_workflows() {
     echo "-------------------------------------------------------------------------------"
     echo " Install mini lab setup WF from quickstart github repository"
     echo "-------------------------------------------------------------------------------"
-    ln -fsn ../quickstart/lab/msa_dev/resources/libraries/workflows/SelfDemoSetup SelfDemoSetup;
-    ln -fsn ../quickstart/lab/msa_dev/resources/libraries/workflows/.meta_SelfDemoSetup .meta_SelfDemoSetup;
+    echo "  >> SelfDemoSetup"
+    ln -fsn ../workflow_quickstart_minilab/SelfDemoSetup SelfDemoSetup;
+    ln -fsn ../workflow_quickstart_minilab/.meta_SelfDemoSetup .meta_SelfDemoSetup;
 
     echo "DONE"
 
@@ -383,7 +414,6 @@ usage() {
 	echo "da:           install/update the adapters from https://github.com/openmsa/Adapters"
     echo "mano:         install/update the python-sdk from https://github.com/openmsa/etsi-mano"
     echo "py:           install/update the python-sdk from https://github.com/openmsa/python-sdk"
-    echo "quickstart:   install/update the local quickstart from https://github.com/ubiqube/quickstart"
     echo
     echo "Options:"
     echo "--lic:          force license installation"
@@ -460,10 +490,6 @@ main() {
             install_python_sdk
             ;;
         mano)
-            init_intall
-            update_all_github_repo  $cmd
-            ;;
-        quickstart)
             init_intall
             update_all_github_repo  $cmd
             ;;
