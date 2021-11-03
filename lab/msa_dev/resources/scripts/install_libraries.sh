@@ -16,6 +16,7 @@ TAG_WF_ETSI_MANO=v2.6.0
 TAG_ADAPTER=v2.6.0
 TAG_WORKFLOWS=v2.6.0
 TAG_MICROSERVICES=v2.6.0
+TAG_WF_MINILAB=v2.6.0
 
 install_license() {
 
@@ -61,7 +62,6 @@ update_git_repo () {
     cd $REPO_BASE_DIR
     echo ">> "
     echo ">> $REPO_URL"
-    set -x
     if [ "$RESET_REPO" == true ];
     then
         echo "> deleting repository"
@@ -229,6 +229,8 @@ update_all_github_repo() {
         update_git_repo "https://github.com/openmsa/workflow_topology.git" "/opt/fmc_repository" "OpenMSA_Workflow_Topology" $GITHUB_DEFAULT_BRANCH "" $TAG_WF_TOPOLOGY false
         update_git_repo "https://github.com/openmsa/Workflows.git" "/opt/fmc_repository" "OpenMSA_WF" $GITHUB_DEFAULT_BRANCH "" $TAG_WORKFLOWS false
         update_git_repo "https://github.com/openmsa/php-sdk.git" "/opt/fmc_repository" "php_sdk" $GITHUB_DEFAULT_BRANCH "" $TAG_PHP_SDK false
+        update_git_repo "https://github.com/ubiqube/workflow_quickstart_minilab.git" "/opt/fmc_repository" "workflow_quickstart_minilab" $GITHUB_DEFAULT_BRANCH "" $TAG_WF_MINILAB true
+
     fi
 
     if [[ $install_type = "all" || $install_type = "mano" ]];
@@ -241,10 +243,10 @@ update_all_github_repo() {
         update_git_repo "https://github.com/openmsa/python-sdk.git" "/tmp/" "python_sdk" "develop" "" $TAG_PYTHON_SDK false
     fi
 
-    if [[ $install_type = "all" || $install_type = "quickstart" ]];
-    then
-        update_git_repo "https://github.com/ubiqube/quickstart.git" "/opt/fmc_repository" "quickstart" $QUICKSTART_DEFAULT_BRANCH "" "" true
-    fi
+#    if [[ $install_type = "all" || $install_type = "quickstart" ]];
+#    then
+#        update_git_repo "https://github.com/ubiqube/quickstart.git" "/opt/fmc_repository" "quickstart" $QUICKSTART_DEFAULT_BRANCH "" "" true
+#    fi
 }
 
 install_python_sdk() {
@@ -367,8 +369,8 @@ install_workflows() {
     echo " Install mini lab setup WF from quickstart github repository"
     echo "-------------------------------------------------------------------------------"
     echo "  >> SelfDemoSetup"
-    ln -fsn ../quickstart/lab/msa_dev/resources/libraries/workflows/SelfDemoSetup SelfDemoSetup;
-    ln -fsn ../quickstart/lab/msa_dev/resources/libraries/workflows/.meta_SelfDemoSetup .meta_SelfDemoSetup;
+    ln -fsn ../workflow_quickstart_minilab/SelfDemoSetup SelfDemoSetup;
+    ln -fsn ../workflow_quickstart_minilab/.meta_SelfDemoSetup .meta_SelfDemoSetup;
 
     echo "DONE"
 
@@ -408,7 +410,6 @@ usage() {
 	echo "da:           install/update the adapters from https://github.com/openmsa/Adapters"
     echo "mano:         install/update the python-sdk from https://github.com/openmsa/etsi-mano"
     echo "py:           install/update the python-sdk from https://github.com/openmsa/python-sdk"
-    echo "quickstart:   install/update the local quickstart from https://github.com/ubiqube/quickstart"
     echo
     echo "Options:"
     echo "--lic:          force license installation"
@@ -485,10 +486,6 @@ main() {
             install_python_sdk
             ;;
         mano)
-            init_intall
-            update_all_github_repo  $cmd
-            ;;
-        quickstart)
             init_intall
             update_all_github_repo  $cmd
             ;;
