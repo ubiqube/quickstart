@@ -9,12 +9,14 @@ QUICKSTART_DEFAULT_BRANCH=master
 INSTALL_LICENSE=false
 ASSUME_YES=false
 
-TAG_WF_KIBANA_DASHBOARD=MSA-2.6.0
-TAG_WF_TOPOLOGY=MSA-2.6.0
-TAG_PYTHON_SDK=MSA-2.6.0
-TAG_PHP_SDK=MSA-2.6.0
-TAG_WF_ETSI_MANO=MSA-2.6.0
-TAG_ADAPTER=MSA-2.6.0
+TAG_WF_KIBANA_DASHBOARD=v2.6.0
+TAG_WF_TOPOLOGY=v2.6.0
+TAG_PYTHON_SDK=v2.6.0
+TAG_PHP_SDK=v2.6.0
+TAG_WF_ETSI_MANO=v2.6.0
+TAG_ADAPTER=v2.6.0
+TAG_WORKFLOWS=v2.6.0
+TAG_MICROSERVICES=v2.6.0
 
 install_license() {
 
@@ -103,14 +105,26 @@ update_git_repo () {
         if [[ $ASSUME_YES == false && "$TAG" != "" ]];
         then
             echo "> installing version $TAG for $REPO_DIR"
-            echo "> existing release branches"
-            git branch --list MSA-*
-            echo "> existing release tags:"
-            git tag -l MSA-*
-            echo "> checkout and pull master"
+            echo "> available release branches"
+            git branch --list v*
+            echo "> available release tags:"
+            git fetch --tags
+            git tag -l v*
+            if [ ! `git tag --list $TAG` ]
+            then
+                echo "> WARNING: tag $TAG not found, current branch is $CURRENT_BR"
+                echo  "> (c) Cancel installation" 
+                echo  "> (I) Ignore and keep existing version - default"
+                read -p  "[I]/[c]" resp
+                if [[ $resp != "" && $resp == "c" ]];
+                then
+                    echo "> cancelling installation, exiting... "
+                    exit 0
+                fi
+            fi
+            git stash
             git checkout master
-            git pull
-
+            gut pull
             if [ `git branch --list $TAG` ]
             then
                 echo "> local branch $branch_name already exists."
@@ -118,7 +132,7 @@ update_git_repo () {
                 git branch -D $TAG
             fi
             echo "> Create a new branch: $TAG based on the tag $TAG"
-            git checkout tags/$TAG -b $TAG
+            git checkout tags/$TAG -b $TAG         
         elif [[ $ASSUME_YES == false && "$DEFAULT_BRANCH" != "" ]];
         then
             git stash
@@ -199,14 +213,14 @@ update_all_github_repo() {
 
     if [[ $install_type = "all" || $install_type = "ms" ]];
     then
-        update_git_repo "https://github.com/openmsa/Microservices.git" "/opt/fmc_repository" "OpenMSA_MS" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
+        update_git_repo "https://github.com/openmsa/Microservices.git" "/opt/fmc_repository" "OpenMSA_MS" $GITHUB_DEFAULT_BRANCH "" $TAG_MICROSERVICES
     fi
 
     if [[ $install_type = "all" || $install_type = "wf" ]];
     then
         update_git_repo "https://github.com/openmsa/workflow_kibana.git" "/opt/fmc_repository" "OpenMSA_Workflow_Kibana" $GITHUB_DEFAULT_BRANCH "" $TAG_WF_KIBANA_DASHBOARD
         update_git_repo "https://github.com/openmsa/workflow_topology.git" "/opt/fmc_repository" "OpenMSA_Workflow_Topology" $GITHUB_DEFAULT_BRANCH "" $TAG_WF_TOPOLOGY
-        update_git_repo "https://github.com/openmsa/Workflows.git" "/opt/fmc_repository" "OpenMSA_WF" $GITHUB_DEFAULT_BRANCH "default_dev_branch"
+        update_git_repo "https://github.com/openmsa/Workflows.git" "/opt/fmc_repository" "OpenMSA_WF" $GITHUB_DEFAULT_BRANCH "" $TAG_WORKFLOWS
         update_git_repo "https://github.com/openmsa/php-sdk.git" "/opt/fmc_repository" "php_sdk" $GITHUB_DEFAULT_BRANCH "" $TAG_PHP_SDK
     fi
 
