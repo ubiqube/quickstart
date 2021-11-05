@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: openmsa/openmsa:msa2-front-2.6.0GA-53fccabe18a0015253d7d7051e1e54ccab99560a
+    image: openmsa/openmsa:msa2-front-2.6.0GA-9b183b03ab1a26f09e981780f57605a609e56f40
     depends_on:
       - msa_api
       - msa_ui
@@ -74,7 +74,7 @@ services:
         condition: on-failure
  
   msa_api:
-    image: openmsa/openmsa:msa2-api-2.6.0GA-1c3719943677f169537fd0a120d7aa9ff6fa4d6b
+    image: openmsa/openmsa:msa2-api-2.6.0GA-f37513449465f87283dccc55ab7d04930bf90acf
     depends_on:
       - db
     healthcheck:
@@ -100,7 +100,7 @@ services:
         aliases:
           - "msa-api"
   msa_ui:
-    image: openmsa/openmsa:msa2-ui-2.6.0GA-493a8f2cd64667cca1b26989d140bbf9c0fd295a
+    image: openmsa/openmsa:msa2-ui-2.6.0GA-8209f759e2d1fe2db58e2b66fc6a1116170efe65
     depends_on:
       - msa_api
     healthcheck:
@@ -125,7 +125,7 @@ services:
     - FEATURE_WORKFLOW_OWNER=false
 
   msa_sms:
-    image: openmsa/openmsa:msa2-sms-2.6.0GA-5a4e5155ef123e0475e7ee9ba7f39b1255360997
+    image: openmsa/openmsa:msa2-sms-2.6.0GA-c3d97a22547be18edbce5568e2093131061bbdfd
     depends_on:
       - db
     healthcheck:
@@ -225,7 +225,7 @@ services:
       - "/mnt/NASVolume/msa_es_certs:/usr/share/elasticsearch/config/certificates"
 
   msa_es:
-    image: openmsa/openmsa:msa2-es-2.6.0GA-fe57dfc7ecc70dff2feac67fc3b343bc5fbdba11
+    image: openmsa/openmsa:msa2-es-2.6.0GA-7d2ae7e7b7a055119c229d4a10c8ac5c5ff9a23e
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
@@ -320,7 +320,7 @@ services:
         max_replicas_per_node: 1
 
   msa_dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.6.0GA-8f580df6480d41bf92f7a88085f4293ee03f14f4
+    image: openmsa/openmsa:msa2-linuxdev-2.6.0GA-45143c559356b78057e77e101488de07dacb7dcd
     depends_on:
       - msa_es
     deploy:
