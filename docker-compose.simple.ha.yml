@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: ubiqube/msa2-front:9b183b03ab1a26f09e981780f57605a609e56f40
+    image: openmsa/openmsa:msa2-front-2.6.0GA-9b183b03ab1a26f09e981780f57605a609e56f40
     depends_on:
       - msa_api
       - msa_ui
@@ -53,7 +53,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:c00fdfaa09c44105f71a0e2d21467a9458f63921
+    image: openmsa/openmsa:msa2-db-2.6.0GA-c00fdfaa09c44105f71a0e2d21467a9458f63921
     command: postgres -c 'max_connections=800' -c "max_prepared_transactions=100"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -74,7 +74,7 @@ services:
         condition: on-failure
  
   msa_api:
-    image: ubiqube/msa2-api:f37513449465f87283dccc55ab7d04930bf90acf
+    image: openmsa/openmsa:msa2-api-2.6.0GA-f37513449465f87283dccc55ab7d04930bf90acf
     depends_on:
       - db
     healthcheck:
@@ -100,7 +100,7 @@ services:
         aliases:
           - "msa-api"
   msa_ui:
-    image: ubiqube/msa2-ui:8209f759e2d1fe2db58e2b66fc6a1116170efe65
+    image: openmsa/openmsa:msa2-ui-2.6.0GA-8209f759e2d1fe2db58e2b66fc6a1116170efe65
     depends_on:
       - msa_api
     healthcheck:
@@ -125,7 +125,7 @@ services:
     - FEATURE_WORKFLOW_OWNER=false
 
   msa_sms:
-    image: ubiqube/msa2-sms:c3d97a22547be18edbce5568e2093131061bbdfd
+    image: openmsa/openmsa:msa2-sms-2.6.0GA-c3d97a22547be18edbce5568e2093131061bbdfd
     depends_on:
       - db
     healthcheck:
@@ -145,7 +145,7 @@ services:
         max_replicas_per_node: 1
 
   msa_bud:
-    image: ubiqube/msa2-bud:7fa39b2f94a5f6dcb2190e3f680dcb8fc76992af
+    image: openmsa/openmsa:msa2-bud-2.6.0GA-7fa39b2f94a5f6dcb2190e3f680dcb8fc76992af
     depends_on:
       - db
     deploy:
@@ -157,7 +157,7 @@ services:
     depends_on:
       - db
       - msa_api
-    image: ubiqube/msa2-alarm:d4255679b87051afc998cf791139b19b77b4f124
+    image: openmsa/openmsa:msa2-alarm-2.6.0GA-d4255679b87051afc998cf791139b19b77b4f124
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -170,7 +170,7 @@ services:
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
 
   msa_monitoring:
-    image: ubiqube/msa2-monitoring:4e6ef663e040933be108bc71627799134bda7d0b
+    image: openmsa/openmsa:msa2-monitoring-2.6.0GA-4e6ef663e040933be108bc71627799134bda7d0b
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -194,7 +194,7 @@ services:
   camunda:
     depends_on:
       - db
-    image: ubiqube/msa2-camunda:b839a640c1396f27a538c6e633d47ad93796a9e4
+    image: openmsa/openmsa:msa2-camunda-2.6.0GA-b839a640c1396f27a538c6e633d47ad93796a9e4
     deploy:
       replicas: 1
       placement:
@@ -209,7 +209,7 @@ services:
       WAIT_FOR_TIMEOUT: 60
 
   msa_es:
-    image: ubiqube/msa2-es:132fdb1b91f350d3ee4f809847229cca95d2c326
+    image: openmsa/openmsa:msa2-es-2.6.0GA-7d2ae7e7b7a055119c229d4a10c8ac5c5ff9a23e
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
@@ -230,7 +230,7 @@ services:
       - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
 
   msa_kibana:
-    image: ubiqube/msa2-kibana:889ad77f59c794d151f489a5bcbf3c13023d1ca4
+    image: openmsa/openmsa:msa2-kibana-2.6.0GA-889ad77f59c794d151f489a5bcbf3c13023d1ca4
     depends_on:
       - msa_es
     ports:
@@ -249,7 +249,7 @@ services:
         max_replicas_per_node: 1
           
   msa_ai_ml:
-    image: ubiqube/msa2-ai-ml:63c7fab8c111b6cc85da049f45ebc6175a9b269a
+    image: openmsa/openmsa:msa2-ai-ml-2.6.0GA-63c7fab8c111b6cc85da049f45ebc6175a9b269a
     healthcheck:
       test: ["CMD-SHELL", "python /msa_proj/health_check.py"]
     ports:
@@ -266,7 +266,7 @@ services:
           - "msa-ai-ml"
 
   msa_cerebro:
-    image: ubiqube/msa2-cerebro:914750e000db1343d9972bfa6652da1efe4aa32f
+    image: openmsa/openmsa:msa2-cerebro-2.6.0GA-914750e000db1343d9972bfa6652da1efe4aa32f
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -284,7 +284,7 @@ services:
         max_replicas_per_node: 1
 
   msa_dev:
-    image: ubiqube/msa2-linuxdev:45143c559356b78057e77e101488de07dacb7dcd
+    image: openmsa/openmsa:msa2-linuxdev-2.6.0GA-45143c559356b78057e77e101488de07dacb7dcd
     depends_on:
       - msa_es
     deploy:
