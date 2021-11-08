@@ -3,7 +3,7 @@ set -e
 
 PROG=$(basename $0)
 
-target_version="2.6.0"
+target_version="2.7.0"
 force_option=false
 clean_option=false
 remove_orphans=false
@@ -65,7 +65,7 @@ standaloneInstall(){
     docker-compose exec -T -u root -w /home/install/scripts msa_kibana bash -c 'php install_default_template_dash_and_visu.php'
     echo "Done"
 
-    upgrade_done()
+    upgrade_done
 }
 
 haInstall(){
@@ -114,7 +114,7 @@ haInstall(){
     waitUpKibana $ha_kib_node_ip
     ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_kib_node_ip "docker exec -it -u root -w /home/install/scripts $ha_kib_container_ref /bin/bash -c 'php install_default_template_dash_and_visu.php'"
 
-    upgrade_done()
+    upgrade_done
 }
 
 upgrade_done(){
@@ -188,7 +188,7 @@ main() {
             if [ $ha_setup = true ]; then
             ha_front_ip=$(getHaNodeIp msa_front)
             current_version=$(curl -s -k -XGET "https://$ha_front_ip/msa_version/" | awk -F\" '{print $4}')
-            echo "You current MSA version is $current_version"
+            echo "Your current MSA version is $current_version"
             echo "#####################################################"
         else
             current_version=$(curl -s -k -XGET 'https://127.0.0.1/msa_version/' | awk -F\" '{print $4}')
@@ -203,16 +203,17 @@ main() {
 
 
     if [ $force_option = false ] ; then
-        if [[ $current_version =~ $target_version ]] || [ ! -f "${file_upgrade}" ]; then
+        if [[ $current_version =~ $target_version ]] && [ ! -f "${file_upgrade}" ]; then
+            echo $current_version
+            echo $target_version
                 echo "Already up to date: nothing to do"
                 exit
-            fi
         fi
 
         while true; do
         action="upgrade to"
         if [ $fresh_setup = true ]; then
-        action="install a new"
+            action="install a new"
         fi
 
             read -p "Are you sure you want to $action $target_version? [y]/[N]" yn
