@@ -210,15 +210,17 @@ main() {
 
     if [ $force_option = false ] ; then
         if [[ $current_version =~ $target_version ]] && [ ! -f "${file_upgrade}" ]; then
+            echo $current_version
+            echo $target_version
                 echo "Already up to date: nothing to do"
                 exit
         fi
 
         while true; do
-            action="upgrade to"
-            if [ $fresh_setup = true ]; then
-                action="install a new"
-            fi
+        action="upgrade to"
+        if [ $fresh_setup = true ]; then
+            action="install a new"
+        fi
 
             if [[ $current_version =~ $target_version ]]; then
                 echo "Looks like the installation has not finished properly"
