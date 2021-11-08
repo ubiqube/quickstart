@@ -12,7 +12,7 @@ function executeCurl(){
         echo "Method $method"
         echo "apiPath $apiPath"
         echo "body $body"
-        res=`curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$token -X $method "http://msa_api:8480/ubi-api-rest$apiPath" -d "$body"`
+        res=`curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$token -X $method "http://msa-api:8480/ubi-api-rest$apiPath" -d "$body"`
         echo $res
 }
 /usr/bin/wait_for_api.sh
@@ -20,7 +20,7 @@ if [ $? -ne 0 ]; then
     echo "\nERROR: API unavailable"
     exit 1
 fi
-RESPONSE=`curl -s -H 'Content-Type: application/json' -XPOST http://msa_api:8480/ubi-api-rest/auth/token -d '{"username":"ncroot", "password":"ubiqube" }'`
+RESPONSE=`curl -s -H 'Content-Type: application/json' -XPOST http://msa-api:8480/ubi-api-rest/auth/token -d '{"username":"ncroot", "password":"ubiqube" }'`
 if [ -z "$RESPONSE" ]
 then
       echo "Authentication API error"
@@ -42,7 +42,7 @@ if [[ $subTenantExist == *"actorId"* ]]; then
 else
         subtenant=$(executeCurl $TOKEN 'POST' "/customer/$OPERATOR?name=Tyrell%20Corporation&reference=TyrellCorp" '{"name":"Tyrell Corporation"}')
 fi
-CUSTLIST=`curl -s -H "Content-Type:application/json" -H "Authorization: Bearer "$TOKEN -XGET http://msa_api:8480/ubi-api-rest/lookup/customers`
+CUSTLIST=`curl -s -H "Content-Type:application/json" -H "Authorization: Bearer "$TOKEN -XGET http://msa-api:8480/ubi-api-rest/lookup/customers`
 IFS='"' # set delimiter
 read -ra ADDR <<< "$CUSTLIST" # str is read into an array as tokens separated by IFS
 for i in "${ADDR[@]}"; do # access each element of array
@@ -68,6 +68,7 @@ echo "CREATE DEMO DEVICES"
 echo "--------------------------------------------------"
 CUSTIDONLY=${CUSTID//BLRA}
 PID1RAW=$(executeCurl $TOKEN 'POST' "/orchestration/service/execute/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FProcess_Setup" '{"manufacturer_id": "14020601",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",  "managed_device_name": "linux_me",  "model_id": "14020601",  "device_ip_address": "172.20.0.101",  "login": "msa", "hostname": "linux_me"}')
+sleep 1
 PID2RAW=$(executeCurl $TOKEN 'POST' "/orchestration/service/execute/$CUSTID/?serviceName=Process/SelfDemoSetup/SelfDemoSetup&processName=Process%2FSelfDemoSetup%2FProcess_Setup" '{"manufacturer_id": "14020601",  "password": "ubiqube",  "snmpCommunity": "ubiqube",  "password_admin": "aaaa",  "managementInterface": "eth0",  "managed_device_name": "linux_me_2",  "model_id": "14020601",  "device_ip_address": "172.20.0.102",  "login": "msa", "hostname": "linux_me_2" }')
 reg='processInstanceId\s?:([0-9]+),'
 [[ $PID1RAW =~ $reg ]]
@@ -109,7 +110,7 @@ dashboardExist=$(executeCurl $TOKEN 'GET' "/orchestration/$CUSTID/service/instan
 if [[ $dashboardExist == *"kibana_dashboard"* ]]; then
         echo "Dashboard already exists"
 else
-        DASH_RAW=$(executeCurl $TOKEN 'POST' "/orchestration/service/execute/$CUSTID?serviceName=Process%2FAnalytics%2FKibana%2Fkibana_dashboard&processName=Process%2FAnalytics%2FKibana%2FProcess_Create_Report_Dashboard" '{"customer_id":null,"ipAddress":null,"port":"5601","basePath":"/kibana","index":".kibana","type":"dashboard","template name":"template_default","dashboardName":"MiniLabDashboard","searchingURI":null,"uriPutES":null,"Hash":null,"kibanaUrl":null,"kibanaPort":null,"kibanaIpAddress":null,"filterType":"Advanced","advancedFilter":"","advancedFilterEmpty":null,"basicFilterEmpty":null,"basicFilter":null,"levelView":"service","device_id":null,"device_ip":null}')
+        DASH_RAW=$(executeCurl $TOKEN 'POST' "/orchestration/service/execute/$CUSTID?serviceName=Process%2FAnalytics%2FKibana%2Fkibana_dashboard&processName=Process%2FAnalytics%2FKibana%2FProcess_Create_Report_Dashboard" '{"customer_id":null,"ipAddress":null,"port":"5601","basePath":"/kibana","index":".kibana","type":"dashboard","template_id":"template_default","dashboardName":"MiniLabDashboard","searchingURI":null,"uriPutES":null,"Hash":null,"kibanaUrl":null,"kibanaPort":null,"kibanaIpAddress":null,"filterType":"Advanced","advancedFilter":"","advancedFilterEmpty":null,"basicFilterEmpty":null,"basicFilter":null,"levelView":"service","device_id":null,"device_ip":null}')
         reg='.*SID([0-9]+)'
         [[ $DASH_RAW =~ $reg ]]
         DASH_SERVICEID=${BASH_REMATCH[1]}
@@ -124,5 +125,63 @@ else
         body=${body/<HASH>/$HASH}
         #echo "BODY $body"
         #executeCurl $TOKEN 'PUT' "/repository/file?uri=Datafiles/.NCLG1_UI_SETTINGS.json" \'"$body"\'
-        settings=$(executeCurl $TOKEN 'PUT' "/repository/file?uri=Datafiles/.NCLG1_UI_SETTINGS.json" '{"content":{"language":"en","drawerWidth":{"automationDetail":600},"tableRows":{"dashboard":12,"managedEntities":10,"automation":10,"configurations":10,"admin":10,"logs":10,"alarms":10,"monitoringProfiles":10,"permissionProfiles":10,"bpmOverview":10,"bpmDetails":10,"profileAuditLogs":10,"aiStates":10},"autoRefresh":60000,"dashboard":[{"style":"Dashboard Panel","type":"MSA Component","component":"Managed Entity Status","title":"Infrastructure","lg":6,"height":120},{"style":"Dashboard Panel","type":"MSA Component","component":"Automation","title":"Automation","lg":6,"height":120},{"style":"Dashboard Panel","type":"MSA Component","component":"Kibana Dashboard","title":"Dashboard","lg":12,"height":120,"extendedListValues":{"kibanaUrl":"'"$HASH"'"}}]}}')
+        settings=$(executeCurl $TOKEN 'PUT' "/repository/file?uri=Datafiles/.NCLG1_UI_SETTINGS.json" '
+        {
+        	"content": {
+        		"language": "en",
+        		"drawerWidth": {
+        			"automationDetail": 600
+        		},
+        		"tableRows": {
+        			"dashboard": 12,
+        			"managedEntities": 10,
+        			"automation": 10,
+        			"configurations": 10,
+        			"admin": 10,
+        			"logs": 10,
+        			"alarms": 10,
+        			"monitoringProfiles": 10,
+        			"permissionProfiles": 10,
+        			"bpmOverview": 10,
+        			"bpmDetails": 10,
+        			"profileAuditLogs": 10,
+        			"aiStates": 10
+        		},
+                        "tableSortKey": { "automation": "lastupdated" },
+                        "tableSortOrder": { "automation": 0 },
+                        "autoRefresh": { // This is the right one
+                                "managedEntityStatus": 60,
+                                "ping": 5,
+                                "notification": 60,
+                                "pollingInterval": 2,
+                                "topology": 30
+                        },
+        		"dashboard": [{
+        			"style": "Dashboard Panel",
+        			"type": "MSA Component",
+        			"component": "Managed Entity Status",
+        			"title": "Infrastructure",
+        			"lg": 6,
+        			"height": 120
+        		}, {
+        			"style": "Dashboard Panel",
+        			"type": "MSA Component",
+        			"component": "Automation",
+        			"title": "Automation",
+        			"lg": 6,
+        			"height": 120
+        		}, {
+        			"style": "Dashboard Panel",
+        			"type": "MSA Component",
+        			"component": "Kibana Dashboard",
+        			"title": "Dashboard",
+        			"lg": 12,
+        			"height": 120,
+        			"extendedListValues": {
+        				"kibanaUrl": "'"$HASH"'"
+        			}
+        		}]
+        	}
+        }        
+        ')
 fi

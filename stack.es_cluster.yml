@@ -208,6 +208,22 @@ services:
       WAIT_FOR: 'db:5432'
       WAIT_FOR_TIMEOUT: 60
 
+  msa_es_create_certs:
+    image: ubiqube/ubi-centos8:latest
+    deploy:
+      restart_policy:
+        condition: none
+    command: >
+      bash -c '
+        mkdir -p /usr/share/elasticsearch/config/certificates
+        openssl req -x509 -nodes -days 365 -subj "/C=CA/ST=QC/O=UBiqube/CN=msa2.ubiqube.com" -newkey rsa:2048 -keyout /usr/share/elasticsearch/config/certificates/server.pem -out    /usr/share/elasticsearch/config/certificates/server.crt
+        chown -R 1000:0 /usr/share/elasticsearch/config/certificates
+      '
+    user: "0"
+    working_dir: /usr/share/elasticsearch
+    volumes: 
+      - "/mnt/NASVolume/msa_es_certs:/usr/share/elasticsearch/config/certificates"
+
   msa_es:
     image: openmsa/openmsa:msa2-es-2.6.0GA-7d2ae7e7b7a055119c229d4a10c8ac5c5ff9a23e
     healthcheck:
@@ -220,14 +236,34 @@ services:
       replicas: 1
       placement:
         max_replicas_per_node: 1
+    depends_on: 
+      - msa_es_create_certs
     environment:
-      - discovery.type=single-node
-      - script.painless.regex.enabled=true
-      - bootstrap.memory_lock=true
-      - ES_JAVA_OPTS=-Xms512m -Xmx1024m
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      - node.name=msa_es
+      - discovery.seed_hosts=msa_es
+      - cluster.initial_master_nodes=msa_es
+      - cluster.name=es_cluster
+      - "script.painless.regex.enabled=true"
+#      - "bootstrap.memory_lock=true"
+      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+      - xpack.security.enabled=true
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate
+      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
+      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
+      - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
+      - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
+#      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
+    ports:
+      - "9200:9200"
+    networks:
+      default:
+        aliases:
+          - "msa_es"
     volumes:
-      - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
+      - "/mnt/NASVolume/msa_es_node_1:/usr/share/elasticsearch/data"
+      - "/mnt/NASVolume/msa_es_certs:/usr/share/elasticsearch/config/certificates"
+
 
   msa_kibana:
     image: openmsa/openmsa:msa2-kibana-2.6.0GA-889ad77f59c794d151f489a5bcbf3c13023d1ca4
@@ -299,5 +335,15 @@ services:
 
 networks:
   default:
+    driver: overlay
     driver_opts:
       encrypted: "true"
+
+
+
+
+
+
+
+
+
