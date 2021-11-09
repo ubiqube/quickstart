@@ -112,7 +112,23 @@ haInstall(){
     waitUpKibana $ha_kib_node_ip
         ssh -tt $ssh_user@$ha_kib_node_ip "docker exec -it -u root -w /home/install/scripts $ha_kib_container_ref /bin/bash -c 'php install_default_template_dash_and_visu.php'"
 
+    fix_swarm_route
+
     upgrade_done
+}
+
+fix_swarm_route() {
+
+    swarm_fix='./scripts/swarm-fix-route.sh'
+
+    echo 'Copying swarm-fix-route file to nodes...'
+    for node in $(docker node ls -q); do
+        node_ip=$(docker node inspect ${node} --format '{{ .Status.Addr }}')
+
+        scp ${swarm_fix} ${ssh_user}@${node_ip}:/tmp/
+        ssh -tt "-o BatchMode=Yes" ${ssh_user}@${node_ip} "bash /tmp/swarm-fix-route.sh -p"
+    done
+
 }
 
 upgrade_done(){
