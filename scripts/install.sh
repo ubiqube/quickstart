@@ -60,6 +60,7 @@ standaloneInstall(){
         echo "Done"
     fi
 
+
     echo "Kibana configs & dashboard templates update"
     waitUpKibana 127.0.0.1
     docker-compose exec -T -u root -w /home/install/scripts msa_kibana bash -c 'php install_default_template_dash_and_visu.php'

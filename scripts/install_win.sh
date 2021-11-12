@@ -66,6 +66,7 @@ standaloneInstall(){
     echo "Done"
 
     upgrade_done
+
 }
 
 haInstall(){
