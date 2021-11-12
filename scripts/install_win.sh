@@ -3,7 +3,7 @@ set -e
 
 PROG=$(basename $0)
 
-target_version="2.7.0"
+target_version="2.6.1"
 force_option=false
 clean_option=false
 remove_orphans=false
@@ -66,6 +66,7 @@ standaloneInstall(){
     echo "Done"
 
     upgrade_done
+
 }
 
 haInstall(){
