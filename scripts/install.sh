@@ -120,7 +120,7 @@ haInstall(){
     upgrade_done
 }
 
-source swarm-fix-all-nodes.sh
+source ./scripts/swarm-fix-all-nodes.sh
 
 upgrade_done(){
     echo "Upgrade done!"
