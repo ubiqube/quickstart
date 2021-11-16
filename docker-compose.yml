@@ -190,7 +190,7 @@ services:
   msa_es:
     restart: unless-stopped
     container_name: msa_es
-    image: ubiqube/msa2-es:fe57dfc7ecc70dff2feac67fc3b343bc5fbdba11
+    image: ubiqube/msa2-es:8b36f4affc96cf1854c8b99d4f84e8ce3b3688b9
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
