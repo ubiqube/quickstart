@@ -263,7 +263,7 @@ services:
     restart: unless-stopped
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: ubiqube/msa2-linuxdev:45143c559356b78057e77e101488de07dacb7dcd
+    image: ubiqube/msa2-linuxdev:94d50a5742e9035280b8a751d29a08e5d6801a8d
     depends_on:
       - msa_es
     volumes:
