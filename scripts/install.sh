@@ -221,7 +221,7 @@ main() {
             action="install a new"
         fi
 
-        if [[ $current_version =~ $target_version ]]
+        if [[ $current_version =~ $target_version ]]; then
             echo "Looks like the installation has not finished properly"
             echo "Do you want to relaunch installtion? [y]/[N]"
             read yn
