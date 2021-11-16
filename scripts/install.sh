@@ -221,7 +221,13 @@ main() {
             action="install a new"
         fi
 
+        if [[ $current_version =~ $target_version ]]
+            echo "Looks like the installation has not finished properly"
+            echo "Do you want to relaunch installtion? [y]/[N]"
+            read yn
+        else
             read -p "Are you sure you want to $action $target_version? [y]/[N]" yn
+        fi
             case $yn in
                 [Yy]* ) install; break;;
                 [Nn]* ) exit;;
