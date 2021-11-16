@@ -3,7 +3,7 @@ set -e
 
 PROG=$(basename $0)
 
-target_version="2.7.0"
+target_version="2.6.1"
 force_option=false
 clean_option=false
 remove_orphans=false
@@ -120,7 +120,7 @@ haInstall(){
     upgrade_done
 }
 
-source swarm-fix-all-nodes.sh
+source ./scripts/swarm-fix-all-nodes.sh
 
 upgrade_done(){
     echo "Upgrade done!"
@@ -221,7 +221,13 @@ main() {
             action="install a new"
         fi
 
+        if [[ $current_version =~ $target_version ]]; then
+            echo "Looks like the installation has not finished properly"
+            echo "Do you want to relaunch installtion? [y]/[N]"
+            read yn
+        else
             read -p "Are you sure you want to $action $target_version? [y]/[N]" yn
+        fi
             case $yn in
                 [Yy]* ) install; break;;
                 [Nn]* ) exit;;
