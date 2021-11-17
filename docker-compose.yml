@@ -230,7 +230,7 @@ services:
   msa_kibana:
     restart: unless-stopped
     container_name: msa_kibana
-    image: ubiqube/msa2-kibana:889ad77f59c794d151f489a5bcbf3c13023d1ca4
+    image: ubiqube/msa2-kibana:49c1c422ad5559815d4f74568904a7214e788932
     depends_on:
       - msa_es
     ports:
