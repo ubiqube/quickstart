@@ -153,7 +153,7 @@ usage() {
     echo "-f: force the upgrade without asking for user confirmation. Permit also to reapply the upgrade and to auto merge files from OpenMSA"
     echo "-c: cleanup unused images after upgrade to save disk space. This option clean all unused images, not only MSA quickstart ones"
     echo "-ro: remove containers for services not defined in the compose file. Use it if some containers use same network as MSA"
-        exit 0
+    exit 0
 }
 
 main() {
@@ -223,10 +223,10 @@ main() {
 
         if [[ $current_version =~ $target_version ]]; then
             echo "Looks like the installation has not finished properly"
-            echo "Do you want to relaunch installtion? [y]/[N]"
+            echo -n "Do you want to relaunch installtion? [y]/[N] "
             read yn
         else
-            echo "Are you sure you want to $action $target_version? [y]/[N]"
+            echo -n "Are you sure you want to $action $target_version? [y]/[N] "
             read yn
         fi
             case $yn in
@@ -246,7 +246,8 @@ main() {
     if [ "$clean_option" = true ] ; then
         if [ $force_option = false ] ; then
             while true; do
-                read -p "Are you sure to want to clean unused images? [y]/[N]" yn
+                echo -n "Are you sure to want to clean unused images? [y]/[N] "
+                read yn
                 case $yn in
                     [Yy]* ) cleanup; break;;
                     [Nn]* ) exit;;
