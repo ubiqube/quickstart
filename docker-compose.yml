@@ -298,7 +298,7 @@ services:
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
     image: ubiqube/msa2-linuxme:b831acacdef579420ee1abf70ef66655d969fcbb
-    build: ./lab/linux.me
+    #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
       - NET_RAW
