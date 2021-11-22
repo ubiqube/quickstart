@@ -8,10 +8,9 @@ RUN passwd --stdin msa <<< "ubiqube"
 RUN echo 'msa  ALL=(ALL:ALL) NOPASSWD: ALL' >> /etc/sudoers
 #RUN echo ':msg, contains, "Time has been changed" ~ ' > /etc/rsyslog.d/time_msgs.conf
 RUN echo '*.* @msa_front' > /etc/rsyslog.d/mini_lab.conf
-
+RUN mkdir -p /config/cisco_nx-os
+COPY resources/config/cisco_nx-os/* /config/cisco_nx-os/
 COPY snmpd.conf /etc/snmp/
-
 RUN systemctl enable sshd
 RUN systemctl enable snmpd
-
 CMD [ "/sbin/init" ]
