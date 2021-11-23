@@ -314,6 +314,32 @@ services:
     hostname: linux_me_2
     privileged: true
 
+  nginx:
+    restart: unless-stopped
+    container_name: nginx
+    build: ./lab/nginx
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - DAC_READ_SEARCH
+      - sys_rawio
+    ports:
+      - target: 8080
+        published: 8080
+        protocol: tcp
+        mode: host
+    networks:
+      default:
+        ipv4_address: 172.20.0.111
+    hostname: nginx
+    privileged: true
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+      - "msa_entities:/opt/fmc_entities"
+      - "msa_repository:/opt/fmc_repository"
+      - "msa_dev:/opt/devops/"
+
+
 volumes:
   msa_api:
   msa_db:
