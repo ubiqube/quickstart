@@ -65,8 +65,8 @@ services:
     restart: unless-stopped
     container_name: msa_api
     image: openmsa/openmsa:msa2-api-2.6.0GA-f37513449465f87283dccc55ab7d04930bf90acf
-      healthcheck:
-        test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     depends_on:
       - db
       - msa_es
