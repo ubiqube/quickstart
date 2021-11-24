@@ -65,10 +65,6 @@ services:
     restart: unless-stopped
     container_name: msa_api
     image: ubiqube/msa2-api:86c9445cf61f9aaea007ebafe2f3f1c95d6ca0c5
-    deploy:
-      restart_policy:
-        condition: on-failure
-        max_attempts: 3
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     depends_on:
