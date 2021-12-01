@@ -4,7 +4,7 @@ services:
   msa_front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.6.1-ed883b8fd090c14ba34e13ceecb77322c0c9b40d
+    image: openmsa/openmsa:msa2-front-2.6.1-1c122c6e4df4d7f5c90c343d88c91e5f288fbe42
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -263,7 +263,7 @@ services:
     restart: unless-stopped
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: openmsa/openmsa:msa2-linuxdev-2.6.1-3396fb996fd0a6a2015f9d5d8153923d7f299d0d
+    image: openmsa/openmsa:msa2-linuxdev-2.6.1-278d7b20337594aea9ba58ee4c3a94e55d5bdf76
     depends_on:
       - msa_es
     volumes:
