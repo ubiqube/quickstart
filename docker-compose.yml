@@ -4,7 +4,7 @@ services:
   msa_front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:648e46d994068f79463ec6b0768e23194bde7900
+    image: ubiqube/msa2-front:963f90512395efae7f2bf77fd264ab3aac7b85c4
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -45,7 +45,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.6.1-41ebd8816dd8e117a8288f2f0a4a011a031af972
+    image: ubiqube/msa2-db:41ebd8816dd8e117a8288f2f0a4a011a031af972
     command: postgres -c 'max_connections=800' -c 'max_prepared_transactions=100'
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -64,7 +64,7 @@ services:
   msa_api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:2627cb3078939146c6be3dfd2bc4692e14bd2d32
+    image: ubiqube/msa2-api:a0bf878970b0a24524b29a32c2b768d23f33645c
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     depends_on:
@@ -88,7 +88,7 @@ services:
   msa_ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.6.1-b068cea23ce2c4e0bcfddd60846d69e94d3e9ce0
+    image: ubiqube/msa2-ui:b068cea23ce2c4e0bcfddd60846d69e94d3e9ce0
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -109,7 +109,7 @@ services:
   msa_sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: openmsa/openmsa:msa2-sms-2.6.1-4592c702c330cdfb2b2ea3feca839ce88f51d67e
+    image: ubiqube/msa2-sms:1d8b34eb09525d900ee9ca078b111187dc6c8c0d
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
