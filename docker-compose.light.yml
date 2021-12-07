@@ -4,14 +4,13 @@ services:
   msa_front:
     restart: unless-stopped
     container_name: msa_front
+    image: openmsa/openmsa:msa2-front-2.6.1-70e7d347287e3a428628e403f57c665fbdd010d4
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
-    image: openmsa/openmsa:msa2-front-2.6.1-70e7d347287e3a428628e403f57c665fbdd010d4
     depends_on:
       - msa_api
       - msa_ui
       - camunda
-      - msa_ai_ml
     ports:
       - target: 80
         published: 80
@@ -34,8 +33,8 @@ services:
         protocol: udp
         mode: host
       - "5200-5200:5200-5200/udp"
-   #
-    # uncomment one of the 2 sections below when installing a custom certificate 
+
+    # uncomment one of the 2 sections below when installing a custom certificate
     # - Docker standard standalone installation
     #volumes:
     #    - "msa_front:/etc/nginx/ssl"
@@ -70,10 +69,10 @@ services:
     depends_on:
       - db
       - msa_es
-      - msa_es_2
     environment:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
     volumes:
+      - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "rrd_repository:/opt/rrd"
@@ -119,12 +118,12 @@ services:
     depends_on:
       - db
       - msa_es
-      - msa_es_2
       - msa_dev
     volumes:
       - "msa_dev:/opt/devops/"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
+      - "rrd_repository:/opt/rrd"
       - "msa_sms_logs:/opt/sms/logs"
       - "msa_svn:/opt/svnroot"
 
@@ -150,9 +149,12 @@ services:
       - msa_es
     environment:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+    volumes:
+      - "msa_sms_logs:/opt/sms/logs"
   
   msa_monitoring:
     restart: unless-stopped
+    container_name: msa_monitoring
     image: openmsa/openmsa:msa2-monitoring-2.6.0GA-4e6ef663e040933be108bc71627799134bda7d0b
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
@@ -168,6 +170,7 @@ services:
       - "msa_repository:/opt/fmc_repository"
       - "rrd_repository:/opt/rrd"
       - "msa_bulkfiles:/opt/sms/spool/parser"
+      - "msa_sms_logs:/opt/sms/logs"
 
   camunda:
     restart: unless-stopped
@@ -184,21 +187,6 @@ services:
       WAIT_FOR: 'db:5432'
       WAIT_FOR_TIMEOUT: 60
 
-  msa_es_create_certs:
-    restart: unless-stopped
-    container_name: msa_es_create_certs
-    image: ubiqube/ubi-centos8:latest
-    command: >
-      bash -c '
-        mkdir -p /usr/share/elasticsearch/config/certificates
-        openssl req -x509 -nodes -days 365 -subj "/C=CA/ST=QC/O=UBiqube/CN=msa2.ubiqube.com" -newkey rsa:2048 -keyout /usr/share/elasticsearch/config/certificates/server.pem -out    /usr/share/elasticsearch/config/certificates/server.crt
-        chown -R 1000:0 /usr/share/elasticsearch/config/certificates
-      '
-    user: "0"
-    working_dir: /usr/share/elasticsearch
-    volumes: 
-      - "certs:/usr/share/elasticsearch/config/certificates"
-
   msa_es:
     restart: unless-stopped
     container_name: msa_es
@@ -209,107 +197,19 @@ services:
       retries: 10
       interval: 10s
       start_period: 30s 
-    depends_on: 
-      - msa_es_create_certs
     environment:
-      - node.name=msa_es
-      - discovery.seed_hosts=msa_es,msa_es_2
-      - cluster.initial_master_nodes=msa_es,msa_es_2
-      - cluster.name=es_cluster
-      - "script.painless.regex.enabled=true"
-      - "bootstrap.memory_lock=true"
-      - "ES_JAVA_OPTS=-Xms512m -Xmx1024m"
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+      - discovery.type=single-node
+      - script.painless.regex.enabled=true
+      - bootstrap.memory_lock=true
+      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - xpack.security.enabled=true
-      - xpack.security.transport.ssl.enabled=true
-      - xpack.security.transport.ssl.verification_mode=certificate
-      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
-      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
-      - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
-      - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
+      - "ES_JAVA_OPTS=-Xms512m -Xmx1024m"
     volumes:
       - "msa_es:/usr/share/elasticsearch/data"
-      - "certs:/usr/share/elasticsearch/config/certificates"
-
-  msa_es_2:
-    restart: unless-stopped
-    container_name: msa_es_2
-    image: openmsa/openmsa:msa2-es-2.6.0GA-7d2ae7e7b7a055119c229d4a10c8ac5c5ff9a23e
-    healthcheck:
-      test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
-    depends_on: 
-      - msa_es_create_certs
-    environment:
-      - node.name=msa_es_2
-      - discovery.seed_hosts=msa_es,msa_es_2
-      - cluster.initial_master_nodes=msa_es,msa_es_2
-      - cluster.name=es_cluster
-      - "script.painless.regex.enabled=true"
-      - "bootstrap.memory_lock=true"
-      - "ES_JAVA_OPTS=-Xms512m -Xmx1024m"
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
-      - xpack.security.enabled=true
-      - xpack.security.transport.ssl.enabled=true
-      - xpack.security.transport.ssl.verification_mode=certificate
-      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
-      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
-      - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
-      - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
-    volumes:
-      - "msa_es_2:/usr/share/elasticsearch/data"
-      - "certs:/usr/share/elasticsearch/config/certificates"
-
-  msa_cerebro:
-    restart: unless-stopped
-    container_name: msa_cerebro
-    image: openmsa/openmsa:msa2-cerebro-2.6.0GA-914750e000db1343d9972bfa6652da1efe4aa32f
-    environment:
-      AUTH_TYPE: basic
-      BASIC_AUTH_USER: cerebro
-      BASIC_AUTH_PWD: "N@X{M4tfw'5%)+35"
-    entrypoint:
-      - /opt/cerebro/bin/cerebro
-      - -Dhosts.0.host=http://msa_es:9200
-    depends_on:
-      - msa_es
-      - msa_es_2
-    ports:
-    - "9000:9000"
-  
-  msa_kibana:
-    restart: unless-stopped
-    container_name: msa_kibana
-    image: openmsa/openmsa:msa2-kibana-2.6.1-49c1c422ad5559815d4f74568904a7214e788932
-    depends_on: 
-      msa_es:
-        condition: service_healthy
-      msa_es_2:
-        condition: service_healthy
-    ports:
-      - "5601:5601"
-    environment:
-      - ELASTICSEARCH_URL=http://msa_es:9200
-      - ELASTICSEARCH_HOSTS=http://msa_es:9200
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
-    networks:
-      default:
-        aliases:
-          - "msa-kibana"
-          
-  msa_ai_ml:
-    restart: unless-stopped
-    container_name: msa_ai_ml
-    image: openmsa/openmsa:msa2-ai-ml-2.6.0GA-63c7fab8c111b6cc85da049f45ebc6175a9b269a
-    healthcheck:
-      test: ["CMD-SHELL", "python /msa_proj/health_check.py"]
-    ports:
-      - "8000:8000"
-    volumes:
-      - "msa_ai_ml_db:/msa_proj/database"
-    networks:
-      default:
-        aliases:
-          - "msa-ai-ml"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
 
   msa_dev:
     restart: unless-stopped
@@ -321,7 +221,6 @@ services:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
-      - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_dev:/opt/devops/"
       
   linux_me:
@@ -329,7 +228,6 @@ services:
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
     image: openmsa/openmsa:msa2-linuxme-2.6.0GA-b831acacdef579420ee1abf70ef66655d969fcbb
-    #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
       - NET_RAW
@@ -373,16 +271,12 @@ volumes:
   msa_entities:
   msa_repository:
   msa_es:
-  msa_es_2:
-  msa_es_3:
-  certs:
   rrd_repository:
   msa_api_logs:
   msa_sms_logs:
   msa_bud_logs:
   msa_front:
   msa_svn:
-  msa_ai_ml_db:
   msa_bulkfiles:
 
 networks:
