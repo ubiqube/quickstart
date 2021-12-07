@@ -4,7 +4,7 @@ services:
   msa_front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.6.0GA-53fccabe18a0015253d7d7051e1e54ccab99560a
+    image: openmsa/openmsa:msa2-front-2.6.1-70e7d347287e3a428628e403f57c665fbdd010d4
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -44,7 +44,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.6.0GA-c00fdfaa09c44105f71a0e2d21467a9458f63921
+    image: openmsa/openmsa:msa2-db-2.6.1-41ebd8816dd8e117a8288f2f0a4a011a031af972
     command: postgres -c 'max_connections=800' -c 'max_prepared_transactions=100'
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -63,7 +63,7 @@ services:
   msa_api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.6.0GA-1c3719943677f169537fd0a120d7aa9ff6fa4d6b
+    image: openmsa/openmsa:msa2-api-2.6.1-a0bf878970b0a24524b29a32c2b768d23f33645c
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     depends_on:
@@ -87,7 +87,7 @@ services:
   msa_ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.6.0GA-493a8f2cd64667cca1b26989d140bbf9c0fd295a
+    image: openmsa/openmsa:msa2-ui-2.6.1-f6d4968f40885cfdcd4dd9164bcaf8df108799ea
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -108,7 +108,7 @@ services:
   msa_sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: openmsa/openmsa:msa2-sms-2.6.0GA-5a4e5155ef123e0475e7ee9ba7f39b1255360997
+    image: openmsa/openmsa:msa2-sms-2.6.1-1d8b34eb09525d900ee9ca078b111187dc6c8c0d
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -130,7 +130,7 @@ services:
   msa_bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: openmsa/openmsa:msa2-bud-2.6.0GA-7fa39b2f94a5f6dcb2190e3f680dcb8fc76992af
+    image: openmsa/openmsa:msa2-bud-2.6.1-df7c38796ad9b3ecf3f247dcc8c6e10c1f85279a
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -141,7 +141,7 @@ services:
   msa_alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: openmsa/openmsa:msa2-alarm-2.6.0GA-d4255679b87051afc998cf791139b19b77b4f124
+    image: openmsa/openmsa:msa2-alarm-2.6.1-bc4390ff9d1c802d483270a51fa72f491874297a
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -177,7 +177,7 @@ services:
     container_name: msa_camunda
     depends_on:
       - db
-    image: openmsa/openmsa:msa2-camunda-2.6.0GA-b839a640c1396f27a538c6e633d47ad93796a9e4
+    image: openmsa/openmsa:msa2-camunda-2.6.1-b839a640c1396f27a538c6e633d47ad93796a9e4
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
@@ -190,7 +190,7 @@ services:
   msa_es:
     restart: unless-stopped
     container_name: msa_es
-    image: openmsa/openmsa:msa2-es-2.6.0GA-fe57dfc7ecc70dff2feac67fc3b343bc5fbdba11
+    image: openmsa/openmsa:msa2-es-2.6.0GA-7d2ae7e7b7a055119c229d4a10c8ac5c5ff9a23e
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
@@ -214,7 +214,7 @@ services:
   msa_dev:
     restart: unless-stopped
     container_name: msa_dev
-    image: openmsa/openmsa:msa2-linuxdev-2.6.0GA-8f580df6480d41bf92f7a88085f4293ee03f14f4
+    image: openmsa/openmsa:msa2-linuxdev-2.6.1-278d7b20337594aea9ba58ee4c3a94e55d5bdf76
     depends_on:
       - msa_es
     volumes:
