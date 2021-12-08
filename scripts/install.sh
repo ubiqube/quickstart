@@ -28,6 +28,7 @@ install(){
 
 
 standaloneInstall(){
+    checkComposeVersion
     if [ $fresh_setup = false ] ; then
         if [ $remove_orphans = false ] ; then
             docker-compose down
@@ -287,5 +288,22 @@ function waitUpKibana(){
         sleep 3
     done
 }
+
+function checkComposeVersion(){
+        compose_vers=$(docker-compose -v | grep -oP '\d+.\d+.\d+')
+        if [ -z "$compose_vers" ]; then
+                echo "No docker compose version found. Exit"
+                exit
+        fi
+        # Remove point to compare an integer and keep 3 first numbers
+        compose_vers_int="${compose_vers//.}"
+        compose_vers_int="${compose_vers_int:0:3}"
+        # echo found "$compose_vers_int"
+        if [ "$compose_vers_int" -lt 128 ]; then
+                echo "Your docker compose version $compose_vers is too old and must be upgraded to 1.28 to be used in $target_version"
+                exit
+        fi
+}
+
 
 main "$@"
