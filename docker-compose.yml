@@ -126,6 +126,7 @@ services:
       - "msa_repository:/opt/fmc_repository"
       - "msa_sms_logs:/opt/sms/logs"
       - "msa_svn:/opt/svnroot"
+      - "msa_bulkfiles:/opt/sms/spool/parser"
 
   msa_bud:
     restart: unless-stopped
