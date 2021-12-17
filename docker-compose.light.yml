@@ -123,9 +123,9 @@ services:
       - "msa_dev:/opt/devops/"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
-      - "rrd_repository:/opt/rrd"
       - "msa_sms_logs:/opt/sms/logs"
       - "msa_svn:/opt/svnroot"
+      - "msa_bulkfiles:/opt/sms/spool/parser"
 
   msa_bud:
     restart: unless-stopped
