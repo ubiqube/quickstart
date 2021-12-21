@@ -1,5 +1,11 @@
 #!/bin/bash
-set -x
+#set -x
+
+if [ -z "$1" ]
+then
+    echo "\$ERROR: missing parameter: provide a number [1-9]"
+    exit 0
+fi
 
 ID=$1
 PROG=$(basename $0)
