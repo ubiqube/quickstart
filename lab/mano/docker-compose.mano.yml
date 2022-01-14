@@ -5,7 +5,6 @@ services:
     image: openmsa/mano-vnfm
     depends_on:
       - mano-db
-    profiles: ["mano"]
     volumes:
       - "mano_vnf:/opt/etsi-mano-data"
 
@@ -13,7 +12,6 @@ services:
     image: openmsa/mano-nfvo
     depends_on:
       - mano-db
-    profiles: ["mano"]
     volumes:
       - "mano_nfvo:/opt/etsi-mano-data"
 
@@ -22,13 +20,11 @@ services:
     environment:
       POSTGRES_PASSWORD: mano
       POSTGRES_USER: mano
-    profiles: ["mano"]
     volumes:
       - "mano_db:/var/lib/postgresql/data"
 
   mano-artemis:
     image: openmsa/artemis:2.19.0
-    profiles: ["mano"]
 
 volumes:
   mano_db:
