@@ -30,8 +30,3 @@ volumes:
   mano_db:
   mano_nfvo:
   mano_vnf:
-
-networks:
-  default:
-    external:
-      name: quickstart_default
