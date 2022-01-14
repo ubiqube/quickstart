@@ -40,7 +40,7 @@ standaloneInstall(){
     if [ $mano = false ] ; then
         docker-compose up -d --build
     else
-        docker-compose -f lab/mano/docker-compose.mano.yml up -d --build
+        docker-compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml up -d --build
     fi
 
     docker-compose exec -T msa_dev rm -rf /opt/fmc_repository/Process/Reference
