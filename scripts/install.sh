@@ -40,7 +40,7 @@ standaloneInstall(){
     if [ $mano = false ] ; then
         docker-compose up -d --build
     else
-        docker-compose -f docker-compose.mano.yml up -d --build
+        docker-compose -f lab/mano/docker-compose.mano.yml up -d --build
     fi
 
     docker-compose exec -T msa_dev rm -rf /opt/fmc_repository/Process/Reference
@@ -86,7 +86,7 @@ haInstall(){
     if [ $mano = false ] ; then
         docker stack deploy --with-registry-auth -c docker-compose.simple.ha.yml $ha_stack
     else
-        docker stack deploy --with-registry-auth -c docker-compose.simple.ha.yml -c docker-compose.mano.yml $ha_stack
+        docker stack deploy --with-registry-auth -c docker-compose.simple.ha.yml -c lab/mano/docker-compose.mano.yml $ha_stack
     fi
     
 
