@@ -10,4 +10,4 @@ This project is part of the link:https://ubiqube.com/wp-content/docs/latest/user
 
 The images for the MANO implementation are located under the lab/mano directory
 
-To run these containers you need to use the docker profile "mano"
+Use the --mano option of the install script to start the additional MANO containers
