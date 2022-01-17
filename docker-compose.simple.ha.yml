@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: openmsa/openmsa:msa2-front-2.6.1-70e7d347287e3a428628e403f57c665fbdd010d4
+    image: openmsa/openmsa:msa2-front-2.6.2-a32f42110df23e7c92b3642e5a0e422ffcf60e9f
     depends_on:
       - msa_api
       - msa_ui
@@ -53,7 +53,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: openmsa/openmsa:msa2-db-2.6.1-41ebd8816dd8e117a8288f2f0a4a011a031af972
+    image: openmsa/openmsa:msa2-db-2.6.2-59b9b51f924537d06d0293b1094f2c4e449e567e
     command: postgres -c 'max_connections=800' -c "max_prepared_transactions=100"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -74,7 +74,7 @@ services:
         condition: on-failure
  
   msa_api:
-    image: openmsa/openmsa:msa2-api-2.6.1-a0bf878970b0a24524b29a32c2b768d23f33645c
+    image: openmsa/openmsa:msa2-api-2.6.2-341bbef6ddc55978a7583bca4803e785e8cd2c4d
     depends_on:
       - db
     healthcheck:
@@ -101,7 +101,7 @@ services:
         aliases:
           - "msa-api"
   msa_ui:
-    image: openmsa/openmsa:msa2-ui-2.6.1-f6d4968f40885cfdcd4dd9164bcaf8df108799ea
+    image: openmsa/openmsa:msa2-ui-2.6.2-5220d368f88225ce8a849efa1471662309cd4e88
     depends_on:
       - msa_api
     healthcheck:
@@ -126,7 +126,7 @@ services:
     - FEATURE_WORKFLOW_OWNER=false
 
   msa_sms:
-    image: openmsa/openmsa:msa2-sms-2.6.1-1d8b34eb09525d900ee9ca078b111187dc6c8c0d
+    image: openmsa/openmsa:msa2-sms-2.6.2-2c7965228f1024c1a2bc6605ea7d448bdd9b8d89
     depends_on:
       - db
     healthcheck:
@@ -139,6 +139,7 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
       - "/mnt/NASVolume/msa_svn:/opt/svnroot"
+      - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
     deploy:
       replicas: 1
@@ -146,7 +147,7 @@ services:
         max_replicas_per_node: 1
 
   msa_bud:
-    image: openmsa/openmsa:msa2-bud-2.6.1-df7c38796ad9b3ecf3f247dcc8c6e10c1f85279a
+    image: openmsa/openmsa:msa2-bud-2.6.2-28847db42ea492e577ac8226c85d775633ce3f6a
     depends_on:
       - db
     healthcheck:
@@ -160,7 +161,7 @@ services:
     depends_on:
       - db
       - msa_api
-    image: openmsa/openmsa:msa2-alarm-2.6.1-bc4390ff9d1c802d483270a51fa72f491874297a
+    image: openmsa/openmsa:msa2-alarm-2.6.2-43bb73772eb00045d4c13a351427f439c631d82b
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -173,7 +174,7 @@ services:
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
 
   msa_monitoring:
-    image: openmsa/openmsa:msa2-monitoring-2.6.0GA-4e6ef663e040933be108bc71627799134bda7d0b
+    image: openmsa/openmsa:msa2-monitoring-2.6.2-8d96d5af6aa1f7bb9b9aae7b26782bdb93321fcd
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -212,7 +213,7 @@ services:
       WAIT_FOR_TIMEOUT: 60
 
   msa_es:
-    image: openmsa/openmsa:msa2-es-2.6.0GA-7d2ae7e7b7a055119c229d4a10c8ac5c5ff9a23e
+    image: openmsa/openmsa:msa2-es-2.6.2-a56ef749db4d7887beaeb2d204c6586bbcb4c7a8
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
