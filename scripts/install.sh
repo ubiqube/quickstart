@@ -29,7 +29,7 @@ install(){
 
 
 standaloneInstall(){
-    checkComposeVersion
+    #checkComposeVersion
     if [ $fresh_setup = false ] ; then
         if [ $remove_orphans = false ] ; then
             docker-compose down
