@@ -6,7 +6,7 @@
                 <PhysIf-list>
                     <id>eth1/71</id>
                     <FECMode>auto</FECMode>
-                    <accessVlan>vlan-1</accessVlan>
+                    <accessVlan>vlan-71</accessVlan>
                     <adminSt>up</adminSt>
                     <aggrmbrif-items>
                         <bdlPortNum>0</bdlPortNum>
@@ -128,7 +128,7 @@
                 <PhysIf-list>
                     <id>eth1/124</id>
                     <FECMode>auto</FECMode>
-                    <accessVlan>vlan-1</accessVlan>
+                    <accessVlan>vlan-124</accessVlan>
                     <adminSt>up</adminSt>
                     <aggrmbrif-items>
                         <bdlPortNum>0</bdlPortNum>
