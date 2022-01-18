@@ -321,5 +321,8 @@ function checkComposeVersion(){
         fi
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> f056f8bfb6d6988493e8a350c4581fb8d92df491
 main "$@"
