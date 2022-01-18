@@ -288,7 +288,7 @@ services:
         max_replicas_per_node: 1
 
   msa_dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.6.1-dad814b234fa8b68d554a966294caffe9790ffd4
+    image: openmsa/openmsa:msa2-linuxdev-2.6.2-dad814b234fa8b68d554a966294caffe9790ffd4
     depends_on:
       - msa_es
     deploy:
