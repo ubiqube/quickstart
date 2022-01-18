@@ -29,11 +29,7 @@ install(){
 
 
 standaloneInstall(){
-<<<<<<< HEAD
     #checkComposeVersion
-=======
-    # checkComposeVersion
->>>>>>> f056f8bfb6d6988493e8a350c4581fb8d92df491
     if [ $fresh_setup = false ] ; then
         if [ $remove_orphans = false ] ; then
             docker-compose down
@@ -325,8 +321,4 @@ function checkComposeVersion(){
         fi
 }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> f056f8bfb6d6988493e8a350c4581fb8d92df491
 main "$@"
