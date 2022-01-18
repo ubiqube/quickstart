@@ -3,7 +3,7 @@ set -e
 
 PROG=$(basename $0)
 
-target_version="2.6.2"
+target_version="2.7.0GA"
 force_option=false
 clean_option=false
 remove_orphans=false
@@ -29,6 +29,7 @@ install(){
 
 
 standaloneInstall(){
+    checkComposeVersion
     if [ $fresh_setup = false ] ; then
         if [ $remove_orphans = false ] ; then
             docker-compose down
@@ -223,6 +224,8 @@ main() {
 
     if [ $force_option = false ] ; then
         if [[ $current_version =~ $target_version ]] && [ ! -f "${file_upgrade}" ]; then
+            echo $current_version
+            echo $target_version
                 echo "Already up to date: nothing to do"
                 exit
         fi
@@ -233,14 +236,14 @@ main() {
             action="install a new"
         fi
 
-        if [[ $current_version =~ $target_version ]]; then
-            echo "Looks like the installation has not finished properly"
-            echo -n "Do you want to relaunch installtion? [y]/[N] "
-            read yn
-        else
-            echo -n "Are you sure you want to $action $target_version? [y]/[N] "
-            read yn
-        fi
+            if [[ $current_version =~ $target_version ]]; then
+                echo "Looks like the installation has not finished properly"
+                echo -n "Do you want to relaunch installtion? [y]/[N] "
+                read yn
+            else
+                echo -n "Are you sure you want to $action $target_version? [y]/[N] "
+                read yn
+            fi
             case $yn in
                 [Yy]* ) install; break;;
                 [Nn]* ) exit;;
@@ -302,4 +305,24 @@ function waitUpKibana(){
     done
 }
 
+<<<<<<< HEAD
+=======
+function checkComposeVersion(){
+        compose_vers=$(docker-compose -v | grep -oP '\d+.\d+.\d+')
+        if [ -z "$compose_vers" ]; then
+                echo "No docker compose version found. Exit"
+                exit
+        fi
+        # Remove point to compare an integer and keep 3 first numbers
+        compose_vers_int="${compose_vers//.}"
+        compose_vers_int="${compose_vers_int:0:3}"
+        # echo found "$compose_vers_int"
+        if [ "$compose_vers_int" -lt 128 ]; then
+                echo "Your docker compose version $compose_vers is too old and must be upgraded to 1.28 to be used in $target_version"
+                exit
+        fi
+}
+
+
+>>>>>>> 76954440c1735aaaf56d343c5c6c9c46b1169195
 main "$@"
