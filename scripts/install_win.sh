@@ -285,8 +285,6 @@ function waitUpKibana(){
     done
 }
 
-<<<<<<< HEAD
-=======
 function checkComposeVersion(){
         compose_vers=$(docker-compose -v | grep -oP '\d+.\d+.\d+')
         if [ -z "$compose_vers" ]; then
@@ -303,5 +301,4 @@ function checkComposeVersion(){
         fi
 }
 
->>>>>>> 76954440c1735aaaf56d343c5c6c9c46b1169195
 main "$@"
