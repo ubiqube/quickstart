@@ -11,6 +11,7 @@ fresh_setup=false
 ha_setup=false
 mini_lab=false
 ssh_user=$USER
+mano=false
 
 file_upgrade='.upgrade_unfinished'
 
@@ -37,7 +38,11 @@ standaloneInstall(){
         fi
     fi
 
-    docker-compose up -d --build
+    if [ $mano = false ] ; then
+        docker-compose up -d --build
+    else
+        docker-compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml up -d --build
+    fi
 
     docker-compose exec -T msa_dev rm -rf /opt/fmc_repository/Process/Reference
 
@@ -79,7 +84,12 @@ haInstall(){
         echo "No stack found. Fresh HA installation"
     fi
 
-    docker stack deploy --with-registry-auth -c docker-compose.simple.ha.yml $ha_stack
+    if [ $mano = false ] ; then
+        docker stack deploy --with-registry-auth -c docker-compose.simple.ha.yml $ha_stack
+    else
+        docker stack deploy --with-registry-auth -c docker-compose.simple.ha.yml -c lab/mano/docker-compose.mano.ha.yml $ha_stack
+    fi
+    
 
     echo "############## Install OpenMSA Libraries ##############################"
     sleep 5
@@ -154,6 +164,7 @@ usage() {
     echo "-f: force the upgrade without asking for user confirmation. Permit also to reapply the upgrade and to auto merge files from OpenMSA"
     echo "-c: cleanup unused images after upgrade to save disk space. This option clean all unused images, not only MSA quickstart ones"
     echo "-ro: remove containers for services not defined in the compose file. Use it if some containers use same network as MSA"
+    echo "-mano : apply mano containers"
     exit 0
 }
 
@@ -173,6 +184,9 @@ main() {
                 ;;
             -ro|--remove-orphans)
                 remove_orphans=true
+                ;;
+            -mano|--mano)
+                mano=true
                 ;;
             ?|--help)
                 usage
@@ -306,6 +320,5 @@ function checkComposeVersion(){
                 exit
         fi
 }
-
 
 main "$@"

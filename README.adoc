@@ -6,3 +6,8 @@ By following this quickstart you will be able to test out the full capabilities 
 
 This project is part of the link:https://ubiqube.com/wp-content/docs/latest/user-guide/quickstart.html[Quickstart] guide.
 
+== ETSI-MANO modules
+
+The images for the MANO implementation are located under the lab/mano directory
+
+Use the --mano option of the install script to start the additional MANO containers

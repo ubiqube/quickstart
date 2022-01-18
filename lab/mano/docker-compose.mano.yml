@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:     
+  mano-vnf:
+    image: openmsa/mano-vnfm
+    depends_on:
+      - mano-db
+    volumes:
+      - "mano_vnf:/opt/etsi-mano-data"
+
+  mano-nfvo:
+    image: openmsa/mano-nfvo
+    depends_on:
+      - mano-db
+    volumes:
+      - "mano_nfvo:/opt/etsi-mano-data"
+
+  mano-db:
+    image: openmsa/mano-db
+    environment:
+      POSTGRES_PASSWORD: mano
+      POSTGRES_USER: mano
+    volumes:
+      - "mano_db:/var/lib/postgresql/data"
+
+  mano-artemis:
+    image: openmsa/artemis:2.19.0
+
+volumes:
+  mano_db:
+  mano_nfvo:
+  mano_vnf:

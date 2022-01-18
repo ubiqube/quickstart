@@ -7,7 +7,7 @@ services:
     image: ubiqube/msa2-front:787de661162d145ab92c1e6332c105cf1c87e269
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
-    depends_on:
+    depends_on: 
       - msa_api
       - msa_ui
       - camunda
@@ -272,7 +272,7 @@ services:
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "msa_dev:/opt/devops/"
-      
+
   linux_me:
     restart: unless-stopped
     container_name: linux_me
