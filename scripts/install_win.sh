@@ -3,7 +3,7 @@ set -e
 
 PROG=$(basename $0)
 
-target_version="2.6.1"
+target_version="2.6.2"
 force_option=false
 clean_option=false
 remove_orphans=false
@@ -36,28 +36,28 @@ standaloneInstall(){
         fi
     fi
 
-        docker-compose up -d --build
+    docker-compose up -d --build
 
     docker-compose exec -T msa_dev rm -rf /opt/fmc_repository/Process/Reference
 
     docker-compose exec -T -w //usr/bin/ msa_dev bash -c  "./install_libraries.sh $(getLibOptions)"
 
-        docker-compose restart msa_api
-        docker-compose restart msa_sms
+    docker-compose restart msa_api
+    docker-compose restart msa_sms
     docker-compose restart msa_alarm
 
     echo "Starting crond on API container msa_api"
     docker-compose exec -T -u root msa_api crond
     echo "Done"
 
-        if [ $fresh_setup = false ] ; then
-          echo "Remove AI ML database. Required on upgrades from 2.4"
-            docker-compose exec -T -u root -w //usr/bin/ msa_ai_ml bash -c 'rm /msa_proj/database/db.sqlite3'
-            docker-compose restart msa_ai_ml
+    if [ $fresh_setup = false ] ; then
+        echo "Remove AI ML database. Required on upgrades from 2.4"
+        docker-compose exec -T -u root -w //usr/bin/ msa_ai_ml bash -c 'rm /msa_proj/database/db.sqlite3'
+        docker-compose restart msa_ai_ml
 
-          echo "Elasticsearch : .kibana_1 index regeneration"
-          docker-compose exec -T -u root -w //home/install/scripts/ msa_es bash -c './kibana_index_update.sh'
-          echo "Done"
+        echo "Elasticsearch : .kibana_1 index regeneration"
+        docker-compose exec -T -u root -w //home/install/scripts/ msa_es bash -c './kibana_index_update.sh'
+        echo "Done"
     fi
 
     echo "Kibana configs & dashboard templates update"
@@ -66,7 +66,6 @@ standaloneInstall(){
     echo "Done"
 
     upgrade_done
-
 }
 
 haInstall(){
@@ -151,7 +150,7 @@ usage() {
     echo "-f: force the upgrade without asking for user confirmation. Permit also to reapply the upgrade and to auto merge files from OpenMSA"
     echo "-c: cleanup unused images after upgrade to save disk space. This option clean all unused images, not only MSA quickstart ones"
     echo "-ro: remove containers for services not defined in the compose file. Use it if some containers use same network as MSA"
-        exit 0
+    exit 0
 }
 
 main() {
@@ -214,10 +213,17 @@ main() {
         while true; do
         action="upgrade to"
         if [ $fresh_setup = true ]; then
-        action="install a new"
+            action="install a new"
         fi
 
-            read -p "Are you sure you want to $action $target_version? [y]/[N]" yn
+        if [[ $current_version =~ $target_version ]]; then
+            echo "Looks like the installation has not finished properly"
+            echo -n "Do you want to relaunch installtion? [y]/[N] "
+            read yn
+        else
+            echo -n "Are you sure you want to $action $target_version? [y]/[N] "
+            read yn
+        fi
             case $yn in
                 [Yy]* ) install; break;;
                 [Nn]* ) exit;;
