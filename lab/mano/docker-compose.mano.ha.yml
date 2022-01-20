@@ -1,12 +1,12 @@
 version: "3.8"
 
 services:
-  mano-vnf:
+  mano-vnfm:
     image: openmsa/mano-vnfm:2.6.2
     depends_on:
       - mano-db
     volumes:
-      - "/mnt/NASVolume/mano_vnf:/opt/etsi-mano-data"
+      - "/mnt/NASVolume/mano_vnfm:/opt/etsi-mano-data"
     deploy:
       replicas: 1
       placement:
