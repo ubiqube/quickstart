@@ -237,7 +237,7 @@ services:
     container_name: msa_kibana
     image: ubiqube/msa2-kibana:e882bf60f8eeee721e7a9037efd86198ec5a5635
     depends_on:
-      - msa_es
+      - msa-es
     ports:
       - "5601:5601"
     environment:
