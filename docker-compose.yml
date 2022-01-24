@@ -270,7 +270,7 @@ services:
     #build: ./lab/msa_dev
     image: ubiqube/msa2-linuxdev:f97770af16925f812debf25bf26b5847a670d4df
     depends_on:
-      - msa_es
+      - msa-es
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
