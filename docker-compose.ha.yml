@@ -2,13 +2,13 @@
 version: "3.8"
 
 services:
-  msa_front:
-    image: ubiqube/msa2-front:0270f9bd8fc1c086b4a83a8f5471a911cfe83103
+  msa-front:
+    image: ubiqube/msa2-front:8c7cd11c9c6235863d7f5f5c9710bfcafebd8b69
     depends_on:
-      - msa_api
-      - msa_ui
+      - msa-api
+      - msa-ui
       - camunda
-      - msa_ai_ml
+      - msa-ai-ml
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"] 
       timeout: 2s
@@ -53,7 +53,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:59b9b51f924537d06d0293b1094f2c4e449e567e
+    image: ubiqube/msa2-db:d8aba832890c9bef80cb891cedf2744c520094ec
     command: postgres -c 'max_connections=800' -c "max_prepared_transactions=100"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -73,8 +73,8 @@ services:
       restart_policy:
         condition: on-failure
  
-  msa_api:
-    image: ubiqube/msa2-api:3f6ab93470bdbe72724f359b40bbb2c3ab1137e3
+  msa-api:
+    image: ubiqube/msa2-api:6f544929d9d443286ab7b19f6350442450d14c6b
     depends_on:
       - db
     healthcheck:
@@ -99,11 +99,11 @@ services:
     networks:
       default:
         aliases:
-          - "msa-api"
-  msa_ui:
-    image: ubiqube/msa2-ui:5220d368f88225ce8a849efa1471662309cd4e88
+          - "msa_api"
+  msa-ui:
+    image: ubiqube/msa2-ui:2223a5c1a427b1c6dcbc2aac7e24c77feb004855
     depends_on:
-      - msa_api
+      - msa-api
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     deploy:
@@ -124,8 +124,11 @@ services:
     - FEATURE_PERMISSION_PROFILES=true
     - FEATURE_AI_ML=true
     - FEATURE_WORKFLOW_OWNER=false
-
-  msa_sms:
+    networks:
+      default:
+        aliases:
+          - "msa_ui"
+  msa-sms:
     image: ubiqube/msa2-sms:2c7965228f1024c1a2bc6605ea7d448bdd9b8d89
     depends_on:
       - db
@@ -145,9 +148,13 @@ services:
       replicas: 1
       placement:
         max_replicas_per_node: 1
+    networks:
+      default:
+        aliases:
+          - "msa_sms"
 
-  msa_bud:
-    image: ubiqube/msa2-bud:28847db42ea492e577ac8226c85d775633ce3f6a
+  msa-bud:
+    image: ubiqube/msa2-bud:e7573c41ce0848d5550f8f2f008c1da4355b5ea9
     depends_on:
       - db
     healthcheck:
@@ -156,12 +163,16 @@ services:
       replicas: 1
       placement:
         max_replicas_per_node: 1
+    networks:
+      default:
+        aliases:
+          - "msa_bud"
 
-  msa_alarm:
+  msa-alarm:
     depends_on:
       - db
-      - msa_api
-    image: ubiqube/msa2-alarm:43bb73772eb00045d4c13a351427f439c631d82b
+      - msa-api
+    image: ubiqube/msa2-alarm:e519a4e22845f6c12cb6b18ee6b39becda39eb94
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -172,15 +183,20 @@ services:
         max_replicas_per_node: 1
     volumes:
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
+    networks:
+      default:
+        aliases:
+          - "msa_alarm"
 
-  msa_monitoring:
-    image: ubiqube/msa2-monitoring:8d96d5af6aa1f7bb9b9aae7b26782bdb93321fcd
+  msa-monitoring:
+    image: ubiqube/msa2-monitoring:cf3317a5e389008e020ed1f3e5a53fa5702679bf
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
       - db
-      - msa_es
-      - msa_dev
+      - msa-es
+      - msa-dev
+      - msa-api
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     volumes:
@@ -194,11 +210,15 @@ services:
       replicas: 1
       placement:
         max_replicas_per_node: 1
+    networks:
+      default:
+        aliases:
+          - "msa_monitoring"
 
   camunda:
     depends_on:
       - db
-    image: ubiqube/msa2-camunda:b839a640c1396f27a538c6e633d47ad93796a9e4
+    image: ubiqube/msa2-camunda:507b2c9b8361821915c4bd9255bafb47ace89079
     deploy:
       replicas: 1
       placement:
@@ -212,8 +232,8 @@ services:
       WAIT_FOR: 'db:5432'
       WAIT_FOR_TIMEOUT: 60
 
-  msa_es:
-    image: ubiqube/msa2-es:a56ef749db4d7887beaeb2d204c6586bbcb4c7a8
+  msa-es:
+    image: ubiqube/msa2-es:f1d8ba7f38e65a375af4c22f9f2676a2cb480f8f
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
@@ -232,27 +252,31 @@ services:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     volumes:
       - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
+    networks:
+      default:
+        aliases:
+          - "msa_es"
 
-  msa_kibana:
-    image: ubiqube/msa2-kibana:49c1c422ad5559815d4f74568904a7214e788932
+  msa-kibana:
+    image: ubiqube/msa2-kibana:e882bf60f8eeee721e7a9037efd86198ec5a5635
     depends_on:
-      - msa_es
+      - msa-es
     ports:
       - "5601:5601"
     environment:
       - ELASTICSEARCH_URL=http://msa_es:9200
       - ELASTICSEARCH_HOSTS=http://msa_es:9200
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
-    networks:
-      default:
-        aliases:
-          - "msa-kibana"
     deploy:
       replicas: 1
       placement:
         max_replicas_per_node: 1
+    networks:
+      default:
+        aliases:
+          - "msa_kibana"
           
-  msa_ai_ml:
+  msa-ai-ml:
     image: ubiqube/msa2-ai-ml:63c7fab8c111b6cc85da049f45ebc6175a9b269a
     healthcheck:
       test: ["CMD-SHELL", "python /msa_proj/health_check.py"]
@@ -267,9 +291,9 @@ services:
     networks:
       default:
         aliases:
-          - "msa-ai-ml"
+          - "msa_ai_ml"
 
-  msa_cerebro:
+  msa-cerebro:
     image: ubiqube/msa2-cerebro:914750e000db1343d9972bfa6652da1efe4aa32f
     environment:
       AUTH_TYPE: basic
@@ -286,11 +310,15 @@ services:
       replicas: 1
       placement:
         max_replicas_per_node: 1
+    networks:
+      default:
+        aliases:
+          - "msa_cerebro"
 
-  msa_dev:
-    image: ubiqube/msa2-linuxdev:dad814b234fa8b68d554a966294caffe9790ffd4
+  msa-dev:
+    image: ubiqube/msa2-linuxdev:f97770af16925f812debf25bf26b5847a670d4df
     depends_on:
-      - msa_es
+      - msa-es
     deploy:
       replicas: 1
       placement:
@@ -300,6 +328,10 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_svn:/opt/svnroot"
+    networks:
+      default:
+        aliases:
+          - "msa_dev"
 
 networks:
   default:
