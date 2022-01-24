@@ -78,7 +78,7 @@ haInstall(){
         echo "No stack found. Fresh HA installation"
     fi
 
-    docker stack deploy --with-registry-auth -c docker-compose.simple.ha.yml $ha_stack
+    docker stack deploy --with-registry-auth -c docker-compose.ha.yml $ha_stack
 
     echo "############## Install OpenMSA Libraries ##############################"
     ha_dev_node_ip=$(getHaNodeIp msa_dev)
