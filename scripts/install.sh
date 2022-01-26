@@ -78,9 +78,9 @@ standaloneInstall(){
 haInstall(){
 
     echo "############## Applying last images ##############################"
-    ha_stack=$(docker stack ls --format '{{.Name}}'| head -n 1)
+    ha_stack=$(docker stack ls --format '{{.Name}}'| grep 'ha\|msa' | head -n 1)
     if [ -z "$ha_stack" ]; then
-        ha_stack="ha"
+        ha_stack="msa"
         echo "No stack found. Fresh HA installation"
     fi
 
