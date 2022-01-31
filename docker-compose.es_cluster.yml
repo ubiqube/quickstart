@@ -1,39 +1,38 @@
-version: "3.8"
-
+version: '3.8'
 services:
   msa_front:
     restart: unless-stopped
     container_name: msa_front
     healthcheck:
-      test: ["CMD-SHELL", "curl -k --fail https://localhost"]
-    image: openmsa/openmsa:msa2-front-2.6.2-0270f9bd8fc1c086b4a83a8f5471a911cfe83103
+      test: [CMD-SHELL, curl -k --fail https://localhost]
+    image: openmsa/openmsa:msa2-front-2.7.0GA-0270f9bd8fc1c086b4a83a8f5471a911cfe83103
     depends_on:
-      - msa_api
-      - msa_ui
-      - camunda
-      - msa_ai_ml
+    - msa_api
+    - msa_ui
+    - camunda
+    - msa_ai_ml
     ports:
-      - target: 80
-        published: 80
-        protocol: tcp
-        mode: host
-      - target: 443
-        published: 443
-        protocol: tcp
-        mode: host
-      - target: 514
-        published: 514
-        protocol: udp
-        mode: host
-      - target: 162
-        published: 162
-        protocol: udp
-        mode: host
-      - target: 69
-        published: 69
-        protocol: udp
-        mode: host
-      - "5200-5200:5200-5200/udp"
+    - target: 80
+      published: 80
+      protocol: tcp
+      mode: host
+    - target: 443
+      published: 443
+      protocol: tcp
+      mode: host
+    - target: 514
+      published: 514
+      protocol: udp
+      mode: host
+    - target: 162
+      published: 162
+      protocol: udp
+      mode: host
+    - target: 69
+      published: 69
+      protocol: udp
+      mode: host
+    - 5200-5200:5200-5200/udp
    #
     # uncomment one of the 2 sections below when installing a custom certificate 
     # - Docker standard standalone installation
@@ -48,7 +47,7 @@ services:
     image: openmsa/openmsa:msa2-db-2.6.2-59b9b51f924537d06d0293b1094f2c4e449e567e
     command: postgres -c 'max_connections=800' -c 'max_prepared_transactions=100'
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: [CMD-SHELL, pg_isready -U postgres]
       interval: 30s
       timeout: 60s
       retries: 5
@@ -59,40 +58,40 @@ services:
       CAMUNDA_DB: process-engine
       CAMUNDA_USER: camunda
     volumes:
-      - "msa_db:/var/lib/postgresql/data"
+    - msa_db:/var/lib/postgresql/data
 
   msa_api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.6.2-3f6ab93470bdbe72724f359b40bbb2c3ab1137e3
+    image: openmsa/openmsa:msa2-api-2.7.0GA-3f6ab93470bdbe72724f359b40bbb2c3ab1137e3
     healthcheck:
-      test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
+      test: [CMD-SHELL, curl --fail http://localhost:8480]
     depends_on:
-      - db
-      - msa_es
-      - msa_es_2
+    - db
+    - msa_es
+    - msa_es_2
     environment:
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+    - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     volumes:
-      - "msa_entities:/opt/fmc_entities"
-      - "msa_repository:/opt/fmc_repository"
-      - "rrd_repository:/opt/rrd"
-      - "msa_dev:/opt/devops/"
-      - "msa_api_logs:/opt/wildfly/logs/"
-      - "msa_api_logs:/opt/wildfly/logs/processLog"
+    - msa_entities:/opt/fmc_entities
+    - msa_repository:/opt/fmc_repository
+    - rrd_repository:/opt/rrd
+    - msa_dev:/opt/devops/
+    - msa_api_logs:/opt/wildfly/logs/
+    - msa_api_logs:/opt/wildfly/logs/processLog
     networks:
       default:
         aliases:
-          - "msa-api"
+        - msa-api
 
   msa_ui:
     restart: unless-stopped
     container_name: msa_ui
     image: openmsa/openmsa:msa2-ui-2.6.2-5220d368f88225ce8a849efa1471662309cd4e88
     healthcheck:
-      test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
+      test: [CMD-SHELL, curl --fail http://localhost:8080]
     depends_on:
-      - msa_api
+    - msa_api
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -111,80 +110,82 @@ services:
     container_name: msa_sms
     image: openmsa/openmsa:msa2-sms-2.6.2-2c7965228f1024c1a2bc6605ea7d448bdd9b8d89
     healthcheck:
-      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
+      test: [CMD-SHELL, /etc/init.d/ubi-sms status | grep -q 'service seems UP' ||
+          exit 1]
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+    - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     cap_add:
-      - NET_ADMIN
+    - NET_ADMIN
     depends_on:
-      - db
-      - msa_es
-      - msa_es_2
-      - msa_dev
+    - db
+    - msa_es
+    - msa_es_2
+    - msa_dev
     volumes:
-      - "msa_dev:/opt/devops/"
-      - "msa_entities:/opt/fmc_entities"
-      - "msa_repository:/opt/fmc_repository"
-      - "msa_sms_logs:/opt/sms/logs"
-      - "msa_svn:/opt/svnroot"
-      - "msa_bulkfiles:/opt/sms/spool/parser"
+    - msa_dev:/opt/devops/
+    - msa_entities:/opt/fmc_entities
+    - msa_repository:/opt/fmc_repository
+    - msa_sms_logs:/opt/sms/logs
+    - msa_svn:/opt/svnroot
+    - msa_bulkfiles:/opt/sms/spool/parser
 
   msa_bud:
     restart: unless-stopped
     container_name: msa_bud
     image: openmsa/openmsa:msa2-bud-2.6.2-28847db42ea492e577ac8226c85d775633ce3f6a
     healthcheck:
-      test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
+      test: [CMD-SHELL, /etc/init.d/ubi-bud status | grep -q 'service seems UP' ||
+          exit 1]
     depends_on:
-      - db
+    - db
     volumes:
-      - "msa_bud_logs:/opt/bud/logs/"
+    - msa_bud_logs:/opt/bud/logs/
 
   msa_alarm:
     restart: unless-stopped
     container_name: msa_alarm
     image: openmsa/openmsa:msa2-alarm-2.6.2-43bb73772eb00045d4c13a351427f439c631d82b
     healthcheck:
-      test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
+      test: [CMD-SHELL, /etc/init.d/ubi-alarm status | grep -q 'service seems UP'
+          || exit 1]
     depends_on:
-      - db
-      - msa_es
+    - db
+    - msa_es
     environment:
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
-  
+    - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
   msa_monitoring:
     restart: unless-stopped
     image: openmsa/openmsa:msa2-monitoring-2.6.2-8d96d5af6aa1f7bb9b9aae7b26782bdb93321fcd
     healthcheck:
-      test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
+      test: [CMD-SHELL, /etc/init.d/ubi-poll status | grep -q 'service seems UP' ||
+          exit 1]
     depends_on:
-      - db
-      - msa_es
-      - msa_dev
+    - db
+    - msa_es
+    - msa_dev
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+    - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     volumes:
-      - "msa_dev:/opt/devops/"
-      - "msa_entities:/opt/fmc_entities"
-      - "msa_repository:/opt/fmc_repository"
-      - "rrd_repository:/opt/rrd"
-      - "msa_bulkfiles:/opt/sms/spool/parser"
+    - msa_dev:/opt/devops/
+    - msa_entities:/opt/fmc_entities
+    - msa_repository:/opt/fmc_repository
+    - rrd_repository:/opt/rrd
+    - msa_bulkfiles:/opt/sms/spool/parser
 
   camunda:
     restart: unless-stopped
     container_name: msa_camunda
     depends_on:
-      - db
+    - db
     image: openmsa/openmsa:msa2-camunda-2.6.1-b839a640c1396f27a538c6e633d47ad93796a9e4
     environment:
       DB_DRIVER: org.postgresql.Driver
-      DB_URL: 'jdbc:postgresql://db:5432/process-engine'
+      DB_URL: jdbc:postgresql://db:5432/process-engine
       DB_USERNAME: camunda
       DB_PASSWORD: camunda
       DB_VALIDATE_ON_BORROW: 'true'
-      WAIT_FOR: 'db:5432'
+      WAIT_FOR: db:5432
       WAIT_FOR_TIMEOUT: 60
-
   msa_es_create_certs:
     restart: unless-stopped
     container_name: msa_es_create_certs
@@ -192,73 +193,79 @@ services:
     command: >
       bash -c '
         mkdir -p /usr/share/elasticsearch/config/certificates
-        openssl req -x509 -nodes -days 365 -subj "/C=CA/ST=QC/O=UBiqube/CN=msa2.ubiqube.com" -newkey rsa:2048 -keyout /usr/share/elasticsearch/config/certificates/server.pem -out    /usr/share/elasticsearch/config/certificates/server.crt
+        openssl req -x509 -nodes -days 365 -subj "/C=CA/ST=QC/O=UBiqube/CN=msa2.ubiqube.com"
+      -newkey rsa:2048 -keyout /usr/share/elasticsearch/config/certificates/server.pem
+      -out    /usr/share/elasticsearch/config/certificates/server.crt
         chown -R 1000:0 /usr/share/elasticsearch/config/certificates
       '
-    user: "0"
+    user: '0'
     working_dir: /usr/share/elasticsearch
-    volumes: 
-      - "certs:/usr/share/elasticsearch/config/certificates"
+    volumes:
+    - certs:/usr/share/elasticsearch/config/certificates
 
   msa_es:
     restart: unless-stopped
     container_name: msa_es
     image: openmsa/openmsa:msa2-es-2.6.2-a56ef749db4d7887beaeb2d204c6586bbcb4c7a8
     healthcheck:
-      test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
+      test: [CMD-SHELL, "test -f /home/install/init-done && curl -s -XGET -H 'Authorization:\
+          \ Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty'\
+          \ | grep -q 'status.*green' || exit 1"]
       timeout: 2s
       retries: 10
       interval: 10s
-      start_period: 30s 
-    depends_on: 
-      - msa_es_create_certs
+      start_period: 30s
+    depends_on:
+    - msa_es_create_certs
     environment:
-      - node.name=msa_es
-      - discovery.seed_hosts=msa_es,msa_es_2
-      - cluster.initial_master_nodes=msa_es,msa_es_2
-      - cluster.name=es_cluster
-      - "script.painless.regex.enabled=true"
-      - "bootstrap.memory_lock=true"
-      - "ES_JAVA_OPTS=-Xms512m -Xmx1024m"
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
-      - xpack.security.enabled=true
-      - xpack.security.transport.ssl.enabled=true
-      - xpack.security.transport.ssl.verification_mode=certificate
-      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
-      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
-      - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
-      - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
+    - node.name=msa_es
+    - discovery.seed_hosts=msa_es,msa_es_2
+    - cluster.initial_master_nodes=msa_es,msa_es_2
+    - cluster.name=es_cluster
+    - script.painless.regex.enabled=true
+    - bootstrap.memory_lock=true
+    - ES_JAVA_OPTS=-Xms512m -Xmx1024m
+    - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+    - xpack.security.enabled=true
+    - xpack.security.transport.ssl.enabled=true
+    - xpack.security.transport.ssl.verification_mode=certificate
+    - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
+    - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
+    - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
+    - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
     volumes:
-      - "msa_es:/usr/share/elasticsearch/data"
-      - "certs:/usr/share/elasticsearch/config/certificates"
+    - msa_es:/usr/share/elasticsearch/data
+    - certs:/usr/share/elasticsearch/config/certificates
 
   msa_es_2:
     restart: unless-stopped
     container_name: msa_es_2
     image: openmsa/openmsa:msa2-es-2.6.2-a56ef749db4d7887beaeb2d204c6586bbcb4c7a8
     healthcheck:
-      test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
-    depends_on: 
-      - msa_es_create_certs
+      test: [CMD-SHELL, "test -f /home/install/init-done && curl -s -XGET -H 'Authorization:\
+          \ Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty'\
+          \ | grep -q 'status.*green' || exit 1"]
+    depends_on:
+    - msa_es_create_certs
     environment:
-      - node.name=msa_es_2
-      - discovery.seed_hosts=msa_es,msa_es_2
-      - cluster.initial_master_nodes=msa_es,msa_es_2
-      - cluster.name=es_cluster
-      - "script.painless.regex.enabled=true"
-      - "bootstrap.memory_lock=true"
-      - "ES_JAVA_OPTS=-Xms512m -Xmx1024m"
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
-      - xpack.security.enabled=true
-      - xpack.security.transport.ssl.enabled=true
-      - xpack.security.transport.ssl.verification_mode=certificate
-      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
-      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
-      - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
-      - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
+    - node.name=msa_es_2
+    - discovery.seed_hosts=msa_es,msa_es_2
+    - cluster.initial_master_nodes=msa_es,msa_es_2
+    - cluster.name=es_cluster
+    - script.painless.regex.enabled=true
+    - bootstrap.memory_lock=true
+    - ES_JAVA_OPTS=-Xms512m -Xmx1024m
+    - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+    - xpack.security.enabled=true
+    - xpack.security.transport.ssl.enabled=true
+    - xpack.security.transport.ssl.verification_mode=certificate
+    - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
+    - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
+    - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
+    - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
     volumes:
-      - "msa_es_2:/usr/share/elasticsearch/data"
-      - "certs:/usr/share/elasticsearch/config/certificates"
+    - msa_es_2:/usr/share/elasticsearch/data
+    - certs:/usr/share/elasticsearch/config/certificates
 
   msa_cerebro:
     restart: unless-stopped
@@ -267,106 +274,97 @@ services:
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
-      BASIC_AUTH_PWD: "N@X{M4tfw'5%)+35"
+      BASIC_AUTH_PWD: N@X{M4tfw'5%)+35
     entrypoint:
-      - /opt/cerebro/bin/cerebro
-      - -Dhosts.0.host=http://msa_es:9200
+    - /opt/cerebro/bin/cerebro
+    - -Dhosts.0.host=http://msa_es:9200
     depends_on:
-      - msa_es
-      - msa_es_2
+    - msa_es
+    - msa_es_2
     ports:
-    - "9000:9000"
-  
+    - 9000:9000
   msa_kibana:
     restart: unless-stopped
     container_name: msa_kibana
     image: openmsa/openmsa:msa2-kibana-2.6.1-49c1c422ad5559815d4f74568904a7214e788932
-    depends_on: 
+    depends_on:
       msa_es:
         condition: service_healthy
       msa_es_2:
         condition: service_healthy
     ports:
-      - "5601:5601"
+    - 5601:5601
     environment:
-      - ELASTICSEARCH_URL=http://msa_es:9200
-      - ELASTICSEARCH_HOSTS=http://msa_es:9200
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+    - ELASTICSEARCH_URL=http://msa_es:9200
+    - ELASTICSEARCH_HOSTS=http://msa_es:9200
+    - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     networks:
       default:
         aliases:
-          - "msa-kibana"
-          
+        - msa-kibana
   msa_ai_ml:
     restart: unless-stopped
     container_name: msa_ai_ml
     image: openmsa/openmsa:msa2-ai-ml-2.6.0GA-63c7fab8c111b6cc85da049f45ebc6175a9b269a
     healthcheck:
-      test: ["CMD-SHELL", "python /msa_proj/health_check.py"]
+      test: [CMD-SHELL, python /msa_proj/health_check.py]
     ports:
-      - "8000:8000"
+    - 8000:8000
     volumes:
-      - "msa_ai_ml_db:/msa_proj/database"
+    - msa_ai_ml_db:/msa_proj/database
     networks:
       default:
         aliases:
-          - "msa-ai-ml"
+        - msa-ai-ml
 
   msa_dev:
     restart: unless-stopped
     container_name: msa_dev
     image: openmsa/openmsa:msa2-linuxdev-2.6.2-dad814b234fa8b68d554a966294caffe9790ffd4
     depends_on:
-      - msa_es
+    - msa_es
     volumes:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-      - "msa_entities:/opt/fmc_entities"
-      - "msa_repository:/opt/fmc_repository"
-      - "msa_api:/opt/ubi-jentreprise/generated/conf"
-      - "msa_dev:/opt/devops/"
-      
+    - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    - msa_entities:/opt/fmc_entities
+    - msa_repository:/opt/fmc_repository
+    - msa_api:/opt/ubi-jentreprise/generated/conf
+    - msa_dev:/opt/devops/
   linux_me:
     restart: unless-stopped
     container_name: linux_me
-    # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
     image: openmsa/openmsa:msa2-linuxme-2.6.0GA-b831acacdef579420ee1abf70ef66655d969fcbb
-    #build: ./lab/linux.me
     cap_add:
-      - NET_ADMIN
-      - NET_RAW
-      - DAC_READ_SEARCH
-      - sys_rawio
+    - NET_ADMIN
+    - NET_RAW
+    - DAC_READ_SEARCH
+    - sys_rawio
     ports:
-      - "2224:22"
+    - 2224:22
     devices:                     # required for dmidecode used by polld/asset
-      - "/dev/mem:/dev/mem"
+    - /dev/mem:/dev/mem
     networks:
       default:
         ipv4_address: 172.20.0.101
     hostname: linux_me
     privileged: true
-
   linux_me_2:
     restart: unless-stopped
     container_name: linux_me_2
-    # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
     image: openmsa/openmsa:msa2-linuxme-2.6.0GA-b831acacdef579420ee1abf70ef66655d969fcbb
-    #build: ./lab/linux.me
     cap_add:
-      - NET_ADMIN
-      - NET_RAW
-      - DAC_READ_SEARCH
-      - sys_rawio
+    - NET_ADMIN
+    - NET_RAW
+    - DAC_READ_SEARCH
+    - sys_rawio
     ports:
-      - "2225:22"
+    - 2225:22
     devices:                     # required for dmidecode used by polld/asset
-      - "/dev/mem:/dev/mem"
+    - /dev/mem:/dev/mem
     networks:
       default:
         ipv4_address: 172.20.0.102
     hostname: linux_me_2
     privileged: true
-
 volumes:
   msa_api:
   msa_db:
@@ -385,12 +383,11 @@ volumes:
   msa_svn:
   msa_ai_ml_db:
   msa_bulkfiles:
-
 networks:
   default:
     name: quickstart_default
     ipam:
       config:
-        - subnet: 172.20.0.0/24
+      - subnet: 172.20.0.0/24
     driver_opts:
-      encrypted: "true"
+      encrypted: 'true'
