@@ -93,19 +93,19 @@ haInstall(){
 
     echo "############## Install OpenMSA Libraries ##############################"
     sleep 5
-    ha_dev_node_ip=$(getHaNodeIp msa_dev)
-    ha_dev_container_ref=$(getHaContainerReference msa_dev)
+    ha_dev_node_ip=$(getHaNodeIp msa-dev)
+    ha_dev_container_ref=$(getHaContainerReference msa-dev)
     echo "DEV $ha_dev_ip $ha_dev_container_ref"
     echo "Checking SSH access to DEV container with user $ssh_user on IP $ha_dev_node_ip to install libraries. If failed, please set SSH key"
     sleep 5
     ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec -it $ha_dev_container_ref /bin/bash -c '/usr/bin/install_libraries.sh $(getLibOptions)'"
-    docker service update --force "$ha_stack"_msa_api
-    docker service update --force "$ha_stack"_msa_sms
-    docker service update --force "$ha_stack"_msa_alarm
+    docker service update --force "$ha_stack"_msa-api
+    docker service update --force "$ha_stack"_msa-sms
+    docker service update --force "$ha_stack"_msa-alarm
 
     echo "############## Start CROND ############################################"
-    ha_api_node_ip=$(getHaNodeIp msa_api)
-    ha_api_container_ref=$(getHaContainerReference msa_api)
+    ha_api_node_ip=$(getHaNodeIp msa-api)
+    ha_api_container_ref=$(getHaContainerReference msa-api)
     #echo "API $ha_api_ip $ha_api_container_ref"
     #res=$(ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_api_node_ip "docker exec -it -u root $ha_api_container_ref 'ps -edf | crond'")
     #echo "CROND started : $res"
@@ -113,15 +113,15 @@ haInstall(){
 
     if [ $fresh_setup = false ] ; then
         echo "################ Elasticsearch : .kibana_1 index regeneration #############"
-        ha_es_node_ip=$(getHaNodeIp msa_es)
-            ha_es_container_ref=$(getHaContainerReference msa_es)
+        ha_es_node_ip=$(getHaNodeIp msa-es)
+            ha_es_container_ref=$(getHaContainerReference msa-es)
             #echo "ES $ha_es_ip $ha_es_container_ref"
             ssh  -tt "-o BatchMode=Yes" $ssh_user@$ha_es_node_ip "docker exec -it -u root -w /home/install/scripts/ $ha_es_container_ref /bin/bash -c './kibana_index_update.sh'"
     fi
 
     echo "################ Kibana configs & dashboard templates update ##########"
-    ha_kib_node_ip=$(getHaNodeIp msa_kib)
-    ha_kib_container_ref=$(getHaContainerReference msa_kib)
+    ha_kib_node_ip=$(getHaNodeIp msa-kib)
+    ha_kib_container_ref=$(getHaContainerReference msa-kib)
     #echo "KIBANA $ha_kib_ip $ha_kib_container_ref"
     waitUpKibana $ha_kib_node_ip
     ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_kib_node_ip "docker exec -it -u root -w /home/install/scripts $ha_kib_container_ref /bin/bash -c 'php install_default_template_dash_and_visu.php'"
@@ -145,8 +145,8 @@ miniLabCreation(){
     if [ $ha_setup = false ] ; then
         docker-compose exec -T msa-dev /usr/bin/create_mini_lab.sh
     else
-        ha_dev_node_ip=$(getHaNodeIp msa_dev)
-        ha_dev_container_ref=$(getHaContainerReference msa_dev)
+        ha_dev_node_ip=$(getHaNodeIp msa-dev)
+        ha_dev_container_ref=$(getHaContainerReference msa-dev)
         ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec -it $ha_dev_container_ref /usr/bin/create_mini_lab.sh"
     fi
 }
@@ -206,7 +206,7 @@ main() {
 
     if [ ! -z "$(docker ps -a | grep msa)" ]; then
             if [ $ha_setup = true ]; then
-            ha_front_ip=$(getHaNodeIp msa_front)
+            ha_front_ip=$(getHaNodeIp msa-front)
             current_version=$(curl -s -k -XGET "https://$ha_front_ip/msa_version/" | awk -F\" '{print $4}')
             echo "Your current MSA version is $current_version"
             echo "#####################################################"
