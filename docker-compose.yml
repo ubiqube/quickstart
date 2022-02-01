@@ -337,6 +337,7 @@ volumes:
   msa_es:
   rrd_repository:
   msa_api_logs:
+  msa_api_keystore:
   msa_sms_logs:
   msa_bud_logs:
   msa_front:
