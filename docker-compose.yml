@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:72102bd20923407242b67c7dd39c09de7de9d3a6
+    image: ubiqube/msa2-front:f7beec2fe7d7aaf9e3e163d42dbac336709078ed
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on: 
@@ -64,7 +64,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:1462edb39d2c7b6e23a222abcede4e6bc37587c2
+    image: ubiqube/msa2-api:9c2b544661fb1c00fda6a27df486d760eed0ed61
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     depends_on:
@@ -72,6 +72,7 @@ services:
       - msa-es
     environment:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+      - UBIQUBE_CAPTCHA_SECRET_KEY=6Ld2zF4dAAAAABWD9Q6QAhBql_CIynUeVKaTiBgT
     volumes:
       - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_entities:/opt/fmc_entities"
@@ -80,6 +81,7 @@ services:
       - "msa_dev:/opt/devops/"
       - "msa_api_logs:/opt/wildfly/logs/"
       - "msa_api_logs:/opt/wildfly/logs/processLog"
+      - "msa_api_keystore:/etc/pki/jentreprise"
     networks:
       default:
         aliases:
@@ -88,7 +90,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:8702bd0ed4f8b90c67d28c077d26cd8efed76467
+    image: ubiqube/msa2-ui:0d14c06763871b088dc1743bcedbe6803b3024f9
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
