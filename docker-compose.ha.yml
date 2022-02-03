@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:8c7cd11c9c6235863d7f5f5c9710bfcafebd8b69
+    image: ubiqube/msa2-front:aa68595ff85b833dcb65ea4ebc1199fb47180c18
     depends_on:
       - msa-api
       - msa-ui
@@ -53,7 +53,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:d8aba832890c9bef80cb891cedf2744c520094ec
+    image: ubiqube/msa2-db:8eebd77dfc3e9124ec2671f951a6eb243584c4b8
     command: postgres -c 'max_connections=800' -c "max_prepared_transactions=100"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -74,7 +74,7 @@ services:
         condition: on-failure
  
   msa-api:
-    image: ubiqube/msa2-api:6f544929d9d443286ab7b19f6350442450d14c6b
+    image: ubiqube/msa2-api:7d2f74933f9eab60a8508474c4f50fbb20a23321
     depends_on:
       - db
     healthcheck:
@@ -101,7 +101,7 @@ services:
         aliases:
           - "msa_api"
   msa-ui:
-    image: ubiqube/msa2-ui:2223a5c1a427b1c6dcbc2aac7e24c77feb004855
+    image: ubiqube/msa2-ui:5c8cd2d601552e0a5b9ee4e1e8032de79ea35ab8
     depends_on:
       - msa-api
     healthcheck:
@@ -129,7 +129,7 @@ services:
         aliases:
           - "msa_ui"
   msa-sms:
-    image: ubiqube/msa2-sms:2c7965228f1024c1a2bc6605ea7d448bdd9b8d89
+    image: ubiqube/msa2-sms:b2aec6818a224db5534e966410e26c2dd0f92e66
     depends_on:
       - db
     healthcheck:
@@ -233,7 +233,7 @@ services:
       WAIT_FOR_TIMEOUT: 60
 
   msa-es:
-    image: ubiqube/msa2-es:f1d8ba7f38e65a375af4c22f9f2676a2cb480f8f
+    image: ubiqube/msa2-es:6b191fca4d76383f04930565d90dbf58a051eed4
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
@@ -294,7 +294,7 @@ services:
           - "msa_ai_ml"
 
   msa-cerebro:
-    image: ubiqube/msa2-cerebro:914750e000db1343d9972bfa6652da1efe4aa32f
+    image: ubiqube/msa2-cerebro:7144f86eec3b2a326066046446187f86a75515b1
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -316,7 +316,7 @@ services:
           - "msa_cerebro"
 
   msa-dev:
-    image: ubiqube/msa2-linuxdev:f97770af16925f812debf25bf26b5847a670d4df
+    image: ubiqube/msa2-linuxdev:45e06c8db7554d1b697c287c85dbf23e323ef70e
     depends_on:
       - msa-es
     deploy:
