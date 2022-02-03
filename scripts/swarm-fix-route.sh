@@ -35,8 +35,8 @@ NETNS_DIR="/var/run/docker/netns"
 DOCKER_NETWORK_1="ingress"
 DOCKER_NETWORK_2="ha_default"
 INGRESS_NS="ingress_sbox"
-MSA_SMS="msa_sms"
-MSA_FRONT="msa_front"
+MSA_SMS="msa-sms"
+MSA_FRONT="msa-front"
 
 function print_help {
 echo "###################################################################"
