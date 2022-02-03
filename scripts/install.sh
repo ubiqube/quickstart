@@ -206,9 +206,7 @@ main() {
 
     if [ ! -z "$(docker ps -a | grep msa)" ]; then
             if [ $ha_setup = true ]; then
-            echo "This is HA true"
             ha_front_ip=$(getHaNodeIp msa-front)
-            echo "This is front IP $ha_front_ip"
             current_version=$(curl -s -k -XGET "https://$ha_front_ip/msa_version/" | awk -F\" '{print $4}')
             echo "Your current MSA version is $current_version"
             echo "#####################################################"
