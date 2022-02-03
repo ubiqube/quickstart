@@ -297,7 +297,7 @@ function getLibOptions(){
 }
 
 function waitUpKibana(){
-    echo "Wait Kibana to be ready"
+    echo "Wait Kibana to be ready (IP $1)"
         until [ $(curl -s -o /dev/null -L -w ''%{http_code}'' "http://$1:5601/kibana") == "200" ]
     do
         printf '.'
