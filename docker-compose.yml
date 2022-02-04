@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:aa68595ff85b833dcb65ea4ebc1199fb47180c18
+    image: openmsa/openmsa:msa2-front-2.7.0GA-6fd2037d51a8c59eae66f5e3bb27730bc082d0bb
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on: 
@@ -45,7 +45,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: ubiqube/msa2-db:8eebd77dfc3e9124ec2671f951a6eb243584c4b8
+    image: openmsa/openmsa:msa2-db-2.7.0GA-8eebd77dfc3e9124ec2671f951a6eb243584c4b8
     command: postgres -c 'max_connections=800' -c 'max_prepared_transactions=100'
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -64,7 +64,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:7d2f74933f9eab60a8508474c4f50fbb20a23321
+    image: openmsa/openmsa:msa2-api-2.7.0GA-3d50e463c3a82b8d92c4a6a05698b45145a287b8
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     depends_on:
@@ -90,7 +90,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:5c8cd2d601552e0a5b9ee4e1e8032de79ea35ab8
+    image: openmsa/openmsa:msa2-ui-2.7.0GA-5c8cd2d601552e0a5b9ee4e1e8032de79ea35ab8
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -111,7 +111,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:b2aec6818a224db5534e966410e26c2dd0f92e66
+    image: openmsa/openmsa:msa2-sms-2.7.0GA-b2aec6818a224db5534e966410e26c2dd0f92e66
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -133,7 +133,7 @@ services:
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: ubiqube/msa2-bud:e7573c41ce0848d5550f8f2f008c1da4355b5ea9
+    image: openmsa/openmsa:msa2-bud-2.7.0GA-e7573c41ce0848d5550f8f2f008c1da4355b5ea9
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -144,7 +144,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: ubiqube/msa2-alarm:e519a4e22845f6c12cb6b18ee6b39becda39eb94
+    image: openmsa/openmsa:msa2-alarm-2.7.0GA-e519a4e22845f6c12cb6b18ee6b39becda39eb94
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -158,7 +158,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: ubiqube/msa2-monitoring:cf3317a5e389008e020ed1f3e5a53fa5702679bf
+    image: openmsa/openmsa:msa2-monitoring-2.7.0GA-cf3317a5e389008e020ed1f3e5a53fa5702679bf
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -180,7 +180,7 @@ services:
     container_name: msa_camunda
     depends_on:
       - db
-    image: ubiqube/msa2-camunda:507b2c9b8361821915c4bd9255bafb47ace89079
+    image: openmsa/openmsa:msa2-camunda-2.7.0GA-507b2c9b8361821915c4bd9255bafb47ace89079
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
@@ -193,7 +193,7 @@ services:
   msa-es:
     restart: unless-stopped
     container_name: msa_es
-    image: ubiqube/msa2-es:6b191fca4d76383f04930565d90dbf58a051eed4
+    image: openmsa/openmsa:msa2-es-2.7.0GA-6b191fca4d76383f04930565d90dbf58a051eed4
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
@@ -221,7 +221,7 @@ services:
   msa-cerebro:
     restart: unless-stopped
     container_name: msa_cerebro
-    image: ubiqube/msa2-cerebro:7144f86eec3b2a326066046446187f86a75515b1
+    image: openmsa/openmsa:msa2-cerebro-2.7.0GA-7144f86eec3b2a326066046446187f86a75515b1
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -237,7 +237,7 @@ services:
   msa-kibana:
     restart: unless-stopped
     container_name: msa_kibana
-    image: ubiqube/msa2-kibana:e882bf60f8eeee721e7a9037efd86198ec5a5635
+    image: openmsa/openmsa:msa2-kibana-2.7.0GA-e882bf60f8eeee721e7a9037efd86198ec5a5635
     depends_on:
       - msa-es
     ports:
@@ -254,7 +254,7 @@ services:
   msa-ai-ml:
     restart: unless-stopped
     container_name: msa_ai_ml
-    image: ubiqube/msa2-ai-ml:63c7fab8c111b6cc85da049f45ebc6175a9b269a
+    image: openmsa/openmsa:msa2-ai-ml-2.7.0GA-63c7fab8c111b6cc85da049f45ebc6175a9b269a
     healthcheck:
       test: ["CMD-SHELL", "python /msa_proj/health_check.py"]
     ports:
@@ -270,7 +270,7 @@ services:
     restart: unless-stopped
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: ubiqube/msa2-linuxdev:45e06c8db7554d1b697c287c85dbf23e323ef70e
+    image: openmsa/openmsa:msa2-linuxdev-2.7.0GA-45e06c8db7554d1b697c287c85dbf23e323ef70e
     depends_on:
       - msa-es
     volumes:
@@ -287,7 +287,7 @@ services:
     restart: unless-stopped
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: ubiqube/msa2-linuxme:dce21efd8a1357ce522d5e1aa3c5673ddcff6867
+    image: openmsa/openmsa:msa2-linuxme-2.7.0GA-dce21efd8a1357ce522d5e1aa3c5673ddcff6867
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -310,7 +310,7 @@ services:
     restart: unless-stopped
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: ubiqube/msa2-linuxme:dce21efd8a1357ce522d5e1aa3c5673ddcff6867
+    image: openmsa/openmsa:msa2-linuxme-2.7.0GA-dce21efd8a1357ce522d5e1aa3c5673ddcff6867
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
