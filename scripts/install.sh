@@ -85,9 +85,9 @@ haInstall(){
     fi
 
     if [ $mano = false ] ; then
-        docker stack deploy --with-registry-auth -c docker-compose.ha.yml $ha_stack
+        docker stack deploy --with-registry-auth -c docker-compose.simple.ha.yml $ha_stack
     else
-        docker stack deploy --with-registry-auth -c docker-compose.ha.yml -c lab/mano/docker-compose.mano.ha.yml $ha_stack
+        docker stack deploy --with-registry-auth -c docker-compose.simple.ha.yml -c lab/mano/docker-compose.mano.ha.yml $ha_stack
     fi
     
 
