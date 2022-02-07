@@ -11,6 +11,7 @@ fresh_setup=false
 ha_setup=false
 mini_lab=false
 ssh_user=root
+mano=false
 
 file_upgrade='.upgrade_unfinished'
 
@@ -28,7 +29,7 @@ install(){
 
 
 standaloneInstall(){
-    checkComposeVersion
+    #checkComposeVersion
     if [ $fresh_setup = false ] ; then
         if [ $remove_orphans = false ] ; then
             docker-compose down
@@ -37,7 +38,11 @@ standaloneInstall(){
         fi
     fi
 
+    if [ $mano = false ] ; then
         docker-compose up -d --build
+    else
+        docker-compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml up -d --build
+    fi
 
     docker-compose exec -T msa-dev rm -rf /opt/fmc_repository/Process/Reference
 
@@ -155,6 +160,7 @@ usage() {
     echo "-f: force the upgrade without asking for user confirmation. Permit also to reapply the upgrade and to auto merge files from OpenMSA"
     echo "-c: cleanup unused images after upgrade to save disk space. This option clean all unused images, not only MSA quickstart ones"
     echo "-ro: remove containers for services not defined in the compose file. Use it if some containers use same network as MSA"
+    echo "-mano : apply mano containers"
     exit 0
 }
 
@@ -174,6 +180,9 @@ main() {
                 ;;
             -ro|--remove-orphans)
                 remove_orphans=true
+                ;;
+            -mano|--mano)
+                mano=true
                 ;;
             ?|--help)
                 usage
