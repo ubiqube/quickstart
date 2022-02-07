@@ -224,8 +224,6 @@ main() {
 
     if [ $force_option = false ] ; then
         if [[ $current_version =~ $target_version ]] && [ ! -f "${file_upgrade}" ]; then
-            echo $current_version
-            echo $target_version
                 echo "Already up to date: nothing to do"
                 exit
         fi
