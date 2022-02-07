@@ -325,7 +325,7 @@ services:
       default:
         aliases:
           - "msa_linux"
-         ipv4_address: 172.20.0.102
+        ipv4_address: 172.20.0.102
     hostname: linux-me-2
     privileged: true
 
