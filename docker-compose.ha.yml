@@ -89,7 +89,7 @@ services:
         parallelism: 1
       restart_policy:
         condition: on-failure
-        max_attempts: 3
+        max_attempts: 10
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
