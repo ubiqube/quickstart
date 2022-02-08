@@ -42,6 +42,6 @@ services:
     image: openmsa/artemis:2.19.0
     deploy:
       replicas: 1
-            placement:	
+      placement:	
         constraints:	
           - "node.role==manager"
