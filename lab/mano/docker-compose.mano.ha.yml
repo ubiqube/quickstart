@@ -9,6 +9,9 @@ services:
       - "/mnt/NASVolume/mano_vnfm:/opt/etsi-mano-data"
     deploy:
       replicas: 1
+      placement:	
+        constraints:	
+          - "node.role==manager"
 
   mano-nfvo:
     image: openmsa/mano-nfvo:2.6.2
@@ -18,6 +21,9 @@ services:
       - "/mnt/NASVolume/mano_nfvo:/opt/etsi-mano-data"
     deploy:
       replicas: 1
+      placement:	
+        constraints:	
+          - "node.role==manager"
 
   mano-db:
     image: openmsa/mano-db
@@ -28,8 +34,14 @@ services:
       - "/mnt/NASVolume/mano_db:/var/lib/postgresql/data"
     deploy:
       replicas: 1
+      placement:	
+        constraints:	
+          - "node.role==manager"
 
   mano-artemis:
     image: openmsa/artemis:2.19.0
     deploy:
       replicas: 1
+            placement:	
+        constraints:	
+          - "node.role==manager"
