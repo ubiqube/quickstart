@@ -106,11 +106,11 @@ at2=$(executeCurl $TOKEN 'PUT' "/profile/TyrellMonitoringPfl/attach?device=$ME2I
 echo "-----------------------------------------------------"
 echo "CREATE AND CONFIGURE DASHBOARD"
 echo "-----------------------------------------------------"
-dashboardExist=$(executeCurl $TOKEN 'GET' "/orchestration/$CUSTID/service/instance")
+dashboardExist=$(executeCurl $TOKEN 'GET' "/orchestration/v1/summary/actor?customerId=$CUSTIDONLY")
 if [[ $dashboardExist == *"kibana_dashboard"* ]]; then
         echo "Dashboard already exists"
 else
-        DASH_RAW=$(executeCurl $TOKEN 'POST' "/orchestration/service/execute/$CUSTID?serviceName=Process%2FAnalytics%2FKibana%2Fkibana_dashboard&processName=Process%2FAnalytics%2FKibana%2FProcess_Create_Report_Dashboard" '{"customer_id":null,"ipAddress":null,"port":"5601","basePath":"/kibana","index":".kibana","type":"dashboard","template_id":"template_default","dashboardName":"MiniLabDashboard","searchingURI":null,"uriPutES":null,"Hash":null,"kibanaUrl":null,"kibanaPort":null,"kibanaIpAddress":null,"filterType":"Advanced","advancedFilter":"","advancedFilterEmpty":null,"basicFilterEmpty":null,"basicFilter":null,"levelView":"service","device_id":null,"device_ip":null}')
+        DASH_RAW=$(executeCurl $TOKEN 'POST' "/orchestration/service/execute/$CUSTID?serviceName=Process%2FAnalytics%2FKibana%2Fkibana_dashboard&processName=Process%2FAnalytics%2FKibana%2FProcess_Create_Report_Dashboard" '{"ipAddress":null,"basePath":"/kibana","index":".kibana","type":"dashboard","template_id":"template_default","dashboardName":"MiniLabDashboard","searchingURI":null,"uriPutES":null,"Hash":null,"kibanaUrl":null,"kibanaPort":"5601","kibanaIpAddress":null}')
         reg='.*SID([0-9]+)'
         [[ $DASH_RAW =~ $reg ]]
         DASH_SERVICEID=${BASH_REMATCH[1]}

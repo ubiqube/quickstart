@@ -14,13 +14,14 @@ ASSUME_YES=false
 #
 TAG_WF_KIBANA_DASHBOARD=v2.6.0      # https://github.com/openmsa/workflow_kibana
 TAG_WF_TOPOLOGY=v2.6.0              # https://github.com/openmsa/workflow_topology
-TAG_PYTHON_SDK=v2.6.1               # https://github.com/openmsa/python-sdk
-TAG_PHP_SDK=v2.6.0                  # https://github.com/openmsa/php-sdk
-TAG_WF_ETSI_MANO=v2.6.2             # https://github.com/openmsa/etsi-mano
+TAG_PYTHON_SDK=v2.6.0               # https://github.com/openmsa/python-sdk
+TAG_PHP_SDK=v2.6.1                  # https://github.com/openmsa/php-sdk
+TAG_WF_ETSI_MANO=v2.6.0             # https://github.com/openmsa/etsi-mano
 TAG_ADAPTER=v2.6.2                  # https://github.com/openmsa/Adapters
 TAG_WORKFLOWS=v2.6.0                # https://github.com/openmsa/Workflows
 TAG_MICROSERVICES=v2.6.0            # https://github.com/openmsa/Microservices
 TAG_WF_MINILAB=v2.6.0               # https://github.com/ubiqube/workflow_quickstart_minilab
+
 
 install_license() {
 
@@ -51,7 +52,7 @@ init_intall() {
     mkdir -p /opt/fmc_repository/License;
     mkdir -p /opt/fmc_repository/Process;
 
-    chown -R ncuser.ncuser /opt/fmc_repository /opt/fmc_entities    
+    chown -R ncuser.ncuser /opt/fmc_repository /opt/fmc_entities
 }
 
 update_git_repo () {
@@ -72,20 +73,21 @@ update_git_repo () {
         rm -rf $REPO_DIR
     fi
 
-    if [ -d $REPO_DIR ]; 
-    then 
+    if [ -d $REPO_DIR ];
+    then
         cd $REPO_DIR
         ## get current branch and store in variable CURRENT_BR
         CURRENT_BR=`git rev-parse --abbrev-ref HEAD`
         echo "> Current working branch: $CURRENT_BR"
         if [[ $ASSUME_YES == false && "$CURRENT_BR" == "master" ]];
         then
-            echo "> WARNING: your current branch is $CURRENT_BR, to be safe, you may want to switch to a working branch (default_dev_branch is the factory default for development)"
-            read -p  "> switch ? [y]/[N]" yn
+            echo "> WARNING: your current branch is $CURRENT_BR, to be safe, you may want to switch to a working branch (default_dev_branch is the factory default for development) > switch ? [y]/[N]"
+            read  yn
             case $yn in
                 [Yy]* )
-                    read -p   "> Enter the name of the working branch (enter $CURRENT_BR to stay on your current branch):" br
-                    if [ $br == "" ];
+                    echo "> Enter the name of the working branch (enter $CURRENT_BR to stay on your current branch):"
+                    read  br
+                    if [ -z "$br" ];
                     then
                         echo "> ERROR: invalid branch name, exiting..."
                         exit 0
@@ -97,7 +99,8 @@ update_git_repo () {
                     fi
                     ;;
                 [Nn]* )
-                    read -p  "> stay on master ? [y]/[N]" resp
+                    echo "> stay on master ? [y]/[N]"
+                    read  resp
                     if [[ $resp != "" && $resp == "y" ]];
                     then
                         echo "> running installation/update on master branch on local repository"
@@ -124,7 +127,7 @@ update_git_repo () {
             if [ ! `git tag --list $TAG` ]
             then
                 echo "> WARNING: tag $TAG not found, current branch is $CURRENT_BR"
-                echo  "> (c) Cancel installation" 
+                echo  "> (c) Cancel installation"
                 echo  "> (I) Ignore and keep existing version - default"
                 read -p  "[I]/[c]" resp
                 if [[ $resp != "" && $resp == "c" ]];
@@ -143,7 +146,7 @@ update_git_repo () {
                 git branch -D $TAG
             fi
             echo "> Create a new branch: $TAG based on the tag $TAG"
-            git checkout tags/$TAG -b $TAG         
+            git checkout tags/$TAG -b $TAG
         elif [[ $ASSUME_YES == false && "$DEFAULT_BRANCH" != "" ]];
         then
             git stash
@@ -156,17 +159,19 @@ update_git_repo () {
                 if [ $ASSUME_YES == false ];
                 then
                     while true; do
-                    echo "> merge $DEFAULT_BRANCH to current working branch $CURRENT_BR ?"
-                    read -p  "[y]/[N]" yn
+
+                    echo "> merge $DEFAULT_BRANCH to current working branch $CURRENT_BR ? [y]/[N]"
+                    read yn
+
                     case $yn in
                         [Yy]* )
                             git pull origin $DEFAULT_BRANCH --prune; break
                         ;;
-                        [Nn]* ) 
+                        [Nn]* )
                             echo "> skip merge "
                             break
                         ;;
-                        * ) 
+                        * )
                             echo "Please answer yes or no."
                         ;;
                     esac
@@ -234,7 +239,6 @@ update_all_github_repo() {
         update_git_repo "https://github.com/openmsa/Workflows.git" "/opt/fmc_repository" "OpenMSA_WF" $GITHUB_DEFAULT_BRANCH "" $TAG_WORKFLOWS false
         update_git_repo "https://github.com/openmsa/php-sdk.git" "/opt/fmc_repository" "php_sdk" $GITHUB_DEFAULT_BRANCH "" $TAG_PHP_SDK false
         update_git_repo "https://github.com/ubiqube/workflow_quickstart_minilab.git" "/opt/fmc_repository" "workflow_quickstart_minilab" $GITHUB_DEFAULT_BRANCH "" $TAG_WF_MINILAB true
-
     fi
 
     if [[ $install_type = "all" || $install_type = "mano" ]];
@@ -408,10 +412,10 @@ usage() {
     echo "this script installs some librairies available @github.com/openmsa"
     echo
     echo "Commands:"
-	echo "all:          install/update everything: workflows, microservices and adapters"
-	echo "ms:           install/update the microservices from https://github.com/openmsa/Microservices"
-	echo "wf:           install/update the worfklows from https://github.com/openmsa/Workflows"
-	echo "da:           install/update the adapters from https://github.com/openmsa/Adapters"
+    echo "all:          install/update everything: workflows, microservices and adapters"
+    echo "ms:           install/update the microservices from https://github.com/openmsa/Microservices"
+    echo "wf:           install/update the worfklows from https://github.com/openmsa/Workflows"
+    echo "da:           install/update the adapters from https://github.com/openmsa/Adapters"
     echo "mano:         install/update the python-sdk from https://github.com/openmsa/etsi-mano"
     echo "py:           install/update the python-sdk from https://github.com/openmsa/python-sdk"
     echo
@@ -423,14 +427,14 @@ usage() {
 
 main() {
 
-	cmd=$1
+    cmd=$1
 
-    if [ $cmd == --help ];
+    if [[ -z "$cmd" || "$cmd" == --help ]];
     then
         usage
     fi
 
-   	shift
+    shift
 
     while [ ! -z $1 ]
     do
@@ -446,44 +450,44 @@ main() {
             *)
             echo "Error: unknown option: $option"
             usage
-			;;
+            ;;
         esac
         shift
-    done   
+    done
 
-	case $cmd in
+    case $cmd in
 
         kibana_dashboard)
             install_license $option
             init_intall
             update_all_github_repo $cmd
             install_workflows
-            ;;       
-		all)
+            ;;
+        all)
             install_license $option
             init_intall
             update_all_github_repo $cmd
             install_microservices
             install_workflows
             install_python_sdk
-			;;
-		ms)
+            ;;
+        ms)
             install_license  $option
             init_intall
             update_all_github_repo  $cmd
-			install_microservices 
-			;;
-		wf)
+            install_microservices
+            ;;
+        wf)
             install_license  $option
             init_intall
             update_all_github_repo  $cmd
-			install_workflows 
-			;;
-		da)
+            install_workflows
+            ;;
+        da)
             install_license  $option
             init_intall
             update_all_github_repo  $cmd
-			;;
+            ;;
         py)
             init_intall
             update_all_github_repo  $cmd
@@ -493,11 +497,11 @@ main() {
             init_intall
             update_all_github_repo  $cmd
             ;;
-		*)
+        *)
             echo "Error: unknown command: $1"
             usage
-			;;
-	esac
+            ;;
+    esac
     finalize_install
 }
 

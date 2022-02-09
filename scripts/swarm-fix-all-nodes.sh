@@ -15,7 +15,7 @@ fix_swarm_route() {
 
         echo 'Copying swarm-fix-route file to nodes...'
         scp ${swarm_fix} ${ssh_user}@${node_ip}:/tmp/
-        ssh -tt "-o BatchMode=Yes" ${ssh_user}@${node_ip} "bash /tmp/swarm-fix-route.sh -p"
+        ssh -tt "-o BatchMode=Yes" ${ssh_user}@${node_ip} "bash /tmp/swarm-fix-route.sh -a"
     done
 }
 
