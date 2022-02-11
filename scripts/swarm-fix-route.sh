@@ -270,7 +270,7 @@ function set_rp_filter {
   # $1 - namespace id
   # $2 - interface name
   # $3 set "2" to loose, set "1" to strict
-  ip netns exec $1 sysctl -w net.ipv4.conf.$2.rp_filter=$3 > /dev/null
+  sudo ip netns exec $1 sysctl -w net.ipv4.conf.$2.rp_filter=$3 > /dev/null
   if [ $? -eq 0 ]; then
     echo "rp_filter updated for $1 interface $2 namespace"
   else
