@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   mano-vnfm:
-    image: openmsa/mano-vnfm:2.6.2
+    image: openmsa/mano-vnfm:2.7.0
     depends_on:
       - mano-db
     volumes:
@@ -14,7 +14,7 @@ services:
           - "node.role==manager"
 
   mano-nfvo:
-    image: openmsa/mano-nfvo:2.6.2
+    image: openmsa/mano-nfvo:2.7.0
     depends_on:
       - mano-db
     volumes:
