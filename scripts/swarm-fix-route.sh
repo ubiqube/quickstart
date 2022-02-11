@@ -307,10 +307,11 @@ function get_overlay_net_id {
 
 function get_overlay_net_prefix {
   # $1 - docker network name
+  local NET_NAME=$(docker network ls | grep $1 | awk '{print $2}')
 
-  docker inspect -f '{{range .IPAM.Config}}{{println .Subnet}}{{end}}' $1 > /dev/null
+  docker inspect -f '{{range .IPAM.Config}}{{println .Subnet}}{{end}}' $NET_NAME > /dev/null
   if [ $? -eq 0 ]; then
-    local OVERLAY_NET_PREFIX=$(docker inspect -f '{{range .IPAM.Config}}{{println .Subnet}}{{end}}' $1)
+    local OVERLAY_NET_PREFIX=$(docker inspect -f '{{range .IPAM.Config}}{{println .Subnet}}{{end}}' $NET_NAME)
     if [[ $OVERLAY_NET_PREFIX =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+\/[0-9]+$ ]]; then
       echo $OVERLAY_NET_PREFIX
     else
