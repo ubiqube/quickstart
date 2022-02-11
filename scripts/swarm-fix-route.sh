@@ -33,7 +33,7 @@ unset MSA_SMS_NS_ID
 RUN_DIR="/var/run"
 NETNS_DIR="/var/run/docker/netns"
 DOCKER_NETWORK_1="ingress"
-DOCKER_NETWORK_2="ha_default"
+DOCKER_NETWORK_2="a_default"
 INGRESS_NS="ingress_sbox"
 MSA_SMS="msa-sms"
 MSA_FRONT="msa-front"
@@ -71,7 +71,7 @@ function create_ns_symlink {
 
   if [ -d "$1" ] && [ -d "$2" ]; then
     cd "$1"
-    ln -sfn "$2" netns
+    sudo ln -sfn "$2" netns
         if [ $? -eq 0 ]; then
           echo "Symlink successfully created"
         else
@@ -130,13 +130,13 @@ function check_lb_ns {
 function add_default_route {
   # $1 - namespace id
 
-  ip netns exec $1 ip r > /dev/null
+  sudo ip netns exec $1 ip r > /dev/null
   if [ $? -eq 0 ]; then
-    local MATCH=$(ip netns exec $1 ip r | grep default | wc -l)
+    local MATCH=$(sudo ip netns exec $1 ip r | grep default | wc -l)
       if [ $MATCH -eq 1 ]; then
         echo "Default route already exists"
       else
-        ip netns exec $1 ip r a default dev eth0
+        sudo ip netns exec $1 ip r a default dev eth0
         if [ $? -eq 0 ]; then
           echo "Default rule successfully added."
         else
@@ -153,9 +153,9 @@ function add_514_nat_exception {
   # $1 - namespace id
   # $2 - destinnation ip prefix
 
-  ip netns exec $1 iptables -t nat -nvL POSTROUTING --line-numbers > /dev/null
+  sudo ip netns exec $1 iptables -t nat -nvL POSTROUTING --line-numbers > /dev/null
   if [ $? -eq 0 ]; then
-    ip netns exec $1 iptables -t nat -I POSTROUTING 2 -m ipvs --ipvs -s 0.0.0.0/0 -d $2 -p udp --dport 514 -j ACCEPT
+    sudo ip netns exec $1 iptables -t nat -I POSTROUTING 2 -m ipvs --ipvs -s 0.0.0.0/0 -d $2 -p udp --dport 514 -j ACCEPT
         if [ $? -eq 0 ]; then
           echo "NAT exception successfully added"
         else
@@ -171,11 +171,11 @@ function add_514_nat_exception {
 function show_nat_exceptions {
   # $1 - namespace id
 
-  ip netns exec $1 iptables -t nat -nvL POSTROUTING --line-numbers > /dev/null
+  sudo ip netns exec $1 iptables -t nat -nvL POSTROUTING --line-numbers > /dev/null
   if [ $? -eq 0 ]; then
-    local MATCH=$(ip netns exec $1 iptables -t nat -nvL POSTROUTING --line-numbers | grep "ACCEPT" | wc -l)
+    local MATCH=$(sudo ip netns exec $1 iptables -t nat -nvL POSTROUTING --line-numbers | grep "ACCEPT" | wc -l)
     if [ $MATCH -ne 1 ]; then
-      local EXCEPTION_RULES=$(ip netns exec $1 iptables -t nat -nvL POSTROUTING --line-numbers | grep "ACCEPT")
+      local EXCEPTION_RULES=$(sudo ip netns exec $1 iptables -t nat -nvL POSTROUTING --line-numbers | grep "ACCEPT")
       echo "$EXCEPTION_RULES"
     else
       echo "No exception rules found."
@@ -186,17 +186,17 @@ function show_nat_exceptions {
 function delete_514_nat_exception {
   # $1 - namespace id
 
-  ip netns exec $1 iptables -t nat -nvL POSTROUTING --line-numbers > /dev/null
+  sudo ip netns exec $1 iptables -t nat -nvL POSTROUTING --line-numbers > /dev/null
   if [ $? -eq 0 ]; then
     # check if the rule exists
-    local MATCH=$(ip netns exec $1 iptables -t nat -nvL POSTROUTING --line-numbers | grep "udp dpt:514" | wc -l)
+    local MATCH=$(sudo ip netns exec $1 iptables -t nat -nvL POSTROUTING --line-numbers | grep "udp dpt:514" | wc -l)
     if [ $MATCH -ge 1 ]; then
       # get rules ids and delete them one by one from bottom to top
-      local RULES=$(ip netns exec $1 iptables -t nat -nvL POSTROUTING --line-numbers | grep "udp dpt:514" | awk '{print $1}')
+      local RULES=$(sudo ip netns exec $1 iptables -t nat -nvL POSTROUTING --line-numbers | grep "udp dpt:514" | awk '{print $1}')
       local RSORTED_RULES=$(sort -r <<< "$RULES")
       for rule in $RSORTED_RULES
       do
-        ip netns exec $1 iptables -t nat -D POSTROUTING $rule
+        sudo ip netns exec $1 iptables -t nat -D POSTROUTING $rule
         if [ $? -eq 0 ]; then
           echo "NAT exception for dst udp 514 successfully deleted, rule num $rule"
         else
@@ -211,15 +211,15 @@ function delete_514_nat_exception {
 function check_ingress_interface {
   # $1 - namespace id
   # $2 - network prefix contains eg. 10.0.0., 10.0.2. etc.
-  ip netns exec $1 ip a | grep $2 > /dev/null
+  sudo ip netns exec $1 ip a | grep $2 > /dev/null
   if [ $? -eq 0 ]; then
     # count matched interfaces
-    local MATCH=$(ip netns exec $1 ip a | grep $2 | wc -l)
+    local MATCH=$(sudo ip netns exec $1 ip a | grep $2 | wc -l)
     if [ $MATCH -gt 1 ]; then
       echo "Error: Multiple ($MATCH) interfaces match prefix $2. Specify more accurate prefix."
       exit 1
     else
-      local IFACE=$(ip netns exec $1 ip a | grep $2 | awk '{print $(NF)}')
+      local IFACE=$(sudo ip netns exec $1 ip a | grep $2 | awk '{print $(NF)}')
       echo $IFACE
     fi
   else
@@ -283,9 +283,9 @@ function show_rp_filter {
   # https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt
   # $1 - namespace id
 
-  ip netns exec $1 sysctl -a | grep  '\.rp_filter' > /dev/null
+  sudo ip netns exec $1 sysctl -a | grep  '\.rp_filter' > /dev/null
   if [ $? -eq 0 ]; then
-    ip netns exec $1 sysctl -a | grep '\.rp_filter'
+    sudo ip netns exec $1 sysctl -a | grep '\.rp_filter'
   else
     echo "Error: Can't check rp_filter in $2 namespace. Can't continue."
     exit 1
