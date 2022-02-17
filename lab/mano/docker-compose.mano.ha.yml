@@ -12,6 +12,11 @@ services:
       placement:	
         constraints:	
           - "node.role==manager"
+    ports:
+      - target: 8090
+        published: 8090
+        protocol: tcp
+        mode: ingress
 
   mano-nfvo:
     image: openmsa/mano-nfvo:2.7.0
@@ -24,6 +29,11 @@ services:
       placement:	
         constraints:	
           - "node.role==manager"
+    ports:
+      - target: 8100
+        published: 8100
+        protocol: tcp
+        mode: ingress
 
   mano-db:
     image: openmsa/mano-db
