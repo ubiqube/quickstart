@@ -107,6 +107,10 @@ services:
     - FEATURE_PERMISSION_PROFILES=true
     - FEATURE_AI_ML=false
     - FEATURE_WORKFLOW_OWNER=false
+    networks:
+      default:
+        aliases:
+          - "msa_ui"
 
   msa-sms:
     restart: unless-stopped
@@ -116,6 +120,7 @@ services:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
     cap_add:
       - NET_ADMIN
     depends_on:
@@ -129,6 +134,10 @@ services:
       - "msa_sms_logs:/opt/sms/logs"
       - "msa_svn:/opt/svnroot"
       - "msa_bulkfiles:/opt/sms/spool/parser"
+    networks:
+      default:
+        aliases:
+          - "msa_sms"
 
   msa-bud:
     restart: unless-stopped
@@ -140,6 +149,10 @@ services:
       - db
     volumes:
       - "msa_bud_logs:/opt/bud/logs/"
+    networks:
+      default:
+        aliases:
+          - "msa_bud"
 
   msa-alarm:
     restart: unless-stopped
@@ -152,8 +165,13 @@ services:
       - msa-es
     environment:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+      - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
     volumes:
       - "msa_sms_logs:/opt/sms/logs"
+    networks:
+      default:
+        aliases:
+          - "msa_alarm"
   
   msa-monitoring:
     restart: unless-stopped
@@ -233,6 +251,10 @@ services:
       - msa-es
     ports:
     - "9000:9000"
+    networks:
+      default:
+        aliases:
+          - "msa_cerebro"
   
   msa-kibana:
     restart: unless-stopped
@@ -301,7 +323,7 @@ services:
     networks:
       default:
         aliases:
-          - "msa_linux"
+          - "linux_me"
         ipv4_address: 172.20.0.101
     hostname: linux-me
     privileged: true
@@ -324,7 +346,7 @@ services:
     networks:
       default:
         aliases:
-          - "msa_linux"
+          - "linux_me_2"
         ipv4_address: 172.20.0.102
     hostname: linux-me-2
     privileged: true
