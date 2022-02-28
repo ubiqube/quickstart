@@ -139,6 +139,7 @@ services:
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
+    hostname: "{{.Task.Name}}.{{.Node.Hostname}}"
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
@@ -181,6 +182,7 @@ services:
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
+    hostname: "{{.Task.Name}}.{{.Node.Hostname}}"
     deploy:
       replicas: 1
       placement:
