@@ -18,12 +18,12 @@ services:
         protocol: tcp
         mode: ingress
         
-  mano-vnfm:
+  mano-vnfm2:
     image: openmsa/mano-vnfm-bis:2.7.1
     depends_on:
       - mano-db
     volumes:
-      - "/mnt/NASVolume/mano_vnfm_bis:/opt/etsi-mano-data"
+      - "/mnt/NASVolume/mano_vnfm2:/opt/etsi-mano-data"
     deploy:
       replicas: 1
       placement:	
