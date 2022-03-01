@@ -31,7 +31,7 @@ services:
           - "node.role==manager"
     ports:
       - target: 8090
-        published: 8090
+        published: 8091
         protocol: tcp
         mode: ingress
         
