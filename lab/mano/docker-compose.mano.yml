@@ -2,14 +2,21 @@ version: "3.8"
 
 services:
   mano-vnfm:
-    image: openmsa/mano-vnfm:2.7.0
+    image: openmsa/mano-vnfm:2.7.1
+    depends_on:
+      - mano-db
+    volumes:
+      - "mano_vnfm:/opt/etsi-mano-data"
+      
+  mano-vnfm2:
+    image: openmsa/mano-vnfm-bis:2.7.1
     depends_on:
       - mano-db
     volumes:
       - "mano_vnfm:/opt/etsi-mano-data"
 
   mano-nfvo:
-    image: openmsa/mano-nfvo:2.7.0
+    image: openmsa/mano-nfvo:2.7.1
     depends_on:
       - mano-db
     volumes:
