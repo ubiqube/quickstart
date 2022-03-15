@@ -53,7 +53,6 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    container_name: msa_db
     image: ubiqube/msa2-db:2513ba6c67d9bbdc4613495d4ad22582c80340c8
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
