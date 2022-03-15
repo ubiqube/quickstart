@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.7.1-9aa9326612ac849ce01f9cb5cff9672d12ee383b
+    image: ubiqube/msa2-front:d243e5c6d307b1edad751cfb0dd5ccd4ea2bc36c
     depends_on:
       - msa-api
       - msa-ui
@@ -83,7 +83,7 @@ services:
         condition: on-failure
  
   msa-api:
-    image: openmsa/openmsa:msa2-api-2.7.1-06a14410d5cc546291a5b9eb0273f534772e5f77
+    image: ubiqube/msa2-api:a116c83d873a77082db62ce7bbd745d61665f963
     depends_on:
       - db
     healthcheck:
@@ -111,7 +111,7 @@ services:
         aliases:
           - "msa_api"
   msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.7.1-6ffb578e0ef967c0e6ba45802a539750af561e6e
+    image: ubiqube/msa2-ui:956d2c5f09c91e25841662db77e467942edf0dc4
     depends_on:
       - msa-api
     healthcheck:
@@ -139,7 +139,7 @@ services:
         aliases:
           - "msa_ui"
   msa-sms:
-    image: openmsa/openmsa:msa2-sms-2.7.1-4267849ebdda5d65962ef23ad1d97aebb167762a
+    image: ubiqube/msa2-sms:fbc1fc2933e67078fe8e2c0ba99a9807d6d59c16
     depends_on:
       - db
     healthcheck:
@@ -167,7 +167,7 @@ services:
           - "msa_sms"
 
   msa-bud:
-    image: openmsa/openmsa:msa2-bud-2.7.1-ba8a039bf14f40e3873144f0c6827c65ef80516a
+    image: ubiqube/msa2-bud:ba8a039bf14f40e3873144f0c6827c65ef80516a
     depends_on:
       - db
     healthcheck:
@@ -185,7 +185,7 @@ services:
     depends_on:
       - db
       - msa-api
-    image: openmsa/openmsa:msa2-alarm-2.7.1-3b12f492adb5dd783add52720f0637634f09c551
+    image: ubiqube/msa2-alarm:444f58e121299db6949000f97a580011283571ea
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -204,7 +204,7 @@ services:
           - "msa_alarm"
 
   msa-monitoring:
-    image: openmsa/openmsa:msa2-monitoring-2.7.1-bf8a71dbc842bec423b3dd85af335ff81aad63f2
+    image: ubiqube/msa2-monitoring:c6e11c3bc005a22b1c1d83052bf4d4fa3a62c66c
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
