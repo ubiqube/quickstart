@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:45515e1ac81a9c664cbbee739fe2aca52c943a04
+    image: ubiqube/msa2-front:d52c3c5cc1ed95d89464c1e088cdfe4e058a90f4
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on: 
@@ -48,7 +48,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: ubiqube/msa2-db:cd2b63e76ed6e60e9e379ca56f04731883ecf1d4
+    image: ubiqube/msa2-db:b4667a963b72c2a08da0d887a44c22197214c659
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -126,7 +126,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:fbc1fc2933e67078fe8e2c0ba99a9807d6d59c16
+    image: ubiqube/msa2-sms:4fefcd7602ff1d48467dd0c3175351dc9909d0dc
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -152,7 +152,7 @@ services:
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: ubiqube/msa2-bud:cc4c2996c320d1e6fd338ac91d2ce28190296aad
+    image: ubiqube/msa2-bud:77d63dd6698eab4df545c6f5d9144fca93922816
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
     depends_on:
