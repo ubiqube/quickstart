@@ -12,6 +12,7 @@ ha_setup=false
 mini_lab=false
 ssh_user=root
 mano=false
+ccla=false
 
 file_upgrade='.upgrade_unfinished'
 
@@ -38,10 +39,23 @@ standaloneInstall(){
         fi
     fi
 
-    if [ $mano = false ] ; then
+    if [ ${mano} = false ] && [ ${ccla} = false ] ; then
         docker-compose up -d --build
     else
-        docker-compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml up -d --build
+        if [ ${mano} = true ] && [ ${ccla} = false ] ; then
+            docker-compose -f docker-compose.yml \
+                -f lab/mano/docker-compose.mano.yml up -d --build
+        fi
+        if [ ${mano} = false ] && [ ${ccla} = true ] ; then
+            docker-compose -f docker-compose.yml \
+                -f lab/cclap/docker-compose.ccla.yml up -d --build
+        fi
+        if [ ${mano} = true ] && [ ${ccla} = true ] ; then
+            docker-compose -f docker-compose.yml \
+                -f lab/mano/docker-compose.mano.yml \
+                -f lab/mano/docker-compose.ccla.yml \
+                up -d --build
+        fi
     fi
 
     docker-compose exec -T msa-dev rm -rf /opt/fmc_repository/Process/Reference
@@ -86,7 +100,22 @@ echo "############## Applying last images ##############################"
     if [ $mano = false ] ; then
         docker stack deploy --with-registry-auth -c docker-compose.ha.yml $ha_stack
     else
-        docker stack deploy --with-registry-auth -c docker-compose.ha.yml -c lab/mano/docker-compose.mano.ha.yml $ha_stack
+        if [ ${mano} = true ] && [ ${ccla} = false ]; then
+            docker stack deploy --with-registry-auth \
+                -c docker-compose.ha.yml \
+                -c lab/mano/docker-compose.mano.ha.yml $ha_stack
+        fi
+        if [ ${mano} = false ] && [ ${ccla} = true ]; then
+            docker stack deploy --with-registry-auth \
+                -c docker-compose.ha.yml \
+                -c lab/mano/docker-compose.ccla.ha.yml $ha_stack
+        fi
+        if [ ${mano} = true ] && [ ${ccla} = true ]; then
+            docker stack deploy --with-registry-auth \
+                -c docker-compose.ha.yml \
+                -c lab/mano/docker-compose.mano.ha.yml \
+                -c lab/mano/docker-compose.ccla.ha.yml $ha_stack
+        fi
     fi
 
     echo "############## Install OpenMSA Libraries ##############################"
@@ -161,6 +190,7 @@ usage() {
     echo "-c: cleanup unused images after upgrade to save disk space. This option clean all unused images, not only MSA quickstart ones"
     echo "-ro: remove containers for services not defined in the compose file. Use it if some containers use same network as MSA"
     echo "-mano : apply mano containers"
+    echo "-ccla : apply cloudclapp containers"
     exit 0
 }
 
@@ -183,6 +213,9 @@ main() {
                 ;;
             -mano|--mano)
                 mano=true
+                ;;
+            -ccla|--ccla)
+                ccla=true
                 ;;
             ?|--help)
                 usage

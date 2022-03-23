@@ -1,0 +1,40 @@
+version: "3.8"
+
+  cloudclapp:
+    depends_on:
+      - msa-api
+    image: ubiqube/cloudclapp:558a9a3f67d28b3160debb9b30bf6caeb7188227
+    profiles: ["ccla"]
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+
+  ccla-scan-app:
+    image: ubiqube/cloudclapp-scan:d542e628d77781003a5b1970084df4ca4239e990
+    environment:
+      - UBIQUBE_ZAP_TOKEN=7da091fe-63a4-48c0-9bfa-7614c49feb7c
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+
+  ccla-scan-env:
+    image: owasp/zap2docker-stable
+    entrypoint:
+      - zap.sh
+      - -daemon
+      - -host
+      - 0.0.0.0
+      - -config
+      - api.addrs.addr.name=.*
+      - -config
+      - api.addrs.addr.regex=true
+      - -config
+      - api.key=7da091fe-63a4-48c0-9bfa-7614c49feb7c
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
