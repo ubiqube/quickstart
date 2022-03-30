@@ -178,7 +178,7 @@ services:
       default:
         aliases:
           - "msa_alarm"
-  
+
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
@@ -261,7 +261,7 @@ services:
       default:
         aliases:
           - "msa_cerebro"
-  
+
   msa-kibana:
     restart: unless-stopped
     container_name: msa_kibana
@@ -278,7 +278,7 @@ services:
       default:
         aliases:
           - "msa_kibana"
-          
+
   msa-ai-ml:
     restart: unless-stopped
     container_name: msa_ai_ml
@@ -310,20 +310,6 @@ services:
       default:
         aliases:
           - "msa_dev"
-
-  key-vault:
-    depends_on:
-      - db
-    image: vault:latest
-    ports:
-      - "8200:8200"
-    volumes:
-      - ./lab/key_vault/config.hcl:/vault/config/config.hcl
-    environment:
-      VAULT_ADDR: "http://0.0.0.0:8200"
-    cap_add:
-      - IPC_LOCK
-    command: server
 
   linux-me:
     restart: unless-stopped

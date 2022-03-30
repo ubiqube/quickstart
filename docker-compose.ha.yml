@@ -338,7 +338,7 @@ services:
       default:
         aliases:
           - "msa_dev"
-        
+
 
 networks:
   default:
