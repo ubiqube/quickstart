@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:f27a5bc4a7556d56d78af6a9aa5ed02ce8150644
+    image: ubiqube/msa2-front:c9541b3610696b8df2cac58849d968ca1d4089e9
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on: 
@@ -301,7 +301,7 @@ services:
     restart: unless-stopped
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: ubiqube/msa2-linuxdev:6f9dbbd95959ddebcdaee0b3a0fe7c3704a17044
+    image: ubiqube/msa2-linuxdev:60956823e130ba38d6135eeda109d59058ab2ae8
     depends_on:
       - msa-es
     volumes:
