@@ -53,7 +53,7 @@ standaloneInstall(){
         if [ ${mano} = true ] && [ ${ccla} = true ] ; then
             docker-compose -f docker-compose.yml \
                 -f lab/mano/docker-compose.mano.yml \
-                -f lab/mano/docker-compose.ccla.yml \
+                -f lab/cclap/docker-compose.ccla.yml \
                 up -d --build
         fi
     fi
