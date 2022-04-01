@@ -285,7 +285,7 @@ services:
   msa-ai-ml:
     restart: unless-stopped
     container_name: msa_ai_ml
-    image: openmsa/openmsa:msa2-ai-ml-2.8.0-63c7fab8c111b6cc85da049f45ebc6175a9b269
+    image: openmsa/openmsa:msa2-ai-ml-2.8.0-63c7fab8c111b6cc85da049f45ebc6175a9b269a
     healthcheck:
       test: ["CMD-SHELL", "python /msa_proj/health_check.py"]
     ports:
