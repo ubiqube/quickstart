@@ -84,6 +84,9 @@ services:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      - UBIQUBE_CAPTCHA_SECRET_KEY=6LcFwjQfAAAAAFQSLf1dKYPoGtmaLOwoCPSzGl5k
+      - UBIQUBE_SUNCHRO=no
+      - UBIQUBE_BYPASS_CAPTCHA=true
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
