@@ -307,7 +307,7 @@ function waitUpKibana(){
 
 function waitRunningContainer(){
     echo "Waiting $1 container to be UP on $2"
-        until [ -z $(ssh -tt "-o BatchMode=Yes" $2 "docker ps -f "status=running" | $1") ]
+        until [ ! -z "$(ssh -tt '-o BatchMode=Yes' $2 "docker ps -f 'status=running' | grep $1")" ]
     do
         printf '.'
         sleep 3
