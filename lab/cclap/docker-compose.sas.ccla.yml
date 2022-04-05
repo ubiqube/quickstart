@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:80bfc0c4c14eee45bf90798c05e561d8e64db3c8-ccla
+    image: openmsa/openmsa:msa2-front-2.8.0-ec00bb59447f88d2d3fef0d1a87910ffefd31f7e
     depends_on:
       - msa-api
       - msa-ui
@@ -319,7 +319,7 @@ services:
       db: 20.223.38.173
 
   msa-es:
-    image: ubiqube/msa2-es:6b191fca4d76383f04930565d90dbf58a051eed4
+    image: openmsa/openmsa:msa2-es-2.7.0GA-6b191fca4d76383f04930565d90dbf58a051eed4
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s

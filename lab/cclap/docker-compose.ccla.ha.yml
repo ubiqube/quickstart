@@ -3,7 +3,7 @@ version: "3.8"
   cloudclapp:
     depends_on:
       - msa-api
-    image: ubiqube/cloudclapp:cf4c847245d23848cd6b10b591b42b3d214966aa
+    image: openmsa/openmsa:msa2-front-2.8.0-ec00bb59447f88d2d3fef0d1a87910ffefd31f7e
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     deploy:
