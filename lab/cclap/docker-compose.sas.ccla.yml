@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: oopenmsa/openmsa:msa2-front-2.8.0-ec00bb59447f88d2d3fef0d1a87910ffefd31f7e
+    image: ubiqube/msa2-front:80bfc0c4c14eee45bf90798c05e561d8e64db3c8-ccla
     depends_on:
       - msa-api
       - msa-ui
@@ -16,11 +16,11 @@ services:
       interval: 10s
       start_period: 30s
     deploy:
-      replicas: 2
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.apps==true"
+          - "node.labels.manager==true"
     ports:
       - target: 80
         published: 80
@@ -49,32 +49,38 @@ services:
     #volumes:
     #    - "msa_front:/etc/nginx/ssl"
     # - Docker Swarm HA installation
-    #volumes:
-    #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
+    volumes:
+        - "/mnt/NASVolume/msa_front/http_nginx.conf:/etc/nginx/conf.d/http_nginx.conf"
 
   # PLAN B - NO BIG ANIMAL
   # db:
-  #   image: openmsa/openmsa:msa2-db-2.7.1-3fcbdecf6f64fa126deb88db61bcb0ebec3cf92d
-  #   command: postgres -c 'max_connections=800' -c "max_prepared_transactions=100"
+  #   image: ubiqube/msa2-db:4b77e929cc6238bc65dcfafb2e09edf0a0312559
   #   healthcheck:
-  #     test: ["CMD-SHELL", "pg_isready -U postgres"]
-  #     interval: 30s
-  #     timeout: 60s
-  #     retries: 5
+  #     test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
+  #     timeout: 20s
   #   environment:
-  #     POSTGRES_PASSWORD: my_db_password
-  #     POSTGRES_DB: POSTGRESQL
   #     CAMUNDA_PASSWORD: camunda
   #     CAMUNDA_DB: process-engine
   #     CAMUNDA_USER: camunda
+  #     KEY_VAULT_USER: key_vault
+  #     KEY_VAULT_DB: key_vault
+  #     PG_MODE: primary
+  #     PG_PRIMARY_USER: postgres
+  #     PG_PRIMARY_PASSWORD: my_db_password
+  #     PG_USER: postgres
+  #     PG_PASSWORD: my_db_password
+  #     PG_DATABASE: POSTGRESQL
+  #     PG_ROOT_PASSWORD: my_db_password
+  #     PG_PRIMARY_PORT: 5432
+  #     MAX_CONNECTIONS: 1600
   #   volumes:
-  #     - "/mnt/NASVolume/msa_db:/var/lib/postgresql/data"
+  #     - "/mnt/NASVolume/msa_db:/pgsqldata/pgsql"
   #   deploy:
-  #     replicas: 2
+  #     replicas: 1
   #     placement:
   #       max_replicas_per_node: 1
   #       constraints:
-  #         - "node.labels.db==true"
+  #         - "node.labels.manager==true"
 
   msa-api:
     image: openmsa/openmsa:msa2-api-2.8.0-775a94bdf0a3c943305aff4aef9af309b0e8d4ee
@@ -99,14 +105,14 @@ services:
         aliases:
           - "msa_api"
     deploy:
-      replicas: 2
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.apps==true"
+          - "node.labels.worker==apps"
     extra_hosts:
-      db: BIG_ANIMAL_IP
-      msa-es: ES_IP
+      db: 20.223.38.173
+#      msa-es: ES_IP
 
   msa-ui:
     image: openmsa/openmsa:msa2-ui-2.8.0-49cfaedccae019dda8cfc66aef2d425678db41e2
@@ -131,11 +137,11 @@ services:
         aliases:
           - "msa_ui"
     deploy:
-      replicas: 2
+      replicas: 1
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.labels.apps==true"
+#        constraints:
+#          - "node.labels.worker==apps"
 
   cloudclapp:
     depends_on:
@@ -143,23 +149,25 @@ services:
     image: ubiqube/cloudclapp:d0f3af8223c1388252e2bc41b3ef4becf3e9d4fc
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
+    environment:
+      - UBIQUBE_CAPTCHA_SITE_KEY=6LcFwjQfAAAAAICJb7KjGjfKay4O3sOPaOb0glie
     deploy:
-      replicas: 2
+      replicas: 1
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.labels.apps==true"
+#        constraints:
+#          - "node.labels.worker==apps"
 
   ccla-scan-app:
     image: ubiqube/cloudclapp-scan:d542e628d77781003a5b1970084df4ca4239e990
     environment:
       - UBIQUBE_ZAP_TOKEN=7da091fe-63a4-48c0-9bfa-7614c49feb7c
     deploy:
-      replicas: 2
+      replicas: 1
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.labels.apps==true"
+#        constraints:
+#          - "node.labels.apps==true"
 
   ccla-scan-env:
     image: owasp/zap2docker-stable
@@ -175,11 +183,11 @@ services:
       - -config
       - api.key=7da091fe-63a4-48c0-9bfa-7614c49feb7c
     deploy:
-      replicas: 2
+      replicas: 1
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.labels.apps==true"
+#        constraints:
+#          - "node.labels.apps==true"
 
   msa-sms:
     image: openmsa/openmsa:msa2-sms-2.8.0-1d2950f5d7fe546d9c4178ed6b6b79528713c816
@@ -204,13 +212,13 @@ services:
         aliases:
           - "msa_sms"
     deploy:
-      replicas: 2
+      replicas: 1
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.labels.apps==true"
+#        constraints:
+#          - "node.labels.worker==apps"
     extra_hosts:
-      db: BIG_ANIMAL_IP
+      db: 20.223.38.173
 
   msa-bud:
     image: openmsa/openmsa:msa2-bud-2.8.0-3af00721f97b3c44d583a7b40cf912b392a392d2
@@ -223,17 +231,17 @@ services:
         aliases:
           - "msa_bud"
     deploy:
-      replicas: 2
+      replicas: 1
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.labels.apps==true"
+#        constraints:
+#          - "node.labels.apps==true"
     extra_hosts:
-      db: BIG_ANIMAL_IP
+      db: 20.223.38.173
 
   msa-alarm:
     depends_on:
-      # - db
+    #  - db
       - msa-api
     image: openmsa/openmsa:msa2-alarm-2.8.0-5e4d2061605bce583225c3fcccd193e8ee40f4f4
     healthcheck:
@@ -249,21 +257,21 @@ services:
         aliases:
           - "msa_alarm"
     deploy:
-      replicas: 2
+      replicas: 1
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.labels.apps==true"
+#        constraints:
+#          - "node.labels.apps==true"
     extra_hosts:
-      db: BIG_ANIMAL_IP
+      db: 20.223.38.173
 
   msa-monitoring:
     image: openmsa/openmsa:msa2-monitoring-2.8.0-33c2f74c0d854affc0690c6ab282b1f64a30cae2
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
-      # - db
-      # - msa-es
+    #  - db
+      - msa-es
       - msa-dev
       - msa-api
     environment:
@@ -280,14 +288,14 @@ services:
         aliases:
           - "msa_monitoring"
     deploy:
-      replicas: 2
+      replicas: 1
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.labels.apps==true"
+#        constraints:
+#          - "node.labels.apps==true"
     extra_hosts:
-      db: BIG_ANIMAL_IP
-      msa-es: ES_IP
+      db: 20.223.38.173
+#      msa-es: ES_IP
 
   camunda:
     # depends_on:
@@ -302,43 +310,43 @@ services:
       WAIT_FOR: 'db:5432'
       WAIT_FOR_TIMEOUT: 60
     deploy:
-      replicas: 2
+      replicas: 1
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.labels.apps==true"
+#        constraints:
+#          - "node.labels.apps==true"
     extra_hosts:
-      db: BIG_ANIMAL_IP
+      db: 20.223.38.173
 
-  # msa-es:
-  #   image: openmsa/openmsa:msa2-es-2.7.0GA-6b191fca4d76383f04930565d90dbf58a051eed4
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
-  #     timeout: 2s
-  #     retries: 10
-  #     interval: 10s
-  #     start_period: 30s 
-  #   deploy:
-  #     replicas: 2
-  #     placement:
-  #       max_replicas_per_node: 1
-  #   environment:
-  #     - discovery.type=single-node
-  #     - script.painless.regex.enabled=true
-  #     - bootstrap.memory_lock=true
-  #     - ES_JAVA_OPTS=-Xms512m -Xmx1024m
-  #     - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
-  #   volumes:
-  #     - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
-  #   networks:
-  #     default:
-  #       aliases:
-  #         - "msa_es"
+  msa-es:
+    image: ubiqube/msa2-es:6b191fca4d76383f04930565d90dbf58a051eed4
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
+      timeout: 2s
+      retries: 10
+      interval: 10s
+      start_period: 30s 
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+    environment:
+      - discovery.type=single-node
+      - script.painless.regex.enabled=true
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS=-Xms512m -Xmx1024m
+      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+    volumes:
+      - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
+    networks:
+      default:
+        aliases:
+          - "msa_es"
 
   msa-kibana:
     image: openmsa/openmsa:msa2-kibana-2.8.0-49c1c422ad5559815d4f74568904a7214e788932
-    # depends_on:
-    #   - msa-es
+    depends_on:
+      - msa-es
     ports:
       - "5601:5601"
     environment:
@@ -350,13 +358,13 @@ services:
         aliases:
           - "msa_kibana"
     deploy:
-      replicas: 2
+      replicas: 1
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.labels.apps==true"
-    extra_hosts:
-      msa-es: ES_IP
+#        constraints:
+#          - "node.labels.apps==true"
+#    extra_hosts:
+#      msa-es: ES_IP
 
   msa-ai-ml:
     image: openmsa/openmsa:msa2-ai-ml-2.8.0-63c7fab8c111b6cc85da049f45ebc6175a9b269a
@@ -371,11 +379,11 @@ services:
         aliases:
           - "msa_ai_ml"
     deploy:
-      replicas: 2
+      replicas: 1
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.labels.apps==true"
+#        constraints:
+#          - "node.labels.apps==true"
 
   msa-cerebro:
     image: openmsa/openmsa:msa2-cerebro-2.8.0-914750e000db1343d9972bfa6652da1efe4aa32f
@@ -395,18 +403,18 @@ services:
         aliases:
           - "msa_cerebro"
     deploy:
-      replicas: 2
+      replicas: 1
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.labels.apps==true"
-    extra_hosts:
-      msa-es: ES_IP
+#        constraints:
+#          - "node.labels.apps==true"
+#    extra_hosts:
+#      msa-es: ES_IP
 
   msa-dev:
     image: openmsa/openmsa:msa2-linuxdev-2.8.0-60956823e130ba38d6135eeda109d59058ab2ae8
-    # depends_on:
-    #   - msa-es
+    depends_on:
+      - msa-es
     volumes:
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
@@ -417,13 +425,13 @@ services:
         aliases:
           - "msa_dev"
     deploy:
-      replicas: 2
+      replicas: 1
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.labels.apps==true"
-    extra_hosts:
-      msa-es: ES_IP
+#        constraints:
+#          - "node.labels.apps==true"
+#    extra_hosts:
+#      msa-es: ES_IP
 
 
 networks:
