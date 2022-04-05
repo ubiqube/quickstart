@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.0-59427ccf238f2fda73720fd7ba1e55dd781f84ce
+    image: openmsa/openmsa:msa2-front-2.8.0-f1aba7a929724e7d622bd3fb73ddfe38cdb5d9c8
     depends_on:
       - msa-api
       - msa-ui
