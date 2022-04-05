@@ -99,6 +99,8 @@ haInstall(){
     echo "Checking SSH access to DEV container with user $ssh_user on IP $ha_dev_node_ip to install libraries. If failed, please set SSH key"
     sleep 5
     ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec -it $ha_dev_container_ref /bin/bash -c '/usr/bin/install_libraries.sh $(getLibOptions)'"
+    sleep 5
+    echo "Auto restart of API, SMS and ALARM"
     docker service update --force "$ha_stack"_msa-api
     docker service update --force "$ha_stack"_msa-sms
     docker service update --force "$ha_stack"_msa-alarm
