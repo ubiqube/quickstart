@@ -161,11 +161,12 @@ services:
   cloudclapp:
     depends_on:
       - msa-api
-    image: ubiqube/cloudclapp:d0f3af8223c1388252e2bc41b3ef4becf3e9d4fc
+    image: ubiqube/cloudclapp:2eac4be3d24c6a5fbaa3590983a8d34fb3aa0caa
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     environment:
       - UBIQUBE_CAPTCHA_SITE_KEY=6LcFwjQfAAAAAICJb7KjGjfKay4O3sOPaOb0glie
+      - UBIQUBE_LICENSE_AGREEMENT_LINK=https:\/\/cloudclapp.com\/EndUserLicenceAgreement.html
     deploy:
       replicas: 1
       placement:
