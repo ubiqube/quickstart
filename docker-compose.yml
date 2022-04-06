@@ -75,7 +75,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:1d5bdea893dc22b57649818cd1f5eee6547d5240
+    image: ubiqube/msa2-api:455815fefba01c5517634f516fcf11420438d565
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     depends_on:
