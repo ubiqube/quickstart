@@ -98,7 +98,7 @@ services:
   #         - "node.labels.manager==true"
 
   msa-api:
-    image: openmsa/openmsa:msa2-api-2.8.0-775a94bdf0a3c943305aff4aef9af309b0e8d4ee
+    image: ubiqube/msa2-api:fd3ff4a0278a4b1a857e4cfd7c7b80260ebbb7ee
     # depends_on:
     #   - db
     healthcheck:
