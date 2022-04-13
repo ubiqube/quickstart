@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:71a617af4f2ca09cfe8bf5f85c2ee5db8132f4ce
+    image: ubiqube/msa2-front:890da14241e769766322b99aa2c59efe93377009
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on: 
@@ -167,7 +167,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: ubiqube/msa2-alarm:480aee7f00ad263b188b8771600e3d0e74be1589
+    image: ubiqube/msa2-alarm:2cc3fd1d2f35d097800b92e886bb496bcc3dc83b
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -185,7 +185,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: ubiqube/msa2-monitoring:debe7dcc8e77de0ae48d9fb0a8367f5c2f47100c
+    image: ubiqube/msa2-monitoring:18f1a9e2c8208ba3658df1b4d72ec12c0407dc67
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -201,6 +201,10 @@ services:
       - "rrd_repository:/opt/rrd"
       - "msa_bulkfiles:/opt/sms/spool/parser"
       - "msa_sms_logs:/opt/sms/logs"
+    networks:
+      default:
+        aliases:
+          - "msa_monitoring"
 
   camunda:
     restart: unless-stopped
@@ -329,13 +333,13 @@ services:
       - "2224:22"
     devices:                     # required for dmidecode used by polld/asset
       - "/dev/mem:/dev/mem"
+    hostname: linux-me
+    privileged: true
     networks:
       default:
         aliases:
           - "linux_me"
         ipv4_address: 172.20.0.101
-    hostname: linux-me
-    privileged: true
 
   linux-me-2:
     restart: unless-stopped
@@ -352,13 +356,13 @@ services:
       - "2225:22"
     devices:                     # required for dmidecode used by polld/asset
       - "/dev/mem:/dev/mem"
+    hostname: linux-me-2
+    privileged: true
     networks:
       default:
         aliases:
           - "linux_me_2"
         ipv4_address: 172.20.0.102
-    hostname: linux-me-2
-    privileged: true
 
 volumes:
   msa_api:
