@@ -7,14 +7,17 @@ services:
     image: ubiqube/msa2-front:177b3037386aea38bff7ac1ca42089ecef0e3514
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
-    depends_on: 
     depends_on:
       msa-ui:
         condition: service_healthy
-      msa-es:
       msa-api:
+        condition: service_started
+      msa-es:
+        condition: service_started
       camunda:
+        condition: service_started
       msa-ai-ml:
+        condition: service_started
     ports:
       - target: 80
         published: 80
@@ -149,7 +152,8 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
-      - msa-api
+      msa-api:
+        condition: service_started
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -178,9 +182,12 @@ services:
     cap_add:
       - NET_ADMIN
     depends_on:
-      - db
-      - msa-es
-      - msa-dev
+      db:
+        condition: service_healthy
+      msa-es:
+        condition: service_started
+      msa-dev:
+        condition: service_started
     volumes:
       - "msa_dev:/opt/devops/"
       - "msa_entities:/opt/fmc_entities"
@@ -200,7 +207,8 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     volumes:
       - "msa_bud_logs:/opt/bud/logs/"
     networks:
@@ -215,8 +223,10 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     depends_on:
-      - db
-      - msa-es
+      db:
+        condition: service_healthy
+      msa-es:
+        condition: service_healthy
     environment:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
     volumes:
@@ -233,9 +243,12 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
-      - db
-      - msa-es
-      - msa-dev
+      db:
+        condition: service_healthy
+      msa-es:
+        condition: service_healthy
+      msa-dev:
+        condition: service_started
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     volumes:
@@ -254,7 +267,8 @@ services:
     restart: unless-stopped
     container_name: msa_camunda
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     image: openmsa/openmsa:msa2-camunda-2.8.0-507b2c9b8361821915c4bd9255bafb47ace89079
     environment:
       DB_DRIVER: org.postgresql.Driver
@@ -305,7 +319,8 @@ services:
       - /opt/cerebro/bin/cerebro
       - -Dhosts.0.host=http://msa_es:9200
     depends_on:
-      - msa-es
+      msa-es:
+        condition: service_healthy
     ports:
     - "9000:9000"
     networks:
@@ -318,7 +333,8 @@ services:
     container_name: msa_kibana
     image: openmsa/openmsa:msa2-kibana-2.8.0-49c1c422ad5559815d4f74568904a7214e788932
     depends_on:
-      - msa-es
+      msa-es:
+        condition: service_healthy
     ports:
       - "5601:5601"
     environment:
@@ -351,7 +367,8 @@ services:
     #build: ./lab/msa_dev
     image: openmsa/openmsa:msa2-linuxdev-2.8.0-60956823e130ba38d6135eeda109d59058ab2ae8
     depends_on:
-      - msa-es
+      msa-es:
+        condition: service_started
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
