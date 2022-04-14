@@ -8,10 +8,13 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on: 
-      - msa-api
-      - msa-ui
-      - camunda
-      - msa-ai-ml
+    depends_on:
+      msa-ui:
+        condition: service_healthy
+      msa-es:
+      msa-api:
+      camunda:
+      msa-ai-ml:
     ports:
       - target: 80
         published: 80
