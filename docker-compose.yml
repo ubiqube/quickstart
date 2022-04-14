@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:faff893da19a743284d33b397a1469e4c02b9dca
+    image: ubiqube/msa2-front:177b3037386aea38bff7ac1ca42089ecef0e3514
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on: 
@@ -46,15 +46,29 @@ services:
     #volumes:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
   db:
-    restart: unless-stopped
-    container_name: msa_db
-    image: ubiqube/msa2-db:4d8430b838698b756ddadd495f614003a906dae1
+    image: ubiqube/msa2-pgpool:2c1e80886c6ec42b63f49feae2d5fe14a86aa642
+    depends_on:
+      db-primary:
+        condition: service_healthy
+    depends_on:
+      db-replica:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "/usr/pgsql-13/bin/pg_isready -h db-primary"]
+      timeout: 10s
+    environment:
+      PG_PRIMARY_SERVICE_NAME: db-primary
+      PG_REPLICA_SERVICE_NAME: db-replica
+      PG_USERNAME: postgres
+      PG_PASSWORD: my_db_password
+
+  db-primary:
+    image: ubiqube/msa2-db:9dffc61633161c778fd0d31ccb9c1011bee798c8
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
-      interval: 30s
-      retries: 5
     environment:
+      MODE: postgres
       CAMUNDA_PASSWORD: camunda
       CAMUNDA_DB: process-engine
       CAMUNDA_USER: camunda
@@ -68,14 +82,40 @@ services:
       PG_DATABASE: POSTGRESQL
       PG_ROOT_PASSWORD: my_db_password
       PG_PRIMARY_PORT: 5432
-      MAX_CONNECTIONS: 1600
+      MAX_CONNECTIONS: 800
     volumes:
       - "msa_db:/pgsqldata/pgsql"
+
+  db-replica:
+    image: ubiqube/msa2-db:9d07e5ee4a3d848cf94f6d9ee5d0751c3cdcd71d
+    healthcheck:
+      test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
+      timeout: 20s
+    depends_on:
+      db-primary:
+        condition: service_healthy
+    environment:
+      MODE: postgres
+      CAMUNDA_PASSWORD: camunda
+      CAMUNDA_DB: process-engine
+      CAMUNDA_USER: camunda
+      KEY_VAULT_USER: key_vault
+      KEY_VAULT_DB: key_vault
+      PG_MODE: replica
+      PG_PRIMARY_USER: postgres
+      PG_PRIMARY_PASSWORD: my_db_password
+      PG_USER: postgres
+      PG_PASSWORD: my_db_password
+      PG_DATABASE: POSTGRESQL
+      PG_ROOT_PASSWORD: my_db_password
+      PG_PRIMARY_PORT: 5432
+      PG_PRIMARY_HOST: db-primary
+      MAX_CONNECTIONS: 800
 
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:6f22b2fb3b072cf0a5d2b467313c015ee86e98fd
+    image: ubiqube/msa2-api:0be781182908ca00aa3299a639da82ec0f025802
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     depends_on:
@@ -101,7 +141,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:4fb3ad536d653eb956dfd7a470b62bd602eef710
+    image: ubiqube/msa2-ui:361b3055377cc995f5e0eb246c36336498f01312
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
