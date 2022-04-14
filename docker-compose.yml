@@ -50,7 +50,6 @@ services:
     depends_on:
       db-primary:
         condition: service_healthy
-    depends_on:
       db-replica:
         condition: service_healthy
     healthcheck:
