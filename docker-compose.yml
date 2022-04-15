@@ -54,6 +54,7 @@ services:
 
   db:
     image: ubiqube/msa2-db:4d8430b838698b756ddadd495f614003a906dae1
+    container_name: msa_db
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
