@@ -54,8 +54,8 @@ services:
 
   db:
     restart: unless-stopped
-    image: ubiqube/msa2-db:4d8430b838698b756ddadd495f614003a906dae1
     container_name: msa_db
+    image: ubiqube/msa2-db:4d8430b838698b756ddadd495f614003a906dae1
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -83,11 +83,14 @@ services:
     image: ubiqube/msa2-api:0be781182908ca00aa3299a639da82ec0f025802
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
+      retries: 10
+      interval: 10s
+      start_period: 5s    
     depends_on:
       db:
         condition: service_healthy
       msa-es:
-        condition: service_healthy
+        condition: service_started
     environment:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
       - UBIQUBE_CAPTCHA_SECRET_KEY=6Ld2zF4dAAAAABWD9Q6QAhBql_CIynUeVKaTiBgT
@@ -206,7 +209,7 @@ services:
       db:
         condition: service_healthy
       msa-es:
-        condition: service_healthy
+        condition: service_started
       msa-dev:
         condition: service_started
     environment:
@@ -280,7 +283,7 @@ services:
       - -Dhosts.0.host=http://msa_es:9200
     depends_on:
       msa-es:
-        condition: service_healthy
+        condition: service_started
     ports:
     - "9000:9000"
     networks:
