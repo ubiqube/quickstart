@@ -53,6 +53,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
+    restart: unless-stopped
     image: ubiqube/msa2-db:4d8430b838698b756ddadd495f614003a906dae1
     container_name: msa_db
     healthcheck:
