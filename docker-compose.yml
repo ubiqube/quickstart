@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:c51616c7c861feeebd92938ecd9c4edb2c5cf363
+    image: ubiqube/msa2-front:56913dd95a16bf42e9703050a7d7de342dc455e9
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -80,7 +80,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:bf35f5a71f20afe298077d0dae2a27c02e3a8f1c
+    image: ubiqube/msa2-api:2667a3dc791e58ca9afc0a19c1fa009babc2ced4
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
       retries: 10
@@ -189,7 +189,7 @@ services:
       db:
         condition: service_healthy
       msa-es:
-        condition: service_healthy
+        condition: service_started
     environment:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
     volumes:
@@ -297,7 +297,7 @@ services:
     image: openmsa/openmsa:msa2-kibana-2.8.0-49c1c422ad5559815d4f74568904a7214e788932
     depends_on:
       msa-es:
-        condition: service_healthy
+        condition: service_started
     ports:
       - "5601:5601"
     environment:
