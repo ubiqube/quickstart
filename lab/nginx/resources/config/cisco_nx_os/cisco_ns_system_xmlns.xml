@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<System xmlns="http://cisco.com/ns/yang/cisco-nx-os-device">
+<ospf-items>
+    <inst-items>
+      <Inst-list>
+        <name>UNDERLAY</name>
+        <dom-items>
+          <Dom-list>
+            <name>default</name>
+            <if-items>
+              <If-list>
+                <id>eth1/5</id>
+                <advertiseSecondaries>true</advertiseSecondaries>
+                <area>0.0.0.0</area>
+              </If-list>
+            </if-items>
+          </Dom-list>
+        </dom-items>
+      </Inst-list>
+    </inst-items>
+  </ospf-items>
+  </System>
