@@ -44,19 +44,26 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.7.1-3fcbdecf6f64fa126deb88db61bcb0ebec3cf92d
-    command: postgres -c 'max_connections=800' -c 'max_prepared_transactions=100'
+    image: ubiqube/msa2-db:2513ba6c67d9bbdc4613495d4ad22582c80340c8
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
+      timeout: 20s
       interval: 30s
-      timeout: 60s
       retries: 5
     environment:
-      POSTGRES_PASSWORD: my_db_password
-      POSTGRES_DB: POSTGRESQL
       CAMUNDA_PASSWORD: camunda
       CAMUNDA_DB: process-engine
       CAMUNDA_USER: camunda
+      KEY_VAULT_USER: key_vault
+      KEY_VAULT_DB: key_vault
+      PG_MODE: primary
+      PG_PRIMARY_USER: postgres
+      PG_PRIMARY_PASSWORD: my_db_password
+      PG_USER: postgres
+      PG_PASSWORD: my_db_password
+      PG_DATABASE: POSTGRESQL
+      PG_ROOT_PASSWORD: my_db_password
+      PG_PRIMARY_PORT: 5432
     volumes:
       - "msa_db:/var/lib/postgresql/data"
 

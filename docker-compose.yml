@@ -4,14 +4,20 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:787de661162d145ab92c1e6332c105cf1c87e269
+    image: ubiqube/msa2-front:56913dd95a16bf42e9703050a7d7de342dc455e9
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
-    depends_on: 
-      - msa-api
-      - msa-ui
-      - camunda
-      - msa-ai-ml
+    depends_on:
+      msa-ui:
+        condition: service_healthy
+      msa-api:
+        condition: service_started
+      msa-es:
+        condition: service_started
+      camunda:
+        condition: service_started
+      msa-ai-ml:
+        condition: service_started
     ports:
       - target: 80
         published: 80
@@ -34,7 +40,10 @@ services:
         protocol: udp
         mode: host
       - "5200-5200:5200-5200/udp"
-   #
+    networks:
+      default:
+        aliases:
+          - "msa_front"   #
     # uncomment one of the 2 sections below when installing a custom certificate 
     # - Docker standard standalone installation
     #volumes:
@@ -42,34 +51,46 @@ services:
     # - Docker Swarm HA installation
     #volumes:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
+
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: ubiqube/msa2-db:d8aba832890c9bef80cb891cedf2744c520094ec
-    command: postgres -c 'max_connections=800' -c 'max_prepared_transactions=100'
+    image: ubiqube/msa2-db:4d8430b838698b756ddadd495f614003a906dae1
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 30s
-      timeout: 60s
-      retries: 5
+      test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
+      timeout: 20s
     environment:
-      POSTGRES_PASSWORD: my_db_password
-      POSTGRES_DB: POSTGRESQL
       CAMUNDA_PASSWORD: camunda
       CAMUNDA_DB: process-engine
       CAMUNDA_USER: camunda
+      KEY_VAULT_USER: key_vault
+      KEY_VAULT_DB: key_vault
+      PG_MODE: primary
+      PG_PRIMARY_USER: postgres
+      PG_PRIMARY_PASSWORD: my_db_password
+      PG_USER: postgres
+      PG_PASSWORD: my_db_password
+      PG_DATABASE: POSTGRESQL
+      PG_ROOT_PASSWORD: my_db_password
+      PG_PRIMARY_PORT: 5432
+      MAX_CONNECTIONS: 1600
     volumes:
-      - "msa_db:/var/lib/postgresql/data"
+      - "msa_db:/pgsqldata/pgsql"
 
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:f87d5a40de4b5a94a4c9450c2635da9ba93f822d
+    image: ubiqube/msa2-api:2667a3dc791e58ca9afc0a19c1fa009babc2ced4
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
+      retries: 10
+      interval: 10s
+      start_period: 5s    
     depends_on:
-      - db
-      - msa-es
+      db:
+        condition: service_healthy
+      msa-es:
+        condition: service_started
     environment:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
       - UBIQUBE_CAPTCHA_SECRET_KEY=6Ld2zF4dAAAAABWD9Q6QAhBql_CIynUeVKaTiBgT
@@ -90,11 +111,12 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:0d5fb1e1d575ed7829bbf193bab3f399f237e84c
+    image: ubiqube/msa2-ui:15f97e860e3db7a9cd2b24c5b108a1f41577c8a1
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
-      - msa-api
+      msa-api:
+        condition: service_started
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -115,7 +137,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:54beb0ecddf4b3d711de7b9635e30ffbbdddf14c
+    image: ubiqube/msa2-sms:55e887bf497136fbed700f6d4970edc1a5c33f87
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -123,9 +145,12 @@ services:
     cap_add:
       - NET_ADMIN
     depends_on:
-      - db
-      - msa-es
-      - msa-dev
+      db:
+        condition: service_healthy
+      msa-es:
+        condition: service_started
+      msa-dev:
+        condition: service_started
     volumes:
       - "msa_dev:/opt/devops/"
       - "msa_entities:/opt/fmc_entities"
@@ -141,11 +166,12 @@ services:
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: ubiqube/msa2-bud:ce329d839f14505234d1cd57a989618faf02a674
+    image: ubiqube/msa2-bud:36e257bb99d4391b4bb34e9aaf17b9accdf1de25
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     volumes:
       - "msa_bud_logs:/opt/bud/logs/"
     networks:
@@ -156,12 +182,14 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: ubiqube/msa2-alarm:623ec69bb7f75904e14fcc6d0eff748c2a842a87
+    image: ubiqube/msa2-alarm:6c4d49f9cbb1f162f0bdc1f9b127b0e5447a8ea5
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     depends_on:
-      - db
-      - msa-es
+      db:
+        condition: service_healthy
+      msa-es:
+        condition: service_started
     environment:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
     volumes:
@@ -174,13 +202,16 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: ubiqube/msa2-monitoring:a67a5c3775cad4454ba0607e438a3848e8b6ab67
+    image: ubiqube/msa2-monitoring:8e7f465d4d8f8ec779e5574483961ec190dd93fa
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
-      - db
-      - msa-es
-      - msa-dev
+      db:
+        condition: service_healthy
+      msa-es:
+        condition: service_started
+      msa-dev:
+        condition: service_started
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     volumes:
@@ -190,13 +221,18 @@ services:
       - "rrd_repository:/opt/rrd"
       - "msa_bulkfiles:/opt/sms/spool/parser"
       - "msa_sms_logs:/opt/sms/logs"
+    networks:
+      default:
+        aliases:
+          - "msa_monitoring"
 
   camunda:
     restart: unless-stopped
     container_name: msa_camunda
     depends_on:
-      - db
-    image: ubiqube/msa2-camunda:507b2c9b8361821915c4bd9255bafb47ace89079
+      db:
+        condition: service_healthy
+    image: openmsa/openmsa:msa2-camunda-2.8.0-507b2c9b8361821915c4bd9255bafb47ace89079
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
@@ -209,7 +245,7 @@ services:
   msa-es:
     restart: unless-stopped
     container_name: msa_es
-    image: ubiqube/msa2-es:f1d8ba7f38e65a375af4c22f9f2676a2cb480f8f
+    image: openmsa/openmsa:msa2-es-2.8.0-6b191fca4d76383f04930565d90dbf58a051eed4
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
@@ -237,7 +273,7 @@ services:
   msa-cerebro:
     restart: unless-stopped
     container_name: msa_cerebro
-    image: ubiqube/msa2-cerebro:7144f86eec3b2a326066046446187f86a75515b1
+    image: openmsa/openmsa:msa2-cerebro-2.8.0-914750e000db1343d9972bfa6652da1efe4aa32f
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -246,7 +282,8 @@ services:
       - /opt/cerebro/bin/cerebro
       - -Dhosts.0.host=http://msa_es:9200
     depends_on:
-      - msa-es
+      msa-es:
+        condition: service_started
     ports:
     - "9000:9000"
     networks:
@@ -257,9 +294,10 @@ services:
   msa-kibana:
     restart: unless-stopped
     container_name: msa_kibana
-    image: ubiqube/msa2-kibana:e882bf60f8eeee721e7a9037efd86198ec5a5635
+    image: openmsa/openmsa:msa2-kibana-2.8.0-49c1c422ad5559815d4f74568904a7214e788932
     depends_on:
-      - msa-es
+      msa-es:
+        condition: service_started
     ports:
       - "5601:5601"
     environment:
@@ -274,7 +312,7 @@ services:
   msa-ai-ml:
     restart: unless-stopped
     container_name: msa_ai_ml
-    image: ubiqube/msa2-ai-ml:63c7fab8c111b6cc85da049f45ebc6175a9b269a
+    image: openmsa/openmsa:msa2-ai-ml-2.8.0-63c7fab8c111b6cc85da049f45ebc6175a9b269a
     healthcheck:
       test: ["CMD-SHELL", "python /msa_proj/health_check.py"]
     ports:
@@ -290,9 +328,10 @@ services:
     restart: unless-stopped
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: ubiqube/msa2-linuxdev:f97770af16925f812debf25bf26b5847a670d4df
+    image: openmsa/openmsa:msa2-linuxdev-2.8.0-60956823e130ba38d6135eeda109d59058ab2ae8
     depends_on:
-      - msa-es
+      msa-es:
+        condition: service_started
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
@@ -307,7 +346,7 @@ services:
     restart: unless-stopped
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: ubiqube/msa2-linuxme:b831acacdef579420ee1abf70ef66655d969fcbb
+    image: openmsa/openmsa:msa2-linuxme-2.8.0-b831acacdef579420ee1abf70ef66655d969fcbb
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -318,19 +357,19 @@ services:
       - "2224:22"
     devices:                     # required for dmidecode used by polld/asset
       - "/dev/mem:/dev/mem"
+    hostname: linux-me
+    privileged: true
     networks:
       default:
         aliases:
           - "linux_me"
         ipv4_address: 172.20.0.101
-    hostname: linux-me
-    privileged: true
 
   linux-me-2:
     restart: unless-stopped
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: ubiqube/msa2-linuxme:b831acacdef579420ee1abf70ef66655d969fcbb
+    image: openmsa/openmsa:msa2-linuxme-2.8.0-b831acacdef579420ee1abf70ef66655d969fcbb
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -341,13 +380,13 @@ services:
       - "2225:22"
     devices:                     # required for dmidecode used by polld/asset
       - "/dev/mem:/dev/mem"
+    hostname: linux-me-2
+    privileged: true
     networks:
       default:
         aliases:
           - "linux_me_2"
         ipv4_address: 172.20.0.102
-    hostname: linux-me-2
-    privileged: true
 
   nginx:
     restart: unless-stopped
