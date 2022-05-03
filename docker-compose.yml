@@ -1,17 +1,17 @@
 version: "3.8"
 
 services:
-  msa_front:
+  msa-front:
     restart: unless-stopped
     container_name: msa_front
     image: ubiqube/msa2-front:787de661162d145ab92c1e6332c105cf1c87e269
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on: 
-      - msa_api
-      - msa_ui
+      - msa-api
+      - msa-ui
       - camunda
-      - msa_ai_ml
+      - msa-ai-ml
     ports:
       - target: 80
         published: 80
@@ -61,7 +61,7 @@ services:
     volumes:
       - "msa_db:/var/lib/postgresql/data"
 
-  msa_api:
+  msa-api:
     restart: unless-stopped
     container_name: msa_api
     image: ubiqube/msa2-api:f87d5a40de4b5a94a4c9450c2635da9ba93f822d
@@ -69,9 +69,10 @@ services:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     depends_on:
       - db
-      - msa_es
+      - msa-es
     environment:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+      - UBIQUBE_CAPTCHA_SECRET_KEY=6Ld2zF4dAAAAABWD9Q6QAhBql_CIynUeVKaTiBgT
     volumes:
       - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_entities:/opt/fmc_entities"
@@ -80,19 +81,20 @@ services:
       - "msa_dev:/opt/devops/"
       - "msa_api_logs:/opt/wildfly/logs/"
       - "msa_api_logs:/opt/wildfly/logs/processLog"
+      - "msa_api_keystore:/etc/pki/jentreprise"
     networks:
       default:
         aliases:
-          - "msa-api"
+          - "msa_api"
 
-  msa_ui:
+  msa-ui:
     restart: unless-stopped
     container_name: msa_ui
     image: ubiqube/msa2-ui:0d5fb1e1d575ed7829bbf193bab3f399f237e84c
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
-      - msa_api
+      - msa-api
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -105,8 +107,12 @@ services:
     - FEATURE_PERMISSION_PROFILES=true
     - FEATURE_AI_ML=false
     - FEATURE_WORKFLOW_OWNER=false
+    networks:
+      default:
+        aliases:
+          - "msa_ui"
 
-  msa_sms:
+  msa-sms:
     restart: unless-stopped
     container_name: msa_sms
     image: ubiqube/msa2-sms:54beb0ecddf4b3d711de7b9635e30ffbbdddf14c
@@ -118,8 +124,8 @@ services:
       - NET_ADMIN
     depends_on:
       - db
-      - msa_es
-      - msa_dev
+      - msa-es
+      - msa-dev
     volumes:
       - "msa_dev:/opt/devops/"
       - "msa_entities:/opt/fmc_entities"
@@ -127,8 +133,12 @@ services:
       - "msa_sms_logs:/opt/sms/logs"
       - "msa_svn:/opt/svnroot"
       - "msa_bulkfiles:/opt/sms/spool/parser"
+    networks:
+      default:
+        aliases:
+          - "msa_sms"
 
-  msa_bud:
+  msa-bud:
     restart: unless-stopped
     container_name: msa_bud
     image: ubiqube/msa2-bud:ce329d839f14505234d1cd57a989618faf02a674
@@ -138,8 +148,12 @@ services:
       - db
     volumes:
       - "msa_bud_logs:/opt/bud/logs/"
+    networks:
+      default:
+        aliases:
+          - "msa_bud"
 
-  msa_alarm:
+  msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
     image: ubiqube/msa2-alarm:623ec69bb7f75904e14fcc6d0eff748c2a842a87
@@ -147,13 +161,17 @@ services:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     depends_on:
       - db
-      - msa_es
+      - msa-es
     environment:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
     volumes:
       - "msa_sms_logs:/opt/sms/logs"
+    networks:
+      default:
+        aliases:
+          - "msa_alarm"
   
-  msa_monitoring:
+  msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
     image: ubiqube/msa2-monitoring:a67a5c3775cad4454ba0607e438a3848e8b6ab67
@@ -161,8 +179,8 @@ services:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
       - db
-      - msa_es
-      - msa_dev
+      - msa-es
+      - msa-dev
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     volumes:
@@ -188,7 +206,7 @@ services:
       WAIT_FOR: 'db:5432'
       WAIT_FOR_TIMEOUT: 60
 
-  msa_es:
+  msa-es:
     restart: unless-stopped
     container_name: msa_es
     image: ubiqube/msa2-es:f1d8ba7f38e65a375af4c22f9f2676a2cb480f8f
@@ -211,8 +229,12 @@ services:
       memlock:
         soft: -1
         hard: -1
+    networks:
+      default:
+        aliases:
+          - "msa_es"
 
-  msa_cerebro:
+  msa-cerebro:
     restart: unless-stopped
     container_name: msa_cerebro
     image: ubiqube/msa2-cerebro:7144f86eec3b2a326066046446187f86a75515b1
@@ -224,16 +246,20 @@ services:
       - /opt/cerebro/bin/cerebro
       - -Dhosts.0.host=http://msa_es:9200
     depends_on:
-      - msa_es
+      - msa-es
     ports:
     - "9000:9000"
+    networks:
+      default:
+        aliases:
+          - "msa_cerebro"
   
-  msa_kibana:
+  msa-kibana:
     restart: unless-stopped
     container_name: msa_kibana
     image: ubiqube/msa2-kibana:e882bf60f8eeee721e7a9037efd86198ec5a5635
     depends_on:
-      - msa_es
+      - msa-es
     ports:
       - "5601:5601"
     environment:
@@ -243,9 +269,9 @@ services:
     networks:
       default:
         aliases:
-          - "msa-kibana"
+          - "msa_kibana"
           
-  msa_ai_ml:
+  msa-ai-ml:
     restart: unless-stopped
     container_name: msa_ai_ml
     image: ubiqube/msa2-ai-ml:63c7fab8c111b6cc85da049f45ebc6175a9b269a
@@ -258,22 +284,26 @@ services:
     networks:
       default:
         aliases:
-          - "msa-ai-ml"
+          - "msa_ai_ml"
 
-  msa_dev:
+  msa-dev:
     restart: unless-stopped
     container_name: msa_dev
     #build: ./lab/msa_dev
     image: ubiqube/msa2-linuxdev:f97770af16925f812debf25bf26b5847a670d4df
     depends_on:
-      - msa_es
+      - msa-es
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "msa_dev:/opt/devops/"
+    networks:
+      default:
+        aliases:
+          - "msa_dev"
 
-  linux_me:
+  linux-me:
     restart: unless-stopped
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
@@ -290,11 +320,13 @@ services:
       - "/dev/mem:/dev/mem"
     networks:
       default:
+        aliases:
+          - "linux_me"
         ipv4_address: 172.20.0.101
-    hostname: linux_me
+    hostname: linux-me
     privileged: true
 
-  linux_me_2:
+  linux-me-2:
     restart: unless-stopped
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
@@ -311,8 +343,10 @@ services:
       - "/dev/mem:/dev/mem"
     networks:
       default:
+        aliases:
+          - "linux_me_2"
         ipv4_address: 172.20.0.102
-    hostname: linux_me_2
+    hostname: linux-me-2
     privileged: true
 
   nginx:
@@ -350,6 +384,7 @@ volumes:
   msa_es:
   rrd_repository:
   msa_api_logs:
+  msa_api_keystore:
   msa_sms_logs:
   msa_bud_logs:
   msa_front:

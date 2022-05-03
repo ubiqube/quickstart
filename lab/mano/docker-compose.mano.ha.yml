@@ -1,29 +1,56 @@
 version: "3.8"
 
 services:
-  mano-vnf:
-    image: openmsa/mano-vnfm:2.6.2
+  mano-vnfm:
+    image: openmsa/mano-vnfm:2.7.1
     depends_on:
       - mano-db
     volumes:
-      - "/mnt/NASVolume/mano_vnf:/opt/etsi-mano-data"
+      - "/mnt/NASVolume/mano_vnfm:/opt/etsi-mano-data"
     deploy:
       replicas: 1
-      placement:
-        constraints:
+      placement:	
+        constraints:	
           - "node.role==manager"
-
+    ports:
+      - target: 8090
+        published: 8090
+        protocol: tcp
+        mode: ingress
+        
+  mano-vnfm2:
+    image: openmsa/mano-vnfm-bis:2.7.1
+    depends_on:
+      - mano-db
+    volumes:
+      - "/mnt/NASVolume/mano_vnfm2:/opt/etsi-mano-data"
+    deploy:
+      replicas: 1
+      placement:	
+        constraints:	
+          - "node.role==manager"
+    ports:
+      - target: 8090
+        published: 8091
+        protocol: tcp
+        mode: ingress
+        
   mano-nfvo:
-    image: openmsa/mano-nfvo:2.6.2
+    image: openmsa/mano-nfvo:2.7.1
     depends_on:
       - mano-db
     volumes:
       - "/mnt/NASVolume/mano_nfvo:/opt/etsi-mano-data"
     deploy:
       replicas: 1
-      placement:
-        constraints:
+      placement:	
+        constraints:	
           - "node.role==manager"
+    ports:
+      - target: 8100
+        published: 8100
+        protocol: tcp
+        mode: ingress
 
   mano-db:
     image: openmsa/mano-db
@@ -34,14 +61,14 @@ services:
       - "/mnt/NASVolume/mano_db:/var/lib/postgresql/data"
     deploy:
       replicas: 1
-      placement:
-        constraints:
+      placement:	
+        constraints:	
           - "node.role==manager"
 
   mano-artemis:
     image: openmsa/artemis:2.19.0
     deploy:
       replicas: 1
-      placement:
-        constraints:
+      placement:	
+        constraints:	
           - "node.role==manager"
