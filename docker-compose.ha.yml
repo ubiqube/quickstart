@@ -10,11 +10,11 @@ services:
       - camunda
       - msa-ai-ml
     healthcheck:
-      test: ["CMD-SHELL", "curl -k --fail https://localhost"] 
+      test: ["CMD-SHELL", "curl -k --fail https://localhost"]
       timeout: 2s
       retries: 10
       interval: 10s
-      start_period: 30s 
+      start_period: 30s
     deploy:
       replicas: 1
       placement:
@@ -44,7 +44,7 @@ services:
         mode: ingress
       - "5200-5200:5200-5200/udp"
     #
-    # uncomment one of the 2 sections below when installing a custom certificate 
+    # uncomment one of the 2 sections below when installing a custom certificate
     # - Docker standard standalone installation
     #volumes:
     #    - "msa_front:/etc/nginx/ssl"
@@ -79,7 +79,7 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
- 
+
   msa-api:
     image: ubiqube/msa2-api:a116c83d873a77082db62ce7bbd745d61665f963
     depends_on:
@@ -141,12 +141,11 @@ services:
     depends_on:
       - db
     healthcheck:
-      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"] 
-      
+      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
+
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
-    hostname: "{{.Task.Name}}.{{.Node.Hostname}}"
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
@@ -170,6 +169,8 @@ services:
       - db
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
+    environment:
+      - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
     deploy:
       replicas: 1
       placement:
@@ -189,7 +190,6 @@ services:
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
-    hostname: "{{.Task.Name}}.{{.Node.Hostname}}"
     deploy:
       replicas: 1
       placement:
@@ -212,6 +212,7 @@ services:
       - msa-api
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
@@ -252,7 +253,7 @@ services:
       timeout: 2s
       retries: 10
       interval: 10s
-      start_period: 30s 
+      start_period: 30s
     deploy:
       replicas: 1
       placement:
@@ -288,7 +289,7 @@ services:
       default:
         aliases:
           - "msa_kibana"
-          
+
   msa-ai-ml:
     image: openmsa/openmsa:msa2-ai-ml-2.7.0GA-63c7fab8c111b6cc85da049f45ebc6175a9b269a
     healthcheck:
@@ -345,7 +346,7 @@ services:
       default:
         aliases:
           - "msa_dev"
-        
+
 
 networks:
   default:
