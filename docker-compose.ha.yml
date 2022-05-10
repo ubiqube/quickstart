@@ -3,12 +3,18 @@ version: "3.8"
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:d243e5c6d307b1edad751cfb0dd5ccd4ea2bc36c
+    image: ubiqube/msa2-front:129a715b0a869e3ef1d3f50cff802eaaebfe0336
     depends_on:
-      - msa-api
-      - msa-ui
-      - camunda
-      - msa-ai-ml
+      msa-ui:
+        condition: service_healthy
+      msa-api:
+        condition: service_started
+      msa-es:
+        condition: service_started
+      camunda:
+        condition: service_started
+      msa-ai-ml:
+        condition: service_started
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
       timeout: 2s
@@ -53,7 +59,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:2513ba6c67d9bbdc4613495d4ad22582c80340c8
+    image: ubiqube/msa2-db:4d8430b838698b756ddadd495f614003a906dae1
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -81,7 +87,7 @@ services:
         condition: on-failure
 
   msa-api:
-    image: ubiqube/msa2-api:a116c83d873a77082db62ce7bbd745d61665f963
+    image: ubiqube/msa2-api:be6f87e690d188f1d5764b37c9f4c82135b13390
     depends_on:
       - db
     healthcheck:
@@ -109,7 +115,7 @@ services:
         aliases:
           - "msa_api"
   msa-ui:
-    image: ubiqube/msa2-ui:956d2c5f09c91e25841662db77e467942edf0dc4
+    image: ubiqube/msa2-ui:0d2bb8cd58b517538447d409989844ea09d61380
     depends_on:
       - msa-api
     healthcheck:
@@ -137,7 +143,7 @@ services:
         aliases:
           - "msa_ui"
   msa-sms:
-    image: ubiqube/msa2-sms:fbc1fc2933e67078fe8e2c0ba99a9807d6d59c16
+    image: ubiqube/msa2-sms:55e887bf497136fbed700f6d4970edc1a5c33f87
     depends_on:
       - db
     healthcheck:
@@ -184,7 +190,7 @@ services:
     depends_on:
       - db
       - msa-api
-    image: ubiqube/msa2-alarm:444f58e121299db6949000f97a580011283571ea
+    image: ubiqube/msa2-alarm:6c28461de80d7e30ba3911613a48e773e11df034
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -202,7 +208,7 @@ services:
           - "msa_alarm"
 
   msa-monitoring:
-    image: ubiqube/msa2-monitoring:c6e11c3bc005a22b1c1d83052bf4d4fa3a62c66c
+    image: ubiqube/msa2-monitoring:192f8cf5103a7560fc3676254739cf728e15d6f6
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:

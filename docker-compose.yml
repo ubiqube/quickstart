@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:5343de6b516a827d2bcbae9a85ea741be50f5425
+    image: ubiqube/msa2-front:f63909142cc4904bc59200ec115f49ce9455807a
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -80,7 +80,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:cc05b3aa00b4dad3cb4a0803b3b139f2a3898b2b
+    image: ubiqube/msa2-api:98ef2f8ec17880a8a5677b6470da608c29d405e5
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
       retries: 10
@@ -111,7 +111,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:0d2bb8cd58b517538447d409989844ea09d61380
+    image: ubiqube/msa2-ui:d238e25c7d92d57fd9c95cfd35a9b09089401fb9
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -166,7 +166,7 @@ services:
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: ubiqube/msa2-bud:36e257bb99d4391b4bb34e9aaf17b9accdf1de25
+    image: ubiqube/msa2-bud:fafbdb3cc13cff237dd4310ec83e0bc0f6bece64
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -182,7 +182,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: ubiqube/msa2-alarm:6c4d49f9cbb1f162f0bdc1f9b127b0e5447a8ea5
+    image: ubiqube/msa2-alarm:6c28461de80d7e30ba3911613a48e773e11df034
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -202,7 +202,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: ubiqube/msa2-monitoring:8e7f465d4d8f8ec779e5574483961ec190dd93fa
+    image: ubiqube/msa2-monitoring:192f8cf5103a7560fc3676254739cf728e15d6f6
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
