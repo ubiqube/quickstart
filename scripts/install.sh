@@ -29,7 +29,7 @@ install(){
 
 
 standaloneInstall(){
-    # checkComposeVersion
+    checkComposeVersion
     if [ $fresh_setup = false ] ; then
         if [ $remove_orphans = false ] ; then
             docker-compose down
@@ -313,8 +313,8 @@ function checkComposeVersion(){
         compose_vers_int="${compose_vers//.}"
         compose_vers_int="${compose_vers_int:0:3}"
         # echo found "$compose_vers_int"
-        if [ "$compose_vers_int" -lt 128 ]; then
-                echo "Your docker compose version $compose_vers is too old and must be upgraded to 1.28 to be used in $target_version"
+        if [ "$compose_vers_int" -lt 129 ]; then
+                echo "Your docker compose version $compose_vers is too old and must be upgraded to 1.29 to be used in $target_version"
                 exit
         fi
 }
