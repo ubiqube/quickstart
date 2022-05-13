@@ -40,6 +40,13 @@ services:
         protocol: udp
         mode: host
       - "5200-5200:5200-5200/udp"
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     networks:
       default:
         aliases:
@@ -74,6 +81,13 @@ services:
       PG_ROOT_PASSWORD: my_db_password
       PG_PRIMARY_PORT: 5432
       MAX_CONNECTIONS: 1600
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     volumes:
       - "msa_db:/pgsqldata/pgsql"
 
@@ -94,6 +108,13 @@ services:
     environment:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
       - UBIQUBE_CAPTCHA_SECRET_KEY=6Ld2zF4dAAAAABWD9Q6QAhBql_CIynUeVKaTiBgT
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     volumes:
       - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_entities:/opt/fmc_entities"
@@ -241,6 +262,13 @@ services:
       DB_VALIDATE_ON_BORROW: 'true'
       WAIT_FOR: 'db:5432'
       WAIT_FOR_TIMEOUT: 60
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
 
   msa-es:
     restart: unless-stopped
@@ -259,6 +287,13 @@ services:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - xpack.security.enabled=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx1024m"
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     volumes:
       - "msa_es:/usr/share/elasticsearch/data"
     ulimits:
@@ -304,6 +339,13 @@ services:
       - ELASTICSEARCH_URL=http://msa_es:9200
       - ELASTICSEARCH_HOSTS=http://msa_es:9200
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     networks:
       default:
         aliases:
