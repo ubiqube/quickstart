@@ -75,7 +75,7 @@ services:
       PG_PRIMARY_PORT: 5432
       MAX_CONNECTIONS: 1600
     volumes:
-      - "/mnt/NASVolume/msa_db:/var/lib/postgresql/data"
+      - "/mnt/NASVolume/msa_db:/pgsqldata/pgsql"
     deploy:
       replicas: 1
       restart_policy:
