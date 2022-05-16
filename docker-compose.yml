@@ -4,14 +4,20 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.0-f1aba7a929724e7d622bd3fb73ddfe38cdb5d9c8
+    image: openmsa/openmsa:msa2-front-2.8.1-406374620653432b0b209ab7f9a9f1f038a5e582
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
-    depends_on: 
-      - msa-api
-      - msa-ui
-      - camunda
-      - msa-ai-ml
+    depends_on:
+      msa-ui:
+        condition: service_healthy
+      msa-api:
+        condition: service_started
+      msa-es:
+        condition: service_started
+      camunda:
+        condition: service_started
+      msa-ai-ml:
+        condition: service_started
     ports:
       - target: 80
         published: 80
@@ -45,6 +51,7 @@ services:
     # - Docker Swarm HA installation
     #volumes:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
+
   db:
     restart: unless-stopped
     container_name: msa_db
@@ -75,12 +82,17 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.8.0-775a94bdf0a3c943305aff4aef9af309b0e8d4ee
+    image: openmsa/openmsa:msa2-api-2.8.1-98ef2f8ec17880a8a5677b6470da608c29d405e5
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
+      retries: 10
+      interval: 10s
+      start_period: 5s    
     depends_on:
-      - db
-      - msa-es
+      db:
+        condition: service_healthy
+      msa-es:
+        condition: service_started
     environment:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
       - UBIQUBE_CAPTCHA_SECRET_KEY=6Ld2zF4dAAAAABWD9Q6QAhBql_CIynUeVKaTiBgT
@@ -101,11 +113,12 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.8.0-7affa55a1bfd61b50ad49bf37cb92dd6481a346a
+    image: openmsa/openmsa:msa2-ui-2.8.1-d238e25c7d92d57fd9c95cfd35a9b09089401fb9
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
-      - msa-api
+      msa-api:
+        condition: service_started
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -126,7 +139,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: openmsa/openmsa:msa2-sms-2.8.0-1d2950f5d7fe546d9c4178ed6b6b79528713c816
+    image: openmsa/openmsa:msa2-sms-2.8.1-ddc15517d67f74520b2662ba5eca55b57ebce6c0
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -134,9 +147,12 @@ services:
     cap_add:
       - NET_ADMIN
     depends_on:
-      - db
-      - msa-es
-      - msa-dev
+      db:
+        condition: service_healthy
+      msa-es:
+        condition: service_started
+      msa-dev:
+        condition: service_started
     volumes:
       - "msa_dev:/opt/devops/"
       - "msa_entities:/opt/fmc_entities"
@@ -152,11 +168,12 @@ services:
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: openmsa/openmsa:msa2-bud-2.8.0-3af00721f97b3c44d583a7b40cf912b392a392d2
+    image: openmsa/openmsa:msa2-bud-2.8.1-fafbdb3cc13cff237dd4310ec83e0bc0f6bece64
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     volumes:
       - "msa_bud_logs:/opt/bud/logs/"
     networks:
@@ -167,12 +184,14 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: openmsa/openmsa:msa2-alarm-2.8.0-5e4d2061605bce583225c3fcccd193e8ee40f4f4
+    image: openmsa/openmsa:msa2-alarm-2.8.1-6c28461de80d7e30ba3911613a48e773e11df034
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     depends_on:
-      - db
-      - msa-es
+      db:
+        condition: service_healthy
+      msa-es:
+        condition: service_started
     environment:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
     volumes:
@@ -185,13 +204,16 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: openmsa/openmsa:msa2-monitoring-2.8.0-33c2f74c0d854affc0690c6ab282b1f64a30cae2
+    image: openmsa/openmsa:msa2-monitoring-2.8.1-192f8cf5103a7560fc3676254739cf728e15d6f6
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
-      - db
-      - msa-es
-      - msa-dev
+      db:
+        condition: service_healthy
+      msa-es:
+        condition: service_started
+      msa-dev:
+        condition: service_started
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     volumes:
@@ -201,12 +223,17 @@ services:
       - "rrd_repository:/opt/rrd"
       - "msa_bulkfiles:/opt/sms/spool/parser"
       - "msa_sms_logs:/opt/sms/logs"
+    networks:
+      default:
+        aliases:
+          - "msa_monitoring"
 
   camunda:
     restart: unless-stopped
     container_name: msa_camunda
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     image: openmsa/openmsa:msa2-camunda-2.8.0-507b2c9b8361821915c4bd9255bafb47ace89079
     environment:
       DB_DRIVER: org.postgresql.Driver
@@ -257,7 +284,8 @@ services:
       - /opt/cerebro/bin/cerebro
       - -Dhosts.0.host=http://msa_es:9200
     depends_on:
-      - msa-es
+      msa-es:
+        condition: service_started
     ports:
     - "9000:9000"
     networks:
@@ -270,7 +298,8 @@ services:
     container_name: msa_kibana
     image: openmsa/openmsa:msa2-kibana-2.8.0-49c1c422ad5559815d4f74568904a7214e788932
     depends_on:
-      - msa-es
+      msa-es:
+        condition: service_started
     ports:
       - "5601:5601"
     environment:
@@ -301,14 +330,16 @@ services:
     restart: unless-stopped
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: openmsa/openmsa:msa2-linuxdev-2.8.0-60956823e130ba38d6135eeda109d59058ab2ae8
+    image: openmsa/openmsa:msa2-linuxdev-2.8.1-1ae257fde0cd6d96d590a6298e9d30b30f4a6657
     depends_on:
-      - msa-es
+      msa-es:
+        condition: service_started
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "msa_dev:/opt/devops/"
+      - "msa_db:/pgsqldata/pgsql"
     networks:
       default:
         aliases:
@@ -329,13 +360,13 @@ services:
       - "2224:22"
     devices:                     # required for dmidecode used by polld/asset
       - "/dev/mem:/dev/mem"
+    hostname: linux-me
+    privileged: true
     networks:
       default:
         aliases:
           - "linux_me"
         ipv4_address: 172.20.0.101
-    hostname: linux-me
-    privileged: true
 
   linux-me-2:
     restart: unless-stopped
@@ -352,13 +383,13 @@ services:
       - "2225:22"
     devices:                     # required for dmidecode used by polld/asset
       - "/dev/mem:/dev/mem"
+    hostname: linux-me-2
+    privileged: true
     networks:
       default:
         aliases:
           - "linux_me_2"
         ipv4_address: 172.20.0.102
-    hostname: linux-me-2
-    privileged: true
 
 volumes:
   msa_api:

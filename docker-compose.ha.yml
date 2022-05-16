@@ -3,18 +3,18 @@ version: "3.8"
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.0-f1aba7a929724e7d622bd3fb73ddfe38cdb5d9c8
+    image: openmsa/openmsa:msa2-front-2.8.1-406374620653432b0b209ab7f9a9f1f038a5e582
     depends_on:
       - msa-api
       - msa-ui
       - camunda
       - msa-ai-ml
     healthcheck:
-      test: ["CMD-SHELL", "curl -k --fail https://localhost"] 
+      test: ["CMD-SHELL", "curl -k --fail https://localhost"]
       timeout: 2s
       retries: 10
       interval: 10s
-      start_period: 30s 
+      start_period: 30s
     deploy:
       replicas: 1
       placement:
@@ -44,7 +44,7 @@ services:
         mode: ingress
       - "5200-5200:5200-5200/udp"
     #
-    # uncomment one of the 2 sections below when installing a custom certificate 
+    # uncomment one of the 2 sections below when installing a custom certificate
     # - Docker standard standalone installation
     #volumes:
     #    - "msa_front:/etc/nginx/ssl"
@@ -80,9 +80,9 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
- 
+
   msa-api:
-    image: openmsa/openmsa:msa2-api-2.8.0-775a94bdf0a3c943305aff4aef9af309b0e8d4ee
+    image: openmsa/openmsa:msa2-api-2.8.1-98ef2f8ec17880a8a5677b6470da608c29d405e5
     depends_on:
       - db
     healthcheck:
@@ -110,7 +110,7 @@ services:
         aliases:
           - "msa_api"
   msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.8.0-7affa55a1bfd61b50ad49bf37cb92dd6481a346a
+    image: openmsa/openmsa:msa2-ui-2.8.1-d238e25c7d92d57fd9c95cfd35a9b09089401fb9
     depends_on:
       - msa-api
     healthcheck:
@@ -138,16 +138,15 @@ services:
         aliases:
           - "msa_ui"
   msa-sms:
-    image: openmsa/openmsa:msa2-sms-2.8.0-1d2950f5d7fe546d9c4178ed6b6b79528713c816
+    image: openmsa/openmsa:msa2-sms-2.8.1-ddc15517d67f74520b2662ba5eca55b57ebce6c0
     depends_on:
       - db
     healthcheck:
-      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"] 
-      
+      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
+
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
-    hostname: "{{.Task.Name}}.{{.Node.Hostname}}"
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
@@ -166,11 +165,13 @@ services:
           - "msa_sms"
 
   msa-bud:
-    image: openmsa/openmsa:msa2-bud-2.8.0-3af00721f97b3c44d583a7b40cf912b392a392d2
+    image: openmsa/openmsa:msa2-bud-2.8.1-fafbdb3cc13cff237dd4310ec83e0bc0f6bece64
     depends_on:
       - db
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
+    environment:
+      - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
     deploy:
       replicas: 1
       placement:
@@ -184,13 +185,12 @@ services:
     depends_on:
       - db
       - msa-api
-    image: openmsa/openmsa:msa2-alarm-2.8.0-5e4d2061605bce583225c3fcccd193e8ee40f4f4
+    image: openmsa/openmsa:msa2-alarm-2.8.1-6c28461de80d7e30ba3911613a48e773e11df034
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
-    hostname: "{{.Task.Name}}.{{.Node.Hostname}}"
     deploy:
       replicas: 1
       placement:
@@ -203,7 +203,7 @@ services:
           - "msa_alarm"
 
   msa-monitoring:
-    image: openmsa/openmsa:msa2-monitoring-2.8.0-33c2f74c0d854affc0690c6ab282b1f64a30cae2
+    image: openmsa/openmsa:msa2-monitoring-2.8.1-192f8cf5103a7560fc3676254739cf728e15d6f6
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -213,6 +213,7 @@ services:
       - msa-api
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
@@ -253,7 +254,7 @@ services:
       timeout: 2s
       retries: 10
       interval: 10s
-      start_period: 30s 
+      start_period: 30s
     deploy:
       replicas: 1
       placement:
@@ -289,7 +290,7 @@ services:
       default:
         aliases:
           - "msa_kibana"
-          
+
   msa-ai-ml:
     image: openmsa/openmsa:msa2-ai-ml-2.8.0-63c7fab8c111b6cc85da049f45ebc6175a9b269a
     healthcheck:
@@ -330,7 +331,7 @@ services:
           - "msa_cerebro"
 
   msa-dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.8.0-60956823e130ba38d6135eeda109d59058ab2ae8
+    image: openmsa/openmsa:msa2-linuxdev-2.8.1-1ae257fde0cd6d96d590a6298e9d30b30f4a6657
     depends_on:
       - msa-es
     deploy:
@@ -346,9 +347,9 @@ services:
       default:
         aliases:
           - "msa_dev"
-        
+
 
 networks:
   default:
-    driver_opts:
-      encrypted: "true"
+    #driver_opts:
+      #encrypted: "true"
