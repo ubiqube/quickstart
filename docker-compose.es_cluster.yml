@@ -67,7 +67,7 @@ services:
       PG_PRIMARY_PORT: 5432
       MAX_CONNECTIONS: 1600
     volumes:
-      - "/mnt/NASVolume/msa_db:/pgsqldata/pgsql"
+      - "msa_db:/pgsqldata/pgsql"
 
   msa_api:
     restart: unless-stopped
