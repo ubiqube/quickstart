@@ -66,6 +66,8 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
+      interval: 30s
+      retries: 5
     environment:
       CAMUNDA_PASSWORD: camunda
       CAMUNDA_DB: process-engine
