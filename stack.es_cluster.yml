@@ -75,6 +75,7 @@ services:
       PG_DATABASE: POSTGRESQL
       PG_ROOT_PASSWORD: my_db_password
       PG_PRIMARY_PORT: 5432
+      MAX_CONNECTIONS: 1600
     volumes:
       - "/mnt/NASVolume/msa_db:/var/lib/postgresql/data"
     deploy:
@@ -203,7 +204,7 @@ services:
   camunda:
     depends_on:
       - db
-    image: openmsa/openmsa:msa2-camunda-2.7.0GA-507b2c9b8361821915c4bd9255bafb47ace89079
+    image: openmsa/openmsa:msa2-camunda-2.8.0-507b2c9b8361821915c4bd9255bafb47ace89079
     deploy:
       replicas: 1
       placement:

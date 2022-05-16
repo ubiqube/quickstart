@@ -73,6 +73,7 @@ services:
       PG_DATABASE: POSTGRESQL
       PG_ROOT_PASSWORD: my_db_password
       PG_PRIMARY_PORT: 5432
+      MAX_CONNECTIONS: 1600
     volumes:
       - "/mnt/NASVolume/msa_db:/var/lib/postgresql/data"
     deploy:
