@@ -110,6 +110,7 @@ services:
     environment:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
       - UBIQUBE_CAPTCHA_SECRET_KEY=6Ld2zF4dAAAAABWD9Q6QAhBql_CIynUeVKaTiBgT
+    shm_size: 1g
     logging:
       driver: "json-file"
       options:
@@ -381,7 +382,6 @@ services:
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "msa_dev:/opt/devops/"
-      - "msa_db:/pgsqldata/pgsql"
     networks:
       default:
         aliases:
