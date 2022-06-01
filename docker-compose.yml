@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:070c7646b2c34b0520577cd833af20f90d369338
+    image: ubiqube/msa2-front:efb3e01e1d2321d5ada07b01af560a8d44509753
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -96,7 +96,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:b505aa7c6ae8f799b8837d1e30d018e7c7f7c4a9
+    image: ubiqube/msa2-api:53dee951436a965670121991d80a7ae5204ccb4b
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
       retries: 10
@@ -135,7 +135,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:d3fa7a7d6e2ba046270a454234b6571486b05424
+    image: ubiqube/msa2-ui:3624d1f2ffdf3cd30abc5b86b232491a50a75c65
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -148,11 +148,13 @@ services:
     - FEATURE_LICENCE=true
     - FEATURE_TOPOLOGY=true
     - FEATURE_MONITORING_PROFILES=true
-    - FEATURE_SCHEDULE_WORKFLOWS=true
     - FEATURE_PROFILE_AUDIT_LOGS=true
     - FEATURE_PERMISSION_PROFILES=true
-    - FEATURE_AI_ML=false
+    - FEATURE_AI_ML=true
+    - FEATURE_MICROSERVICE_BULK_OPERATION=true
+    - FEATURE_EDIT_VARIABLES_IN_MICROSERVICE_CONSOLE=true
     - FEATURE_WORKFLOW_OWNER=false
+    - FEATURE_PERMISSION_PROFILE_LABELS=false
     networks:
       default:
         aliases:
@@ -226,7 +228,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: openmsa/openmsa:msa2-monitoring-2.8.1-192f8cf5103a7560fc3676254739cf728e15d6f6
+    image: ubiqube/msa2-monitoring:50c51be65b9b98da5918bd4a8871fc464b3e4e88
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
