@@ -474,5 +474,5 @@ services:
 
 networks:
   default:
-    driver_opts:
-      encrypted: "true"
+    # driver_opts:
+    #   encrypted: "true"
