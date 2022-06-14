@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.0-f1aba7a929724e7d622bd3fb73ddfe38cdb5d9c8
+    image: openmsa/openmsa:msa2-front-2.8.2BETA-df047b5a22f37cc00b1e704f4334c8840b1dc03e
     depends_on:
       - msa-api
       - msa-ui
@@ -98,7 +98,7 @@ services:
   #         - "node.labels.manager==true"
 
   msa-api:
-    image: ubiqube/msa2-api:fd3ff4a0278a4b1a857e4cfd7c7b80260ebbb7ee
+    image: openmsa/openmsa:msa2-api-2.8.2BETA-ac58665e2db7c492b39edfbf1fa9a6d0c0b2d68a
     # depends_on:
     #   - db
     healthcheck:
@@ -130,7 +130,7 @@ services:
 #      msa-es: ES_IP
 
   msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.8.0-7affa55a1bfd61b50ad49bf37cb92dd6481a346a
+    image: openmsa/openmsa:msa2-ui-2.8.2BETA-587a4c2d825d5225f02e176fd2d243cfdaed976f
     depends_on:
       - msa-api
     healthcheck:
@@ -161,7 +161,7 @@ services:
   cloudclapp:
     depends_on:
       - msa-api
-    image: ubiqube/cloudclapp:2eac4be3d24c6a5fbaa3590983a8d34fb3aa0caa
+    image: ubiqube/cloudclapp:5f9ffa78e183e28c9b663eaf8e86c328b8da9ee8
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     environment:
@@ -175,7 +175,7 @@ services:
 #          - "node.labels.worker==apps"
 
   ccla-scan-app:
-    image: ubiqube/cloudclapp-scan:d542e628d77781003a5b1970084df4ca4239e990
+    image: ubiqube/cloudclapp-scan:551cd1df6b99932edf5c5f102bddcff64cb6dd32
     environment:
       - UBIQUBE_ZAP_TOKEN=7da091fe-63a4-48c0-9bfa-7614c49feb7c
     deploy:
@@ -206,7 +206,7 @@ services:
 #          - "node.labels.apps==true"
 
   msa-sms:
-    image: openmsa/openmsa:msa2-sms-2.8.0-1d2950f5d7fe546d9c4178ed6b6b79528713c816
+    image: openmsa/openmsa:msa2-sms-2.8.2BETA-04d2e40dd899c5709538e4fbd9e3f5a0610330eb
     # depends_on:
     #   - db
     healthcheck:
@@ -237,7 +237,7 @@ services:
       db: 20.223.38.173
 
   msa-bud:
-    image: openmsa/openmsa:msa2-bud-2.8.0-3af00721f97b3c44d583a7b40cf912b392a392d2
+    image: openmsa/openmsa:msa2-bud-2.8.2BETA-0b9f458ef2d78963c936b61a1ee9ae3299a341bc
     # depends_on:
     #   - db
     healthcheck:
@@ -259,7 +259,7 @@ services:
     depends_on:
     #  - db
       - msa-api
-    image: openmsa/openmsa:msa2-alarm-2.8.0-5e4d2061605bce583225c3fcccd193e8ee40f4f4
+    image: openmsa/openmsa:msa2-alarm-2.8.2BETA-e0f718e3ea2135450f86e51aa500909b3b861947
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -282,7 +282,7 @@ services:
       db: 20.223.38.173
 
   msa-monitoring:
-    image: openmsa/openmsa:msa2-monitoring-2.8.0-33c2f74c0d854affc0690c6ab282b1f64a30cae2
+    image: openmsa/openmsa:msa2-monitoring-2.8.2BETA-0639d0bdb6402cceedb9b81464714dcc9db57743
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -316,7 +316,7 @@ services:
   camunda:
     # depends_on:
     #   - db
-    image: openmsa/openmsa:msa2-camunda-2.8.0-507b2c9b8361821915c4bd9255bafb47ace89079
+    image: openmsa/openmsa:msa2-camunda-2.8.2BETA-507b2c9b8361821915c4bd9255bafb47ace89079
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
@@ -335,7 +335,7 @@ services:
       db: 20.223.38.173
 
   msa-es:
-    image: openmsa/openmsa:msa2-es-2.8.0-6b191fca4d76383f04930565d90dbf58a051eed4
+    image: openmsa/openmsa:msa2-es-2.8.2BETA-6b191fca4d76383f04930565d90dbf58a051eed4
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
@@ -360,7 +360,7 @@ services:
           - "msa_es"
 
   msa-kibana:
-    image: openmsa/openmsa:msa2-kibana-2.8.0-49c1c422ad5559815d4f74568904a7214e788932
+    image: openmsa/openmsa:msa2-kibana-2.8.2BETA-49c1c422ad5559815d4f74568904a7214e788932
     depends_on:
       - msa-es
     ports:
@@ -383,7 +383,7 @@ services:
 #      msa-es: ES_IP
 
   msa-ai-ml:
-    image: openmsa/openmsa:msa2-ai-ml-2.8.0-63c7fab8c111b6cc85da049f45ebc6175a9b269a
+    image: openmsa/openmsa:msa2-ai-ml-2.8.2BETA-63c7fab8c111b6cc85da049f45ebc6175a9b269a
     healthcheck:
       test: ["CMD-SHELL", "python /msa_proj/health_check.py"]
     ports:
@@ -402,7 +402,7 @@ services:
 #          - "node.labels.apps==true"
 
   msa-cerebro:
-    image: openmsa/openmsa:msa2-cerebro-2.8.0-914750e000db1343d9972bfa6652da1efe4aa32f
+    image: openmsa/openmsa:msa2-cerebro-2.8.2BETA-914750e000db1343d9972bfa6652da1efe4aa32f
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -428,7 +428,7 @@ services:
 #      msa-es: ES_IP
 
   msa-dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.8.0-60956823e130ba38d6135eeda109d59058ab2ae8
+    image: openmsa/openmsa:msa2-linuxdev-2.8.2BETA-be99b2f6dd48b9548857a84d8759aec2b8680841
     depends_on:
       - msa-es
     volumes:
