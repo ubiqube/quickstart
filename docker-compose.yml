@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:c1ede43edd72d81ffa16611ce3ac3ff036cae5a2
+    image: ubiqube/msa2-front:7e862a68fc5274d6927ac0ded9d43b0ac4160dac
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -96,7 +96,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:0a1056f903f0999f5353503f560446d796d8e9b4
+    image: ubiqube/msa2-api:9aa638e51597e15f369b7880620dfa31307874ec
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
       retries: 10
@@ -155,6 +155,13 @@ services:
     - FEATURE_EDIT_VARIABLES_IN_MICROSERVICE_CONSOLE=true
     - FEATURE_WORKFLOW_OWNER=false
     - FEATURE_PERMISSION_PROFILE_LABELS=false
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     networks:
       default:
         aliases:
@@ -177,6 +184,13 @@ services:
         condition: service_started
       msa-dev:
         condition: service_started
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     volumes:
       - "msa_dev:/opt/devops/"
       - "msa_entities:/opt/fmc_entities"
@@ -198,6 +212,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     volumes:
       - "msa_bud_logs:/opt/bud/logs/"
     networks:
@@ -218,6 +239,13 @@ services:
         condition: service_started
     environment:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     volumes:
       - "msa_sms_logs:/opt/sms/logs"
     networks:
@@ -240,6 +268,13 @@ services:
         condition: service_started
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     volumes:
       - "msa_dev:/opt/devops/"
       - "msa_entities:/opt/fmc_entities"
@@ -324,6 +359,13 @@ services:
     depends_on:
       msa-es:
         condition: service_started
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     ports:
     - "9000:9000"
     networks:
