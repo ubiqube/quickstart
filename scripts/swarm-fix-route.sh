@@ -69,7 +69,8 @@ function create_ns_symlink {
   # $1 - supposed to be "/var/run"
   # $2 - supposed to be "/var/run/docker/netns"
 
-  if [ -d "$1" ] && [ -d "$2" ]; then
+ # if [ -d "$1" ] && [ -d "$2" ]; then
+   if [ -d "$1" ]; then
     cd "$1"
     sudo ln -sfn "$2" netns
         if [ $? -eq 0 ]; then
@@ -156,6 +157,7 @@ function add_514_nat_exception {
   sudo ip netns exec $1 iptables -t nat -nvL POSTROUTING --line-numbers > /dev/null
   if [ $? -eq 0 ]; then
     sudo ip netns exec $1 iptables -t nat -I POSTROUTING 2 -m ipvs --ipvs -s 0.0.0.0/0 -d $2 -p udp --dport 514 -j ACCEPT
+    sudo ip netns exec $1 iptables -t nat -I POSTROUTING 2 -m ipvs --ipvs -s 0.0.0.0/0 -d $2 -p udp --dport 162 -j ACCEPT
         if [ $? -eq 0 ]; then
           echo "NAT exception successfully added"
         else
@@ -199,6 +201,22 @@ function delete_514_nat_exception {
         sudo ip netns exec $1 iptables -t nat -D POSTROUTING $rule
         if [ $? -eq 0 ]; then
           echo "NAT exception for dst udp 514 successfully deleted, rule num $rule"
+        else
+          echo "Error: Can't delete NAT exception. Can't continue."
+          exit 1
+        fi
+      done
+    fi
+    local MATCH=$(sudo ip netns exec $1 iptables -t nat -nvL POSTROUTING --line-numbers | grep "udp dpt:162" | wc -l)
+    if [ $MATCH -ge 1 ]; then
+      # get rules ids and delete them one by one from bottom to top
+      local RULES=$(sudo ip netns exec $1 iptables -t nat -nvL POSTROUTING --line-numbers | grep "udp dpt:162" | awk '{print $1}')
+      local RSORTED_RULES=$(sort -r <<< "$RULES")
+      for rule in $RSORTED_RULES
+      do
+        sudo ip netns exec $1 iptables -t nat -D POSTROUTING $rule
+        if [ $? -eq 0 ]; then
+          echo "NAT exception for dst udp 162 successfully deleted, rule num $rule"
         else
           echo "Error: Can't delete NAT exception. Can't continue."
           exit 1
