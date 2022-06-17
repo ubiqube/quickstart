@@ -167,6 +167,7 @@ services:
     environment:
       - UBIQUBE_CAPTCHA_SITE_KEY=6LcFwjQfAAAAAICJb7KjGjfKay4O3sOPaOb0glie
       - UBIQUBE_LICENSE_AGREEMENT_LINK=https:\/\/cloudclapp.com\/EndUserLicenceAgreement.html
+      - UBIQUBE_HUBSPOT_TRACKING_ID=6638470
     deploy:
       replicas: 1
       placement:
