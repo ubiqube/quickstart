@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:cb1f57d5e6dda488beb49c1a618be294a87eaeb1
+    image: ubiqube/msa2-front:dd35f2c5e0f515b4430099ec058aa23af4c772f4
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -62,7 +62,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: ubiqube/msa2-db:84bb968490cedd121d19235956775ac7ac20912e
+    image: ubiqube/msa2-db:92ee968c6d70ad6c1859a3b070aba92aedc3d519
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -83,6 +83,7 @@ services:
       PG_ROOT_PASSWORD: my_db_password
       PG_PRIMARY_PORT: 5432
       MAX_CONNECTIONS: 1600
+    shm_size: 1g
     logging:
       driver: "json-file"
       options:
@@ -110,7 +111,6 @@ services:
     environment:
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
       - UBIQUBE_CAPTCHA_SECRET_KEY=6Ld2zF4dAAAAABWD9Q6QAhBql_CIynUeVKaTiBgT
-    shm_size: 1g
     logging:
       driver: "json-file"
       options:
