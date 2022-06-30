@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: openmsa/openmsa:msa2-front-2.8.1-406374620653432b0b209ab7f9a9f1f038a5e582
+    image: openmsa/openmsa:msa2-front-2.8.2-c595b0acd0548a58099fd7e1dcd22cdc76c1af04
     depends_on:
       - msa_api
       - msa_ui
@@ -55,7 +55,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.8.0-4d8430b838698b756ddadd495f614003a906dae1
+    image: openmsa/openmsa:msa2-db-2.8.2-5bbc985fc8ab57783295725f6795ddf88fc1b6f7
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -84,7 +84,7 @@ services:
         condition: on-failure
  
   msa_api:
-    image: openmsa/openmsa:msa2-api-2.8.1-98ef2f8ec17880a8a5677b6470da608c29d405e5
+    image: openmsa/openmsa:msa2-api-2.8.2-9a44c38262bad015e5401b29e0d0d6906e92f4ed
     depends_on:
       - db
     healthcheck:
@@ -110,7 +110,7 @@ services:
         aliases:
           - "msa-api"
   msa_ui:
-    image: openmsa/openmsa:msa2-ui-2.8.1-d238e25c7d92d57fd9c95cfd35a9b09089401fb9
+    image: openmsa/openmsa:msa2-ui-2.8.2-9f1660a7aa3dbb4089482a63bb597d76e519e184
     depends_on:
       - msa_api
     healthcheck:
@@ -135,7 +135,7 @@ services:
     - FEATURE_WORKFLOW_OWNER=false
 
   msa_sms:
-    image: openmsa/openmsa:msa2-sms-2.8.1-ddc15517d67f74520b2662ba5eca55b57ebce6c0
+    image: openmsa/openmsa:msa2-sms-2.8.2-e7e4868ae02e2f4fb6651a4ec345aed43ca8c6bb
     depends_on:
       - db
     healthcheck:
@@ -155,7 +155,7 @@ services:
         max_replicas_per_node: 1
 
   msa_bud:
-    image: openmsa/openmsa:msa2-bud-2.8.1-fafbdb3cc13cff237dd4310ec83e0bc0f6bece64
+    image: openmsa/openmsa:msa2-bud-2.8.2-0b9f458ef2d78963c936b61a1ee9ae3299a341bc
     depends_on:
       - db
     deploy:
@@ -167,7 +167,7 @@ services:
     depends_on:
       - db
       - msa_api
-    image: openmsa/openmsa:msa2-alarm-2.8.1-6c28461de80d7e30ba3911613a48e773e11df034
+    image: openmsa/openmsa:msa2-alarm-2.8.2-e0f718e3ea2135450f86e51aa500909b3b861947
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -180,7 +180,7 @@ services:
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
 
   msa_monitoring:
-    image: openmsa/openmsa:msa2-monitoring-2.8.1-192f8cf5103a7560fc3676254739cf728e15d6f6
+    image: openmsa/openmsa:msa2-monitoring-2.8.2-0d82be7f6ed084ec80443bcc41a51909766f9ae5
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -330,7 +330,7 @@ services:
         max_replicas_per_node: 1
 
   msa_dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.8.1-1ae257fde0cd6d96d590a6298e9d30b30f4a6657
+    image: openmsa/openmsa:msa2-linuxdev-2.8.2-f893de2144e04516b26435f98eea3d32808eb63d
     depends_on:
       - msa_es
     deploy:
