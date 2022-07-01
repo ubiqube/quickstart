@@ -15,6 +15,7 @@ mano=false
 
 file_upgrade='.upgrade_unfinished'
 
+source ./scripts/swarm-fix-all-nodes.sh
 
 install(){
     # mark that upgrade/installion is in progress
@@ -89,7 +90,6 @@ haInstall(){
     else
         docker stack deploy --with-registry-auth -c docker-compose.ha.yml -c lab/mano/docker-compose.mano.ha.yml $ha_stack
     fi
-    
 
     echo "############## Install OpenMSA Libraries ##############################"
     sleep 5
@@ -133,7 +133,6 @@ haInstall(){
     upgrade_done
 }
 
-source ./scripts/swarm-fix-all-nodes.sh
 
 upgrade_done(){
     echo "Upgrade done!"
@@ -166,7 +165,8 @@ usage() {
     echo "-f: force the upgrade without asking for user confirmation. Permit also to reapply the upgrade and to auto merge files from OpenMSA"
     echo "-c: cleanup unused images after upgrade to save disk space. This option clean all unused images, not only MSA quickstart ones"
     echo "-ro: remove containers for services not defined in the compose file. Use it if some containers use same network as MSA"
-    echo "-mano : apply mano containers"
+    echo "-mano: apply mano containers"
+    echo "--swarm-fix-route-only: run the only script 'swarm-fix-rout' script"
     exit 0
 }
 
@@ -189,6 +189,9 @@ main() {
                 ;;
             -mano|--mano)
                 mano=true
+                ;;
+            --swarm-route-only)
+                swarm_route_only=true
                 ;;
             ?|--help)
                 usage
@@ -272,6 +275,10 @@ main() {
         else
             cleanup;
         fi
+    fi
+
+    if [ "$swarm_route_only" = true ] ; then
+        fix_swarm_route
     fi
 }
 
