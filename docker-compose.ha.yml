@@ -20,7 +20,7 @@ services:
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.role==manager"
+          - "node.labels.worker==app"
     ports:
       - target: 80
         published: 80
@@ -80,6 +80,36 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
+      placement:
+        constraints:
+          - "node.labels.worker==db"
+
+  db-replica:
+    image: openmsa/openmsa:msa2-db-2.8.2-5bbc985fc8ab57783295725f6795ddf88fc1b6f7
+    healthcheck:
+      test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
+      timeout: 20s
+    environment:
+      CAMUNDA_PASSWORD: camunda
+      CAMUNDA_DB: process-engine
+      CAMUNDA_USER: camunda
+      KEY_VAULT_USER: key_vault
+      KEY_VAULT_DB: key_vault
+      PG_MODE: replica
+      PG_PRIMARY_USER: postgres
+      PG_PRIMARY_PASSWORD: my_db_password
+      PG_USER: postgres
+      PG_PASSWORD: my_db_password
+      PG_DATABASE: POSTGRESQL
+      PG_ROOT_PASSWORD: my_db_password
+      PG_PRIMARY_PORT: 5432
+      PG_PRIMARY_HOST: msa-db
+    deploy:
+      replicas: 2
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.db==replica"
 
   msa-api:
     image: openmsa/openmsa:msa2-api-2.8.2-9a44c38262bad015e5401b29e0d0d6906e92f4ed
@@ -90,9 +120,11 @@ services:
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
       update_config:
         parallelism: 1
       restart_policy:
@@ -116,11 +148,11 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.role==manager"
+          - "node.labels.worker==app"
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_CONNECTION_STATUS=true
@@ -158,9 +190,11 @@ services:
       - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
     networks:
       default:
         aliases:
@@ -178,6 +212,8 @@ services:
       replicas: 1
       placement:
         max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
     networks:
       default:
         aliases:
@@ -197,6 +233,8 @@ services:
       replicas: 1
       placement:
         max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
     volumes:
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
     networks:
@@ -210,7 +248,6 @@ services:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
       - db
-      - msa-es
       - msa-dev
       - msa-api
     environment:
@@ -227,6 +264,8 @@ services:
       replicas: 1
       placement:
         max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
     networks:
       default:
         aliases:
@@ -240,6 +279,8 @@ services:
       replicas: 1
       placement:
         max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
@@ -249,35 +290,8 @@ services:
       WAIT_FOR: 'db:5432'
       WAIT_FOR_TIMEOUT: 60
 
-  msa-es:
-    image: openmsa/openmsa:msa2-es-2.8.0-6b191fca4d76383f04930565d90dbf58a051eed4
-    healthcheck:
-      test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
-      timeout: 2s
-      retries: 10
-      interval: 10s
-      start_period: 30s
-    deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-    environment:
-      - discovery.type=single-node
-      - script.painless.regex.enabled=true
-      - bootstrap.memory_lock=true
-      - ES_JAVA_OPTS=-Xms512m -Xmx1024m
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
-    volumes:
-      - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
-    networks:
-      default:
-        aliases:
-          - "msa_es"
-
   msa-kibana:
     image: openmsa/openmsa:msa2-kibana-2.8.0-49c1c422ad5559815d4f74568904a7214e788932
-    depends_on:
-      - msa-es
     ports:
       - "5601:5601"
     environment:
@@ -285,9 +299,11 @@ services:
       - ELASTICSEARCH_HOSTS=http://msa_es:9200
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
     networks:
       default:
         aliases:
@@ -305,6 +321,8 @@ services:
       replicas: 1
       placement:
         max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
     networks:
       default:
         aliases:
@@ -319,14 +337,14 @@ services:
     entrypoint:
       - /opt/cerebro/bin/cerebro
       - -Dhosts.0.host=http://msa_es:9200
-    depends_on:
-      - msa_es
     ports:
       - "9000:9000"
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
     networks:
       default:
         aliases:
@@ -334,12 +352,12 @@ services:
 
   msa-dev:
     image: openmsa/openmsa:msa2-linuxdev-2.8.2-f893de2144e04516b26435f98eea3d32808eb63d
-    depends_on:
-      - msa-es
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
     volumes:
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
