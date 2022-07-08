@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+    msa-api:
+       extra_hosts:
+          db: 20.223.38.173
+    msa-sms:
+       extra_hosts:
+          db: 20.223.38.173
+    msa-bud:
+       extra_hosts:
+          db: 20.223.38.173
+    msa-alarm:
+       extra_hosts:
+          db: 20.223.38.173
+    msa-monitoring:
+       extra_hosts:
+          db: 20.223.38.173
+    camunda:
+       extra_hosts:
+          db: 20.223.38.173
+    key-vault:
+       extra_hosts:
+          db: 20.223.38.173
+
