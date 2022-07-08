@@ -99,8 +99,8 @@ services:
 
   msa-api:
     image: ubiqube/msa2-api:79d6d4fccbe1ff5583accfe3b6a862f2a662b8f3
-    # depends_on:
-    #   - db
+    depends_on:
+      - key-vault
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     environment:
