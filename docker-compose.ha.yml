@@ -141,8 +141,6 @@ services:
       default:
         aliases:
           - "msa_api"
-    extra_hosts:
-      - "msa_es:10.10.10.26"
 
   msa-ui:
     image: openmsa/openmsa:msa2-ui-2.8.2-82d21b58c30b3f4dd5065135911fbfeb56eec39b
@@ -203,8 +201,6 @@ services:
       default:
         aliases:
           - "msa_sms"
-    extra_hosts:
-      - "msa_es:10.10.10.26"
 
   msa-bud:
     image: openmsa/openmsa:msa2-bud-2.8.2-0b9f458ef2d78963c936b61a1ee9ae3299a341bc
@@ -276,8 +272,6 @@ services:
       default:
         aliases:
           - "msa_monitoring"
-    extra_hosts:
-      - "msa_es:10.10.10.26"
 
   camunda:
     depends_on:
@@ -316,8 +310,6 @@ services:
       default:
         aliases:
           - "msa_kibana"
-    extra_hosts:
-      - "msa_es:10.10.10.26"
 
   msa-ai-ml:
     image: openmsa/openmsa:msa2-ai-ml-2.8.0-63c7fab8c111b6cc85da049f45ebc6175a9b269a
@@ -337,6 +329,40 @@ services:
       default:
         aliases:
           - "msa_ai_ml"
+
+  msa-es:
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
+      interval: 60s
+      start_period: 60s
+    image: ubiqube/msa2-es:6b191fca4d76383f04930565d90dbf58a051eed4
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+    environment:
+      - "discovery.type=single-node"
+      - "script.painless.regex.enabled=true"
+      - "bootstrap.memory_lock=true"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      default:
+        aliases:
+          - "msa_es"
+    volumes:
+     - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
 
   msa-cerebro:
     image: openmsa/openmsa:msa2-cerebro-2.8.0-914750e000db1343d9972bfa6652da1efe4aa32f
@@ -359,8 +385,6 @@ services:
       default:
         aliases:
           - "msa_cerebro"
-    extra_hosts:
-      - "msa_es:10.10.10.26"
 
   msa-dev:
     image: openmsa/openmsa:msa2-linuxdev-2.8.2-f893de2144e04516b26435f98eea3d32808eb63d
@@ -379,8 +403,6 @@ services:
       default:
         aliases:
           - "msa_dev"
-    extra_hosts:
-      - "msa_es:10.10.10.26"
 
 
 networks:
