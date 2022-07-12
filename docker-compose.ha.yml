@@ -352,7 +352,7 @@ services:
       - script.painless.regex.enabled=true
       - bootstrap.memory_lock=true
       - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms512m -Xmx1024m"
+      - "ES_JAVA_OPTS=-Xmx1024m -Xmx1024m"
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
     ulimits:
       memlock:
