@@ -341,12 +341,18 @@ services:
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.manager==true"
+          - "node.labels.worker==app"
     environment:
-      - "discovery.type=single-node"
-      - "script.painless.regex.enabled=true"
-      - "bootstrap.memory_lock=true"
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - node.roles=ingest
+      - node.name=esclient01
+      - discovery.seed_hosts=10.10.10.26,10.10.01.27,10.10.10.28
+      - cluster.initial_master_nodes=kv01vmano_NODE_esmtr01,kv01vmano_NODE_esmtr02,kv01vmano_NODE_esmtr03
+      - cluster.name=kv01vmano
+      - network.host=0.0.0.0
+      - script.painless.regex.enabled=true
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx1024m"
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
     ulimits:
       memlock:
