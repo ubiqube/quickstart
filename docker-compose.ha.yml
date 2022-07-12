@@ -339,13 +339,13 @@ services:
     deploy:
       replicas: 1
       placement:
-        max_replicas_per_node: 1
+        max_replicas_per_node: 3
         constraints:
           - "node.labels.worker==app"
     environment:
       - node.roles=ingest
       - node.name=esclient01
-      - discovery.seed_hosts=10.10.10.26,10.10.01.27,10.10.10.28
+      - discovery.seed_hosts=10.10.10.26,10.10.10.27,10.10.10.28
       - cluster.initial_master_nodes=kv01vmano_NODE_esmtr01,kv01vmano_NODE_esmtr02,kv01vmano_NODE_esmtr03
       - cluster.name=kv01vmano
       - network.host=0.0.0.0
