@@ -141,6 +141,9 @@ services:
       default:
         aliases:
           - "msa_api"
+    extra_hosts:
+      - "msa_es:10.10.10.26"
+
   msa-ui:
     image: openmsa/openmsa:msa2-ui-2.8.2-82d21b58c30b3f4dd5065135911fbfeb56eec39b
     depends_on:
@@ -171,6 +174,7 @@ services:
       default:
         aliases:
           - "msa_ui"
+
   msa-sms:
     image: openmsa/openmsa:msa2-sms-2.8.2-e7e4868ae02e2f4fb6651a4ec345aed43ca8c6bb
     depends_on:
@@ -199,6 +203,8 @@ services:
       default:
         aliases:
           - "msa_sms"
+    extra_hosts:
+      - "msa_es:10.10.10.26"
 
   msa-bud:
     image: openmsa/openmsa:msa2-bud-2.8.2-0b9f458ef2d78963c936b61a1ee9ae3299a341bc
@@ -270,6 +276,8 @@ services:
       default:
         aliases:
           - "msa_monitoring"
+    extra_hosts:
+      - "msa_es:10.10.10.26"
 
   camunda:
     depends_on:
@@ -308,6 +316,8 @@ services:
       default:
         aliases:
           - "msa_kibana"
+    extra_hosts:
+      - "msa_es:10.10.10.26"
 
   msa-ai-ml:
     image: openmsa/openmsa:msa2-ai-ml-2.8.0-63c7fab8c111b6cc85da049f45ebc6175a9b269a
@@ -349,6 +359,8 @@ services:
       default:
         aliases:
           - "msa_cerebro"
+    extra_hosts:
+      - "msa_es:10.10.10.26"
 
   msa-dev:
     image: openmsa/openmsa:msa2-linuxdev-2.8.2-f893de2144e04516b26435f98eea3d32808eb63d
@@ -367,6 +379,8 @@ services:
       default:
         aliases:
           - "msa_dev"
+    extra_hosts:
+      - "msa_es:10.10.10.26"
 
 
 networks:
