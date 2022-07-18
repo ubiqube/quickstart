@@ -207,6 +207,16 @@ main() {
     if [ $is_ha -eq 0 ]; then
         ha_setup=true
         echo "HA setup detected"
+        if [ "$swarm_route_only" = true ] ; then
+            echo "Running fix route script only..."
+            fix_swarm_route
+            exit 0
+        fi
+    else
+        if [ "$swarm_route_only" = true ] ; then
+            echo "This option is only available for HA setup."
+            exit 1
+        fi
     fi
 
     if [ ! -z "$(docker ps -a | grep msa)" ]; then
@@ -275,10 +285,6 @@ main() {
         else
             cleanup;
         fi
-    fi
-
-    if [ "$swarm_route_only" = true ] ; then
-        fix_swarm_route
     fi
 }
 
