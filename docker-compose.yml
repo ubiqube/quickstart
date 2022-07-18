@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:e9eecae39955d0902ea88bdd2e93118efd99efcd
+    image: ubiqube/msa2-front:984a8d59b88417a3a06b956b9a560c0ff0704431
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -26,10 +26,6 @@ services:
       - target: 443
         published: 443
         protocol: tcp
-        mode: host
-      - target: 514
-        published: 514
-        protocol: udp
         mode: host
       - target: 162
         published: 162
@@ -286,6 +282,20 @@ services:
       default:
         aliases:
           - "msa_monitoring"
+
+  msa-rsyslog:
+    depends_on:
+      - msa-sms
+    image: ubiqube/msa2-rsyslog:54a250d9ef49db2454c5ed9111d43cebc8e9ef9a
+    ports:
+      - target: 514
+        published: 514
+        protocol: udp
+        mode: host
+      - target: 514
+        published: 514
+        protocol: tcp
+        mode: host
 
   camunda:
     restart: unless-stopped
