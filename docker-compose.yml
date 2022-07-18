@@ -284,6 +284,8 @@ services:
           - "msa_monitoring"
 
   msa-rsyslog:
+    restart: unless-stopped
+    container_name: msa_rsyslog
     depends_on:
       - msa-sms
     image: ubiqube/msa2-rsyslog:54a250d9ef49db2454c5ed9111d43cebc8e9ef9a
@@ -296,6 +298,10 @@ services:
         published: 514
         protocol: tcp
         mode: host
+    networks:
+      default:
+        aliases:
+          - "msa_rsyslog"
 
   camunda:
     restart: unless-stopped
