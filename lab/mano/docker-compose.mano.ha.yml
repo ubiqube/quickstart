@@ -32,26 +32,8 @@ services:
         protocol: tcp
         mode: ingress
 
-  mano-db:
-    image: oviubiqube/mano-db
-    environment:
-      POSTGRES_PASSWORD: mano
-      POSTGRES_USER: mano
-      KEYCLOAK_USER: keycloak
-      KEYCLOAK_PASSWORD: keycloak
-      KEYCLOAK_DB: keycloak
-    volumes:
-      - "/mnt/NASVolume/mano_db:/var/lib/postgresql/data"
-    deploy:
-      replicas: 1
-      placement:	
-        constraints:	
-          - "node.role==manager"
-
   mano-nfvo:
-    image: openmsa/mano-nfvo:2.7.1
-    depends_on:
-      - mano-db
+    image: oviubiqube/mano-nfvo-tm22:uat1
     volumes:
       - "/mnt/NASVolume/mano_nfvo:/opt/etsi-mano-data"
     deploy:
@@ -67,8 +49,6 @@ services:
 
   mano-vnfm:
     image: openmsa/mano-vnfm:2.7.1
-    depends_on:
-      - mano-db
     volumes:
       - "/mnt/NASVolume/mano_vnfm:/opt/etsi-mano-data"
     deploy:
@@ -84,8 +64,6 @@ services:
 
   mano-vnfm2:
     image: openmsa/mano-vnfm-bis:2.7.1
-    depends_on:
-      - mano-db
     volumes:
       - "/mnt/NASVolume/mano_vnfm2:/opt/etsi-mano-data"
     deploy:
