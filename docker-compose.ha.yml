@@ -3,11 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-<<<<<<< HEAD
-    image: ubiqube/msa2-front:660238a6d0b63643d7d705e849307c6b75d8cbdf
-=======
-    image: openmsa/openmsa:msa2-front-2.8.2-3d4a3493b7adb99bfb219f8cfa5e33461af2ad86
->>>>>>> 05dcbb8f2af2eddf42e940918333542e1b0e46a1
+    image: ubiqube/msa2-front:e9eecae39955d0902ea88bdd2e93118efd99efcd
     depends_on:
       - msa-api
       - msa-ui
@@ -57,7 +53,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: openmsa/openmsa:msa2-db-2.8.2-5bbc985fc8ab57783295725f6795ddf88fc1b6f7
+    image: ubiqube/msa2-db:5c36f56cadd4aec145d4ed2ea81e6c130b538e0d
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -85,8 +81,40 @@ services:
       restart_policy:
         condition: on-failure
 
+  db-replica:
+    image: ubiqube/msa2-db:5c36f56cadd4aec145d4ed2ea81e6c130b538e0d
+    healthcheck:
+      test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
+      timeout: 20s
+    environment:
+      CAMUNDA_PASSWORD: camunda
+      CAMUNDA_DB: process-engine
+      CAMUNDA_USER: camunda
+      KEY_VAULT_USER: key_vault
+      KEY_VAULT_DB: key_vault
+      PG_MODE: replica
+      PG_PRIMARY_USER: postgres
+      PG_PRIMARY_PASSWORD: my_db_password
+      PG_USER: postgres
+      PG_PASSWORD: my_db_password
+      PG_DATABASE: POSTGRESQL
+      PG_ROOT_PASSWORD: my_db_password
+      PG_PRIMARY_PORT: 5432
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - "node.role==manager"
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
+
   msa-api:
-    image: openmsa/openmsa:msa2-api-2.8.2-9ea3e9501619eb421d01f510ef26b62b0446ffd5
+    image: ubiqube/msa2-api:d5019397ca8eacd17d4a24d8692493e34a0eecf5
     depends_on:
       - db
     healthcheck:
@@ -114,11 +142,7 @@ services:
         aliases:
           - "msa_api"
   msa-ui:
-<<<<<<< HEAD
-    image: ubiqube/msa2-ui:ad63f8a1c00c39b21112c62e2cf5caedb877d151
-=======
-    image: openmsa/openmsa:msa2-ui-2.8.2-82d21b58c30b3f4dd5065135911fbfeb56eec39b
->>>>>>> 05dcbb8f2af2eddf42e940918333542e1b0e46a1
+    image: ubiqube/msa2-ui:3c55433150fb8917baadb6d1787a6867107a1f7b
     depends_on:
       - msa-api
     healthcheck:
@@ -258,13 +282,13 @@ services:
       WAIT_FOR_TIMEOUT: 60
 
   msa-es:
-    image: openmsa/openmsa:msa2-es-2.8.0-6b191fca4d76383f04930565d90dbf58a051eed4
+    image: ubiqube/msa2-es:0e3404bd34b1aa8afc807a5fb9b6911bcbbeff9d
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
       retries: 10
       interval: 10s
-      start_period: 30s
+      start_period: 60s
     deploy:
       replicas: 1
       placement:
