@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:26a81a1b9d0e5e4b82496b73b7a98de2941c3205
+    image: ubiqube/msa2-front:04c9f8f97238dc945d661a1bc558628ad6f24fae
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -131,7 +131,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:3c55433150fb8917baadb6d1787a6867107a1f7b
+    image: ubiqube/msa2-ui:7353145a371a3b468c1d9d49d1189d80a4870ce2
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -166,7 +166,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: openmsa/openmsa:msa2-sms-2.8.2-e7e4868ae02e2f4fb6651a4ec345aed43ca8c6bb
+    image: ubiqube/msa2-sms:7cedfe1e0714587b89de7088738f12e6044ac4c9
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
