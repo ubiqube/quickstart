@@ -125,6 +125,14 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==apps"
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "40m"
+        max-size: "100m"
+        max-file: "5"
+
 #    extra_hosts:
 #      db: 20.223.38.173
 #      msa-es: ES_IP
