@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:e9eecae39955d0902ea88bdd2e93118efd99efcd
+    image: ubiqube/msa2-front:1dc0dec41da1b5b0f020331df558cefce3a6b0d1
     depends_on:
       - msa-api
       - msa-ui
@@ -30,10 +30,6 @@ services:
         published: 443
         protocol: tcp
         mode: ingress
-      - target: 514
-        published: 514
-        protocol: udp
-        mode: ingress
       - target: 162
         published: 162
         protocol: udp
@@ -53,12 +49,17 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:5c36f56cadd4aec145d4ed2ea81e6c130b538e0d
+    image: ubiqube/msa2-db:9ee72fdadcf24e56af0e1c61eb5f16f6065898a5
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
       interval: 30s
       retries: 5
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    shm_size: 1g
     environment:
       CAMUNDA_PASSWORD: camunda
       CAMUNDA_DB: process-engine
@@ -76,16 +77,24 @@ services:
       MAX_CONNECTIONS: 1600
     volumes:
       - "/mnt/NASVolume/msa_db:/pgsqldata/pgsql"
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
 
   db-replica:
-    image: ubiqube/msa2-db:5c36f56cadd4aec145d4ed2ea81e6c130b538e0d
+    image: ubiqube/msa2-db:9ee72fdadcf24e56af0e1c61eb5f16f6065898a5
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - "node.role==manager"
     environment:
       CAMUNDA_PASSWORD: camunda
       CAMUNDA_DB: process-engine
@@ -100,11 +109,6 @@ services:
       PG_DATABASE: POSTGRESQL
       PG_ROOT_PASSWORD: my_db_password
       PG_PRIMARY_PORT: 5432
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - "node.role==manager"
     logging:
       driver: "json-file"
       options:
@@ -114,13 +118,11 @@ services:
         max-file: "5"
 
   msa-api:
-    image: ubiqube/msa2-api:d5019397ca8eacd17d4a24d8692493e34a0eecf5
+    image: ubiqube/msa2-api:978ad4dc1c98e4864a3b62b8ee407686679aba94
     depends_on:
       - db
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
-    environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     deploy:
       replicas: 1
       placement:
@@ -130,6 +132,8 @@ services:
       restart_policy:
         condition: on-failure
         max_attempts: 10
+    environment:
+      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
@@ -142,7 +146,7 @@ services:
         aliases:
           - "msa_api"
   msa-ui:
-    image: ubiqube/msa2-ui:3c55433150fb8917baadb6d1787a6867107a1f7b
+    image: ubiqube/msa2-ui:bcf1fbbfe8ee18c7925f26e5f6efffef81db8c08
     depends_on:
       - msa-api
     healthcheck:
@@ -171,13 +175,39 @@ services:
       default:
         aliases:
           - "msa_ui"
+
+  msa-rsyslog:
+    depends_on:
+      - msa-sms
+    image: ubiqube/msa2-rsyslog:54a250d9ef49db2454c5ed9111d43cebc8e9ef9a
+    deploy:
+      replicas: 3
+      placement:
+        max_replicas_per_node: 1
+    ports:
+      - target: 514
+        published: 514
+        protocol: udp
+        mode: host
+      - target: 514
+        published: 514
+        protocol: tcp
+        mode: host
+    networks:
+      default:
+        aliases:
+          - "msa_rsyslog"
+
   msa-sms:
     image: openmsa/openmsa:msa2-sms-2.8.2-e7e4868ae02e2f4fb6651a4ec345aed43ca8c6bb
     depends_on:
       - db
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-
+    deploy:
+      replicas: 3
+      placement:
+        max_replicas_per_node: 1
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
@@ -189,17 +219,13 @@ services:
       - "/mnt/NASVolume/msa_svn:/opt/svnroot"
       - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
-    deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
     networks:
       default:
         aliases:
           - "msa_sms"
 
   msa-bud:
-    image: openmsa/openmsa:msa2-bud-2.8.2-0b9f458ef2d78963c936b61a1ee9ae3299a341bc
+    image: ubiqube/msa2-bud:0b9f458ef2d78963c936b61a1ee9ae3299a341bc
     depends_on:
       - db
     healthcheck:
@@ -219,14 +245,14 @@ services:
     depends_on:
       - db
       - msa-api
-    image: openmsa/openmsa:msa2-alarm-2.8.2-e0f718e3ea2135450f86e51aa500909b3b861947
+    image: ubiqube/msa2-alarm:e0f718e3ea2135450f86e51aa500909b3b861947
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
     volumes:
@@ -237,7 +263,7 @@ services:
           - "msa_alarm"
 
   msa-monitoring:
-    image: openmsa/openmsa:msa2-monitoring-2.8.2-0d82be7f6ed084ec80443bcc41a51909766f9ae5
+    image: ubiqube/msa2-monitoring:0d82be7f6ed084ec80443bcc41a51909766f9ae5
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -256,7 +282,7 @@ services:
       - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
     networks:
@@ -269,7 +295,7 @@ services:
       - db
     image: openmsa/openmsa:msa2-camunda-2.8.0-507b2c9b8361821915c4bd9255bafb47ace89079
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
     environment:
@@ -280,6 +306,13 @@ services:
       DB_VALIDATE_ON_BORROW: 'true'
       WAIT_FOR: 'db:5432'
       WAIT_FOR_TIMEOUT: 60
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
 
   msa-es:
     image: ubiqube/msa2-es:0e3404bd34b1aa8afc807a5fb9b6911bcbbeff9d
@@ -301,6 +334,13 @@ services:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     volumes:
       - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     networks:
       default:
         aliases:
@@ -320,6 +360,13 @@ services:
       replicas: 1
       placement:
         max_replicas_per_node: 1
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     networks:
       default:
         aliases:
