@@ -50,6 +50,9 @@ services:
 
   mano-nfvo:
     image: oviubiqube/mano-nfvo-tm22:uat1
+#    environment:
+#      KEYCLOAK_RESOURCE=mano-vnfm
+#      KEYCLOAK_CREDENTIALS_SECRET=xxxxxxxx
     volumes:
       - "/mnt/NASVolume/mano_nfvo:/opt/etsi-mano-data"
     deploy:
@@ -65,6 +68,9 @@ services:
 
   mano-vnfm:
     image: openmsa/mano-vnfm:2.7.1
+#    environment:
+#      KEYCLOAK_RESOURCE=mano-nfvo
+#      KEYCLOAK_CREDENTIALS_SECRET=xxxxxxxx
     volumes:
       - "/mnt/NASVolume/mano_vnfm:/opt/etsi-mano-data"
     deploy:
