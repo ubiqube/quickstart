@@ -89,41 +89,41 @@ services:
         max-size: "10m"
         max-file: "5"
 
-  db-replica:
-    image: ubiqube/msa2-db:c5ff930543609d5250c6dcdb4fc09295d5ddf83d
-    healthcheck:
-      test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
-      timeout: 20s
-    deploy:
-      replicas: 2
-      restart_policy:
-        condition: on-failure
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.db==replica"
-    environment:
-      CAMUNDA_PASSWORD: camunda
-      CAMUNDA_DB: process-engine
-      CAMUNDA_USER: camunda
-      KEY_VAULT_USER: key_vault
-      KEY_VAULT_DB: key_vault
-      PG_MODE: replica
-      PG_PRIMARY_USER: postgres
-      PG_PRIMARY_PASSWORD: my_db_password
-      PG_USER: postgres
-      PG_PASSWORD: my_db_password
-      PG_DATABASE: POSTGRESQL
-      PG_ROOT_PASSWORD: my_db_password
-      PG_PRIMARY_PORT: 5432
-      PG_PRIMARY_HOST: db
-    logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+#  db-replica:
+#    image: ubiqube/msa2-db:c5ff930543609d5250c6dcdb4fc09295d5ddf83d
+#    healthcheck:
+#      test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
+#      timeout: 20s
+#    deploy:
+#      replicas: 2
+#      restart_policy:
+#        condition: on-failure
+#      placement:
+#        max_replicas_per_node: 1
+#        constraints:
+#          - "node.labels.db==replica"
+#    environment:
+#      CAMUNDA_PASSWORD: camunda
+#      CAMUNDA_DB: process-engine
+#      CAMUNDA_USER: camunda
+#      KEY_VAULT_USER: key_vault
+#      KEY_VAULT_DB: key_vault
+#      PG_MODE: replica
+#      PG_PRIMARY_USER: postgres
+#      PG_PRIMARY_PASSWORD: my_db_password
+#      PG_USER: postgres
+#      PG_PASSWORD: my_db_password
+#      PG_DATABASE: POSTGRESQL
+#      PG_ROOT_PASSWORD: my_db_password
+#      PG_PRIMARY_PORT: 5432
+#      PG_PRIMARY_HOST: db
+#    logging:
+#      driver: "json-file"
+#      options:
+#        mode: non-blocking
+#        max-buffer-size: "4m"
+#        max-size: "10m"
+#        max-file: "5"
 
   msa-api:
     image: ubiqube/msa2-api:66d1bdcb5a7bfc528d5a07cec94357880978d398
