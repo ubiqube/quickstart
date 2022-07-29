@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:8df2351e43f76031213b036b4eaf62903feabf28
+    image: ubiqube/msa2-front:888afe546867d0fa2acf63f85821dbba86abbb2a
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -131,7 +131,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:cb3578a9d7cb4c4b9709f79169472798a4d979c2
+    image: ubiqube/msa2-ui:7a073731ae013de5949ba20dadfdbe173559b770
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -202,7 +202,7 @@ services:
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: openmsa/openmsa:msa2-bud-2.8.2-0b9f458ef2d78963c936b61a1ee9ae3299a341bc
+    image: ubiqube/msa2-bud:0b9f458ef2d78963c936b61a1ee9ae3299a341bc
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -225,7 +225,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: openmsa/openmsa:msa2-alarm-2.8.2-e0f718e3ea2135450f86e51aa500909b3b861947
+    image: ubiqube/msa2-alarm:e0f718e3ea2135450f86e51aa500909b3b861947
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -252,7 +252,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: openmsa/openmsa:msa2-monitoring-2.8.2-0d82be7f6ed084ec80443bcc41a51909766f9ae5
+    image: ubiqube/msa2-monitoring:0d82be7f6ed084ec80443bcc41a51909766f9ae5
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -392,7 +392,7 @@ services:
   msa-kibana:
     restart: unless-stopped
     container_name: msa_kibana
-    image: openmsa/openmsa:msa2-kibana-2.8.0-49c1c422ad5559815d4f74568904a7214e788932
+    image: ubiqube/msa2-kibana:49c1c422ad5559815d4f74568904a7214e788932
     depends_on:
       msa-es:
         condition: service_started
