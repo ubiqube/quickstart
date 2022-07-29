@@ -57,7 +57,7 @@ services:
         mode: ingress
 
   mano-vnfm:
-    image: openmsa/mano-vnfm:2.7.1
+    image: oviubiqube/mano-vnfm-tm22:uat1
 #    environment:
 #      KEYCLOAK_RESOURCE=mano-nfvo
 #      KEYCLOAK_CREDENTIALS_SECRET=xxxxxxxx
