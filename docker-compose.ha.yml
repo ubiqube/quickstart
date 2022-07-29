@@ -59,6 +59,8 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
+        constraints:
+          - "node.labels.worker==db"
     shm_size: 1g
     environment:
       CAMUNDA_PASSWORD: camunda
@@ -91,12 +93,13 @@ services:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
     deploy:
-      replicas: 1
+      replicas: 2
       restart_policy:
         condition: on-failure
       placement:
+        max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==db"
+          - "node.labels.db==replica"
     environment:
       CAMUNDA_PASSWORD: camunda
       CAMUNDA_DB: process-engine
@@ -112,12 +115,6 @@ services:
       PG_ROOT_PASSWORD: my_db_password
       PG_PRIMARY_PORT: 5432
       PG_PRIMARY_HOST: db
-    deploy:
-      replicas: 2
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.db==replica"
     logging:
       driver: "json-file"
       options:
