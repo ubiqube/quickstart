@@ -354,7 +354,7 @@ services:
       - discovery.type=single-node
       - script.painless.regex.enabled=true
       - bootstrap.memory_lock=true
-      - ES_JAVA_OPTS=-Xms512m -Xmx1024m
+      - ES_JAVA_OPTS=-Xmx1024m -Xmx1024m
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     volumes:
       - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
