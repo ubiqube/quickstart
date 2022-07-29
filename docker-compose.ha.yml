@@ -132,7 +132,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -163,7 +163,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -192,9 +192,11 @@ services:
       - msa-sms
     image: ubiqube/msa2-rsyslog:54a250d9ef49db2454c5ed9111d43cebc8e9ef9a
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
     ports:
       - target: 514
         published: 514
@@ -215,10 +217,6 @@ services:
       - db
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-    deploy:
-      replicas: 3
-      placement:
-        max_replicas_per_node: 1
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
@@ -231,7 +229,7 @@ services:
       - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -271,7 +269,7 @@ services:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -302,7 +300,7 @@ services:
       - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -317,7 +315,7 @@ services:
       - db
     image: openmsa/openmsa:msa2-camunda-2.8.0-507b2c9b8361821915c4bd9255bafb47ace89079
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -380,7 +378,7 @@ services:
       - ELASTICSEARCH_HOSTS=http://msa_es:9200
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -425,20 +423,23 @@ services:
     deploy:
       replicas: 1
       placement:
-        max_replicas_per_node: 3
+        max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
     environment:
-      - node.roles=ingest,master,data
-      - node.name=msa_es
-      - discovery.seed_hosts=127.0.0.1,localhost
-      - cluster.initial_master_nodes=cluster_msa_es
-      - cluster.name=cluster
-      - network.host=0.0.0.0
+            #- node.roles=ingest,master,data
+            #- node.name=msa_es
+            #- discovery.seed_hosts=127.0.0.1,localhost
+            #- cluster.initial_master_nodes=cluster_msa_es
+            #- cluster.name=cluster
+            #- network.host=0.0.0.0
+            #- script.painless.regex.enabled=true
+            #- bootstrap.memory_lock=true
+      - discovery.type=single-node
       - script.painless.regex.enabled=true
       - bootstrap.memory_lock=true
-      - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xmx1024m -Xmx1024m"
+      - xpack.security.enabled=true
+      - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
       - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
     ulimits:
       memlock:
@@ -470,7 +471,7 @@ services:
     ports:
       - "9000:9000"
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -483,7 +484,7 @@ services:
   msa-dev:
     image: openmsa/openmsa:msa2-linuxdev-2.8.2-f893de2144e04516b26435f98eea3d32808eb63d
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
