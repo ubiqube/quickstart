@@ -54,7 +54,7 @@ services:
         constraints:	
           - "node.labels.worker==app"
     ports:
-      - target: 8100
+      - target: 8080
         published: 8100
         protocol: tcp
         mode: ingress
@@ -73,7 +73,7 @@ services:
         constraints:	
           - "node.labels.worker==app"
     ports:
-      - target: 8090
+      - target: 8080
         published: 8090
         protocol: tcp
         mode: ingress
