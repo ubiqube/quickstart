@@ -201,11 +201,11 @@ services:
       - target: 514
         published: 514
         protocol: udp
-        mode: host
+        mode: ingress
       - target: 514
         published: 514
         protocol: tcp
-        mode: host
+        mode: ingress
     networks:
       default:
         aliases:
