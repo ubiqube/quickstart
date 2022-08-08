@@ -328,7 +328,7 @@ function waitRunningContainer(){
 }
 
 function checkComposeVersion(){
-        compose_vers=$(docker-compose -v | grep -oP '\d+.\d+.\d+')
+        compose_vers=$(docker-compose -v | awk '{print $3}' | sed 's/\,//g')
         if [ -z "$compose_vers" ]; then
                 echo "No docker compose version found. Exit"
                 exit
