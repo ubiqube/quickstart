@@ -18,6 +18,8 @@ services:
         condition: service_started
       msa-ai-ml:
         condition: service_started
+      msa-rsyslog:
+        condition: service_started
     ports:
       - target: 80
         published: 80
