@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:14c00d5e63da3c32fbad4408feb320cb82259d0d
+    image: ubiqube/msa2-front:8231ffe39c74157bfca62d53617e1ae5ffb5c292
     depends_on:
       - msa-api
       - msa-ui
@@ -49,7 +49,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:c5ff930543609d5250c6dcdb4fc09295d5ddf83d
+    image: ubiqube/msa2-db:f9642e13d1d52b7e3b8480c47ae7a91369e9c959
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -126,7 +126,7 @@ services:
 #        max-file: "5"
 
   msa-api:
-    image: ubiqube/msa2-api:d8d20031483309f6aafe15612b6699385f197dbe
+    image: ubiqube/msa2-api:89c9fb4959aa0e319f6e2779b5bb22daa9db202c
     depends_on:
       - db
     healthcheck:
@@ -157,7 +157,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: ubiqube/msa2-ui:56a743b20ed798020eaa78ea302b50c6df9d8972
+    image: ubiqube/msa2-ui:62ceee6a6d36076dd50607b8658c8b87681d75ad
     depends_on:
       - msa-api
     healthcheck:
@@ -170,6 +170,7 @@ services:
           - "node.labels.worker==app"
     environment:
     - FEATURE_ADMIN=true
+    - FEATURE_REPOSITORY=true
     - FEATURE_CONNECTION_STATUS=true
     - FEATURE_ALARMS=true
     - FEATURE_LICENCE=true
@@ -212,7 +213,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: ubiqube/msa2-sms:504387f6aafee0f659ee08d69e01768d988e6845
+    image: ubiqube/msa2-sms:99d68e1a781dfdf1b7d2ca96b3bfb8deb1d569e6
     depends_on:
       - db
     healthcheck:
@@ -262,7 +263,7 @@ services:
     depends_on:
       - db
       - msa-api
-    image: ubiqube/msa2-alarm:e0f718e3ea2135450f86e51aa500909b3b861947
+    image: ubiqube/msa2-alarm:c1b98b96a7b32c3cfc88f7fcb7304460dfc84ff4
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:

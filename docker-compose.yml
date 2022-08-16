@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:14c00d5e63da3c32fbad4408feb320cb82259d0d
+    image: ubiqube/msa2-front:8231ffe39c74157bfca62d53617e1ae5ffb5c292
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -58,7 +58,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: ubiqube/msa2-db:c5ff930543609d5250c6dcdb4fc09295d5ddf83d
+    image: ubiqube/msa2-db:f9642e13d1d52b7e3b8480c47ae7a91369e9c959
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -93,7 +93,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:d8d20031483309f6aafe15612b6699385f197dbe
+    image: ubiqube/msa2-api:89c9fb4959aa0e319f6e2779b5bb22daa9db202c
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
       retries: 10
@@ -131,7 +131,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:56a743b20ed798020eaa78ea302b50c6df9d8972
+    image: ubiqube/msa2-ui:62ceee6a6d36076dd50607b8658c8b87681d75ad
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -139,6 +139,7 @@ services:
         condition: service_started
     environment:
     - FEATURE_ADMIN=true
+    - FEATURE_REPOSITORY=true
     - FEATURE_CONNECTION_STATUS=true
     - FEATURE_ALARMS=true
     - FEATURE_LICENCE=true
@@ -166,7 +167,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:7cedfe1e0714587b89de7088738f12e6044ac4c9
+    image: ubiqube/msa2-sms:99d68e1a781dfdf1b7d2ca96b3bfb8deb1d569e6
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -225,7 +226,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: ubiqube/msa2-alarm:e0f718e3ea2135450f86e51aa500909b3b861947
+    image: ubiqube/msa2-alarm:c1b98b96a7b32c3cfc88f7fcb7304460dfc84ff4
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     depends_on:
