@@ -437,9 +437,6 @@ services:
     container_name: msa_dev
     #build: ./lab/msa_dev
     image: ubiqube/msa2-linuxdev:97628341954ec6ca3671327a1d899a96fe9849dd
-    depends_on:
-      msa-es:
-        condition: service_started
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
