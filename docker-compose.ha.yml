@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:44d5deb07979dec2c3072d53c3641175fb8ae3ae
+    image: ubiqube/msa2-front:6eec2d64d5d90cac6efee100fc54a975254f1582
     depends_on:
       msa-ui:
         condition: service_healthy
@@ -346,7 +346,7 @@ services:
         max-file: "5"
 
   msa-es:
-    image: ubiqube/msa2-es:0e3404bd34b1aa8afc807a5fb9b6911bcbbeff9d
+    image: ubiqube/msa2-es:f42f585457a4461f06ef1c696fa46bb9f02a187a
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
