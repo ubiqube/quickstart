@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:7ba03ac321d16e935d1538ee1ebd633a08fde82b
+    image: ubiqube/msa2-front:44d5deb07979dec2c3072d53c3641175fb8ae3ae
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -133,7 +133,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:d7175fd3d6d2eb21872c33c2988aa1294fba40b8
+    image: ubiqube/msa2-ui:fbeaebeb4f7859c5d26541ca2794b0aa4e5f0e67
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
