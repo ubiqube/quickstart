@@ -41,7 +41,7 @@ services:
           - "mano-db"
 
   mano-nfvo:
-    image: oviubiqube/mano-nfvo-tm22:uat1
+    image: oviubiqube/mano-nfvo-tm22:uat3
 #    environment:
 #      KEYCLOAK_RESOURCE=mano-vnfm
 #      KEYCLOAK_CREDENTIALS_SECRET=xxxxxxxx
