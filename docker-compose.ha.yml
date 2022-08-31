@@ -5,18 +5,10 @@ services:
   msa-front:
     image: ubiqube/msa2-front:08fbc86c39ddadc50f544a37810d0bc4ef16c959
     depends_on:
-      msa-ui:
-        condition: service_healthy
-      msa-api:
-        condition: service_started
-      msa-es:
-        condition: service_started
-      camunda:
-        condition: service_started
-      msa-ai-ml:
-        condition: service_started
-      msa-rsyslog:
-        condition: service_started
+      - msa-api
+      - msa-ui
+      - camunda
+      - msa-ai-ml
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
       timeout: 2s
