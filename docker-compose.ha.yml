@@ -39,6 +39,13 @@ services:
         protocol: udp
         mode: ingress
       - "5200-5200:5200-5200/udp"
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     #
     # uncomment one of the 2 sections below when installing a custom certificate
     # - Docker standard standalone installation
@@ -151,6 +158,13 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/msa_api_logs:/opt/wildfly/logs/processLog"
       - "/mnt/NASVolume/msa_api_keystore:/etc/pki/jentreprise"
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     networks:
       default:
         aliases:
@@ -183,6 +197,13 @@ services:
     - FEATURE_EDIT_VARIABLES_IN_MICROSERVICE_CONSOLE=true
     - FEATURE_WORKFLOW_OWNER=false
     - FEATURE_PERMISSION_PROFILE_LABELS=false
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     networks:
       default:
         aliases:
@@ -207,6 +228,13 @@ services:
         published: 514
         protocol: tcp
         mode: ingress
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     networks:
       default:
         aliases:
@@ -235,6 +263,13 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     networks:
       default:
         aliases:
@@ -254,6 +289,13 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     networks:
       default:
         aliases:
@@ -277,6 +319,13 @@ services:
           - "node.labels.worker==app"
     volumes:
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     networks:
       default:
         aliases:
@@ -306,6 +355,13 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     networks:
       default:
         aliases:
@@ -377,6 +433,13 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     networks:
       default:
         aliases:
@@ -444,6 +507,13 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     networks:
       default:
         aliases:
@@ -462,11 +532,17 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_svn:/opt/svnroot"
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     networks:
       default:
         aliases:
           - "msa_dev"
-
 
 networks:
   default:
