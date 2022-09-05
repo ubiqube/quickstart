@@ -140,7 +140,7 @@ services:
   msa_bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: openmsa/openmsa:msa2-bud-2.8.3_BETA3-0b9f458ef2d78963c936b61a1ee9ae3299a341bc
+    image: openmsa/openmsa:msa2-bud-2.8.2-0b9f458ef2d78963c936b61a1ee9ae3299a341bc
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -162,7 +162,7 @@ services:
   
   msa_monitoring:
     restart: unless-stopped
-    image: openmsa/openmsa:msa2-monitoring-2.8.3_BETA3-0d82be7f6ed084ec80443bcc41a51909766f9ae5
+    image: openmsa/openmsa:msa2-monitoring-2.8.2-0d82be7f6ed084ec80443bcc41a51909766f9ae5
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -183,7 +183,7 @@ services:
     container_name: msa_camunda
     depends_on:
       - db
-    image: openmsa/openmsa:msa2-camunda-2.8.3_BETA3-507b2c9b8361821915c4bd9255bafb47ace89079
+    image: openmsa/openmsa:msa2-camunda-2.8.0-507b2c9b8361821915c4bd9255bafb47ace89079
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
@@ -271,7 +271,7 @@ services:
   msa_cerebro:
     restart: unless-stopped
     container_name: msa_cerebro
-    image: openmsa/openmsa:msa2-cerebro-2.8.3_BETA3-914750e000db1343d9972bfa6652da1efe4aa32f
+    image: openmsa/openmsa:msa2-cerebro-2.8.0-914750e000db1343d9972bfa6652da1efe4aa32f
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -288,7 +288,7 @@ services:
   msa_kibana:
     restart: unless-stopped
     container_name: msa_kibana
-    image: openmsa/openmsa:msa2-kibana-2.8.3_BETA3-49c1c422ad5559815d4f74568904a7214e788932
+    image: openmsa/openmsa:msa2-kibana-2.8.0-49c1c422ad5559815d4f74568904a7214e788932
     depends_on: 
       msa_es:
         condition: service_healthy
@@ -308,7 +308,7 @@ services:
   msa_ai_ml:
     restart: unless-stopped
     container_name: msa_ai_ml
-    image: openmsa/openmsa:msa2-ai-ml-2.8.3_BETA3-63c7fab8c111b6cc85da049f45ebc6175a9b269a
+    image: openmsa/openmsa:msa2-ai-ml-2.8.0-63c7fab8c111b6cc85da049f45ebc6175a9b269a
     healthcheck:
       test: ["CMD-SHELL", "python /msa_proj/health_check.py"]
     ports:
@@ -337,7 +337,7 @@ services:
     restart: unless-stopped
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.8.3_BETA3-b831acacdef579420ee1abf70ef66655d969fcbb
+    image: openmsa/openmsa:msa2-linuxme-2.8.0-b831acacdef579420ee1abf70ef66655d969fcbb
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -358,7 +358,7 @@ services:
     restart: unless-stopped
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.8.3_BETA3-b831acacdef579420ee1abf70ef66655d969fcbb
+    image: openmsa/openmsa:msa2-linuxme-2.8.0-b831acacdef579420ee1abf70ef66655d969fcbb
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
