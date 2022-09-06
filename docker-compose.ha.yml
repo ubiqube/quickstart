@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:eeee6ecdb94651e8216ae97e26165e634e83047d
+    image: openmsa/openmsa:msa2-front-2.8.3_BETA3-eeee6ecdb94651e8216ae97e26165e634e83047d
     depends_on:
       - msa-api
       - msa-ui
@@ -16,7 +16,7 @@ services:
       interval: 10s
       start_period: 30s
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -46,6 +46,8 @@ services:
         max-buffer-size: "4m"
         max-size: "10m"
         max-file: "5"
+    extra_hosts:
+      - msa-es:10.55.31.231
     #
     # uncomment one of the 2 sections below when installing a custom certificate
     # - Docker standard standalone installation
@@ -56,7 +58,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:f9642e13d1d52b7e3b8480c47ae7a91369e9c959
+    image: openmsa/openmsa:msa2-db-2.8.3_BETA3-f9642e13d1d52b7e3b8480c47ae7a91369e9c959
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -96,50 +98,50 @@ services:
         max-size: "10m"
         max-file: "5"
 
-#  db-replica:
-#    image: ubiqube/msa2-db:c5ff930543609d5250c6dcdb4fc09295d5ddf83d
-#    healthcheck:
-#      test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
-#      timeout: 20s
-#    deploy:
-#      replicas: 2
-#      restart_policy:
-#        condition: on-failure
-#      placement:
-#        max_replicas_per_node: 1
-#        constraints:
-#          - "node.labels.db==replica"
-#    environment:
-#      CAMUNDA_PASSWORD: camunda
-#      CAMUNDA_DB: process-engine
-#      CAMUNDA_USER: camunda
-#      KEY_VAULT_USER: key_vault
-#      KEY_VAULT_DB: key_vault
-#      PG_MODE: replica
-#      PG_PRIMARY_USER: postgres
-#      PG_PRIMARY_PASSWORD: my_db_password
-#      PG_USER: postgres
-#      PG_PASSWORD: my_db_password
-#      PG_DATABASE: POSTGRESQL
-#      PG_ROOT_PASSWORD: my_db_password
-#      PG_PRIMARY_PORT: 5432
-#      PG_PRIMARY_HOST: db
-#    logging:
-#      driver: "json-file"
-#      options:
-#        mode: non-blocking
-#        max-buffer-size: "4m"
-#        max-size: "10m"
-#        max-file: "5"
+  db-replica:
+    image: openmsa/openmsa:msa2-db-2.8.3_BETA3-f9642e13d1d52b7e3b8480c47ae7a91369e9c959
+    healthcheck:
+      test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
+      timeout: 20s
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.db==replica"
+    environment:
+      CAMUNDA_PASSWORD: camunda
+      CAMUNDA_DB: process-engine
+      CAMUNDA_USER: camunda
+      KEY_VAULT_USER: key_vault
+      KEY_VAULT_DB: key_vault
+      PG_MODE: replica
+      PG_PRIMARY_USER: postgres
+      PG_PRIMARY_PASSWORD: my_db_password
+      PG_USER: postgres
+      PG_PASSWORD: my_db_password
+      PG_DATABASE: POSTGRESQL
+      PG_ROOT_PASSWORD: my_db_password
+      PG_PRIMARY_PORT: 5432
+      PG_PRIMARY_HOST: db
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
 
   msa-api:
-    image: ubiqube/msa2-api:27cd6c1b6d153e3bacdd0bb902f9a39eb3b7167b
+    image: openmsa/openmsa:msa2-api-2.8.3_BETA3-27cd6c1b6d153e3bacdd0bb902f9a39eb3b7167b
     depends_on:
       - db
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -169,15 +171,18 @@ services:
       default:
         aliases:
           - "msa_api"
+    extra_hosts:
+      - msa_es:10.55.31.231
+      - msa-es:10.55.31.231
 
   msa-ui:
-    image: ubiqube/msa2-ui:dcce0ae6345f8c7073d551b9d1acca6489ff11e4
+    image: openmsa/openmsa:msa2-ui-2.8.3_BETA3-dcce0ae6345f8c7073d551b9d1acca6489ff11e4
     depends_on:
       - msa-api
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -212,9 +217,9 @@ services:
   msa-rsyslog:
     depends_on:
       - msa-sms
-    image: ubiqube/msa2-rsyslog:54a250d9ef49db2454c5ed9111d43cebc8e9ef9a
+    image: openmsa/openmsa:msa2-rsyslog-2.8.3_BETA3-54a250d9ef49db2454c5ed9111d43cebc8e9ef9a
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -241,7 +246,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: ubiqube/msa2-sms:44f77e35c9033946f9c904174ef453b98af2ac39
+    image: openmsa/openmsa:msa2-sms-2.8.3_BETA3-44f77e35c9033946f9c904174ef453b98af2ac39
     depends_on:
       - db
     healthcheck:
@@ -258,7 +263,7 @@ services:
       - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -274,9 +279,12 @@ services:
       default:
         aliases:
           - "msa_sms"
+    extra_hosts:
+      - msa_es:10.55.31.231
+      - msa-es:10.55.31.231
 
   msa-bud:
-    image: ubiqube/msa2-bud:0b9f458ef2d78963c936b61a1ee9ae3299a341bc
+    image: openmsa/openmsa:msa2-bud-2.8.2-0b9f458ef2d78963c936b61a1ee9ae3299a341bc
     depends_on:
       - db
     healthcheck:
@@ -284,7 +292,7 @@ services:
     environment:
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -305,14 +313,14 @@ services:
     depends_on:
       - db
       - msa-api
-    image: ubiqube/msa2-alarm:c1b98b96a7b32c3cfc88f7fcb7304460dfc84ff4
+    image: openmsa/openmsa:msa2-alarm-2.8.3_BETA3-c1b98b96a7b32c3cfc88f7fcb7304460dfc84ff4
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -332,7 +340,7 @@ services:
           - "msa_alarm"
 
   msa-monitoring:
-    image: ubiqube/msa2-monitoring:0d82be7f6ed084ec80443bcc41a51909766f9ae5
+    image: openmsa/openmsa:msa2-monitoring-2.8.2-0d82be7f6ed084ec80443bcc41a51909766f9ae5
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -350,7 +358,7 @@ services:
       - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -372,11 +380,12 @@ services:
       - db
     image: openmsa/openmsa:msa2-camunda-2.8.0-507b2c9b8361821915c4bd9255bafb47ace89079
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
+          #- "node.labels.manager==true"
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
@@ -392,6 +401,61 @@ services:
         max-buffer-size: "4m"
         max-size: "10m"
         max-file: "5"
+
+#  msa-es:
+#    healthcheck:
+#      test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
+#      interval: 60s
+#      start_period: 60s
+#    image: ubiqube/msa2-es:0e3404bd34b1aa8afc807a5fb9b6911bcbbeff9d
+#    deploy:
+#      replicas: 1
+#      placement:
+#        max_replicas_per_node: 1
+#        constraints:
+#          - "node.labels.worker==app"
+#    environment:
+#      - node.roles=ingest
+#      - node.name=esclient01
+#      - discovery.seed_hosts=10.55.31.226,10.55.31.227,10.55.31.228
+#      - cluster.initial_master_nodes=kv01vmano_NODE_esmtr01,kv01vmano_NODE_esmtr02,kv01vmano_NODE_esmtr03
+#      - cluster.name=kv01vmano
+#      - network.host=0.0.0.0
+#      - http.host=0.0.0.0  
+#      - script.painless.regex.enabled=true
+#      - bootstrap.memory_lock=true
+#      - xpack.security.enabled=false
+#      #- "ES_JAVA_OPTS=-Xmx1024m -Xmx1024m"
+#      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
+#    networks:
+#      default:
+#        aliases:
+#          - "msa_es"
+#    ports:
+#      - "9300:9300"
+#      - "9200:9200"
+#      - "9300:9300/udp"
+#      - "9200:9200/udp"
+#    volumes:
+#     - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
+#    logging:
+#      driver: "json-file"
+#      options:
+#        mode: non-blocking
+#        max-buffer-size: "4m"
+#        max-size: "10m"
+#        max-file: "5"
+#    extra_hosts:
+#      - kv01vmanoesmtr01:10.55.31.226
+#      - kv01vmanoesdata01:10.55.31.229
+#      - kv01vmanoesmtr02:10.55.31.227
+#      - kv01vmanoesdata02:10.55.31.230
+#      - kv01vmanoesmtr03:10.55.31.228
+#      - kv01vmanoesdata03:10.55.31.231 
 
   msa-kibana:
     image: openmsa/openmsa:msa2-kibana-2.8.0-49c1c422ad5559815d4f74568904a7214e788932
@@ -418,6 +482,9 @@ services:
       default:
         aliases:
           - "msa_kibana"
+    extra_hosts:
+      - msa_es:10.55.31.231
+      - msa-es:10.55.31.231
 
   msa-ai-ml:
     image: openmsa/openmsa:msa2-ai-ml-2.8.0-63c7fab8c111b6cc85da049f45ebc6175a9b269a
@@ -428,7 +495,7 @@ services:
     volumes:
       - "/mnt/NASVolume/msa_ai_ml_db:/msa_proj/database"
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -445,50 +512,6 @@ services:
         aliases:
           - "msa_ai_ml"
 
-  msa-es:
-    healthcheck:
-      test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
-      interval: 60s
-      start_period: 60s
-    image: ubiqube/msa2-es:0e3404bd34b1aa8afc807a5fb9b6911bcbbeff9d
-    deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
-    environment:
-            #- node.roles=ingest,master,data
-            #- node.name=msa_es
-            #- discovery.seed_hosts=127.0.0.1,localhost
-            #- cluster.initial_master_nodes=cluster_msa_es
-            #- cluster.name=cluster
-            #- network.host=0.0.0.0
-            #- script.painless.regex.enabled=true
-            #- bootstrap.memory_lock=true
-      - discovery.type=single-node
-      - script.painless.regex.enabled=true
-      - bootstrap.memory_lock=true
-      - xpack.security.enabled=true
-      - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    networks:
-      default:
-        aliases:
-          - "msa_es"
-    volumes:
-     - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
-    logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
 
   msa-cerebro:
     image: openmsa/openmsa:msa2-cerebro-2.8.0-914750e000db1343d9972bfa6652da1efe4aa32f
@@ -502,7 +525,7 @@ services:
     ports:
       - "9000:9000"
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -518,11 +541,14 @@ services:
       default:
         aliases:
           - "msa_cerebro"
+    extra_hosts:
+      - msa_es:10.55.31.231
+      - msa-es:10.55.31.231
 
   msa-dev:
-    image: ubiqube/msa2-linuxdev:97628341954ec6ca3671327a1d899a96fe9849dd
+    image: openmsa/openmsa:msa2-linuxdev-2.8.3_BETA3-97628341954ec6ca3671327a1d899a96fe9849dd
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -543,6 +569,7 @@ services:
       default:
         aliases:
           - "msa_dev"
+
 
 networks:
   default:
