@@ -46,8 +46,6 @@ services:
         max-buffer-size: "4m"
         max-size: "10m"
         max-file: "5"
-    extra_hosts:
-      - msa-es:10.55.31.231
     #
     # uncomment one of the 2 sections below when installing a custom certificate
     # - Docker standard standalone installation
@@ -171,9 +169,6 @@ services:
       default:
         aliases:
           - "msa_api"
-    extra_hosts:
-      - msa_es:10.55.31.231
-      - msa-es:10.55.31.231
 
   msa-ui:
     image: openmsa/openmsa:msa2-ui-2.8.3_BETA3-dcce0ae6345f8c7073d551b9d1acca6489ff11e4
@@ -279,9 +274,6 @@ services:
       default:
         aliases:
           - "msa_sms"
-    extra_hosts:
-      - msa_es:10.55.31.231
-      - msa-es:10.55.31.231
 
   msa-bud:
     image: openmsa/openmsa:msa2-bud-2.8.2-0b9f458ef2d78963c936b61a1ee9ae3299a341bc
@@ -482,9 +474,6 @@ services:
       default:
         aliases:
           - "msa_kibana"
-    extra_hosts:
-      - msa_es:10.55.31.231
-      - msa-es:10.55.31.231
 
   msa-ai-ml:
     image: openmsa/openmsa:msa2-ai-ml-2.8.0-63c7fab8c111b6cc85da049f45ebc6175a9b269a
@@ -540,9 +529,6 @@ services:
       default:
         aliases:
           - "msa_cerebro"
-    extra_hosts:
-      - msa_es:10.55.31.231
-      - msa-es:10.55.31.231
 
   msa-dev:
     image: openmsa/openmsa:msa2-linuxdev-2.8.3_BETA3-97628341954ec6ca3671327a1d899a96fe9849dd
