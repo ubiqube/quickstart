@@ -512,7 +512,6 @@ services:
         aliases:
           - "msa_ai_ml"
 
-
   msa-cerebro:
     image: openmsa/openmsa:msa2-cerebro-2.8.0-914750e000db1343d9972bfa6652da1efe4aa32f
     environment:
