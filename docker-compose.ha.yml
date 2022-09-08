@@ -16,7 +16,7 @@ services:
       interval: 10s
       start_period: 30s
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -46,6 +46,8 @@ services:
         max-buffer-size: "4m"
         max-size: "10m"
         max-file: "5"
+    volumes:
+        - "/mnt/NASVolume/msa_front_conf:/etc/nginx/custom_conf.d"
     #
     # uncomment one of the 2 sections below when installing a custom certificate
     # - Docker standard standalone installation
@@ -96,41 +98,41 @@ services:
         max-size: "10m"
         max-file: "5"
 
-#  db-replica:
-#    image: ubiqube/msa2-db:c5ff930543609d5250c6dcdb4fc09295d5ddf83d
-#    healthcheck:
-#      test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
-#      timeout: 20s
-#    deploy:
-#      replicas: 2
-#      restart_policy:
-#        condition: on-failure
-#      placement:
-#        max_replicas_per_node: 1
-#        constraints:
-#          - "node.labels.db==replica"
-#    environment:
-#      CAMUNDA_PASSWORD: camunda
-#      CAMUNDA_DB: process-engine
-#      CAMUNDA_USER: camunda
-#      KEY_VAULT_USER: key_vault
-#      KEY_VAULT_DB: key_vault
-#      PG_MODE: replica
-#      PG_PRIMARY_USER: postgres
-#      PG_PRIMARY_PASSWORD: my_db_password
-#      PG_USER: postgres
-#      PG_PASSWORD: my_db_password
-#      PG_DATABASE: POSTGRESQL
-#      PG_ROOT_PASSWORD: my_db_password
-#      PG_PRIMARY_PORT: 5432
-#      PG_PRIMARY_HOST: db
-#    logging:
-#      driver: "json-file"
-#      options:
-#        mode: non-blocking
-#        max-buffer-size: "4m"
-#        max-size: "10m"
-#        max-file: "5"
+  db-replica:
+    image: openmsa/openmsa:msa2-db-2.8.3_BETA3-f9642e13d1d52b7e3b8480c47ae7a91369e9c959
+    healthcheck:
+      test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
+      timeout: 20s
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.db==replica"
+    environment:
+      CAMUNDA_PASSWORD: camunda
+      CAMUNDA_DB: process-engine
+      CAMUNDA_USER: camunda
+      KEY_VAULT_USER: key_vault
+      KEY_VAULT_DB: key_vault
+      PG_MODE: replica
+      PG_PRIMARY_USER: postgres
+      PG_PRIMARY_PASSWORD: my_db_password
+      PG_USER: postgres
+      PG_PASSWORD: my_db_password
+      PG_DATABASE: POSTGRESQL
+      PG_ROOT_PASSWORD: my_db_password
+      PG_PRIMARY_PORT: 5432
+      PG_PRIMARY_HOST: db
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
 
   msa-api:
     image: ubiqube/msa2-api:27cd6c1b6d153e3bacdd0bb902f9a39eb3b7167b
@@ -139,7 +141,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -177,7 +179,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -214,7 +216,7 @@ services:
       - msa-sms
     image: ubiqube/msa2-rsyslog:54a250d9ef49db2454c5ed9111d43cebc8e9ef9a
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -258,7 +260,7 @@ services:
       - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -274,6 +276,9 @@ services:
       default:
         aliases:
           - "msa_sms"
+    extra_hosts:
+      - msa_es:10.55.31.231
+      - msa-es:10.55.31.231
 
   msa-bud:
     image: ubiqube/msa2-bud:0b9f458ef2d78963c936b61a1ee9ae3299a341bc
@@ -284,7 +289,7 @@ services:
     environment:
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -312,7 +317,7 @@ services:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -350,7 +355,7 @@ services:
       - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -372,7 +377,7 @@ services:
       - db
     image: openmsa/openmsa:msa2-camunda-2.8.0-507b2c9b8361821915c4bd9255bafb47ace89079
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -428,7 +433,7 @@ services:
     volumes:
       - "/mnt/NASVolume/msa_ai_ml_db:/msa_proj/database"
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -502,7 +507,7 @@ services:
     ports:
       - "9000:9000"
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -522,7 +527,7 @@ services:
   msa-dev:
     image: ubiqube/msa2-linuxdev:97628341954ec6ca3671327a1d899a96fe9849dd
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:

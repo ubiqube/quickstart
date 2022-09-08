@@ -45,6 +45,8 @@ services:
         max-buffer-size: "4m"
         max-size: "10m"
         max-file: "5"
+    volumes:
+        - "msa_front_conf:/etc/nginx/custom_conf.d"
     networks:
       default:
         aliases:
@@ -506,6 +508,7 @@ volumes:
   msa_sms_logs:
   msa_bud_logs:
   msa_front:
+  msa_front_conf:
   msa_svn:
   msa_ai_ml_db:
   msa_bulkfiles:
