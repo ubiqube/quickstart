@@ -456,7 +456,6 @@ services:
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "msa_dev:/opt/devops/"
-      - "msa_front_conf:/etc/nginx/custom_conf.d"
     networks:
       default:
         aliases:
