@@ -247,6 +247,10 @@ services:
     depends_on:
       - db
     healthcheck:
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
@@ -285,6 +289,10 @@ services:
     depends_on:
       - db
     healthcheck:
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
     environment:
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
@@ -312,6 +320,10 @@ services:
       - msa-api
     image: ubiqube/msa2-alarm:c1b98b96a7b32c3cfc88f7fcb7304460dfc84ff4
     healthcheck:
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
@@ -339,6 +351,10 @@ services:
   msa-monitoring:
     image: ubiqube/msa2-monitoring:0d82be7f6ed084ec80443bcc41a51909766f9ae5
     healthcheck:
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
       - db

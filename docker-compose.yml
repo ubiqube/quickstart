@@ -173,6 +173,10 @@ services:
     container_name: msa_sms
     image: ubiqube/msa2-sms:44f77e35c9033946f9c904174ef453b98af2ac39
     healthcheck:
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s      
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
@@ -209,6 +213,10 @@ services:
     container_name: msa_bud
     image: ubiqube/msa2-bud:0b9f458ef2d78963c936b61a1ee9ae3299a341bc
     healthcheck:
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
     depends_on:
       db:
@@ -232,6 +240,10 @@ services:
     container_name: msa_alarm
     image: ubiqube/msa2-alarm:c1b98b96a7b32c3cfc88f7fcb7304460dfc84ff4
     healthcheck:
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     depends_on:
       db:
