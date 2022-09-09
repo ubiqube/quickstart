@@ -46,6 +46,8 @@ services:
         max-buffer-size: "4m"
         max-size: "10m"
         max-file: "5"
+    volumes:
+        - "/mnt/NASVolume/msa_front_conf:/etc/nginx/custom_conf.d"
     #
     # uncomment one of the 2 sections below when installing a custom certificate
     # - Docker standard standalone installation
@@ -245,6 +247,10 @@ services:
     depends_on:
       - db
     healthcheck:
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
@@ -258,7 +264,7 @@ services:
       - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -274,12 +280,19 @@ services:
       default:
         aliases:
           - "msa_sms"
+    extra_hosts:
+      - msa_es:10.55.31.231
+      - msa-es:10.55.31.231
 
   msa-bud:
     image: openmsa/openmsa:msa2-bud-2.8.2-0b9f458ef2d78963c936b61a1ee9ae3299a341bc
     depends_on:
       - db
     healthcheck:
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
     environment:
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
@@ -307,6 +320,10 @@ services:
       - msa-api
     image: openmsa/openmsa:msa2-alarm-2.8.3_BETA3-c1b98b96a7b32c3cfc88f7fcb7304460dfc84ff4
     healthcheck:
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
@@ -334,6 +351,10 @@ services:
   msa-monitoring:
     image: openmsa/openmsa:msa2-monitoring-2.8.2-0d82be7f6ed084ec80443bcc41a51909766f9ae5
     healthcheck:
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
       - db

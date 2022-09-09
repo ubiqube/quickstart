@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.3_BETA3-eeee6ecdb94651e8216ae97e26165e634e83047d
+    image: ubiqube/msa2-front:5e081e967b31027700302ca82234af6b1e863fed
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -45,6 +45,8 @@ services:
         max-buffer-size: "4m"
         max-size: "10m"
         max-file: "5"
+    volumes:
+        - "msa_front_conf:/etc/nginx/custom_conf.d"
     networks:
       default:
         aliases:
@@ -171,6 +173,10 @@ services:
     container_name: msa_sms
     image: openmsa/openmsa:msa2-sms-2.8.3_BETA3-44f77e35c9033946f9c904174ef453b98af2ac39
     healthcheck:
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s      
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
@@ -207,6 +213,10 @@ services:
     container_name: msa_bud
     image: openmsa/openmsa:msa2-bud-2.8.2-0b9f458ef2d78963c936b61a1ee9ae3299a341bc
     healthcheck:
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
     depends_on:
       db:
@@ -230,6 +240,10 @@ services:
     container_name: msa_alarm
     image: openmsa/openmsa:msa2-alarm-2.8.3_BETA3-c1b98b96a7b32c3cfc88f7fcb7304460dfc84ff4
     healthcheck:
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     depends_on:
       db:
@@ -518,6 +532,7 @@ volumes:
   msa_sms_logs:
   msa_bud_logs:
   msa_front:
+  msa_front_conf:
   msa_svn:
   msa_ai_ml_db:
   msa_bulkfiles:
