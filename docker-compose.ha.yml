@@ -3,11 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-<<<<<<< HEAD
-    image: openmsa/openmsa:msa2-front-2.8.3_BETA3-eeee6ecdb94651e8216ae97e26165e634e83047d
-=======
     image: ubiqube/msa2-front:33a240bb1099a86b8276e97f78d54432cf323313
->>>>>>> 2.8.3
     depends_on:
       - msa-api
       - msa-ui
@@ -50,13 +46,10 @@ services:
         max-buffer-size: "4m"
         max-size: "10m"
         max-file: "5"
-<<<<<<< HEAD
-    extra_hosts:
-      - msa-es:10.55.31.231
-=======
     volumes:
         - "/mnt/NASVolume/msa_front_conf:/etc/nginx/custom_conf.d"
->>>>>>> 2.8.3
+    extra_hosts:
+      - msa-es:10.55.31.231
     #
     # uncomment one of the 2 sections below when installing a custom certificate
     # - Docker standard standalone installation
@@ -110,11 +103,7 @@ services:
   db-replica:
     image: openmsa/openmsa:msa2-db-2.8.3_BETA3-f9642e13d1d52b7e3b8480c47ae7a91369e9c959
     healthcheck:
-<<<<<<< HEAD
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h db"]
-=======
-      test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
->>>>>>> 2.8.3
       timeout: 20s
     deploy:
       replicas: 1
