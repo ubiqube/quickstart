@@ -169,7 +169,7 @@ services:
   cloudclapp:
     depends_on:
       - msa-api
-    image: ubiqube/cloudclapp:1998c8b84247e3eb9c68e6d502bc8f78530bcfb5
+    image: ubiqube/cloudclapp:0ab8ad31f8cc70bc073639d2613fffe075eaa594
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     environment:
