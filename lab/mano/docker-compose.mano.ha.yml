@@ -3,7 +3,7 @@ version: "3.8"
                     
 services:
   db:
-    enviroement:
+    environment:
       MANOVNFM_USER: mano_vnfm
       MANOVNFM_PASSWORD: mano
       MANONFVO_USER: mano_nfvo
