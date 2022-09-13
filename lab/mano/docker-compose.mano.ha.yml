@@ -1,6 +1,16 @@
+# vim:noai:ts=2:sw=2
 version: "3.8"
-
+                    
 services:
+  db:
+    enviroement:
+      MANOVNFM_USER: mano_vnfm
+      MANOVNFM_PASSWORD: mano
+      MANONFVO_USER: mano_nfvo
+      MANONFVO_PASSWORD: mano
+      KEYCLOAK_USER: keycloak
+      KEYCLAOK_PASSWORD: keycloak
+
   mano-artemis:
     image: openmsa/artemis:2.19.0
     deploy:
