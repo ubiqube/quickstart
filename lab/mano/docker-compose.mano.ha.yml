@@ -1,6 +1,6 @@
 # vim:noai:ts=2:sw=2
 version: "3.8"
-                    
+
 services:
   db:
     environment:
@@ -9,15 +9,16 @@ services:
       MANONFVO_USER: mano_nfvo
       MANONFVO_PASSWORD: mano
       KEYCLOAK_USER: keycloak
-      KEYCLAOK_PASSWORD: keycloak
+      KEYCLOAK_PASSWORD: keycloak
+      KEYCLOAK_DB: keycloak
 
   mano-artemis:
     image: openmsa/artemis:2.19.0
     deploy:
       replicas: 1
-      placement:	
+      placement:
         max_replicas_per_node: 1
-        constraints:	
+        constraints:
           - "node.labels.worker==app"
 
   mano-auth:
