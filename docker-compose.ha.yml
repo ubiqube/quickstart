@@ -169,8 +169,6 @@ services:
       default:
         aliases:
           - "msa_api"
-    extra_hosts:
-      - msa_es:10.55.31.231
 
   msa-ui:
     image: openmsa/openmsa:msa2-ui-2.8.3-aa8ec8af4ecac1b96f491da1ba9a2571d4f539b5
@@ -280,8 +278,6 @@ services:
       default:
         aliases:
           - "msa_sms"
-    extra_hosts:
-      - msa_es:10.55.31.231
 
   msa-bud:
     image: openmsa/openmsa:msa2-bud-2.8.3-0b9f458ef2d78963c936b61a1ee9ae3299a341bc
@@ -414,60 +410,54 @@ services:
         max-size: "10m"
         max-file: "5"
 
-#  msa-es:
-#    healthcheck:
-#      test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
+  msa-es:
+#  healthcheck:
+#     test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
 #      interval: 60s
 #      start_period: 60s
-#    image: ubiqube/msa2-es:0e3404bd34b1aa8afc807a5fb9b6911bcbbeff9d
-#    deploy:
-#      replicas: 1
-#      placement:
-#        max_replicas_per_node: 1
-#        constraints:
-#          - "node.labels.worker==app"
-#    environment:
-#      - node.roles=ingest
-#      - node.name=esclient01
-#      - discovery.seed_hosts=10.55.31.226,10.55.31.227,10.55.31.228
-#      - cluster.initial_master_nodes=kv01vmano_NODE_esmtr01,kv01vmano_NODE_esmtr02,kv01vmano_NODE_esmtr03
-#      - cluster.name=kv01vmano
-#      - network.host=0.0.0.0
-#      - http.host=0.0.0.0  
-#      - script.painless.regex.enabled=true
-#      - bootstrap.memory_lock=true
-#      - xpack.security.enabled=false
-#      #- "ES_JAVA_OPTS=-Xmx1024m -Xmx1024m"
-#      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
-#    ulimits:
-#      memlock:
-#        soft: -1
-#        hard: -1
-#    networks:
-#      default:
-#        aliases:
-#          - "msa_es"
-#    ports:
-#      - "9300:9300"
-#      - "9200:9200"
-#      - "9300:9300/udp"
-#      - "9200:9200/udp"
-#    volumes:
-#     - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
-#    logging:
-#      driver: "json-file"
-#      options:
-#        mode: non-blocking
-#        max-buffer-size: "4m"
-#        max-size: "10m"
-#        max-file: "5"
-#    extra_hosts:
-#      - kv01vmanoesmtr01:10.55.31.226
-#      - kv01vmanoesdata01:10.55.31.229
-#      - kv01vmanoesmtr02:10.55.31.227
-#      - kv01vmanoesdata02:10.55.31.230
-#      - kv01vmanoesmtr03:10.55.31.228
-#      - kv01vmanoesdata03:10.55.31.231 
+    image: ubiqube/msa2-es:e3f74c2f41e1940cdc76fb1d5deeafd81bb603c4
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
+    environment:
+      - node.roles=ingest
+      - node.name=kvdc_NODE_esclient01
+      - discovery.seed_hosts=kvdc_NODE_esmtr01,kvdc_NODE_esmtr02,kvdc_NODE_esmtr03
+      - cluster.initial_master_nodes=kvdc_NODE_esmtr01,kvdc_NODE_esmtr02,kvdc_NODE_esmtr03
+      - cluster.name=kvdc
+      - network.host=0.0.0.0
+      - http.host=0.0.0.0
+      - network.publish_host=10.55.31.220
+      - script.painless.regex.enabled=true
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false 
+      #- "ES_JAVA_OPTS=-Xmx1024m -Xmx1024m"
+      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      default:
+        aliases:
+          - "msa_es"
+    ports:
+      - "9300:9300"
+      - "9200:9200"
+      - "9300:9300/udp"
+      - "9200:9200/udp"
+    volumes:
+     - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
 
   msa-kibana:
     image: openmsa/openmsa:msa2-kibana-2.8.0-49c1c422ad5559815d4f74568904a7214e788932
@@ -494,8 +484,6 @@ services:
       default:
         aliases:
           - "msa_kibana"
-    extra_hosts:
-      - msa_es:10.55.31.231
 
   msa-ai-ml:
     image: openmsa/openmsa:msa2-ai-ml-2.8.0-63c7fab8c111b6cc85da049f45ebc6175a9b269a
@@ -551,8 +539,6 @@ services:
       default:
         aliases:
           - "msa_cerebro"
-    extra_hosts:
-      - msa_es:10.55.31.231
 
   msa-dev:
     image: openmsa/openmsa:msa2-linuxdev-2.8.3-baec532c6cbde2aa588225020738b1b2f06cc840
