@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.2-3d4a3493b7adb99bfb219f8cfa5e33461af2ad86
+    image: openmsa/openmsa:msa2-front-2.8.3-a4b315925c9008c49e8afaa6533f073a9de660b4
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -18,6 +18,8 @@ services:
         condition: service_started
       msa-ai-ml:
         condition: service_started
+      msa-rsyslog:
+        condition: service_started
     ports:
       - target: 80
         published: 80
@@ -26,10 +28,6 @@ services:
       - target: 443
         published: 443
         protocol: tcp
-        mode: host
-      - target: 514
-        published: 514
-        protocol: udp
         mode: host
       - target: 162
         published: 162
@@ -47,6 +45,8 @@ services:
         max-buffer-size: "4m"
         max-size: "10m"
         max-file: "5"
+    volumes:
+        - "msa_front_conf:/etc/nginx/custom_conf.d"
     networks:
       default:
         aliases:
@@ -62,7 +62,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.8.2-5bbc985fc8ab57783295725f6795ddf88fc1b6f7
+    image: openmsa/openmsa:msa2-db-2.8.3-f9642e13d1d52b7e3b8480c47ae7a91369e9c959
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -97,7 +97,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.8.2-9ea3e9501619eb421d01f510ef26b62b0446ffd5
+    image: openmsa/openmsa:msa2-api-2.8.3-759a7511420f5b3ad4ba7f5c357622984af8db3d
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
       retries: 10
@@ -135,7 +135,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.8.2-82d21b58c30b3f4dd5065135911fbfeb56eec39b
+    image: openmsa/openmsa:msa2-ui-2.8.3-d46108cf37a3160196ffd4afcc795eb48384b25e
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -143,6 +143,7 @@ services:
         condition: service_started
     environment:
     - FEATURE_ADMIN=true
+    - FEATURE_REPOSITORY=true
     - FEATURE_CONNECTION_STATUS=true
     - FEATURE_ALARMS=true
     - FEATURE_LICENCE=true
@@ -170,8 +171,12 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: openmsa/openmsa:msa2-sms-2.8.2-e7e4868ae02e2f4fb6651a4ec345aed43ca8c6bb
+    image: openmsa/openmsa:msa2-sms-2.8.3-44f77e35c9033946f9c904174ef453b98af2ac39
     healthcheck:
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s      
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
@@ -206,8 +211,12 @@ services:
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: openmsa/openmsa:msa2-bud-2.8.2-0b9f458ef2d78963c936b61a1ee9ae3299a341bc
+    image: openmsa/openmsa:msa2-bud-2.8.3-0b9f458ef2d78963c936b61a1ee9ae3299a341bc
     healthcheck:
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
     depends_on:
       db:
@@ -229,8 +238,12 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: openmsa/openmsa:msa2-alarm-2.8.2-e0f718e3ea2135450f86e51aa500909b3b861947
+    image: openmsa/openmsa:msa2-alarm-2.8.3-c1b98b96a7b32c3cfc88f7fcb7304460dfc84ff4
     healthcheck:
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     depends_on:
       db:
@@ -256,7 +269,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: openmsa/openmsa:msa2-monitoring-2.8.2-0d82be7f6ed084ec80443bcc41a51909766f9ae5
+    image: openmsa/openmsa:msa2-monitoring-2.8.3-0d82be7f6ed084ec80443bcc41a51909766f9ae5
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -287,6 +300,26 @@ services:
         aliases:
           - "msa_monitoring"
 
+  msa-rsyslog:
+    restart: unless-stopped
+    container_name: msa_rsyslog
+    depends_on:
+      - msa-sms
+    image: openmsa/openmsa:msa2-rsyslog-2.8.3-54a250d9ef49db2454c5ed9111d43cebc8e9ef9a
+    ports:
+      - target: 514
+        published: 514
+        protocol: udp
+        mode: host
+      - target: 514
+        published: 514
+        protocol: tcp
+        mode: host
+    networks:
+      default:
+        aliases:
+          - "msa_rsyslog"
+
   camunda:
     restart: unless-stopped
     container_name: msa_camunda
@@ -313,7 +346,7 @@ services:
   msa-es:
     restart: unless-stopped
     container_name: msa_es
-    image: openmsa/openmsa:msa2-es-2.8.0-6b191fca4d76383f04930565d90dbf58a051eed4
+    image: openmsa/openmsa:msa2-es-2.8.3-f42f585457a4461f06ef1c696fa46bb9f02a187a
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
@@ -376,7 +409,7 @@ services:
   msa-kibana:
     restart: unless-stopped
     container_name: msa_kibana
-    image: openmsa/openmsa:msa2-kibana-2.8.0-49c1c422ad5559815d4f74568904a7214e788932
+    image: openmsa/openmsa:msa2-kibana-2.8.3-49c1c422ad5559815d4f74568904a7214e788932
     depends_on:
       msa-es:
         condition: service_started
@@ -417,10 +450,7 @@ services:
     restart: unless-stopped
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: openmsa/openmsa:msa2-linuxdev-2.8.2-f893de2144e04516b26435f98eea3d32808eb63d
-    depends_on:
-      msa-es:
-        condition: service_started
+    image: openmsa/openmsa:msa2-linuxdev-2.8.3-baec532c6cbde2aa588225020738b1b2f06cc840
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
@@ -490,6 +520,7 @@ volumes:
   msa_sms_logs:
   msa_bud_logs:
   msa_front:
+  msa_front_conf:
   msa_svn:
   msa_ai_ml_db:
   msa_bulkfiles:
