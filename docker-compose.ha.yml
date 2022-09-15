@@ -253,6 +253,7 @@ services:
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
+      - ES_SERVICES:msa-es msa-es-2
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
@@ -278,6 +279,8 @@ services:
       default:
         aliases:
           - "msa_sms"
+    extra_hosts:
+      - msa-es-2:10.55.27.220
 
   msa-bud:
     image: openmsa/openmsa:msa2-bud-2.8.3-0b9f458ef2d78963c936b61a1ee9ae3299a341bc
