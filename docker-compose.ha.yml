@@ -425,7 +425,7 @@ services:
     environment:
       - node.roles=ingest
       - node.name=kvdc_NODE_esclient01
-      - discovery.seed_hosts=kvdc_NODE_esmtr01,kvdc_NODE_esmtr02,kvdc_NODE_esmtr03
+      - discovery.seed_hosts=10.55.31.226,10.55.31.227,10.55.31.228
       - cluster.initial_master_nodes=kvdc_NODE_esmtr01,kvdc_NODE_esmtr02,kvdc_NODE_esmtr03
       - cluster.name=kvdc
       - network.host=0.0.0.0
