@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.3-a4b315925c9008c49e8afaa6533f073a9de660b4
+    image: ubiqube/msa2-front:0ee71487b2c7e04dcd193a087931a02c58354387
     depends_on:
       - msa-api
       - msa-ui
@@ -58,7 +58,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: openmsa/openmsa:msa2-db-2.8.3-f9642e13d1d52b7e3b8480c47ae7a91369e9c959
+    image: ubiqube/msa2-db:037938294c529312f273a8627b0a75cdb5216f1f
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -99,7 +99,7 @@ services:
         max-file: "5"
 
   db-replica:
-    image: openmsa/openmsa:msa2-db-2.8.3-f9642e13d1d52b7e3b8480c47ae7a91369e9c959
+    image: ubiqube/msa2-db:037938294c529312f273a8627b0a75cdb5216f1f
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -135,7 +135,7 @@ services:
         max-file: "5"
 
   msa-api:
-    image: openmsa/openmsa:msa2-api-2.8.3-759a7511420f5b3ad4ba7f5c357622984af8db3d
+    image: ubiqube/msa2-api:77f9a04ae7b5a6c31d807a9fdc6d86fd04301875
     depends_on:
       - db
     healthcheck:
@@ -173,7 +173,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.8.3-d46108cf37a3160196ffd4afcc795eb48384b25e
+    image: ubiqube/msa2-ui:a316dbe10979033437c3e81528488f59612679be
     depends_on:
       - msa-api
     healthcheck:
@@ -243,7 +243,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: openmsa/openmsa:msa2-sms-2.8.3-44f77e35c9033946f9c904174ef453b98af2ac39
+    image: ubiqube/msa2-sms:1220f196bda176c2005aad361d70a7443e2c87fa
     depends_on:
       - db
     healthcheck:
@@ -318,7 +318,7 @@ services:
     depends_on:
       - db
       - msa-api
-    image: openmsa/openmsa:msa2-alarm-2.8.3-c1b98b96a7b32c3cfc88f7fcb7304460dfc84ff4
+    image: ubiqube/msa2-alarm:435f59f5e4d079664e2ebc4931d472f564098e48
     healthcheck:
       timeout: 5s
       retries: 10
@@ -471,7 +471,7 @@ services:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       interval: 60s
       start_period: 60s
-    image: openmsa/openmsa:msa2-es-2.8.3-f42f585457a4461f06ef1c696fa46bb9f02a187a
+    image: ubiqube/msa2-es:e3f74c2f41e1940cdc76fb1d5deeafd81bb603c4
     deploy:
       replicas: 1
       placement:
@@ -541,7 +541,7 @@ services:
           - "msa_cerebro"
 
   msa-dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.8.3-baec532c6cbde2aa588225020738b1b2f06cc840
+    image: ubiqube/msa2-linuxdev:721cdd93b178d0a5995d4770179f2897382b9928
     deploy:
       replicas: 3
       placement:
