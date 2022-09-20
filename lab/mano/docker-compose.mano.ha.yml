@@ -69,6 +69,10 @@ services:
         published: 8100
         protocol: tcp
         mode: ingress
+      - target: 8080
+        published: 8120
+        protocol: tcp
+        mode: ingress
     secrets:
       - source: vnfm.keycloak.credentials.secret
         target: keycloak.credentials.secret

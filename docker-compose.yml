@@ -367,6 +367,15 @@ services:
         max-buffer-size: "4m"
         max-size: "10m"
         max-file: "5"
+    ports:
+      - target: 9200
+        published: 9200
+        protocol: tcp
+        mode: host
+      - target: 9300
+        published: 9300
+        protocol: tcp
+        mode: host
     volumes:
       - "msa_es:/usr/share/elasticsearch/data"
     ulimits:
@@ -456,6 +465,7 @@ services:
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "msa_dev:/opt/devops/"
+      - "msa_front_conf:/etc/nginx/custom_conf.d"
     networks:
       default:
         aliases:
