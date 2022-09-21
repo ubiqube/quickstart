@@ -10,6 +10,10 @@ services:
       MANONFVO_PASSWORD: mano
       KEYCLOAK_USER: keycloak
       KEYCLAOK_PASSWORD: keycloak
+    networks:
+      default:
+        aliases:
+          - "mano-db"
 
   mano-artemis:
     image: openmsa/artemis:2.19.0
@@ -44,12 +48,6 @@ services:
         published: 8110
         protocol: tcp
         mode: ingress
-
-  db:
-    networks:
-      default:
-        aliases:
-          - "mano-db"
 
   mano-nfvo:
     image: oviubiqube/mano-nfvo-tm22:uat4
