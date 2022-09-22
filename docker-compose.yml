@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:509a1ae296845b6ff0f7c710d7420b9bd876342f
+    image: ubiqube/msa2-front:b8199a7db6574902e6c7d438937bb1516b2ad963
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -62,7 +62,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: ubiqube/msa2-db:7f3559121beb89344b379ff0badb7ea29c807053
+    image: ubiqube/msa2-db:e247b250d78dbd6f1a80560297cea7dd933147ce
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
