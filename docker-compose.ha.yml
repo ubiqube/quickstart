@@ -72,7 +72,6 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==db"
-    shm_size: 1g
     environment:
       CAMUNDA_PASSWORD: camunda
       CAMUNDA_DB: process-engine
