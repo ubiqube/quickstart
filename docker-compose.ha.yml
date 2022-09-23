@@ -14,7 +14,7 @@ services:
       interval: 10s
       start_period: 30s
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
