@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.3-33a240bb1099a86b8276e97f78d54432cf323313
+    image: openmsa/openmsa:msa2-front-2.8.3-a4b315925c9008c49e8afaa6533f073a9de660b4
     depends_on:
       - msa-api
       - msa-ui
@@ -133,7 +133,7 @@ services:
         max-file: "5"
 
   msa-api:
-    image: openmsa/openmsa:msa2-api-2.8.3-27cd6c1b6d153e3bacdd0bb902f9a39eb3b7167b
+    image: openmsa/openmsa:msa2-api-2.8.3-759a7511420f5b3ad4ba7f5c357622984af8db3d
     depends_on:
       - db
     healthcheck:
@@ -171,7 +171,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.8.3-aa8ec8af4ecac1b96f491da1ba9a2571d4f539b5
+    image: openmsa/openmsa:msa2-ui-2.8.3-d46108cf37a3160196ffd4afcc795eb48384b25e
     depends_on:
       - msa-api
     healthcheck:
@@ -263,7 +263,7 @@ services:
       - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -391,12 +391,11 @@ services:
       - db
     image: openmsa/openmsa:msa2-camunda-2.8.0-507b2c9b8361821915c4bd9255bafb47ace89079
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
-          #- "node.labels.manager==true"
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
@@ -497,7 +496,7 @@ services:
     volumes:
       - "/mnt/NASVolume/msa_ai_ml_db:/msa_proj/database"
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -546,7 +545,7 @@ services:
   msa-dev:
     image: openmsa/openmsa:msa2-linuxdev-2.8.3-baec532c6cbde2aa588225020738b1b2f06cc840
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -567,7 +566,6 @@ services:
       default:
         aliases:
           - "msa_dev"
-
 
 networks:
   default:

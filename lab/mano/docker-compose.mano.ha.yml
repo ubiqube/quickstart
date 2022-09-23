@@ -1,6 +1,6 @@
 # vim:noai:ts=2:sw=2
 version: "3.8"
-
+                    
 services:
   db:
     environment:
@@ -16,9 +16,9 @@ services:
     image: openmsa/artemis:2.19.0
     deploy:
       replicas: 1
-      placement:
+      placement:	
         max_replicas_per_node: 1
-        constraints:
+        constraints:	
           - "node.labels.worker==app"
 
   mano-auth:
@@ -54,9 +54,6 @@ services:
 
   mano-nfvo:
     image: oviubiqube/mano-nfvo-tm22:uat4
-#    environment:
-#      KEYCLOAK_RESOURCE=mano-vnfm
-#      KEYCLOAK_CREDENTIALS_SECRET=xxxxxxxx
     volumes:
       - "/mnt/NASVolume/mano_nfvo:/opt/etsi-mano-data"
     deploy:
@@ -76,9 +73,6 @@ services:
 
   mano-vnfm:
     image: oviubiqube/mano-vnfm-tm22:uat4
-#    environment:
-#      KEYCLOAK_RESOURCE=mano-nfvo
-#      KEYCLOAK_CREDENTIALS_SECRET=xxxxxxxx
     volumes:
       - "/mnt/NASVolume/mano_vnfm:/opt/etsi-mano-data"
     deploy:
