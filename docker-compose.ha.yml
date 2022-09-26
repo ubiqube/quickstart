@@ -14,7 +14,7 @@ services:
       interval: 10s
       start_period: 30s
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -139,7 +139,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -177,7 +177,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -214,7 +214,7 @@ services:
       - msa-sms
     image: openmsa/openmsa:msa2-rsyslog-2.8.3-54a250d9ef49db2454c5ed9111d43cebc8e9ef9a
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -295,7 +295,7 @@ services:
     environment:
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -327,7 +327,7 @@ services:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -369,7 +369,7 @@ services:
       - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -525,7 +525,7 @@ services:
     ports:
       - "9000:9000"
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
