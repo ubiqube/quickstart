@@ -120,11 +120,11 @@ function check_lb_ns {
       echo $NS_ID
     else
       echo "Error: $1 namespace not found. Can't continue."
-      exit 1
+      #exit 1
     fi
   else
     echo "Error: $1 directory not found. Can't continue."
-    exit 1
+   # exit 1
   fi
 }
 
