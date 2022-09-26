@@ -70,7 +70,6 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==db"
-    shm_size: 1g
     environment:
       CAMUNDA_PASSWORD: camunda
       CAMUNDA_DB: process-engine
@@ -279,8 +278,6 @@ services:
       default:
         aliases:
           - "msa_sms"
-    extra_hosts:
-      - msa-es-2:10.55.31.220
 
   msa-bud:
     image: openmsa/openmsa:msa2-bud-2.8.3-0b9f458ef2d78963c936b61a1ee9ae3299a341bc
