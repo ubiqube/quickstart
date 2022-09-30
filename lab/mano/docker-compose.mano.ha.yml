@@ -53,7 +53,7 @@ services:
           - "mano-db"
 
   mano-nfvo:
-    image: oviubiqube/mano-nfvo-tm22:uat4
+    image: ubiqube/mano-nfvo-tm22:uat5
     volumes:
       - "/mnt/NASVolume/mano_nfvo:/opt/etsi-mano-data"
     deploy:
@@ -72,7 +72,7 @@ services:
         target: keycloak.credentials.secret
 
   mano-vnfm:
-    image: oviubiqube/mano-vnfm-tm22:uat4
+    image: ubiqube/mano-vnfm-tm22:uat5
     volumes:
       - "/mnt/NASVolume/mano_vnfm:/opt/etsi-mano-data"
     deploy:
