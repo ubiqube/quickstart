@@ -81,9 +81,9 @@ function create_ns_symlink {
  # if [ -d "$1" ] && [ -d "$2" ]; then
    if [ -d "$1" ]; then
     cd "$1"
-    if [ -d "netns" ];then
-	     echo "Deleting default netns"
-	    rm -rf netns
+        if [ -d "netns" ];then
+             echo "Deleting default netns"
+            rm -rf netns
     fi
     sudo ln -sfn "$2" netns
         if [ $? -eq 0 ]; then
@@ -405,69 +405,12 @@ function main {
       h)
       print_help
       ;;
-      A)
-      echo "STEP 8:"
-      echo "Updating <<$INGRESS_NS>> namespace..."
-      echo "---> adding NAT UDP 514 exception... "
-      add_514_nat_exception $INGRESS_NS $OVERLAY_NET_1_PREFIX
-      echo ""
-      ;;
       a)
       echo "STEP 8:"
       echo "Updating <<$INGRESS_NS>> namespace..."
       echo "---> adding NAT UDP 514 exception... "
       add_514_nat_exception $INGRESS_NS $OVERLAY_NET_1_PREFIX
       echo ""
-
-      echo "STEP 9:"
-      echo "Updating load balancer <<$LB_NS_ID>> namespace..."
-      echo "---> adding NAT UDP 514 exception... "
-      add_514_nat_exception $LB_NS_ID $OVERLAY_NET_2_PREFIX
-      echo "---> adding default route... "
-      add_default_route $LB_NS_ID
-      echo ""
-
-      if [ "$MSA_FRONT_HERE" = "True" ]; then
-        echo "STEP 10 (FRONT):"
-        echo "Checking <<$MSA_FRONT>> container namespace..."
-        MSA_FRONT_NS_ID=$(check_container_ns $MSA_FRONT)
-        echo "YES: $MSA_FRONT_NS_ID"
-        echo ""
-
-        echo "STEP 11 (FRONT)::"
-        echo "Checking ingress <<$MSA_FRONT>> interface..."
-        # ${OVERLAY_NET_1_PREFIX::-4} - makes 10.0.0. from 10.0.0.0/24
-        MSA_PREFIX=${OVERLAY_NET_1_PREFIX::-4}
-        MSA_FRONT_IFACE=$(check_ingress_interface "$MSA_FRONT_NS_ID" "$MSA_PREFIX")
-        echo $MSA_FRONT_IFACE
-        echo ""
-
-        echo "STEP 12 (FRONT):"
-        echo "Updating <<$MSA_FRONT>> rp_filter..."
-        set_rp_filter $MSA_FRONT_NS_ID $MSA_FRONT_IFACE 2
-        echo ""
-      fi
-
-      if [ "$MSA_SMS_HERE" = "True" ]; then
-        echo "STEP 10 (SMS):"
-        echo "Checking <<$MSA_SMS>> container namespace..."
-        MSA_SMS_NS_ID=$(check_container_ns $MSA_SMS)
-        echo "YES: $MSA_SMS_NS_ID"
-        echo ""
-
-        echo "STEP 11 (SMS):"
-        echo "Checking ingress <<$MSA_SMS>> interface..."
-        # ${OVERLAY_NET_2_PREFIX::-4} - makes 10.0.2. from 10.0.2.0/24
-        MSA_PREFIX=${OVERLAY_NET_2_PREFIX::-4}
-        MSA_SMS_IFACE=$(check_ingress_interface "$MSA_SMS_NS_ID" "$MSA_PREFIX")
-        echo $MSA_SMS_IFACE
-        echo ""
-
-        echo "STEP 12 (SMS):"
-        echo "Updating <<$MSA_SMS>> rp_filter..."
-        set_rp_filter $MSA_SMS_NS_ID $MSA_SMS_IFACE 2
-        echo ""
-      fi
       ;;
 
       s)
@@ -524,57 +467,6 @@ function main {
       ;;
 
       d)
-      echo "STEP 8:"
-      echo "Removing NAT UDP 514 exceptions in <<$INGRESS_NS>> namespace..."
-      delete_514_nat_exception $INGRESS_NS
-      echo "Removing NAT UDP 514 exceptions in <<$LB_NS_ID>> namespace..."
-      delete_514_nat_exception $LB_NS_ID
-      echo ""
-
-      if [ "$MSA_FRONT_HERE" = "True" ]; then
-        echo "STEP 9 (FRONT):"
-        echo "Checking <<$MSA_FRONT>> container namespace..."
-        MSA_FRONT_NS_ID=$(check_container_ns $MSA_FRONT)
-        echo "YES: $MSA_FRONT_NS_ID"
-        echo ""
-
-        echo "STEP 10 (FRONT):"
-        echo "Checking ingress <<$MSA_FRONT>> interface..."
-        # ${OVERLAY_NET_1_PREFIX::-4} - makes 10.0.0. from 10.0.0.0/24
-        MSA_PREFIX=${OVERLAY_NET_1_PREFIX::-4}
-        MSA_FRONT_IFACE=$(check_ingress_interface "$MSA_FRONT_NS_ID" "$MSA_PREFIX")
-        echo $MSA_FRONT_IFACE
-        echo ""
-
-        echo "STEP 11 (FRONT):"
-        echo "Updating <<$MSA_FRONT>> rp_filter..."
-        set_rp_filter $MSA_FRONT_NS_ID $MSA_FRONT_IFACE 1
-        echo ""
-      fi
-
-      if [ "$MSA_SMS_HERE" = "True" ]; then
-        echo "STEP 9 (SMS):"
-        echo "Checking <<$MSA_SMS>> container namespace..."
-        MSA_SMS_NS_ID=$(check_container_ns $MSA_SMS)
-        echo "YES: $MSA_SMS_NS_ID"
-        echo ""
-
-        echo "STEP 10 (SMS):"
-        echo "Checking ingress <<$MSA_SMS>> interface..."
-        # ${OVERLAY_NET_2_PREFIX::-4} - makes 10.0.2. from 10.0.2.0/24
-        MSA_PREFIX=${OVERLAY_NET_2_PREFIX::-4}
-        MSA_SMS_IFACE=$(check_ingress_interface "$MSA_SMS_NS_ID" "$MSA_PREFIX")
-        echo $MSA_SMS_IFACE
-        echo ""
-
-        echo "STEP 11 (SMS):"
-        echo "Updating <<$MSA_SMS>> rp_filter..."
-        set_rp_filter $MSA_SMS_NS_ID $MSA_SMS_IFACE 1
-        echo ""
-      fi
-      ;;
-
-      m)
       echo "STEP 8:"
       echo "Removing NAT UDP 514 exceptions in <<$INGRESS_NS>> namespace..."
       delete_514_nat_exception $INGRESS_NS
