@@ -278,8 +278,6 @@ services:
       default:
         aliases:
           - "msa_sms"
-    extra_hosts:
-      - msa-es-2:10.55.27.220
 
   msa-bud:
     image: ubiqube/msa2-bud:c37974b1c3b164a79f9ca7da64e8d8845de26b48
