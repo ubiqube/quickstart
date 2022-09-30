@@ -2,6 +2,7 @@ version: "3.8"
 
 services:
   mano-auth:
+    restart: unless-stopped
     image: jboss/keycloak:16.1.1
     environment:
       KEYCLOAK_USER: admin
@@ -21,6 +22,7 @@ services:
         mode: ingress
 
   db:
+    restart: unless-stopped
     environment:
       MANOVNFM_USER: mano_vnfm
       MANOVNFM_PASSWORD: mano
@@ -35,6 +37,7 @@ services:
           - "mano-db"
 
   mano-vnfm:
+    restart: unless-stopped
     image: oviubiqube/mano-vnfm-tm22:uat4
     depends_on:
       - db
@@ -47,6 +50,7 @@ services:
         mode: ingress
        
   mano-nfvo:
+    restart: unless-stopped
     image: oviubiqube/mano-nfvo-tm22:uat4
     depends_on:
       - db
@@ -59,6 +63,7 @@ services:
         mode: ingress
 
   mano-artemis:
+    restart: unless-stopped
     image: openmsa/artemis:2.19.0
 
 volumes:
