@@ -421,20 +421,6 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
-    environment:
-      - node.roles=ingest
-      - node.name=brf_NODE_esclient01
-      - discovery.seed_hosts=10.55.27.226,10.55.27.227,10.55.27.228
-      - cluster.initial_master_nodes=brf_NODE_esmtr01,brf_NODE_esmtr02,brf_NODE_esmtr03
-      - cluster.name=brf
-      - network.host=0.0.0.0
-      - http.host=0.0.0.0
-      - network.publish_host=10.55.27.220
-      - script.painless.regex.enabled=true
-      - bootstrap.memory_lock=true
-      - xpack.security.enabled=false 
-      #- "ES_JAVA_OPTS=-Xmx1024m -Xmx1024m"
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
     ulimits:
       memlock:
         soft: -1
