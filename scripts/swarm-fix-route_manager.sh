@@ -53,18 +53,9 @@ echo "example: ./script.sh -s"
 echo "[-a]"
 echo "updates (adds) configuration"
 echo "example: ./script.sh -a"
-echo "[-A]"
-echo "updates (adds) configuration to swarm manager nodes"
-echo "example: ./script.sh -A"
-
 echo "[-d]"
 echo "updates (reverts) configuration"
 echo "example: ./script.sh -d"
-
-echo "[-D]"
-echo "updates (reverts) configuration to swarm manager nodes"
-echo "example: ./script.sh -D"
-
 echo "[-h]"
 echo "prints help"
 echo ""
