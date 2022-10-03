@@ -80,13 +80,12 @@ function create_ns_symlink {
         if [ $? -eq 0 ]; then
           echo "Symlink successfully created"
         else
-          echo "Error: Can't create symlink. Can't continue."
+          echo "WARNING: Can't create symlink."
           exit 1
         fi
     cd - > /dev/null
   else
-    echo "Error: $1 or $2 not found. Can't continue."
-    exit 1
+    echo "WARNING: $1 or $2 not found."
   fi
 }
 
@@ -100,12 +99,10 @@ function check_ns {
     if [ $MATCH -eq 1 ]; then
       echo $2
     else
-      echo "Error: $1 namespace not found. Can't continue."
-          exit 1
+      echo "WARNING: $1 namespace not found. "
     fi
   else
-    echo "Error: $1 directory not found. Can't continue."
-    exit 1
+    echo "WARNING: $1 directory not found. "
   fi
 }
 
@@ -123,10 +120,10 @@ function check_lb_ns {
     if [ $MATCH -eq 1 ]; then
       echo $NS_ID
     else
-      echo "Warning: $1 namespace not found."
+      echo "WARNING: $1 namespace not found."
     fi
   else
-    echo "Warning: $1 directory not found."
+    echo "WARNING: $1 directory not found."
   fi
 }
 
@@ -143,12 +140,11 @@ function add_default_route {
         if [ $? -eq 0 ]; then
           echo "Default rule successfully added."
         else
-          "Error: Can't add default route to $1 namespace. Can't continue."
+          "WARNING: Can't add default route to $1 namespace."
         fi
       fi
   else
-    echo "Error: Can't add default route to $1 namespace. Can't continue."
-    exit 1
+    echo "WARNING: Can't add default route to $1 namespace."
   fi
 }
 
@@ -163,12 +159,10 @@ function add_514_nat_exception {
         if [ $? -eq 0 ]; then
           echo "NAT exception successfully added"
         else
-          echo "Error: Can't add NAT exception. Can't continue."
-          exit 1
+          echo "WARNING: Can't add NAT exception."
         fi
   else
-    echo "Error: Can't add NAT exception. Can't continue."
-    exit 1
+    echo "WARNING: Can't add NAT exception. "
   fi
 }
 
@@ -182,7 +176,7 @@ function show_nat_exceptions {
       local EXCEPTION_RULES=$(sudo ip netns exec $1 iptables -t nat -nvL POSTROUTING --line-numbers | grep "ACCEPT")
       echo "$EXCEPTION_RULES"
     else
-      echo "No exception rules found."
+      echo "WARNING: no NAT exception rule found."
     fi
   fi
 }
@@ -204,8 +198,7 @@ function delete_514_nat_exception {
         if [ $? -eq 0 ]; then
           echo "NAT exception for dst udp 514 successfully deleted, rule num $rule"
         else
-          echo "Error: Can't delete NAT exception. Can't continue."
-          exit 1
+          echo "WARNING: Can't delete NAT exception."
         fi
       done
     fi
@@ -220,8 +213,7 @@ function delete_514_nat_exception {
         if [ $? -eq 0 ]; then
           echo "NAT exception for dst udp 162 successfully deleted, rule num $rule"
         else
-          echo "Error: Can't delete NAT exception. Can't continue."
-          exit 1
+          echo "WARNING: Can't delete NAT exception."
         fi
       done
     fi
@@ -236,14 +228,13 @@ function check_ingress_interface {
     # count matched interfaces
     local MATCH=$(sudo ip netns exec $1 ip a | grep $2 | wc -l)
     if [ $MATCH -gt 1 ]; then
-      echo "Error: Multiple ($MATCH) interfaces match prefix $2. Specify more accurate prefix."
-      exit 1
+      echo "WARNING: Multiple ($MATCH) interfaces match prefix $2. Specify more accurate prefix."
     else
       local IFACE=$(sudo ip netns exec $1 ip a | grep $2 | awk '{print $(NF)}')
       echo $IFACE
     fi
   else
-    echo "Error: Can't find $1 namespace or prefix contains $2 is wrong. Can't continue."
+    echo "WARNING: Can't find $1 namespace or prefix contains $2 is wrong."
     exit 1
   fi
 }
@@ -259,8 +250,7 @@ function check_containter {
     elif [ $MATCH -eq 0 ]; then
       echo "False"
     else
-      echo "Found multiple containers with the same name. Can't continue."
-      exit 1
+      echo "Found multiple containers with the same name."
     fi
   fi
 }
@@ -277,8 +267,7 @@ function check_container_ns {
       local NS_ID_SHORT=$(cut -d'/' -f6 <<< $NS_ID_LONG)
       echo $NS_ID_SHORT
     else
-      echo "Error: Namespace for $ID container not found. Can't continue."
-      exit 1
+      echo "WARNING: Namespace for $ID container not found. "
     fi
   else
     echo "NOT_FOUND"
@@ -294,8 +283,7 @@ function set_rp_filter {
   if [ $? -eq 0 ]; then
     echo "rp_filter updated for $1 interface $2 namespace"
   else
-    echo "Error: Can't update rp_filter for $1 interface in $2 namespace. Can't continue."
-    exit 1
+    echo "WARNING: Can't update rp_filter for $1 interface in $2 namespace."
   fi
 }
 
@@ -307,8 +295,7 @@ function show_rp_filter {
   if [ $? -eq 0 ]; then
     sudo ip netns exec $1 sysctl -a | grep '\.rp_filter'
   else
-    echo "Error: Can't check rp_filter in $2 namespace. Can't continue."
-    exit 1
+    echo "WARNING: Can't check rp_filter in $2 namespace."
   fi
 }
 
@@ -320,8 +307,7 @@ function get_overlay_net_id {
     local NET_ID=$(docker network ls | grep $1 | awk '{print $1}')
     echo $NET_ID
   else
-    echo "Error: $1 docker network not found. Can't continue."
-    exit 1
+    echo "WARNING: $1 docker network not found."
   fi
 }
 
@@ -335,12 +321,10 @@ function get_overlay_net_prefix {
     if [[ $OVERLAY_NET_PREFIX =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+\/[0-9]+$ ]]; then
       echo $OVERLAY_NET_PREFIX
     else
-      echo "Error: Can't get docker swarm overlay network prefix. Can't continue."
-      exit 1
+      echo "WARNING: Can't get docker swarm overlay network prefix."
         fi
   else
-    echo "Error: Can't get docker swarm overlay network prefix. Can't continue."
-    exit 1
+    echo "WARNING: Can't get docker swarm overlay network prefix. Can't continue."
   fi
 }
 
