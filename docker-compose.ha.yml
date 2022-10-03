@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:21580fb08abcae14b5808d3c00c142dd9f40f429
+    image: ubiqube/msa2-front:2dfd041101c76c7cff2d1ccb16a225c6989e8813
     depends_on:
       - msa-api
       - msa-ui
@@ -134,7 +134,7 @@ services:
         max-file: "5"
 
   msa-api:
-    image: ubiqube/msa2-api:4e97270c2e3668d07db8647eb6eefe3863f1d0e8
+    image: ubiqube/msa2-api:86ede5f242f76f8fac630a2431791b91489553be
     depends_on:
       - db
     healthcheck:
@@ -172,7 +172,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: ubiqube/msa2-ui:aed2da65be6ca0a5b5aaeeec398afd406ee1f158
+    image: ubiqube/msa2-ui:9cfe94a34d7080e03f10d97181d7af6faad52de9
     depends_on:
       - msa-api
     healthcheck:
@@ -242,7 +242,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: ubiqube/msa2-sms:aa8e3200ed823c32891cbf29ae20b9225fa4f4e8
+    image: ubiqube/msa2-sms:cd78ad90600264ad87a5aa31f117cf688c1f02b9
     depends_on:
       - db
     healthcheck:
@@ -532,7 +532,7 @@ services:
           - "msa_cerebro"
 
   msa-dev:
-    image: ubiqube/msa2-linuxdev:721cdd93b178d0a5995d4770179f2897382b9928
+    image: ubiqube/msa2-linuxdev:6ff470bd060bc2a9f2d86ca34ad58857aabd53aa
     deploy:
       replicas: 1
       placement:
