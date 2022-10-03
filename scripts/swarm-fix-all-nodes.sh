@@ -17,6 +17,7 @@ fix_swarm_route() {
 
         echo "Copying swarm-fix-route file to nodes...$node_name"
         scp ${swarm_fix} ${ssh_user}@${node_ip}:/tmp/
+        ssh -tt "-o BatchMode=Yes" ${ssh_user}@${node_ip} "bash /tmp/swarm-fix-route.sh -d"
         ssh -tt "-o BatchMode=Yes" ${ssh_user}@${node_ip} "bash /tmp/swarm-fix-route.sh -a"
     done
     for node  in $(docker node ls -q  -f  node.label=manager); do
@@ -25,6 +26,7 @@ fix_swarm_route() {
 
         echo "Copying swarm-fix-route file to nodes...$node_name"
         scp ${swarm_fix_manager} ${ssh_user}@${node_ip}:/tmp/
+        ssh -tt "-o BatchMode=Yes" ${ssh_user}@${node_ip} "bash /tmp/swarm-fix-route_manager.sh -d"	
         ssh -tt "-o BatchMode=Yes" ${ssh_user}@${node_ip} "bash /tmp/swarm-fix-route_manager.sh -a"
     done
 }
