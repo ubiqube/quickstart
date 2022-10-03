@@ -53,18 +53,9 @@ echo "example: ./script.sh -s"
 echo "[-a]"
 echo "updates (adds) configuration"
 echo "example: ./script.sh -a"
-echo "[-A]"
-echo "updates (adds) configuration to swarm manager nodes"
-echo "example: ./script.sh -A"
-
 echo "[-d]"
 echo "updates (reverts) configuration"
 echo "example: ./script.sh -d"
-
-echo "[-D]"
-echo "updates (reverts) configuration to swarm manager nodes"
-echo "example: ./script.sh -D"
-
 echo "[-h]"
 echo "prints help"
 echo ""
@@ -405,13 +396,6 @@ function main {
       h)
       print_help
       ;;
-      A)
-      echo "STEP 8:"
-      echo "Updating <<$INGRESS_NS>> namespace..."
-      echo "---> adding NAT UDP 514 exception... "
-      add_514_nat_exception $INGRESS_NS $OVERLAY_NET_1_PREFIX
-      echo ""
-      ;;
       a)
       echo "STEP 8:"
       echo "Updating <<$INGRESS_NS>> namespace..."
@@ -573,14 +557,6 @@ function main {
         echo ""
       fi
       ;;
-
-      m)
-      echo "STEP 8:"
-      echo "Removing NAT UDP 514 exceptions in <<$INGRESS_NS>> namespace..."
-      delete_514_nat_exception $INGRESS_NS
-      echo ""
-      ;;
-
 
       *)
       echo "Invalid option"
