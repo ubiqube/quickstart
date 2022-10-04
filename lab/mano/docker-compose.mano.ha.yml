@@ -11,6 +11,10 @@ services:
       KEYCLOAK_USER: keycloak
       KEYCLOAK_PASSWORD: keycloak
       KEYCLOAK_DB: keycloak
+    networks:
+      default:
+        aliases:
+          - "mano-db"
 
   mano-artemis:
     image: openmsa/artemis:2.19.0
@@ -45,12 +49,6 @@ services:
         published: 8110
         protocol: tcp
         mode: ingress
-
-  db:
-    networks:
-      default:
-        aliases:
-          - "mano-db"
 
   mano-nfvo-brf7:
     image: ubiqube/mano-nfvo-tm22:uat5
@@ -94,10 +92,31 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_nfvo_kvdc
 
-  mano-vnfm:
+  mano-vnfm-brf7:
     image: ubiqube/mano-vnfm-tm22:uat5
     volumes:
-      - "/mnt/NASVolume/mano_vnfm:/opt/etsi-mano-data"
+      - "/mnt/NASVolume/mano_vnfm_brf7:/opt/etsi-mano-data"
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
+    ports:
+      - target: 8080
+        published: 8130
+        protocol: tcp
+        mode: ingress
+    secrets:
+      - source: nfvo.keycloak.credentials.secret
+        target: keycloak.credentials.secret
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_vnfm_brf7
+
+  mano-vnfm-kvdc:
+    image: ubiqube/mano-vnfm-tm22:uat5
+    volumes:
+      - "/mnt/NASVolume/mano_vnfm_kvdc:/opt/etsi-mano-data"
     deploy:
       replicas: 1
       placement:	
@@ -112,6 +131,9 @@ services:
     secrets:
       - source: nfvo.keycloak.credentials.secret
         target: keycloak.credentials.secret
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_vnfm_kvdc
+
 
 secrets:
   vnfm.keycloak.credentials.secret:
