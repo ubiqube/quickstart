@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:1763b886723130656544575268d52d880073a185
+    image: ubiqube/msa2-front:816131f787a5896cd9c0d5a648c2b7e1463be020
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -135,7 +135,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:ef301b0851cba13d4255d92d500f28fa0739035e
+    image: ubiqube/msa2-ui:a08905b0e1bd3c013396fc9ad8892a2e3c494f4f
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -171,7 +171,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:1dffff46c2d903b93f6592aeb751a6fb0b864ade
+    image: ubiqube/msa2-sms:86e90a8b93f52feacf24d7ed9b8273c72ba9e90d
     healthcheck:
       timeout: 5s
       retries: 10
@@ -269,7 +269,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: ubiqube/msa2-monitoring:386c447f8ddc2d2fc05a6f813fc70c07f417c808
+    image: ubiqube/msa2-monitoring:607da69663d00c8b82526b152316eef87977a8be
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
