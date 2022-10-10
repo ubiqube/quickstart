@@ -9,7 +9,8 @@ services:
       MANONFVO_USER: mano_nfvo
       MANONFVO_PASSWORD: mano
       KEYCLOAK_USER: keycloak
-      KEYCLAOK_PASSWORD: keycloak
+      KEYCLOAK_PASSWORD: keycloak
+      KEYCLOAK_DB: keycloak
     networks:
       default:
         aliases:
@@ -50,7 +51,7 @@ services:
         mode: ingress
 
   mano-nfvo:
-    image: oviubiqube/mano-nfvo-tm22:uat4
+    image: oviubiqube/mano-nfvo-tm22:uat5
 #    environment:
 #      KEYCLOAK_RESOURCE=mano-vnfm
 #      KEYCLOAK_CREDENTIALS_SECRET=xxxxxxxx
@@ -76,7 +77,7 @@ services:
         target: keycloak.credentials.secret
 
   mano-vnfm:
-    image: oviubiqube/mano-vnfm-tm22:uat4
+    image: oviubiqube/mano-vnfm-tm22:uat5
 #    environment:
 #      KEYCLOAK_RESOURCE=mano-nfvo
 #      KEYCLOAK_CREDENTIALS_SECRET=xxxxxxxx
