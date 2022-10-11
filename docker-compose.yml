@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:739469129f6ef0820e6f34de942a801c07dec7b4
+    image: ubiqube/msa2-front:7ed4103700b275f4ed0b3f11de1acc9853e263f4
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -97,7 +97,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:54609e10535bd5203a9adcbc6c27df491ed23caf
+    image: ubiqube/msa2-api:14f8b5b489f2ab17d098f6dd9a59fdfe4532b8f4
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
       retries: 10
@@ -109,7 +109,7 @@ services:
       msa-es:
         condition: service_started
     environment:
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - UBIQUBE_CAPTCHA_SECRET_KEY=6Ld2zF4dAAAAABWD9Q6QAhBql_CIynUeVKaTiBgT
     logging:
       driver: "json-file"
