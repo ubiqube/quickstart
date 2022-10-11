@@ -1,20 +1,32 @@
+# vim:noai:ts=2:sw=2
 version: "3.8"
-
+                    
 services:
+  db:
+    environment:
+      MANOVNFM_USER: mano_vnfm
+      MANOVNFM_PASSWORD: mano
+      MANONFVO_USER: mano_nfvo
+      MANONFVO_PASSWORD: mano
+      KEYCLOAK_USER: keycloak
+      KEYCLAOK_PASSWORD: keycloak
+
   mano-artemis:
     image: openmsa/artemis:2.19.0
     deploy:
       replicas: 1
       placement:	
+        max_replicas_per_node: 1
         constraints:	
-          - "node.role==manager"
+          - "node.labels.worker==app"
 
   mano-auth:
     deploy:
-      replicas: 2
+      replicas: 1
       placement:
+        max_replicas_per_node: 1
         constraints:
-          - "node.role==manager"
+          - "node.labels.worker==app"
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: ubiqube
@@ -25,77 +37,69 @@ services:
       DB_PASSWORD: keycloak
       JGROUPS_DISCOVERY_PROTOCOL: JDBC_PING
       JGROUPS_DISCOVERY_PROPERTIES: "datasource_jndi_name=java:jboss/datasources/KeycloakDS"
-    image: jboss/keycloak
+      JAVA_OPTS: "-Djboss.as.management.blocking.timeout=600"
+    image: jboss/keycloak:16.1.1
     ports:
       - target: 8080
         published: 8110
         protocol: tcp
         mode: ingress
 
-  mano-db:
-    image: oviubiqube/mano-db
-    environment:
-      POSTGRES_PASSWORD: mano
-      POSTGRES_USER: mano
-      KEYCLOAK_USER: keycloak
-      KEYCLOAK_PASSWORD: keycloak
-      KEYCLOAK_DB: keycloak
-    volumes:
-      - "/mnt/NASVolume/mano_db:/var/lib/postgresql/data"
-    deploy:
-      replicas: 1
-      placement:	
-        constraints:	
-          - "node.role==manager"
+  db:
+    networks:
+      default:
+        aliases:
+          - "mano-db"
 
   mano-nfvo:
-    image: openmsa/mano-nfvo:2.7.1
-    depends_on:
-      - mano-db
+    image: oviubiqube/mano-nfvo-tm22:uat4
+#    environment:
+#      KEYCLOAK_RESOURCE=mano-vnfm
+#      KEYCLOAK_CREDENTIALS_SECRET=xxxxxxxx
     volumes:
       - "/mnt/NASVolume/mano_nfvo:/opt/etsi-mano-data"
     deploy:
       replicas: 1
       placement:	
+        max_replicas_per_node: 1
         constraints:	
-          - "node.role==manager"
+          - "node.labels.worker==app"
     ports:
-      - target: 8100
+      - target: 8080
         published: 8100
         protocol: tcp
         mode: ingress
+    secrets:
+      - source: vnfm.keycloak.credentials.secret
+        target: keycloak.credentials.secret
 
   mano-vnfm:
-    image: openmsa/mano-vnfm:2.7.1
-    depends_on:
-      - mano-db
+    image: oviubiqube/mano-vnfm-tm22:uat4
+#    environment:
+#      KEYCLOAK_RESOURCE=mano-nfvo
+#      KEYCLOAK_CREDENTIALS_SECRET=xxxxxxxx
     volumes:
       - "/mnt/NASVolume/mano_vnfm:/opt/etsi-mano-data"
     deploy:
       replicas: 1
       placement:	
+        max_replicas_per_node: 1
         constraints:	
-          - "node.role==manager"
+          - "node.labels.worker==app"
     ports:
-      - target: 8090
+      - target: 8080
         published: 8090
         protocol: tcp
         mode: ingress
+    secrets:
+      - source: nfvo.keycloak.credentials.secret
+        target: keycloak.credentials.secret
 
-  mano-vnfm2:
-    image: openmsa/mano-vnfm-bis:2.7.1
-    depends_on:
-      - mano-db
-    volumes:
-      - "/mnt/NASVolume/mano_vnfm2:/opt/etsi-mano-data"
-    deploy:
-      replicas: 1
-      placement:	
-        constraints:	
-          - "node.role==manager"
-    ports:
-      - target: 8090
-        published: 8091
-        protocol: tcp
-        mode: ingress
+secrets:
+  vnfm.keycloak.credentials.secret:
+    external: true
+  nfvo.keycloak.credentials.secret:
+    external: true
+
+
 

@@ -3,7 +3,7 @@ set -e
 
 PROG=$(basename $0)
 
-target_version="2.8.2"
+target_version="2.8.3"
 force_option=false
 clean_option=false
 remove_orphans=true
@@ -166,7 +166,7 @@ usage() {
     echo "-c: cleanup unused images after upgrade to save disk space. This option clean all unused images, not only MSA quickstart ones"
     echo "-ro: remove containers for services not defined in the compose file. Use it if some containers use same network as MSA"
     echo "-mano: apply mano containers"
-    echo "--swarm-fix-route-only: run the only script 'swarm-fix-rout' script"
+    echo "--swarm-route-only|-sro: run the script 'swarm-fix-route.sh' script"
     exit 0
 }
 
@@ -190,7 +190,7 @@ main() {
             -mano|--mano)
                 mano=true
                 ;;
-            --swarm-route-only)
+            --swarm-route-only|-sro)
                 swarm_route_only=true
                 ;;
             ?|--help)
