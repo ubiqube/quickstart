@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:7ec3fad51c29877f0664115a591dcc703b0ad0d1
+    image: ubiqube/msa2-front:3858ea69bbb79d6cf0c7ad096959a367775d7160
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -97,7 +97,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:54609e10535bd5203a9adcbc6c27df491ed23caf
+    image: ubiqube/msa2-api:14f8b5b489f2ab17d098f6dd9a59fdfe4532b8f4
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
       retries: 10
@@ -109,7 +109,7 @@ services:
       msa-es:
         condition: service_started
     environment:
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - UBIQUBE_CAPTCHA_SECRET_KEY=6Ld2zF4dAAAAABWD9Q6QAhBql_CIynUeVKaTiBgT
     logging:
       driver: "json-file"
@@ -135,7 +135,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:a274096df0348409627281d654991dc66daec93b
+    image: ubiqube/msa2-ui:219abe6edca544d572cdb736598c60059ecc8f41
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -171,7 +171,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:e3133c8d4dc8fd2cf91bfdc176c3287d495ac4b1
+    image: ubiqube/msa2-sms:c50f7fdf147e782d1253c9d69c55ce0f3973c7be
     healthcheck:
       timeout: 5s
       retries: 10
@@ -269,7 +269,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: ubiqube/msa2-monitoring:607da69663d00c8b82526b152316eef87977a8be
+    image: ubiqube/msa2-monitoring:951458b4836ae8a2b1f8f002676bfc83972dd4e8
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
