@@ -554,6 +554,7 @@ services:
 
 volumes:
   msa_bulkfiles:
+  msa_sms_logs:
 
 networks:
   default:
