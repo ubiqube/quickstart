@@ -96,7 +96,7 @@ services:
         max-file: "5"
 
   db-replica:
-    image: ubiqube/msa2-db:4f831c132a8d6ecc7ec5717a7f74cafaf25588db
+    image: ubiqube/msa2-db:75f0c2abd5f11f45016c7c3f9ff8646d61d1a958
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h db"]
       timeout: 20s
@@ -261,7 +261,7 @@ services:
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
       - "/mnt/NASVolume/msa_svn:/opt/svnroot"
       - "msa_bulkfiles:/opt/sms/spool/parser"
-      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
+      - "msa_sms_logs:/opt/sms/logs"
     deploy:
       replicas: 1
       placement:
@@ -331,7 +331,7 @@ services:
         constraints:
           - "node.labels.worker==app"
     volumes:
-      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
+      - "msa_sms_logs:/opt/sms/logs"
     logging:
       driver: "json-file"
       options:
@@ -365,7 +365,7 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
       - "msa_bulkfiles:/opt/sms/spool/parser"
-      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
+      - "msa_sms_logs:/opt/sms/logs"
     deploy:
       replicas: 1
       placement:
