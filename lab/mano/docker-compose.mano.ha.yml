@@ -56,15 +56,11 @@ services:
       - "/mnt/NASVolume/mano_nfvo:/opt/etsi-mano-data"
     deploy:
       replicas: 1
-      placement:	
+      placement:
         max_replicas_per_node: 1
-        constraints:	
+        constraints:
           - "node.labels.worker==app"
     ports:
-      - target: 8080
-        published: 8100
-        protocol: tcp
-        mode: ingress
       - target: 8080
         published: 8120
         protocol: tcp
@@ -72,6 +68,8 @@ services:
     secrets:
       - source: vnfm.keycloak.credentials.secret
         target: keycloak.credentials.secret
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_nfvo
 
   mano-vnfm:
     image: ubiqube/mano-vnfm-tm22:uat7
@@ -79,18 +77,20 @@ services:
       - "/mnt/NASVolume/mano_vnfm:/opt/etsi-mano-data"
     deploy:
       replicas: 1
-      placement:	
+      placement:
         max_replicas_per_node: 1
-        constraints:	
+        constraints:
           - "node.labels.worker==app"
     ports:
       - target: 8080
-        published: 8090
+        published: 8130
         protocol: tcp
         mode: ingress
     secrets:
       - source: nfvo.keycloak.credentials.secret
         target: keycloak.credentials.secret
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_vnfm
 
 secrets:
   vnfm.keycloak.credentials.secret:

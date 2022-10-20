@@ -359,7 +359,7 @@ services:
       - script.painless.regex.enabled=true
       - bootstrap.memory_lock=true
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
-      - xpack.security.enabled=true
+      - xpack.security.enabled=false
       - "ES_JAVA_OPTS=-Xms512m -Xmx1024m"
     logging:
       driver: "json-file"
@@ -466,7 +466,6 @@ services:
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "msa_dev:/opt/devops/"
-      - "msa_front_conf:/etc/nginx/custom_conf.d"
     networks:
       default:
         aliases:
