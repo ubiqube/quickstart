@@ -172,7 +172,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: ubiqube/msa2-ui:65642eaf1cc74ccee8a354cf3473faf58b7bef51
+    image: ubiqube/msa2-ui:1f2a42b952e929ab5da52d6942a5be8b9f5717fe
     depends_on:
       - msa-api
     healthcheck:
