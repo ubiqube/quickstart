@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:871b6820aae9a5bff0852eab5d6cbad1db1776e7
+    image: ubiqube/msa2-front:545b1dc12b031e2e8bc589eefeaf3a197b802989
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -62,7 +62,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: ubiqube/msa2-db:53f475fa787126ef646c5370ec6a2e0af6ba94eb
+    image: ubiqube/msa2-db:75f0c2abd5f11f45016c7c3f9ff8646d61d1a958
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -135,7 +135,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:9718a820a1663b65fe18ae1cb852fcf4816fb784
+    image: ubiqube/msa2-ui:65642eaf1cc74ccee8a354cf3473faf58b7bef51
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -156,6 +156,7 @@ services:
     - FEATURE_EDIT_VARIABLES_IN_MICROSERVICE_CONSOLE=true
     - FEATURE_WORKFLOW_OWNER=false
     - FEATURE_PERMISSION_PROFILE_LABELS=false
+    - UBIQUBE_ES_SECURITY_DISABLED=true
     logging:
       driver: "json-file"
       options:
@@ -269,7 +270,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: ubiqube/msa2-monitoring:951458b4836ae8a2b1f8f002676bfc83972dd4e8
+    image: ubiqube/msa2-monitoring:a14033d79a26dbed0d815f12d2ad87e3e4bcee68
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -358,7 +359,7 @@ services:
       - script.painless.regex.enabled=true
       - bootstrap.memory_lock=true
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
-      - xpack.security.enabled=true
+      - xpack.security.enabled=false
       - "ES_JAVA_OPTS=-Xms512m -Xmx1024m"
     logging:
       driver: "json-file"
@@ -465,7 +466,6 @@ services:
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "msa_dev:/opt/devops/"
-      - "msa_front_conf:/etc/nginx/custom_conf.d"
     networks:
       default:
         aliases:

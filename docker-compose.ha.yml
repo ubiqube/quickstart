@@ -3,12 +3,10 @@ version: "3.8"
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:871b6820aae9a5bff0852eab5d6cbad1db1776e7
+    image: ubiqube/msa2-front:545b1dc12b031e2e8bc589eefeaf3a197b802989
     depends_on:
       - msa-api
       - msa-ui
-      - camunda
-      - msa-ai-ml
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
       timeout: 2s
@@ -58,7 +56,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:53f475fa787126ef646c5370ec6a2e0af6ba94eb
+    image: ubiqube/msa2-db:75f0c2abd5f11f45016c7c3f9ff8646d61d1a958
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -100,7 +98,7 @@ services:
   db-replica:
     image: ubiqube/msa2-db:4f831c132a8d6ecc7ec5717a7f74cafaf25588db
     healthcheck:
-      test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
+      test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h db"]
       timeout: 20s
     deploy:
       replicas: 1
@@ -172,7 +170,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: ubiqube/msa2-ui:9718a820a1663b65fe18ae1cb852fcf4816fb784
+    image: ubiqube/msa2-ui:65642eaf1cc74ccee8a354cf3473faf58b7bef51
     depends_on:
       - msa-api
     healthcheck:
@@ -198,6 +196,7 @@ services:
     - FEATURE_EDIT_VARIABLES_IN_MICROSERVICE_CONSOLE=true
     - FEATURE_WORKFLOW_OWNER=false
     - FEATURE_PERMISSION_PROFILE_LABELS=false
+    - UBIQUBE_ES_SECURITY_DISABLED=false
     logging:
       driver: "json-file"
       options:
@@ -250,7 +249,7 @@ services:
       retries: 10
       interval: 10s
       start_period: 30s
-      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
+      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 0"]
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
@@ -260,14 +259,15 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
       - "/mnt/NASVolume/msa_svn:/opt/svnroot"
-      - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
-      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
+      - "msa_bulkfiles:/opt/sms/spool/parser"
+      - "msa_sms_logs:/opt/sms/logs"
     deploy:
       replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
+          - "node.labels.monit==coreengine"
     logging:
       driver: "json-file"
       options:
@@ -298,6 +298,7 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
+          - "node.labels.monit==coreengine"
     logging:
       driver: "json-file"
       options:
@@ -330,8 +331,9 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
+          - "node.labels.monit==coreengine"
     volumes:
-      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
+      - "msa_sms_logs:/opt/sms/logs"
     logging:
       driver: "json-file"
       options:
@@ -345,7 +347,7 @@ services:
           - "msa_alarm"
 
   msa-monitoring:
-    image: ubiqube/msa2-monitoring:951458b4836ae8a2b1f8f002676bfc83972dd4e8
+    image: ubiqube/msa2-monitoring:a14033d79a26dbed0d815f12d2ad87e3e4bcee68
     healthcheck:
       timeout: 5s
       retries: 10
@@ -364,14 +366,15 @@ services:
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
-      - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
-      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
+      - "msa_bulkfiles:/opt/sms/spool/parser"
+      - "msa_sms_logs:/opt/sms/logs"
     deploy:
       replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
+          - "node.labels.monit==coreengine"
     logging:
       driver: "json-file"
       options:
@@ -556,6 +559,10 @@ services:
       default:
         aliases:
           - "msa_dev"
+
+volumes:
+  msa_bulkfiles:
+  msa_sms_logs:
 
 networks:
   default:
