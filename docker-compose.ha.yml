@@ -298,7 +298,6 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
-          - "node.labels.monit==coreengine"
     logging:
       driver: "json-file"
       options:
@@ -331,7 +330,6 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
-          - "node.labels.monit==coreengine"
     volumes:
       - "msa_sms_logs:/opt/sms/logs"
     logging:
