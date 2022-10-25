@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:545b1dc12b031e2e8bc589eefeaf3a197b802989
+    image: ubiqube/msa2-front:29e2fae53a0c90dcbf3f47079ccff0a91facfeb0
     depends_on:
       - msa-api
       - msa-ui
@@ -170,7 +170,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: ubiqube/msa2-ui:65642eaf1cc74ccee8a354cf3473faf58b7bef51
+    image: ubiqube/msa2-ui:1f2a42b952e929ab5da52d6942a5be8b9f5717fe
     depends_on:
       - msa-api
     healthcheck:
@@ -241,7 +241,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: ubiqube/msa2-sms:93ed0afb28d05b5164cfdf4339fdaa5879e4ec4a
+    image: ubiqube/msa2-sms:d5f0cbfd525a9b7b583ed2478b0f848452b22f11
     depends_on:
       - db
     healthcheck:
@@ -298,7 +298,6 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
-          - "node.labels.monit==coreengine"
     logging:
       driver: "json-file"
       options:
@@ -315,7 +314,7 @@ services:
     depends_on:
       - db
       - msa-api
-    image: ubiqube/msa2-alarm:a523ee8ee9ba29179a74221957744c17ff7ce222
+    image: ubiqube/msa2-alarm:87c362b656775501f0e8f677530d77704a478122
     healthcheck:
       timeout: 5s
       retries: 10
@@ -331,7 +330,6 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
-          - "node.labels.monit==coreengine"
     volumes:
       - "msa_sms_logs:/opt/sms/logs"
     logging:

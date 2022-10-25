@@ -1,6 +1,24 @@
 version: "3.8"
 
 services:
+  db:
+    restart: unless-stopped
+    environment:
+      MANOVNFM_USER: mano_vnfm
+      MANOVNFM_PASSWORD: mano
+      MANONFVO_USER: mano_nfvo
+      MANONFVO_PASSWORD: mano
+      KEYCLOAK_USER: keycloak
+      KEYCLAOK_PASSWORD: keycloak
+    networks:
+      default:
+        aliases:
+          - "mano-db"
+
+  mano-artemis:
+    restart: unless-stopped
+    image: openmsa/artemis:2.19.0
+
   mano-auth:
     restart: unless-stopped
     image: jboss/keycloak:16.1.1
@@ -20,20 +38,6 @@ services:
         published: 8110
         protocol: tcp
         mode: ingress
-
-  db:
-    restart: unless-stopped
-    environment:
-      MANOVNFM_USER: mano_vnfm
-      MANOVNFM_PASSWORD: mano
-      MANONFVO_USER: mano_nfvo
-      MANONFVO_PASSWORD: mano
-      KEYCLOAK_USER: keycloak
-      KEYCLAOK_PASSWORD: keycloak
-    networks:
-      default:
-        aliases:
-          - "mano-db"
 
   mano-vnfm:
     restart: unless-stopped
@@ -60,10 +64,6 @@ services:
         published: 8100
         protocol: tcp
         mode: ingress
-
-  mano-artemis:
-    restart: unless-stopped
-    image: openmsa/artemis:2.19.0
 
 volumes:
   mano_nfvo:
