@@ -260,7 +260,7 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
       - "/mnt/NASVolume/msa_svn:/opt/svnroot"
-      - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
+      - "msa_bulkfiles:/opt/sms/spool/parser"
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
     deploy:
       replicas: 3
@@ -366,6 +366,7 @@ services:
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
       - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
+      - "msa_monitbulkfiles:/opt/sms/spool/parser"
     deploy:
       replicas: 3
       placement:
@@ -560,6 +561,10 @@ services:
       default:
         aliases:
           - "msa_dev"
+
+volumes:
+  msa_bulkfiles:
+  msa_monitbulkfiles:
 
 networks:
   default:
