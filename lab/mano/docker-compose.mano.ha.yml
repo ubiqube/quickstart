@@ -26,6 +26,7 @@ services:
           - "node.labels.worker==app"
 
   mano-auth:
+    image: jboss/keycloak:16.1.1
     deploy:
       replicas: 1
       placement:
@@ -43,7 +44,6 @@ services:
       JGROUPS_DISCOVERY_PROTOCOL: JDBC_PING
       JGROUPS_DISCOVERY_PROPERTIES: "datasource_jndi_name=java:jboss/datasources/KeycloakDS"
       JAVA_OPTS: "-Djboss.as.management.blocking.timeout=600"
-    image: jboss/keycloak:16.1.1
     ports:
       - target: 8080
         published: 8110
