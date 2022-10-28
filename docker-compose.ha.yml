@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:29e2fae53a0c90dcbf3f47079ccff0a91facfeb0
+    image: ubiqube/msa2-front:4fa796143101ce9e6d1807aff78bcf54e0fe330c
     depends_on:
       - msa-api
       - msa-ui
@@ -96,7 +96,7 @@ services:
         max-file: "5"
 
   msa-api:
-    image: ubiqube/msa2-api:7b3da6d28190fa05380964e4cf9eef555b0f74e8
+    image: ubiqube/msa2-api:8ddcbd507ef92252c942add337efe13cf50f526a
     depends_on:
       - db
     healthcheck:
@@ -134,7 +134,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: ubiqube/msa2-ui:1f2a42b952e929ab5da52d6942a5be8b9f5717fe
+    image: ubiqube/msa2-front:4fa796143101ce9e6d1807aff78bcf54e0fe330c
     depends_on:
       - msa-api
     healthcheck:
@@ -205,7 +205,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: ubiqube/msa2-sms:d5f0cbfd525a9b7b583ed2478b0f848452b22f11
+    image: ubiqube/msa2-sms:9528df2fdab558448b7ebb213693dbf871fd5969
     depends_on:
       - db
     healthcheck:
@@ -231,7 +231,6 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
-            #    - "node.labels.monit==coreengine"
     logging:
       driver: "json-file"
       options:
@@ -309,7 +308,7 @@ services:
           - "msa_alarm"
 
   msa-monitoring:
-    image: ubiqube/msa2-monitoring:a14033d79a26dbed0d815f12d2ad87e3e4bcee68
+    image: ubiqube/msa2-monitoring:3112e5b617c9e60b45fba350fac0ab539068a2d8
     healthcheck:
       timeout: 5s
       retries: 10
@@ -329,6 +328,7 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
       - "msa_bulkfiles:/opt/sms/spool/parser"
+      - "msa_monitbulkfiles:/opt/sms/spool/parser"
       - "msa_sms_logs:/opt/sms/logs"
     deploy:
       replicas: 1
@@ -336,7 +336,6 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
-            #  - "node.labels.monit==coreengine"
     logging:
       driver: "json-file"
       options:
@@ -526,6 +525,7 @@ services:
 volumes:
   msa_bulkfiles:
   msa_sms_logs:
+  msa_monitbulkfiles:
 
 networks:
   default:
