@@ -416,7 +416,7 @@ services:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       interval: 60s
       start_period: 60s
-    image: ubiqube/msa2-es:87a4dfc1a92b32607852c945907ae3cac3edb2c3
+    image: ubiqube/msa2-es:5f5287a3b8c9a4a14735df0624759ceb78371edb
     deploy:
       replicas: 1
       placement:
