@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:649f23b6fc265d494acc149bb3c8eb24710fa967
+    image: ubiqube/msa2-front:4fa796143101ce9e6d1807aff78bcf54e0fe330c
     depends_on:
       - msa-api
       - msa-ui
@@ -170,7 +170,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: ubiqube/msa2-ui:aadf134d94e20da04b91d188dc50ebb6519955d3
+    image: ubiqube/msa2-front:4fa796143101ce9e6d1807aff78bcf54e0fe330c
     depends_on:
       - msa-api
     healthcheck:
@@ -241,7 +241,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: ubiqube/msa2-sms:b83e0e82c2f80b208e3c2a12ed900131cc9922c6
+    image: ubiqube/msa2-sms:9528df2fdab558448b7ebb213693dbf871fd5969
     depends_on:
       - db
     healthcheck:
@@ -412,43 +412,6 @@ services:
         max-size: "10m"
         max-file: "5"
 
-  msa-es:
-    healthcheck:
-      test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
-      interval: 60s
-      start_period: 60s
-    image: ubiqube/msa2-es:ecbddce0b5641a0a766e152a28a115b28f2be365
-    deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
-    environment:
-      - discovery.type=single-node
-      - script.painless.regex.enabled=true
-      - bootstrap.memory_lock=true
-      - xpack.security.enabled=true
-      - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    networks:
-      default:
-        aliases:
-          - "msa_es"
-    volumes:
-     - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
-    logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
-
   msa-kibana:
     image: openmsa/openmsa:msa2-kibana-2.8.0-49c1c422ad5559815d4f74568904a7214e788932
     ports:
@@ -500,6 +463,44 @@ services:
       default:
         aliases:
           - "msa_ai_ml"
+
+  msa-es:
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
+      interval: 60s
+      start_period: 60s
+    image: ubiqube/msa2-es:5f5287a3b8c9a4a14735df0624759ceb78371edb
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
+    environment:
+      - discovery.type=single-node
+      - script.painless.regex.enabled=true
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=true
+      - ingest.geoip.downloader.enabled=false
+      - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
+      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      default:
+        aliases:
+          - "msa_es"
+    volumes:
+     - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
 
   msa-cerebro:
     image: openmsa/openmsa:msa2-cerebro-2.8.0-914750e000db1343d9972bfa6652da1efe4aa32f
