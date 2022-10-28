@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:155cf5a6536b65b51760e7f3bbc66fcc909e6728
+    image: ubiqube/msa2-front:649f23b6fc265d494acc149bb3c8eb24710fa967
     depends_on:
       - msa-api
       - msa-ui
@@ -132,7 +132,7 @@ services:
         max-file: "5"
 
   msa-api:
-    image: ubiqube/msa2-api:f85f1b939559c3ef26ac486a743c457cb4c2a12d
+    image: ubiqube/msa2-api:8ddcbd507ef92252c942add337efe13cf50f526a
     depends_on:
       - db
     healthcheck:
@@ -170,7 +170,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: ubiqube/msa2-ui:4a95d4f461dce05b8e8439b2237bafc75f65185b
+    image: ubiqube/msa2-ui:aadf134d94e20da04b91d188dc50ebb6519955d3
     depends_on:
       - msa-api
     healthcheck:
@@ -241,7 +241,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: ubiqube/msa2-sms:d5f0cbfd525a9b7b583ed2478b0f848452b22f11
+    image: ubiqube/msa2-sms:b83e0e82c2f80b208e3c2a12ed900131cc9922c6
     depends_on:
       - db
     healthcheck:
@@ -267,7 +267,7 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
-          - "node.labels.monit==coreengine"
+#          - "node.labels.monit==coreengine"
     logging:
       driver: "json-file"
       options:
@@ -345,7 +345,7 @@ services:
           - "msa_alarm"
 
   msa-monitoring:
-    image: ubiqube/msa2-monitoring:a14033d79a26dbed0d815f12d2ad87e3e4bcee68
+    image: ubiqube/msa2-monitoring:3112e5b617c9e60b45fba350fac0ab539068a2d8
     healthcheck:
       timeout: 5s
       retries: 10
@@ -365,6 +365,7 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
       - "msa_bulkfiles:/opt/sms/spool/parser"
+      - "msa_monitbulkfiles:/opt/sms/spool/parser"
       - "msa_sms_logs:/opt/sms/logs"
     deploy:
       replicas: 1
@@ -372,7 +373,7 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
-          - "node.labels.monit==coreengine"
+#          - "node.labels.monit==coreengine"
     logging:
       driver: "json-file"
       options:
@@ -416,7 +417,7 @@ services:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       interval: 60s
       start_period: 60s
-    image: ubiqube/msa2-es:e3f74c2f41e1940cdc76fb1d5deeafd81bb603c4
+    image: ubiqube/msa2-es:ecbddce0b5641a0a766e152a28a115b28f2be365
     deploy:
       replicas: 1
       placement:
@@ -559,7 +560,11 @@ services:
 
 volumes:
   msa_bulkfiles:
+<<<<<<< HEAD
   msa_sms_logs:
+=======
+  msa_monitbulkfiles:
+>>>>>>> 2.8.4
 
 networks:
   default:

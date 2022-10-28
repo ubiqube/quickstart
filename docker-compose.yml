@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:155cf5a6536b65b51760e7f3bbc66fcc909e6728
+    image: ubiqube/msa2-front:649f23b6fc265d494acc149bb3c8eb24710fa967
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -97,7 +97,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:f85f1b939559c3ef26ac486a743c457cb4c2a12d
+    image: ubiqube/msa2-api:8ddcbd507ef92252c942add337efe13cf50f526a
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
       retries: 10
@@ -135,7 +135,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:4a95d4f461dce05b8e8439b2237bafc75f65185b
+    image: ubiqube/msa2-ui:aadf134d94e20da04b91d188dc50ebb6519955d3
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -172,7 +172,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:d5f0cbfd525a9b7b583ed2478b0f848452b22f11
+    image: ubiqube/msa2-sms:b83e0e82c2f80b208e3c2a12ed900131cc9922c6
     healthcheck:
       timeout: 5s
       retries: 10
@@ -270,7 +270,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: ubiqube/msa2-monitoring:a14033d79a26dbed0d815f12d2ad87e3e4bcee68
+    image: ubiqube/msa2-monitoring:3112e5b617c9e60b45fba350fac0ab539068a2d8
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -347,7 +347,7 @@ services:
   msa-es:
     restart: unless-stopped
     container_name: msa_es
-    image: ubiqube/msa2-es:87a4dfc1a92b32607852c945907ae3cac3edb2c3
+    image: ubiqube/msa2-es:ecbddce0b5641a0a766e152a28a115b28f2be365
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
@@ -534,7 +534,7 @@ volumes:
   msa_svn:
   msa_ai_ml_db:
   msa_bulkfiles:
-
+  msa_monitbulkfiles:
 
 networks:
   default:
