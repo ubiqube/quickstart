@@ -364,7 +364,6 @@ services:
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
-      - "msa_bulkfiles:/opt/sms/spool/parser"
       - "msa_monitbulkfiles:/opt/sms/spool/parser"
       - "msa_sms_logs:/opt/sms/logs"
     deploy:
