@@ -95,42 +95,6 @@ services:
         max-size: "10m"
         max-file: "5"
 
-  db-replica:
-    image: ubiqube/msa2-db:4f831c132a8d6ecc7ec5717a7f74cafaf25588db
-    healthcheck:
-      test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h db"]
-      timeout: 20s
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.db==replica"
-    environment:
-      CAMUNDA_PASSWORD: camunda
-      CAMUNDA_DB: process-engine
-      CAMUNDA_USER: camunda
-      KEY_VAULT_USER: key_vault
-      KEY_VAULT_DB: key_vault
-      PG_MODE: replica
-      PG_PRIMARY_USER: postgres
-      PG_PRIMARY_PASSWORD: my_db_password
-      PG_USER: postgres
-      PG_PASSWORD: my_db_password
-      PG_DATABASE: POSTGRESQL
-      PG_ROOT_PASSWORD: my_db_password
-      PG_PRIMARY_PORT: 5432
-      PG_PRIMARY_HOST: db
-    logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
-
   msa-api:
     image: ubiqube/msa2-api:7b3da6d28190fa05380964e4cf9eef555b0f74e8
     depends_on:
@@ -267,7 +231,7 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
-          - "node.labels.monit==coreengine"
+            #    - "node.labels.monit==coreengine"
     logging:
       driver: "json-file"
       options:
@@ -372,7 +336,7 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
-          - "node.labels.monit==coreengine"
+            #  - "node.labels.monit==coreengine"
     logging:
       driver: "json-file"
       options:
@@ -412,11 +376,11 @@ services:
         max-file: "5"
 
   msa-es:
-    healthcheck:
-      test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
-      interval: 60s
-      start_period: 60s
-    image: ubiqube/msa2-es:e3f74c2f41e1940cdc76fb1d5deeafd81bb603c4
+    #    healthcheck:
+    #      test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
+    #      interval: 60s
+    #      start_period: 60s
+    image: ubiqube/msa2-es:5f5287a3b8c9a4a14735df0624759ceb78371edb
     deploy:
       replicas: 1
       placement:
@@ -424,6 +388,7 @@ services:
         constraints:
           - "node.labels.worker==app"
     environment:
+      - ingest.geoip.downloader.enabled=false
       - discovery.type=single-node
       - script.painless.regex.enabled=true
       - bootstrap.memory_lock=true
