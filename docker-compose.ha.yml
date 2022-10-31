@@ -182,7 +182,7 @@ services:
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==app"
+          - "node.labels.worker==sms"
     ports:
       - target: 514
         published: 514
@@ -230,7 +230,7 @@ services:
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==app"
+          - "node.labels.worker==sms"
     logging:
       driver: "json-file"
       options:
@@ -260,7 +260,7 @@ services:
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==app"
+          - "node.labels.worker==sms"
     logging:
       driver: "json-file"
       options:
@@ -292,7 +292,7 @@ services:
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==app"
+          - "node.labels.worker==sms"
     volumes:
       - "msa_sms_logs:/opt/sms/logs"
     logging:
@@ -334,7 +334,7 @@ services:
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==app"
+          - "node.labels.worker==sms"
     logging:
       driver: "json-file"
       options:

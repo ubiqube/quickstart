@@ -23,7 +23,7 @@ services:
       placement:	
         max_replicas_per_node: 1
         constraints:	
-          - "node.labels.worker==app"
+          - "node.labels.worker==mano"
 
   mano-auth:
     image: jboss/keycloak:16.1.1
@@ -32,7 +32,7 @@ services:
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==app"
+          - "node.labels.worker==mano"            
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: ubiqube
@@ -59,7 +59,7 @@ services:
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==app"
+          - "node.labels.worker==mano"
     ports:
       - target: 8080
         published: 8100
@@ -78,7 +78,7 @@ services:
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==app"
+          - "node.labels.worker==mano"
     ports:
       - target: 8080
         published: 8090
