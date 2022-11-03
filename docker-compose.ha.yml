@@ -113,6 +113,8 @@ services:
         condition: on-failure
         max_attempts: 10
     environment:
+      - msa-es:172.17.28.82
+      - msa_es:172.17.28.82
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
@@ -132,6 +134,9 @@ services:
       default:
         aliases:
           - "msa_api"
+    extra_hosts:
+      - msa-es:172.17.28.82
+      - msa_es:172.17.28.82
 
   msa-ui:
     image: ubiqube/msa2-ui:5f1cb1f0491f55c6ac664c04e4e9cd53b284cfaa
@@ -160,7 +165,7 @@ services:
     - FEATURE_EDIT_VARIABLES_IN_MICROSERVICE_CONSOLE=true
     - FEATURE_WORKFLOW_OWNER=false
     - FEATURE_PERMISSION_PROFILE_LABELS=false
-    - UBIQUBE_ES_SECURITY_DISABLED=false
+    - UBIQUBE_ES_SECURITY_DISABLED=true
     logging:
       driver: "json-file"
       options:
@@ -242,6 +247,9 @@ services:
       default:
         aliases:
           - "msa_sms"
+    extra_hosts:
+      - msa-es:172.17.28.82
+      - msa_es:172.17.28.82
 
   msa-bud:
     image: ubiqube/msa2-bud:c37974b1c3b164a79f9ca7da64e8d8845de26b48
@@ -306,6 +314,9 @@ services:
       default:
         aliases:
           - "msa_alarm"
+    extra_hosts:
+      - msa-es:172.17.28.82
+      - msa_es:172.17.28.82
 
   msa-monitoring:
     image: ubiqube/msa2-monitoring:3112e5b617c9e60b45fba350fac0ab539068a2d8
@@ -346,6 +357,9 @@ services:
       default:
         aliases:
           - "msa_monitoring"
+    extra_hosts:
+      - msa-es:172.17.28.82
+      - msa_es:172.17.28.82
 
   camunda:
     depends_on:
@@ -398,6 +412,9 @@ services:
       default:
         aliases:
           - "msa_kibana"
+    extra_hosts:
+      - msa-es:172.17.28.82
+      - msa_es:172.17.28.82
 
   msa-ai-ml:
     image: openmsa/openmsa:msa2-ai-ml-2.8.0-63c7fab8c111b6cc85da049f45ebc6175a9b269a
@@ -453,6 +470,9 @@ services:
       default:
         aliases:
           - "msa_cerebro"
+    extra_hosts:
+      - msa-es:172.17.28.82
+      - msa_es:172.17.28.82
 
   msa-dev:
     image: ubiqube/msa2-linuxdev:6ff470bd060bc2a9f2d86ca34ad58857aabd53aa
