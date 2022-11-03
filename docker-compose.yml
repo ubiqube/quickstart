@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:4fa796143101ce9e6d1807aff78bcf54e0fe330c
+    image: ubiqube/msa2-front:da76833029acd9532e1803d87d01bdff4e450235
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -62,7 +62,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: ubiqube/msa2-db:75f0c2abd5f11f45016c7c3f9ff8646d61d1a958
+    image: ubiqube/msa2-db:ebea3dbfca788e47e6fba16c29f5dfbe845c26ed
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -97,7 +97,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:8ddcbd507ef92252c942add337efe13cf50f526a
+    image: ubiqube/msa2-api:baec5e7554e1d02d1b3a78a21b6163b91cd8dace
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
       retries: 10
@@ -135,7 +135,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:4de2dff0c7240239a21a897061fa41f16d5822b1
+    image: ubiqube/msa2-ui:5f1cb1f0491f55c6ac664c04e4e9cd53b284cfaa
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -172,7 +172,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:9528df2fdab558448b7ebb213693dbf871fd5969
+    image: ubiqube/msa2-sms:7a2e6dddecdc75816e1285d209dfb7d3c2e5b896
     healthcheck:
       timeout: 5s
       retries: 10
@@ -239,7 +239,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: ubiqube/msa2-alarm:87c362b656775501f0e8f677530d77704a478122
+    image: ubiqube/msa2-alarm:a6e9ec43063dc740cca7eb7c7c302289e63f0069
     healthcheck:
       timeout: 5s
       retries: 10

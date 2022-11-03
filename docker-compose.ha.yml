@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:4fa796143101ce9e6d1807aff78bcf54e0fe330c
+    image: ubiqube/msa2-front:da76833029acd9532e1803d87d01bdff4e450235
     depends_on:
       - msa-api
       - msa-ui
@@ -56,7 +56,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:75f0c2abd5f11f45016c7c3f9ff8646d61d1a958
+    image: ubiqube/msa2-db:ebea3dbfca788e47e6fba16c29f5dfbe845c26ed
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -96,7 +96,7 @@ services:
         max-file: "5"
 
   msa-api:
-    image: ubiqube/msa2-api:8ddcbd507ef92252c942add337efe13cf50f526a
+    image: ubiqube/msa2-api:baec5e7554e1d02d1b3a78a21b6163b91cd8dace
     depends_on:
       - db
     healthcheck:
@@ -119,7 +119,7 @@ services:
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
-      - "/mnt/NASVolume/msa_api_logs:/opt/wildfly/logs/processLog"
+      - "msa_api_logs:/opt/wildfly/logs/processLog"
       - "/mnt/NASVolume/msa_api_keystore:/etc/pki/jentreprise"
     logging:
       driver: "json-file"
@@ -134,7 +134,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: ubiqube/msa2-ui:4de2dff0c7240239a21a897061fa41f16d5822b1
+    image: ubiqube/msa2-ui:5f1cb1f0491f55c6ac664c04e4e9cd53b284cfaa
     depends_on:
       - msa-api
     healthcheck:
@@ -205,7 +205,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: ubiqube/msa2-sms:9528df2fdab558448b7ebb213693dbf871fd5969
+    image: ubiqube/msa2-sms:7a2e6dddecdc75816e1285d209dfb7d3c2e5b896
     depends_on:
       - db
     healthcheck:
@@ -277,7 +277,7 @@ services:
     depends_on:
       - db
       - msa-api
-    image: ubiqube/msa2-alarm:87c362b656775501f0e8f677530d77704a478122
+    image: ubiqube/msa2-alarm:a6e9ec43063dc740cca7eb7c7c302289e63f0069
     healthcheck:
       timeout: 5s
       retries: 10
@@ -365,44 +365,6 @@ services:
       DB_VALIDATE_ON_BORROW: 'true'
       WAIT_FOR: 'db:5432'
       WAIT_FOR_TIMEOUT: 60
-    logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
-
-  msa-es:
-    healthcheck:
-      test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
-      interval: 60s
-      start_period: 60s
-    image: ubiqube/msa2-es:5f5287a3b8c9a4a14735df0624759ceb78371edb
-    deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
-    environment:
-      - ingest.geoip.downloader.enabled=false
-      - discovery.type=single-node
-      - script.painless.regex.enabled=true
-      - bootstrap.memory_lock=true
-      - xpack.security.enabled=true
-      - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    networks:
-      default:
-        aliases:
-          - "msa_es"
-    volumes:
-     - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
     logging:
       driver: "json-file"
       options:
@@ -525,6 +487,7 @@ volumes:
   msa_bulkfiles:
   msa_sms_logs:
   msa_monitbulkfiles:
+  msa_api_logs:
 
 networks:
   default:
