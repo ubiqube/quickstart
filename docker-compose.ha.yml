@@ -113,6 +113,8 @@ services:
         condition: on-failure
         max_attempts: 10
     environment:
+      - msa-es:172.17.28.82
+      - msa_es:172.17.28.82
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
@@ -132,6 +134,9 @@ services:
       default:
         aliases:
           - "msa_api"
+    extra_hosts:
+      - msa-es:172.17.28.82
+      - msa_es:172.17.28.82
 
   msa-ui:
     image: ubiqube/msa2-ui:4de2dff0c7240239a21a897061fa41f16d5822b1
@@ -160,7 +165,7 @@ services:
     - FEATURE_EDIT_VARIABLES_IN_MICROSERVICE_CONSOLE=true
     - FEATURE_WORKFLOW_OWNER=false
     - FEATURE_PERMISSION_PROFILE_LABELS=false
-    - UBIQUBE_ES_SECURITY_DISABLED=false
+    - UBIQUBE_ES_SECURITY_DISABLED=true
     logging:
       driver: "json-file"
       options:
@@ -242,6 +247,9 @@ services:
       default:
         aliases:
           - "msa_sms"
+    extra_hosts:
+      - msa-es:172.17.28.82
+      - msa_es:172.17.28.82
 
   msa-bud:
     image: ubiqube/msa2-bud:c37974b1c3b164a79f9ca7da64e8d8845de26b48
@@ -306,6 +314,9 @@ services:
       default:
         aliases:
           - "msa_alarm"
+    extra_hosts:
+      - msa-es:172.17.28.82
+      - msa_es:172.17.28.82
 
   msa-monitoring:
     image: ubiqube/msa2-monitoring:3112e5b617c9e60b45fba350fac0ab539068a2d8
@@ -346,6 +357,9 @@ services:
       default:
         aliases:
           - "msa_monitoring"
+    extra_hosts:
+      - msa-es:172.17.28.82
+      - msa_es:172.17.28.82
 
   camunda:
     depends_on:
@@ -373,43 +387,54 @@ services:
         max-size: "10m"
         max-file: "5"
 
-  msa-es:
-    healthcheck:
-      test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
-      interval: 60s
-      start_period: 60s
-    image: ubiqube/msa2-es:5f5287a3b8c9a4a14735df0624759ceb78371edb
-    deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
-    environment:
-      - ingest.geoip.downloader.enabled=false
-      - discovery.type=single-node
-      - script.painless.regex.enabled=true
-      - bootstrap.memory_lock=true
-      - xpack.security.enabled=true
-      - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    networks:
-      default:
-        aliases:
-          - "msa_es"
-    volumes:
-     - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
-    logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+        #  msa-es:
+        #healthcheck:
+        #test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
+        #interval: 60s
+        #start_period: 60s
+        #image: ubiqube/msa2-es:5f5287a3b8c9a4a14735df0624759ceb78371edb
+        #deploy:
+        #replicas: 1
+        #placement:
+        #max_replicas_per_node: 1
+        #constraints:
+        #  - "node.labels.worker==app"
+        # ports:
+        # - "9200:9200"
+        # - "9300:9300"     
+        #environment:
+        #- node.roles=ingest
+        # - node.name=alpha_lab_client
+        #- discovery.seed_hosts=172.17.28.82
+        #- cluster.initial_master_nodes=alpha_lab_node1
+        #- cluster.name=alpha_lab
+        #- network.host=0.0.0.0
+        #- http.host=0.0.0.0
+        #      - network.publish_host=10.242.225.15
+        #- script.painless.regex.enabled=true
+        #- bootstrap.memory_lock=true
+        #- xpack.security.enabled=false
+        #- "ES_JAVA_OPTS=-Xms2048m -Xmx2048m"
+        #- ingest.geoip.downloader.enabled=false
+        #- "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+        #- no_proxy=127.0.0.1,localhost,::1,.repo,10.0.0.0/8,.tm.com.my,10.242.225.18,172.17.28.82
+        #ulimits:
+        # memlock:
+        #soft: -1
+        #hard: -1
+        #networks:
+        #default:
+        #aliases:
+        #  - "msa_es"
+        #volumes:
+        #- "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
+        #logging:
+        #driver: "json-file"
+        #options:
+        #mode: non-blocking
+        # max-buffer-size: "4m"
+        # max-size: "10m"
+        #max-file: "5"
 
   msa-kibana:
     image: openmsa/openmsa:msa2-kibana-2.8.0-49c1c422ad5559815d4f74568904a7214e788932
@@ -436,6 +461,9 @@ services:
       default:
         aliases:
           - "msa_kibana"
+    extra_hosts:
+      - msa-es:172.17.28.82
+      - msa_es:172.17.28.82
 
   msa-ai-ml:
     image: openmsa/openmsa:msa2-ai-ml-2.8.0-63c7fab8c111b6cc85da049f45ebc6175a9b269a
@@ -491,6 +519,9 @@ services:
       default:
         aliases:
           - "msa_cerebro"
+    extra_hosts:
+      - msa-es:172.17.28.82
+      - msa_es:172.17.28.82
 
   msa-dev:
     image: ubiqube/msa2-linuxdev:6ff470bd060bc2a9f2d86ca34ad58857aabd53aa
