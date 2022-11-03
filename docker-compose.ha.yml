@@ -475,14 +475,6 @@ services:
         constraints:
           - "node.labels.worker==app"
     environment:
-            #- node.roles=ingest,master,data
-            #- node.name=msa_es
-            #- discovery.seed_hosts=127.0.0.1,localhost
-            #- cluster.initial_master_nodes=cluster_msa_es
-            #- cluster.name=cluster
-            #- network.host=0.0.0.0
-            #- script.painless.regex.enabled=true
-            #- bootstrap.memory_lock=true
       - discovery.type=single-node
       - script.painless.regex.enabled=true
       - bootstrap.memory_lock=true
