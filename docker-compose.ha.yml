@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:5f4113b638e958576daf69215418c03d667f6d3f
+    image: ubiqube/msa2-front:da76833029acd9532e1803d87d01bdff4e450235
     depends_on:
       - msa-api
       - msa-ui
@@ -58,7 +58,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:75f0c2abd5f11f45016c7c3f9ff8646d61d1a958
+    image: ubiqube/msa2-db:ebea3dbfca788e47e6fba16c29f5dfbe845c26ed
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -98,7 +98,7 @@ services:
         max-file: "5"
 
   db-replica:
-    image: ubiqube/msa2-db:4f831c132a8d6ecc7ec5717a7f74cafaf25588db
+    image: ubiqube/msa2-db:ebea3dbfca788e47e6fba16c29f5dfbe845c26ed
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -134,7 +134,7 @@ services:
         max-file: "5"
 
   msa-api:
-    image: ubiqube/msa2-api:8ddcbd507ef92252c942add337efe13cf50f526a
+    image: ubiqube/msa2-api:baec5e7554e1d02d1b3a78a21b6163b91cd8dace
     depends_on:
       - db
     healthcheck:
