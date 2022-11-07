@@ -3,6 +3,10 @@ version: "3.8"
                     
 services:
   db:
+    networks:
+      default:
+        aliases:
+          - "mano-db"
     environment:
       MANOVNFM_USER: mano_vnfm
       MANOVNFM_PASSWORD: mano
@@ -10,6 +14,7 @@ services:
       MANONFVO_PASSWORD: mano
       KEYCLOAK_USER: keycloak
       KEYCLAOK_PASSWORD: keycloak
+
 
   mano-artemis:
     image: openmsa/artemis:2.19.0
@@ -45,11 +50,8 @@ services:
         protocol: tcp
         mode: ingress
 
-  db:
-    networks:
-      default:
-        aliases:
-          - "mano-db"
+  mano-helm3:
+    image: ubiqube/helm3-webapp
 
   mano-nfvo:
     image: oviubiqube/mano-nfvo-tm22:uat4
