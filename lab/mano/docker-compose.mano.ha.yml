@@ -77,9 +77,9 @@ services:
       - "/mnt/NASVolume/mano_nfvo_kvdc:/opt/etsi-mano-data"
     deploy:
       replicas: 1
-      placement:	
+      placement:
         max_replicas_per_node: 1
-        constraints:	
+        constraints:
           - "node.labels.worker==app"
     ports:
       - target: 8080
