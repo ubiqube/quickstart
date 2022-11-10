@@ -248,7 +248,7 @@ services:
       retries: 10
       interval: 10s
       start_period: 30s
-      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 0"]
+      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
