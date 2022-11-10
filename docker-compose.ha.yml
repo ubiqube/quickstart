@@ -413,7 +413,7 @@ services:
         max-file: "5"
 
   msa-es:
-    image: ubiqube/msa2-es:87a4dfc1a92b32607852c945907ae3cac3edb2c3
+    image: ubiqube/msa2-es:ecbddce0b5641a0a766e152a28a115b28f2be365
     deploy:
       replicas: 1
       placement:
