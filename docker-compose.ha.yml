@@ -346,7 +346,7 @@ services:
           - "msa_alarm"
 
   msa-monitoring:
-    image: ubiqube/msa2-monitoring:3112e5b617c9e60b45fba350fac0ab539068a2d8
+    image: ubiqube/msa2-monitoring:d9798798a522aeb8d635e49e6fd84d83fa98088c
     healthcheck:
       timeout: 5s
       retries: 10
