@@ -1,0 +1,61 @@
+# specific docker-compose conf, don't add in git
+version: "3.8"
+
+services:
+  msa-sms:
+          # environment:
+          # - no_proxy=127.0.0.1,localhost,::1,.repo,10.0.0.0/8,.tm.com.my
+          #  - https_proxy=http://10.91.216.49:8000
+          # - http_proxy=http://10.91.216.49:8000
+    extra_hosts:
+      - msa-es-2:10.91.216.35
+        #      - msa-es:10.19.216.30
+        #      - msa_es:10.19.216.30
+
+        #  msa-api:
+        #    environment:
+            #      - no_proxy=127.0.0.1,localhost,::1,.repo,10.0.0.0/8,.tm.com.my
+            #      - https_proxy=http://10.91.216.49:8000
+            #      - http_proxy=http://10.91.216.49:8000
+            #- msa-es:10.19.216.30
+            #- msa_es:10.19.216.30
+
+        # mano-nfvo:
+          # environment:
+            #- no_proxy=127.0.0.1,localhost,::1,.repo,10.0.0.0/8,.tm.com.my
+            # - https_proxy=http://10.91.216.49:8000
+            # - http_proxy=http://10.91.216.49:8000
+
+        # mano-vnfm:
+          # environment:
+            # - no_proxy=127.0.0.1,localhost,::1,.repo,10.0.0.0/8,.tm.com.my
+            # - https_proxy=http://10.91.216.49:8000
+            # - http_proxy=http://10.91.216.49:8000
+
+  msa-dev:
+    environment:
+      - no_proxy=127.0.0.1,localhost,::1,.repo,10.0.0.0/8,.tm.com.my
+      - https_proxy=http://10.91.216.49:8000
+      - http_proxy=http://10.91.216.49:8000
+
+  msa-es:
+    environment:
+      - node.roles=ingest
+      - node.name=kvdc_NODE_esclient01
+      - discovery.seed_hosts=10.19.216.26,10.19.216.27,10.19.216.28
+      - cluster.initial_master_nodes=kvdc_NODE_esmtr01,kvdc_NODE_esmtr02,kvdc_NODE_esmtr03
+      - cluster.name=kvdc
+      - network.host=0.0.0.0
+      - http.host=0.0.0.0
+      - network.publish_host=10.19.216.35
+      - script.painless.regex.enabled=true
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms2048m -Xmx2048m"
+        #- "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+        #      - no_proxy=127.0.0.1,localhost,::1,.repo,10.0.0.0/8,.tm.com.my,10.55.31.220,10.19.204.20,10.19.216.20,10.55.31.221,10.19.204.21,10.19.216.21,10.55.31.222,10.19.204.22,10.19.216.22,10.55.31.223,10.19.204.23,10.19.216.23,10.55.31.224,10.19.204.24,10.19.216.24,10.55.31.225,10.19.204.25,10.19.216.25,10.55.31.226,10.19.204.26,10.19.216.26,10.55.31.227,10.19.204.27,10.19.216.27,10.55.31.228,10.19.204.28,10.19.216.28,10.55.31.229,10.19.204.29,10.19.216.29,10.55.31.230,10.19.204.30,10.19.216.30
+        #      - https_proxy=http://10.91.216.49:8000
+        #      - http_proxy=http://10.91.216.49:8000
+    ports:
+      - "9200:9200"
+      - "9300:9300"     
