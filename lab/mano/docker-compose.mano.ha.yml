@@ -93,6 +93,4 @@ secrets:
     external: true
   nfvo.keycloak.credentials.secret:
     external: true
-
-
-
+    
