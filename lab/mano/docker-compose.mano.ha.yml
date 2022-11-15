@@ -51,7 +51,7 @@ services:
         mode: ingress
 
   mano-nfvo-brf7:
-    image: ubiqube/mano-nfvo-tm22:uat8
+    image: ubiqube/mano-nfvo-tm22:uat9
     volumes:
       - "/mnt/NASVolume/mano_nfvo_brf7:/opt/etsi-mano-data"
     deploy:
@@ -72,7 +72,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_nfvo_brf7
 
   mano-nfvo-kvdc:
-    image: ubiqube/mano-nfvo-tm22:uat8
+    image: ubiqube/mano-nfvo-tm22:uat9
     volumes:
       - "/mnt/NASVolume/mano_nfvo_kvdc:/opt/etsi-mano-data"
     deploy:
@@ -93,7 +93,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_nfvo_kvdc
 
   mano-nfvo2-kvdc:
-    image: ubiqube/mano-nfvo-tm22:uat8
+    image: ubiqube/mano-nfvo-tm22:uat9
     volumes:
       - "/mnt/NASVolume/mano_nfvo2_kvdc:/opt/etsi-mano-data"
     deploy:
@@ -114,7 +114,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_nfvo2_kvdc
 
   mano-vnfm-brf7:
-    image: ubiqube/mano-vnfm-tm22:uat8
+    image: ubiqube/mano-vnfm-tm22:uat9
     volumes:
       - "/mnt/NASVolume/mano_vnfm_brf7:/opt/etsi-mano-data"
     deploy:
@@ -135,7 +135,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_vnfm_brf7
 
   mano-vnfm-kvdc:
-    image: ubiqube/mano-vnfm-tm22:uat8
+    image: ubiqube/mano-vnfm-tm22:uat9
     volumes:
       - "/mnt/NASVolume/mano_vnfm_kvdc:/opt/etsi-mano-data"
     deploy:
