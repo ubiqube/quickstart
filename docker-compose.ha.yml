@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:042c83633624b450a88230f8e7897992daf13aee
+    image: ubiqube/msa2-front:8b520ebe8b2c2b7586e5609aaeb5bf449991150e
     depends_on:
       - msa-api
       - msa-ui
@@ -96,7 +96,7 @@ services:
         max-file: "5"
 
   msa-api:
-    image: ubiqube/msa2-api:e1c1a4dac8de046d3e9d5a2dfbadd1963a7d1986
+    image: ubiqube/msa2-api:9fdb6deab98a9bcf4d53f1e16955faf5c1bef4a4
     depends_on:
       - db
     healthcheck:
@@ -139,7 +139,7 @@ services:
       - msa_es:172.17.28.82
 
   msa-ui:
-    image: ubiqube/msa2-ui:288fa577bcd96f4f9f084dbb563f4fa1353fa87e
+    image: ubiqube/msa2-ui:83dd823ee2f048a39408b84126806f3960333f2d
     depends_on:
       - msa-api
     healthcheck:
@@ -165,6 +165,7 @@ services:
     - FEATURE_EDIT_VARIABLES_IN_MICROSERVICE_CONSOLE=true
     - FEATURE_WORKFLOW_OWNER=false
     - FEATURE_PERMISSION_PROFILE_LABELS=false
+    - FEATURE_BPM=false
     - UBIQUBE_ES_SECURITY_DISABLED=true
     logging:
       driver: "json-file"
@@ -210,7 +211,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: ubiqube/msa2-sms:f4e4e5890fa2d051adc600bb22b34a10aa033a69
+    image: ubiqube/msa2-sms:70494e925d3d35b9986b566ff31e5e6ddc9e4e2b
     depends_on:
       - db
     healthcheck:
