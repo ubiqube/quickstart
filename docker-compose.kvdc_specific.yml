@@ -59,3 +59,7 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"     
+   msa-kibana:
+    environment:
+      -  NODE_OPTIONS="--max-old-space-size=4096"
+
