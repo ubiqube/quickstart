@@ -2,6 +2,29 @@
 version: "3.8"
 
 services:
+
+  mano-nfvo2-kvdc:
+    image: ubiqube/mano-nfvo-tm22:uat9
+    volumes:
+      - "/mnt/NASVolume/mano_nfvo2_kvdc:/opt/etsi-mano-data"
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
+    ports:
+      - target: 8080
+        published: 8140
+        protocol: tcp
+        mode: ingress
+    secrets:
+      - source: vnfm.keycloak.credentials.secret
+        target: keycloak.credentials.secret
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_nfvo2_kvdc
+
+
   msa-sms:
           # environment:
           # - no_proxy=127.0.0.1,localhost,::1,.repo,10.0.0.0/8,.tm.com.my
