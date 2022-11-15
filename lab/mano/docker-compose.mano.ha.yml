@@ -50,7 +50,7 @@ services:
         mode: ingress
 
   mano-nfvo:
-    image: ubiqube/mano-nfvo-tm22:uat7
+    image: ubiqube/mano-nfvo-tm22:uat9
     volumes:
       - "/mnt/NASVolume/mano_nfvo:/opt/etsi-mano-data"
     deploy:
@@ -69,7 +69,7 @@ services:
         target: keycloak.credentials.secret
 
   mano-vnfm:
-    image: ubiqube/mano-vnfm-tm22:uat7
+    image: ubiqube/mano-vnfm-tm22:uat9
     volumes:
       - "/mnt/NASVolume/mano_vnfm:/opt/etsi-mano-data"
     deploy:
