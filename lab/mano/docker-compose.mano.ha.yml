@@ -50,8 +50,8 @@ services:
         protocol: tcp
         mode: ingress
 
-  mano-nfvo-brf7:
-    image: ubiqube/mano-nfvo-tm22:uat10
+  mano-nfvo:
+    image: ubiqube/mano-nfvo-tm22:uat12
     volumes:
       - "/mnt/NASVolume/mano_nfvo_brf7:/opt/etsi-mano-data"
     deploy:
@@ -92,8 +92,8 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_nfvo_kvdc
 
-  mano-vnfm-brf7:
-    image: ubiqube/mano-vnfm-tm22:uat10
+  mano-vnfm:
+    image: ubiqube/mano-vnfm-tm22:uat12
     volumes:
       - "/mnt/NASVolume/mano_vnfm_brf7:/opt/etsi-mano-data"
     deploy:
