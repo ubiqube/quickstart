@@ -51,7 +51,7 @@ services:
         mode: ingress
 
   mano-nfvo:
-    image: ubiqube/mano-nfvo-tm22:uat10
+    image: ubiqube/mano-nfvo-tm22:uat12
     volumes:
       - "/mnt/NASVolume/mano_nfvo:/opt/etsi-mano-data"
     deploy:
