@@ -3,10 +3,6 @@ version: "3.8"
                     
 services:
   db:
-    networks:
-      default:
-        aliases:
-          - "mano-db"
     environment:
       MANOVNFM_USER: mano_vnfm
       MANOVNFM_PASSWORD: mano
