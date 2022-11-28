@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:e7894afd27ab38c65b6a84dcc4bbd092555937eb
+    image: ubiqube/msa2-front:04e7f54ee3c70e746db06cc8ad7a00fe135314ae
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -97,7 +97,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:39e4638873a4acc952d62b444543cecc0f4d8b22
+    image: ubiqube/msa2-api:170d13922202c1335e8605e422e7bb4a38ef3dd1
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
       retries: 10
@@ -135,7 +135,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:aed05005a2086e37da7f833b9ccb066b7e7935c0
+    image: ubiqube/msa2-ui:378b02909ab13bfb3b806501221de558254d93e8
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -172,7 +172,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:e5fce46872969a5a0e82dcee31117c044d0a2782
+    image: ubiqube/msa2-sms:4a9957ce62034f7b13a6fd6be10df3b9fcca47be
     healthcheck:
       timeout: 5s
       retries: 10
@@ -239,7 +239,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: ubiqube/msa2-alarm:a6e9ec43063dc740cca7eb7c7c302289e63f0069
+    image: ubiqube/msa2-alarm:0eddb34f91941b2b93c3f0ff9b26152a99e2df41
     healthcheck:
       timeout: 5s
       retries: 10
@@ -270,7 +270,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: ubiqube/msa2-monitoring:3112e5b617c9e60b45fba350fac0ab539068a2d8
+    image: ubiqube/msa2-monitoring:be613cfe1324741a2842a993e51b0c0445478f91
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -444,7 +444,7 @@ services:
   msa-ai-ml:
     restart: unless-stopped
     container_name: msa_ai_ml
-    image: openmsa/openmsa:msa2-ai-ml-2.8.0-63c7fab8c111b6cc85da049f45ebc6175a9b269a
+    image: ubiqube/msa2-ai-ml:63c7fab8c111b6cc85da049f45ebc6175a9b269a
     healthcheck:
       test: ["CMD-SHELL", "python /msa_proj/health_check.py"]
     ports:
