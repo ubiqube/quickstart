@@ -102,7 +102,7 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_nfvo_kvdc
 
-  mano-vnfm:
+  mano-vnfm-brf7:
     image: ubiqube/mano-vnfm-tm22:uat14
     volumes:
       - "/mnt/NASVolume/mano_vnfm_brf7:/opt/etsi-mano-data"
