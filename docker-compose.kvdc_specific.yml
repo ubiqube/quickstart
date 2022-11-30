@@ -48,12 +48,12 @@ services:
       - MANO_FRONTEND_URL=http://mano-nfvo2-brf7:8080/ubi-etsi-mano/sol003
 
   msa-sms:
+    extra_hosts:
+      - msa-es-2:10.91.216.35
           # environment:
           # - no_proxy=127.0.0.1,localhost,::1,.repo,10.0.0.0/8,.tm.com.my
           #  - https_proxy=http://10.91.216.49:8000
           # - http_proxy=http://10.91.216.49:8000
-    extra_hosts:
-      - msa-es-2:10.91.216.35
         #      - msa-es:10.19.216.30
         #      - msa_es:10.19.216.30
 
@@ -103,7 +103,8 @@ services:
         #      - http_proxy=http://10.91.216.49:8000
     ports:
       - "9200:9200"
-      - "9300:9300"     
+      - "9300:9300"  
+   
   msa-kibana:
     environment:
       -  NODE_OPTIONS="--max-old-space-size=4096"
