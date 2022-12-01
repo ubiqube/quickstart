@@ -47,10 +47,17 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_nfvo2_brf7
       - MANO_FRONTEND_URL=http://mano-nfvo2-brf7:8080/ubi-etsi-mano/sol003
 
+  msa-monitoring:
+    extra_hosts:
+      - msa-es-2:10.19.216.35
+
+  msa-alarm:
+    extra_hosts:
+      - msa-es-2:10.19.216.35
 
   msa-sms:
     extra_hosts:
-      - msa-es-2:10.55.31.235
+      - msa-es-2:10.19.216.35
 
   msa-es:
     environment:
