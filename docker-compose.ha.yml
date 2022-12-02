@@ -257,7 +257,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: ubiqube/msa2-sms:52c4b66157a0ae442ee7935dd70fb0d107f202f0
+    image: ubiqube/msa2-sms:8014ea6ecd0d58a35d8ae5ee7f383b19a31d5c3e
     depends_on:
       - db
     healthcheck:
