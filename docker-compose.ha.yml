@@ -231,6 +231,8 @@ services:
       - "/mnt/NASVolume/msa_svn:/opt/svnroot"
       - "msa_bulkfiles:/opt/sms/spool/parser"
       - "msa_sms_logs:/opt/sms/logs"
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
     deploy:
       replicas: 1
       placement:
