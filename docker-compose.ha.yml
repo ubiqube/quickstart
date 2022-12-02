@@ -45,7 +45,7 @@ services:
         max-size: "10m"
         max-file: "5"
     volumes:
-        - "/mnt/NASVolume/msa_front_conf:/etc/nginx/custom_conf.d"
+      - "/mnt/NASVolume/msa_front_conf:/etc/nginx/custom_conf.d"
     #
     # uncomment one of the 2 sections below when installing a custom certificate
     # - Docker standard standalone installation
@@ -306,6 +306,8 @@ services:
           - "node.labels.worker==sms"
     volumes:
       - "msa_sms_logs:/opt/sms/logs"
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
     logging:
       driver: "json-file"
       options:
@@ -343,6 +345,8 @@ services:
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
       - "msa_monitbulkfiles:/opt/sms/spool/parser"
       - "msa_sms_logs:/opt/sms/logs"
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
     deploy:
       replicas: 1
       placement:
