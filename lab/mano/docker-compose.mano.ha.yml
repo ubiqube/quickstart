@@ -15,10 +15,6 @@ services:
       KEYCLOAK_USER: keycloak
       KEYCLOAK_PASSWORD: keycloak
       KEYCLOAK_DB: keycloak
-    volumes:
-      - "/etc/timezone:/etc/timezone:ro"
-      - "/etc/localtime:/etc/localtime:ro"
-
 
   mano-artemis:
     image: openmsa/artemis:2.19.0
