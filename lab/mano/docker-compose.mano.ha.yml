@@ -91,9 +91,6 @@ services:
         target: keycloak.credentials.secret
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_nfvo_brf7
-    volumes:
-      - "/etc/timezone:/etc/timezone:ro"
-      - "/etc/localtime:/etc/localtime:ro"
 
   mano-nfvo-kvdc:
     image: ubiqube/mano-nfvo-tm22:uat15
@@ -117,9 +114,6 @@ services:
         target: keycloak.credentials.secret
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_nfvo_kvdc
-    volumes:
-      - "/etc/timezone:/etc/timezone:ro"
-      - "/etc/localtime:/etc/localtime:ro"
 
   mano-vnfm-brf7:
     image: ubiqube/mano-vnfm-tm22:uat15
@@ -144,9 +138,6 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_vnfm_brf7
       - MANO_FRONTEND_URL=http://mano-vnfm-brf7:8080/ubi-etsi-mano/sol003
-    volumes:
-      - "/etc/timezone:/etc/timezone:ro"
-      - "/etc/localtime:/etc/localtime:ro"
 
   mano-vnfm-kvdc:
     image: ubiqube/mano-vnfm-tm22:uat15
@@ -171,10 +162,6 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_vnfm_kvdc
       - MANO_FRONTEND_URL=http://mano-vnfm-kvdc:8080/ubi-etsi-mano/sol003
-    volumes:
-      - "/etc/timezone:/etc/timezone:ro"
-      - "/etc/localtime:/etc/localtime:ro"
-
 
 secrets:
   vnfm.keycloak.credentials.secret:
