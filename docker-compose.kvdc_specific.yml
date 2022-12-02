@@ -6,6 +6,8 @@ services:
   mano-nfvo2-kvdc:
     image: ubiqube/mano-nfvo-tm22:uat18
     volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
       - "/mnt/NASVolume/mano_nfvo2_kvdc:/opt/etsi-mano-data"
     deploy:
       replicas: 1
@@ -28,6 +30,8 @@ services:
   mano-nfvo2-brf7:
     image: ubiqube/mano-nfvo-tm22:uat18
     volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
       - "/mnt/NASVolume/mano_nfvo2_brf7:/opt/etsi-mano-data"
     deploy:
       replicas: 1

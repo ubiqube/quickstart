@@ -15,10 +15,10 @@ services:
       KEYCLOAK_USER: keycloak
       KEYCLOAK_PASSWORD: keycloak
       KEYCLOAK_DB: keycloak
-    networks:
-      default:
-        aliases:
-          - "mano-db"
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+
 
   mano-artemis:
     image: openmsa/artemis:2.19.0
@@ -28,6 +28,9 @@ services:
         max_replicas_per_node: 1
         constraints:	
           - "node.labels.worker==app"
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
 
   mano-auth:
     image: jboss/keycloak:16.1.1
@@ -50,6 +53,9 @@ services:
         published: 8110
         protocol: tcp
         mode: ingress
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
 
   mano-helm3:
     image: ubiqube/helm3-webapp
@@ -59,10 +65,15 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
 
   mano-nfvo-brf7:
     image: ubiqube/mano-nfvo-tm22:uat18
     volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
       - "/mnt/NASVolume/mano_nfvo_brf7:/opt/etsi-mano-data"
     deploy:
       replicas: 1
@@ -80,10 +91,15 @@ services:
         target: keycloak.credentials.secret
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_nfvo_brf7
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
 
   mano-nfvo-kvdc:
     image: ubiqube/mano-nfvo-tm22:uat18
     volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
       - "/mnt/NASVolume/mano_nfvo_kvdc:/opt/etsi-mano-data"
     deploy:
       replicas: 1
@@ -101,10 +117,15 @@ services:
         target: keycloak.credentials.secret
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_nfvo_kvdc
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
 
   mano-vnfm-brf7:
     image: ubiqube/mano-vnfm-tm22:uat18
     volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
       - "/mnt/NASVolume/mano_vnfm_brf7:/opt/etsi-mano-data"
     deploy:
       replicas: 1
@@ -123,10 +144,15 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_vnfm_brf7
       - MANO_FRONTEND_URL=http://mano-vnfm-brf7:8080/ubi-etsi-mano/sol003
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
 
   mano-vnfm-kvdc:
     image: ubiqube/mano-vnfm-tm22:uat18
     volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
       - "/mnt/NASVolume/mano_vnfm_kvdc:/opt/etsi-mano-data"
     deploy:
       replicas: 1
@@ -145,6 +171,9 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_vnfm_kvdc
       - MANO_FRONTEND_URL=http://mano-vnfm-kvdc:8080/ubi-etsi-mano/sol003
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
 
 
 secrets:
