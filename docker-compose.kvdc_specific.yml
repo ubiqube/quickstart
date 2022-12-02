@@ -6,6 +6,8 @@ services:
   mano-nfvo2-kvdc:
     image: ubiqube/mano-nfvo-tm22:uat15
     volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
       - "/mnt/NASVolume/mano_nfvo2_kvdc:/opt/etsi-mano-data"
     deploy:
       replicas: 1
@@ -28,6 +30,8 @@ services:
   mano-nfvo2-brf7:
     image: ubiqube/mano-nfvo-tm22:uat15
     volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
       - "/mnt/NASVolume/mano_nfvo2_brf7:/opt/etsi-mano-data"
     deploy:
       replicas: 1
@@ -112,7 +116,7 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"  
-   
+ 
   msa-kibana:
     environment:
       -  NODE_OPTIONS="--max-old-space-size=4096"
