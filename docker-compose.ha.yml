@@ -464,7 +464,7 @@ services:
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
-     - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
+      - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
     logging:
       driver: "json-file"
       options:
