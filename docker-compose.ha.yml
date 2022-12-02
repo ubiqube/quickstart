@@ -45,7 +45,9 @@ services:
         max-size: "10m"
         max-file: "5"
     volumes:
-        - "/mnt/NASVolume/msa_front_conf:/etc/nginx/custom_conf.d"
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/mnt/NASVolume/msa_front_conf:/etc/nginx/custom_conf.d"
     #
     # uncomment one of the 2 sections below when installing a custom certificate
     # - Docker standard standalone installation
@@ -86,6 +88,8 @@ services:
       PG_PRIMARY_PORT: 5432
       MAX_CONNECTIONS: 1600
     volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
       - "/mnt/NASVolume/msa_db:/pgsqldata/pgsql"
     logging:
       driver: "json-file"
@@ -123,6 +127,9 @@ services:
       PG_ROOT_PASSWORD: my_db_password
       PG_PRIMARY_PORT: 5432
       PG_PRIMARY_HOST: db
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
     logging:
       driver: "json-file"
       options:
@@ -151,6 +158,8 @@ services:
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
@@ -198,6 +207,9 @@ services:
     - FEATURE_PERMISSION_PROFILE_LABELS=false
     - UBIQUBE_ES_SECURITY_DISABLED=true
     - FEATURE_BPM=false
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
     logging:
       driver: "json-file"
       options:
@@ -229,6 +241,9 @@ services:
         published: 514
         protocol: tcp
         mode: ingress
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
     logging:
       driver: "json-file"
       options:
@@ -256,6 +271,8 @@ services:
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
       - ES_SERVERS="msa-es msa-es-2"
     volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
@@ -299,6 +316,9 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
     logging:
       driver: "json-file"
       options:
@@ -333,6 +353,8 @@ services:
         constraints:
           - "node.labels.worker==app"
     volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
       - "msa_sms_logs:/opt/sms/logs"
     logging:
       driver: "json-file"
@@ -363,6 +385,8 @@ services:
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
       - ES_SERVERS="msa-es msa-es-2"
     volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
@@ -405,6 +429,9 @@ services:
       DB_VALIDATE_ON_BORROW: 'true'
       WAIT_FOR: 'db:5432'
       WAIT_FOR_TIMEOUT: 60
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
     logging:
       driver: "json-file"
       options:
@@ -435,6 +462,8 @@ services:
       - "9300:9300/udp"
       - "9200:9200/udp"
     volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
      - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
     logging:
       driver: "json-file"
@@ -457,6 +486,9 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
     logging:
       driver: "json-file"
       options:
@@ -476,6 +508,8 @@ services:
     ports:
       - "8000:8000"
     volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
       - "/mnt/NASVolume/msa_ai_ml_db:/msa_proj/database"
     deploy:
       replicas: 1
@@ -512,6 +546,9 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
     logging:
       driver: "json-file"
       options:
@@ -533,6 +570,8 @@ services:
         constraints:
           - "node.labels.worker==app"
     volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
