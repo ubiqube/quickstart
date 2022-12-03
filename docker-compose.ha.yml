@@ -98,7 +98,7 @@ services:
         max-file: "5"
 
   db-replica:
-    image: ubiqube/msa2-db:ebea3dbfca788e47e6fba16c29f5dfbe845c26ed
+    image: ubiqube/msa2-db:a198afb5f5fbd9f67bb0db81ec0de3d7691907f4
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -172,7 +172,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: ubiqube/msa2-ui:50df03171535debcbc9aead458087988135f0db9
+    image: ubiqube/msa2-ui:ec4b2cc5591d947ca4aaf0ad951ae866e70bb19a
     depends_on:
       - msa-api
     healthcheck:
@@ -243,7 +243,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: ubiqube/msa2-sms:52c4b66157a0ae442ee7935dd70fb0d107f202f0
+    image: ubiqube/msa2-sms:8014ea6ecd0d58a35d8ae5ee7f383b19a31d5c3e
     depends_on:
       - db
     healthcheck:
