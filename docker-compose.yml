@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:1119ba0e09ee9957d78fdb4103168bc7f803a56a
+    image: ubiqube/msa2-front:acd31c5f31eef74b81f0a4487413dcb0416cff9d
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -135,7 +135,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:50df03171535debcbc9aead458087988135f0db9
+    image: ubiqube/msa2-ui:ec4b2cc5591d947ca4aaf0ad951ae866e70bb19a
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -173,7 +173,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:52c4b66157a0ae442ee7935dd70fb0d107f202f0
+    image: ubiqube/msa2-sms:8014ea6ecd0d58a35d8ae5ee7f383b19a31d5c3e
     healthcheck:
       timeout: 5s
       retries: 10
@@ -383,7 +383,7 @@ services:
   msa-cerebro:
     restart: unless-stopped
     container_name: msa_cerebro
-    image: openmsa/openmsa:msa2-cerebro-2.8.0-914750e000db1343d9972bfa6652da1efe4aa32f
+    image: ubiqube/msa2-cerebro:914750e000db1343d9972bfa6652da1efe4aa32f
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -411,7 +411,7 @@ services:
   msa-kibana:
     restart: unless-stopped
     container_name: msa_kibana
-    image: openmsa/openmsa:msa2-kibana-2.8.3-49c1c422ad5559815d4f74568904a7214e788932
+    image: ubiqube/msa2-kibana:49c1c422ad5559815d4f74568904a7214e788932
     depends_on:
       msa-es:
         condition: service_started
@@ -468,7 +468,7 @@ services:
     restart: unless-stopped
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.8.0-b831acacdef579420ee1abf70ef66655d969fcbb
+    image: ubiqube/msa2-linuxme:7ebf88e805de70562ac837f06e6f7430a4b21ad3
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -491,7 +491,7 @@ services:
     restart: unless-stopped
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.8.0-b831acacdef579420ee1abf70ef66655d969fcbb
+    image: ubiqube/msa2-linuxme:7ebf88e805de70562ac837f06e6f7430a4b21ad3
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
