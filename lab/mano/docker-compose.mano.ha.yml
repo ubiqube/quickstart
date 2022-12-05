@@ -27,6 +27,13 @@ services:
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
+    resources:
+      limits:
+        cpus: '0.50'
+        memory: 2048M
+      reservations:
+        cpus: '0.50'
+        memory: 2048M
 
   mano-auth:
     image: jboss/keycloak:16.1.1
@@ -52,6 +59,13 @@ services:
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
+    resources:
+      limits:
+        cpus: '0.50'
+        memory: 2048M
+      reservations:
+        cpus: '0.50'
+        memory: 2048M
 
   mano-helm3:
     image: ubiqube/helm3-webapp
@@ -64,6 +78,13 @@ services:
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
+    resources:
+      limits:
+        cpus: '0.50'
+        memory: 2048M
+      reservations:
+        cpus: '0.50'
+        memory: 2048M
 
   mano-nfvo-brf7:
     image: ubiqube/mano-nfvo-tm22:uat19
