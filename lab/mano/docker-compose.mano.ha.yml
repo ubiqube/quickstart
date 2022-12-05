@@ -24,13 +24,13 @@ services:
         max_replicas_per_node: 1
         constraints:	
           - "node.labels.worker==app"
-    resources:
-      limits:
-        cpus: '0.50'
-        memory: 2048M
-      reservations:
-        cpus: '0.50'
-        memory: 2048M
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 2048M
+        reservations:
+          cpus: '0.50'
+          memory: 2048M
 
 
   mano-auth:
@@ -40,6 +40,13 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 2048M
+        reservations:
+          cpus: '0.50'
+          memory: 2048M
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: ubiqube
@@ -57,13 +64,6 @@ services:
         published: 8110
         protocol: tcp
         mode: ingress
-    resources:
-      limits:
-        cpus: '0.50'
-        memory: 2048M
-      reservations:
-        cpus: '0.50'
-        memory: 2048M
 
   mano-helm3:
     image: ubiqube/helm3-webapp
@@ -73,13 +73,13 @@ services:
         max_replicas_per_node: 1
         constraints:
           - node.role==worker
-    resources:
-      limits:
-        cpus: '0.25'
-        memory: 1022M
-      reservations:
-        cpus: '0.25'
-        memory: 1024M
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 1022M
+        reservations:
+          cpus: '0.25'
+          memory: 1024M
 
 
   mano-nfvo:
