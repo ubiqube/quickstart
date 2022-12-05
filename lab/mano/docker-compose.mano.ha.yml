@@ -54,7 +54,7 @@ services:
     image: ubiqube/helm3-webapp
 
   mano-nfvo:
-    image: oviubiqube/mano-nfvo-tm22:uat4
+    image: ubiqube/mano-nfvo-tm22:uat20
 #    environment:
 #      KEYCLOAK_RESOURCE=mano-vnfm
 #      KEYCLOAK_CREDENTIALS_SECRET=xxxxxxxx
@@ -76,7 +76,7 @@ services:
         target: keycloak.credentials.secret
 
   mano-vnfm:
-    image: oviubiqube/mano-vnfm-tm22:uat4
+    image: ubiqube/mano-vnfm-tm22:uat20
 #    environment:
 #      KEYCLOAK_RESOURCE=mano-nfvo
 #      KEYCLOAK_CREDENTIALS_SECRET=xxxxxxxx
