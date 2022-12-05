@@ -16,7 +16,6 @@ services:
         aliases:
           - "mano-db"
 
-
   mano-artemis:
     image: openmsa/artemis:2.19.0
     deploy:
