@@ -24,7 +24,13 @@ services:
         max_replicas_per_node: 1
         constraints:	
           - "node.labels.worker==mano"
-
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 2048M
+        reservations:
+          cpus: '0.50'
+          memory: 2048M
   mano-auth:
     image: jboss/keycloak:16.1.1
     deploy:
@@ -33,6 +39,13 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==mano"            
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 2048M
+        reservations:
+          cpus: '0.50'
+          memory: 2048M
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: ubiqube
@@ -55,6 +68,13 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 2048M
+        reservations:
+          cpus: '0.50'
+          memory: 2048M
 
   mano-nfvo:
     image: ubiqube/mano-nfvo-tm22:uat18
