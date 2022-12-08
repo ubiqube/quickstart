@@ -24,6 +24,13 @@ services:
         max_replicas_per_node: 1
         constraints:	
           - "node.labels.worker==app"
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 2048M
+        reservations:
+          cpus: '0.50'
+          memory: 2048M
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
@@ -36,6 +43,13 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 2048M
+        reservations:
+          cpus: '0.50'
+          memory: 2048M
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: ubiqube
@@ -61,6 +75,13 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 2048M
+        reservations:
+          cpus: '0.50'
+          memory: 2048M
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
