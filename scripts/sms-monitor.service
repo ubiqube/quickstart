@@ -1,0 +1,8 @@
+[Unit]
+Description=SMS Monitor Service
+
+[Service]
+ExecStart=/root/quickstart/scripts/sms-monitor.sh
+
+[Install]
+WantedBy=multi-user.target
