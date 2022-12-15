@@ -4,7 +4,7 @@ version: "3.8"
 services:
 
   mano-nfvo2-kvdc:
-    image: ubiqube/mano-nfvo-tm22:uat20
+    image: ubiqube/mano-nfvo-tm22:uat23
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
@@ -28,7 +28,7 @@ services:
       - MANO_FRONTEND_URL=http://mano-nfvo2-kvdc:8080/ubi-etsi-mano/sol003
 
   mano-nfvo2-brf7:
-    image: ubiqube/mano-nfvo-tm22:uat20
+    image: ubiqube/mano-nfvo-tm22:uat23
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
