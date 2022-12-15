@@ -166,7 +166,7 @@ services:
     - FEATURE_EDIT_VARIABLES_IN_MICROSERVICE_CONSOLE=true
     - FEATURE_WORKFLOW_OWNER=false
     - FEATURE_PERMISSION_PROFILE_LABELS=false
-    - FEATURE_BPM=false
+    - FEATURE_BPM=true
     - UBIQUBE_ES_SECURITY_DISABLED=true
     logging:
       driver: "json-file"
