@@ -46,6 +46,7 @@ services:
         max-file: "5"
     volumes:
       - "/mnt/NASVolume/msa_front_conf:/etc/nginx/custom_conf.d"
+      - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
     #
     # uncomment one of the 2 sections below when installing a custom certificate
     # - Docker standard standalone installation
