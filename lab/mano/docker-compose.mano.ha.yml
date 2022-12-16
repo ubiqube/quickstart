@@ -77,7 +77,7 @@ services:
           memory: 2048M
 
   mano-nfvo:
-    image: ubiqube/mano-nfvo-tm22:uat27
+    image: ubiqube/mano-nfvo-tm22:uat29
     volumes:
       - "/mnt/NASVolume/mano_nfvo:/opt/etsi-mano-data"
     deploy:
@@ -96,7 +96,7 @@ services:
         target: keycloak.credentials.secret
 
   mano-vnfm:
-    image: ubiqube/mano-vnfm-tm22:uat27
+    image: ubiqube/mano-vnfm-tm22:uat29
     volumes:
       - "/mnt/NASVolume/mano_vnfm:/opt/etsi-mano-data"
     deploy:
