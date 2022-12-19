@@ -1,0 +1,7 @@
+## SMS monitor
+
+### How to install service
+* copy sms-monitor.service to /etc/systemd/system/
+* systemctl daemon-reload
+* systemctl start sms-monitor
+* systemctl enable sms-monitor
