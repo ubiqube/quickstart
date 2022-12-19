@@ -1,39 +1,70 @@
 version: "3.8"
 
 services:
-  mano-vnfm:
-    image: openmsa/mano-vnfm:2.7.1
-    depends_on:
-      - mano-db
-    volumes:
-      - "mano_vnfm:/opt/etsi-mano-data"
-      
-  mano-vnfm2:
-    image: openmsa/mano-vnfm-bis:2.7.1
-    depends_on:
-      - mano-db
-    volumes:
-      - "mano_vnfm:/opt/etsi-mano-data"
-
-  mano-nfvo:
-    image: openmsa/mano-nfvo:2.7.1
-    depends_on:
-      - mano-db
-    volumes:
-      - "mano_nfvo:/opt/etsi-mano-data"
-
-  mano-db:
-    image: openmsa/mano-db
+  db:
+    restart: unless-stopped
     environment:
-      POSTGRES_PASSWORD: mano
-      POSTGRES_USER: mano
-    volumes:
-      - "mano_db:/var/lib/postgresql/data"
+      MANOVNFM_USER: mano_vnfm
+      MANOVNFM_PASSWORD: mano
+      MANONFVO_USER: mano_nfvo
+      MANONFVO_PASSWORD: mano
+      KEYCLOAK_USER: keycloak
+      KEYCLAOK_PASSWORD: keycloak
+    networks:
+      default:
+        aliases:
+          - "mano-db"
 
   mano-artemis:
+    restart: unless-stopped
     image: openmsa/artemis:2.19.0
 
+  mano-auth:
+    restart: unless-stopped
+    image: jboss/keycloak:16.1.1
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: ubiqube
+      DB_VENDOR: postgres
+      DB_ADDR: mano-db
+      POSTGRES_ADDR: mano-db
+      DB_USER: keycloak
+      DB_PASSWORD: keycloak
+      JGROUPS_DISCOVERY_PROTOCOL: JDBC_PING
+      JGROUPS_DISCOVERY_PROPERTIES: "datasource_jndi_name=java:jboss/datasources/KeycloakDS"
+      JAVA_OPTS: "-Djboss.as.management.blocking.timeout=600"
+    ports:
+      - target: 8080
+        published: 8110
+        protocol: tcp
+        mode: ingress
+
+  mano-vnfm:
+    restart: unless-stopped
+    image: ubiqube/mano-vnfm-tm22:uat7
+    depends_on:
+      - db
+    volumes:
+      - "mano_vnfm:/opt/etsi-mano-data"
+    ports:
+      - target: 8080
+        published: 8090
+        protocol: tcp
+        mode: ingress
+       
+  mano-nfvo:
+    restart: unless-stopped
+    image: ubiqube/mano-nfvo-tm22:uat7
+    depends_on:
+      - db
+    volumes:
+      - "mano_nfvo:/opt/etsi-mano-data"
+    ports:
+      - target: 8080
+        published: 8100
+        protocol: tcp
+        mode: ingress
+
 volumes:
-  mano_db:
   mano_nfvo:
   mano_vnfm:
