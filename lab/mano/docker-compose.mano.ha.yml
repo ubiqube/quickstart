@@ -87,7 +87,7 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
 
   mano-nfvo-brf7:
-    image: ubiqube/mano-nfvo-tm22:uat23
+    image: ubiqube/mano-nfvo-tm22:uat29
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
