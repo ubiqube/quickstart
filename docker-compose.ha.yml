@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.3-a4b315925c9008c49e8afaa6533f073a9de660b4
+    image: openmsa/openmsa:msa2-front-2.8.4-6e13b1eb212ac04dbc55406d8287d36dc3b42232
     depends_on:
       - msa-api
       - msa-ui
@@ -58,7 +58,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: openmsa/openmsa:msa2-db-2.8.3-f9642e13d1d52b7e3b8480c47ae7a91369e9c959
+    image: openmsa/openmsa:msa2-db-2.8.4-a198afb5f5fbd9f67bb0db81ec0de3d7691907f4
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -72,7 +72,6 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==db"
-    shm_size: 1g
     environment:
       CAMUNDA_PASSWORD: camunda
       CAMUNDA_DB: process-engine
@@ -99,7 +98,7 @@ services:
         max-file: "5"
 
   db-replica:
-    image: openmsa/openmsa:msa2-db-2.8.3-f9642e13d1d52b7e3b8480c47ae7a91369e9c959
+    image: openmsa/openmsa:msa2-db-2.8.4-a198afb5f5fbd9f67bb0db81ec0de3d7691907f4
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -135,7 +134,7 @@ services:
         max-file: "5"
 
   msa-api:
-    image: openmsa/openmsa:msa2-api-2.8.3-759a7511420f5b3ad4ba7f5c357622984af8db3d
+    image: openmsa/openmsa:msa2-api-2.8.4-873406b445cd197526629bfd07a6a6feafae9886
     depends_on:
       - db
     healthcheck:
@@ -173,7 +172,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.8.3-d46108cf37a3160196ffd4afcc795eb48384b25e
+    image: openmsa/openmsa:msa2-ui-2.8.4-c58e742f1ddbca4d7a534a2456372060b4b95531
     depends_on:
       - msa-api
     healthcheck:
@@ -194,11 +193,12 @@ services:
     - FEATURE_MONITORING_PROFILES=true
     - FEATURE_PROFILE_AUDIT_LOGS=true
     - FEATURE_PERMISSION_PROFILES=true
-    - FEATURE_AI_ML=true
+    - FEATURE_AI_ML=false
     - FEATURE_MICROSERVICE_BULK_OPERATION=false
     - FEATURE_EDIT_VARIABLES_IN_MICROSERVICE_CONSOLE=true
     - FEATURE_WORKFLOW_OWNER=false
     - FEATURE_PERMISSION_PROFILE_LABELS=false
+    - FEATURE_BPM=true
     logging:
       driver: "json-file"
       options:
@@ -214,7 +214,7 @@ services:
   msa-rsyslog:
     depends_on:
       - msa-sms
-    image: openmsa/openmsa:msa2-rsyslog-2.8.3-54a250d9ef49db2454c5ed9111d43cebc8e9ef9a
+    image: openmsa/openmsa:msa2-rsyslog-2.8.4-54a250d9ef49db2454c5ed9111d43cebc8e9ef9a
     deploy:
       replicas: 3
       placement:
@@ -243,7 +243,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: openmsa/openmsa:msa2-sms-2.8.3-44f77e35c9033946f9c904174ef453b98af2ac39
+    image: openmsa/openmsa:msa2-sms-2.8.4-ebc35b20ca0bb366a2bbac5c44c498dbd8c4f86f
     depends_on:
       - db
     healthcheck:
@@ -261,7 +261,7 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
       - "/mnt/NASVolume/msa_svn:/opt/svnroot"
-      - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
+      - "msa_bulkfiles:/opt/sms/spool/parser"
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
     deploy:
       replicas: 3
@@ -280,12 +280,9 @@ services:
       default:
         aliases:
           - "msa_sms"
-    extra_hosts:
-      - msa_es:10.55.31.231
-      - msa-es:10.55.31.231
 
   msa-bud:
-    image: openmsa/openmsa:msa2-bud-2.8.3-0b9f458ef2d78963c936b61a1ee9ae3299a341bc
+    image: openmsa/openmsa:msa2-bud-2.8.4-3450bd12fa42a763c80a247a46b290ad1ae55d20
     depends_on:
       - db
     healthcheck:
@@ -318,7 +315,7 @@ services:
     depends_on:
       - db
       - msa-api
-    image: openmsa/openmsa:msa2-alarm-2.8.3-c1b98b96a7b32c3cfc88f7fcb7304460dfc84ff4
+    image: openmsa/openmsa:msa2-alarm-2.8.4-7f9c48a4d903ceb982b856668f5c09980d1eb777
     healthcheck:
       timeout: 5s
       retries: 10
@@ -349,7 +346,7 @@ services:
           - "msa_alarm"
 
   msa-monitoring:
-    image: openmsa/openmsa:msa2-monitoring-2.8.3-0d82be7f6ed084ec80443bcc41a51909766f9ae5
+    image: openmsa/openmsa:msa2-monitoring-2.8.4-27c2314db84f057c4d0eb7494ee5a44dbaaa63e0
     healthcheck:
       timeout: 5s
       retries: 10
@@ -368,8 +365,8 @@ services:
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
-      - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
+      - "msa_monitbulkfiles:/opt/sms/spool/parser"
     deploy:
       replicas: 3
       placement:
@@ -391,7 +388,7 @@ services:
   camunda:
     depends_on:
       - db
-    image: openmsa/openmsa:msa2-camunda-2.8.0-507b2c9b8361821915c4bd9255bafb47ace89079
+    image: openmsa/openmsa:msa2-camunda-2.8.4-507b2c9b8361821915c4bd9255bafb47ace89079
     deploy:
       replicas: 3
       placement:
@@ -415,7 +412,7 @@ services:
         max-file: "5"
 
   msa-kibana:
-    image: openmsa/openmsa:msa2-kibana-2.8.0-49c1c422ad5559815d4f74568904a7214e788932
+    image: openmsa/openmsa:msa2-kibana-2.8.4-49c1c422ad5559815d4f74568904a7214e788932
     ports:
       - "5601:5601"
     environment:
@@ -441,7 +438,7 @@ services:
           - "msa_kibana"
 
   msa-ai-ml:
-    image: openmsa/openmsa:msa2-ai-ml-2.8.0-63c7fab8c111b6cc85da049f45ebc6175a9b269a
+    image: openmsa/openmsa:msa2-ai-ml-2.8.4-63c7fab8c111b6cc85da049f45ebc6175a9b269a
     healthcheck:
       test: ["CMD-SHELL", "python /msa_proj/health_check.py"]
     ports:
@@ -471,7 +468,7 @@ services:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       interval: 60s
       start_period: 60s
-    image: openmsa/openmsa:msa2-es-2.8.3-f42f585457a4461f06ef1c696fa46bb9f02a187a
+    image: openmsa/openmsa:msa2-es-2.8.4-5f5287a3b8c9a4a14735df0624759ceb78371edb
     deploy:
       replicas: 1
       placement:
@@ -479,14 +476,6 @@ services:
         constraints:
           - "node.labels.worker==app"
     environment:
-            #- node.roles=ingest,master,data
-            #- node.name=msa_es
-            #- discovery.seed_hosts=127.0.0.1,localhost
-            #- cluster.initial_master_nodes=cluster_msa_es
-            #- cluster.name=cluster
-            #- network.host=0.0.0.0
-            #- script.painless.regex.enabled=true
-            #- bootstrap.memory_lock=true
       - discovery.type=single-node
       - script.painless.regex.enabled=true
       - bootstrap.memory_lock=true
@@ -512,7 +501,7 @@ services:
         max-file: "5"
 
   msa-cerebro:
-    image: openmsa/openmsa:msa2-cerebro-2.8.0-914750e000db1343d9972bfa6652da1efe4aa32f
+    image: openmsa/openmsa:msa2-cerebro-2.8.4-914750e000db1343d9972bfa6652da1efe4aa32f
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -541,7 +530,7 @@ services:
           - "msa_cerebro"
 
   msa-dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.8.3-baec532c6cbde2aa588225020738b1b2f06cc840
+    image: openmsa/openmsa:msa2-linuxdev-2.8.4-cc82f1121bcbfbae9dad6028f57269f7caf0e9f7
     deploy:
       replicas: 3
       placement:
@@ -564,6 +553,10 @@ services:
       default:
         aliases:
           - "msa_dev"
+
+volumes:
+  msa_bulkfiles:
+  msa_monitbulkfiles:
 
 networks:
   default:

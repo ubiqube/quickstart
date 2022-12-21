@@ -15,7 +15,6 @@ services:
       KEYCLOAK_USER: keycloak
       KEYCLAOK_PASSWORD: keycloak
 
-
   mano-artemis:
     image: openmsa/artemis:2.19.0
     deploy:
@@ -34,6 +33,7 @@ services:
 
 
   mano-auth:
+    image: jboss/keycloak:16.1.1
     deploy:
       replicas: 1
       placement:
@@ -55,10 +55,6 @@ services:
       POSTGRES_ADDR: mano-db
       DB_USER: keycloak
       DB_PASSWORD: keycloak
-      #JGROUPS_DISCOVERY_PROTOCOL: JDBC_PING
-      #JGROUPS_DISCOVERY_PROPERTIES: datasource_jndi_name=java:jboss/datasources/KeycloakDS,initialize_sql="CREATE TABLE IF NOT EXISTS JGROUPSPING ( own_addr varchar(200) NOT NULL, cluster_name varchar(200) NOT NULL, created timestamp default current_timestamp, ping_data BYTEA, constraint PK_JGROUPSPING PRIMARY KEY (own_addr, cluster_name))
-      #JAVA_OPTS: "-Djboss.as.management.blocking.timeout=600"
-    image: jboss/keycloak:16.1.1
     ports:
       - target: 8080
         published: 8110
@@ -83,10 +79,7 @@ services:
 
 
   mano-nfvo:
-    image: ubiqube/mano-nfvo-tm22:uat20
-#    environment:
-#      KEYCLOAK_RESOURCE=mano-vnfm
-#      KEYCLOAK_CREDENTIALS_SECRET=xxxxxxxx
+    image: ubiqube/mano-nfvo-tm22:uat29
     volumes:
       - "/mnt/NASVolume/mano_nfvo:/opt/etsi-mano-data"
     deploy:
@@ -105,10 +98,7 @@ services:
         target: keycloak.credentials.secret
 
   mano-vnfm:
-    image: ubiqube/mano-vnfm-tm22:uat20
-#    environment:
-#      KEYCLOAK_RESOURCE=mano-nfvo
-#      KEYCLOAK_CREDENTIALS_SECRET=xxxxxxxx
+    image: ubiqube/mano-vnfm-tm22:uat29
     volumes:
       - "/mnt/NASVolume/mano_vnfm:/opt/etsi-mano-data"
     deploy:
@@ -131,6 +121,3 @@ secrets:
     external: true
   nfvo.keycloak.credentials.secret:
     external: true
-
-
-

@@ -51,6 +51,8 @@ init_intall() {
     mkdir -p /opt/fmc_repository/Firmware;
     mkdir -p /opt/fmc_repository/License;
     mkdir -p /opt/fmc_repository/Process;
+    mkdir -p /opt/fmc_repository/Blueprints;
+    mkdir -p /opt/fmc_repository/Blueprints/local;
 
     chown -R ncuser.ncuser /opt/fmc_repository /opt/fmc_entities
 }
