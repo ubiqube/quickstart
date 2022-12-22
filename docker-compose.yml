@@ -4,7 +4,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.4-6e13b1eb212ac04dbc55406d8287d36dc3b42232
+    image: ubiqube/msa2-front:dfc4ecc37c21beafa239b27796134835885e12cc
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -97,7 +97,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.8.4-873406b445cd197526629bfd07a6a6feafae9886
+    image: ubiqube/msa2-api:3f1c85d19e5ef4d845dcf2e02e37219f42f6a210
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
       retries: 10
@@ -135,7 +135,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.8.4-c58e742f1ddbca4d7a534a2456372060b4b95531
+    image: ubiqube/msa2-ui:3a5e81c91f77efcaa2d1b5501a0ba154fd13f36c
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -172,7 +172,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: openmsa/openmsa:msa2-sms-2.8.4-ebc35b20ca0bb366a2bbac5c44c498dbd8c4f86f
+    image: ubiqube/msa2-sms:1e5e1cffefbddc7ac43b2270feadc3ac47143cfe
     healthcheck:
       timeout: 5s
       retries: 10
@@ -239,7 +239,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: openmsa/openmsa:msa2-alarm-2.8.4-7f9c48a4d903ceb982b856668f5c09980d1eb777
+    image: ubiqube/msa2-alarm:77df4d257322b14b3f6deea80ff68e18ced621b1
     healthcheck:
       timeout: 5s
       retries: 10
@@ -466,6 +466,7 @@ services:
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "msa_dev:/opt/devops/"
+      - "msa_front_conf:/etc/nginx/custom_conf.d"
     networks:
       default:
         aliases:
