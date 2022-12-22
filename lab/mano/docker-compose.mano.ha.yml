@@ -68,7 +68,7 @@ services:
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==app"
+          - "node.labels.worker==mano"
       resources:
         limits:
           cpus: '0.50'
