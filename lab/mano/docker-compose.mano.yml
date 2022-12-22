@@ -42,7 +42,7 @@ services:
 
   mano-vnfm:
     restart: unless-stopped
-    image: ubiqube/mano-vnfm-tm22:uat7
+    image: ubiqube/mano-vnfm-tm22:uat30
     depends_on:
       - db
     volumes:
@@ -55,7 +55,7 @@ services:
        
   mano-nfvo:
     restart: unless-stopped
-    image: ubiqube/mano-nfvo-tm22:uat7
+    image: ubiqube/mano-nfvo-tm22:uat30
     depends_on:
       - db
     volumes:
