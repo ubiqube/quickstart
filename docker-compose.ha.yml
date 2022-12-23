@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:dfc4ecc37c21beafa239b27796134835885e12cc
+    image: ubiqube/msa2-front:eada068d9ccebc5ea5992f518c9a47d52c67702a
     depends_on:
       - msa-api
       - msa-ui
@@ -58,7 +58,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: openmsa/openmsa:msa2-db-2.8.4-a198afb5f5fbd9f67bb0db81ec0de3d7691907f4
+    image: ubiqube/msa2-db:b26983ff97a42274c9168ca4a9ab960f952ff69f
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -98,7 +98,7 @@ services:
         max-file: "5"
 
   db-replica:
-    image: openmsa/openmsa:msa2-db-2.8.4-a198afb5f5fbd9f67bb0db81ec0de3d7691907f4
+    image: ubiqube/msa2-db:b26983ff97a42274c9168ca4a9ab960f952ff69f
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -134,7 +134,7 @@ services:
         max-file: "5"
 
   msa-api:
-    image: ubiqube/msa2-api:3f1c85d19e5ef4d845dcf2e02e37219f42f6a210
+    image: ubiqube/msa2-api:300269ff179a7e1ffb6407999268e8f8367e7073
     depends_on:
       - db
     healthcheck:
@@ -172,7 +172,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: ubiqube/msa2-ui:3a5e81c91f77efcaa2d1b5501a0ba154fd13f36c
+    image: ubiqube/msa2-ui:a56349c670c7a23cb0422b422e059d04a09ad524
     depends_on:
       - msa-api
     healthcheck:
@@ -243,7 +243,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: ubiqube/msa2-sms:1e5e1cffefbddc7ac43b2270feadc3ac47143cfe
+    image: ubiqube/msa2-sms:af098922004e3e5cc2a246460a270d1a05839353
     depends_on:
       - db
     healthcheck:
@@ -282,7 +282,7 @@ services:
           - "msa_sms"
 
   msa-bud:
-    image: openmsa/openmsa:msa2-bud-2.8.4-3450bd12fa42a763c80a247a46b290ad1ae55d20
+    image: ubiqube/msa2-bud:bb8e89c726431d428e392f025fbdc910b1ce41a3
     depends_on:
       - db
     healthcheck:
@@ -346,7 +346,7 @@ services:
           - "msa_alarm"
 
   msa-monitoring:
-    image: openmsa/openmsa:msa2-monitoring-2.8.4-27c2314db84f057c4d0eb7494ee5a44dbaaa63e0
+    image: ubiqube/msa2-monitoring:22ebef1545145011540d5b11577c503bdfd8eea4
     healthcheck:
       timeout: 5s
       retries: 10
