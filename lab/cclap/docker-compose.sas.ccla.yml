@@ -345,12 +345,12 @@ services:
 
   msa-es:
     image: ubiqube/msa2-es:5f5287a3b8c9a4a14735df0624759ceb78371edb
-    healthcheck:
-      test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
-      timeout: 2s
-      retries: 10
-      interval: 10s
-      start_period: 30s 
+    #healthcheck:
+    #  test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
+    #  timeout: 2s
+    #  retries: 10
+    #  interval: 10s
+    #  start_period: 30s 
     deploy:
       replicas: 1
       placement:
