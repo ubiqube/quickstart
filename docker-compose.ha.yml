@@ -403,6 +403,19 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
+    environment:
+      - node.roles=ingest
+      - node.name=alpha_lab_client1
+      - discovery.seed_hosts=172.17.28.82
+      - cluster.initial_master_nodes=alpha_lab_node1
+      - cluster.name=alpha_lab
+      - network.host=0.0.0.0
+      - http.host=0.0.0.0
+      - network.publish_host=172.17.28.84
+      - script.painless.regex.enabled=true
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms2048m -Xmx2048m"
     ulimits:
       memlock:
         soft: -1
@@ -436,6 +449,7 @@ services:
       - ELASTICSEARCH_URL=http://msa_es:9200
       - ELASTICSEARCH_HOSTS=http://msa_es:9200
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      -  NODE_OPTIONS="--max-old-space-size=4096"
     deploy:
       replicas: 1
       placement:
