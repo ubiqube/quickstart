@@ -395,6 +395,39 @@ services:
         max-size: "10m"
         max-file: "5"
 
+  msa-es:
+    image: ubiqube/msa2-es:ecbddce0b5641a0a766e152a28a115b28f2be365
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      default:
+        aliases:
+          - "msa_es"
+    ports:
+      - "9300:9300"
+      - "9200:9200"
+      - "9300:9300/udp"
+      - "9200:9200/udp"
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
+
   msa-kibana:
     image: openmsa/openmsa:msa2-kibana-2.8.4-49c1c422ad5559815d4f74568904a7214e788932
     ports:
