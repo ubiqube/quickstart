@@ -114,8 +114,6 @@ services:
         condition: on-failure
         max_attempts: 10
     environment:
-      - msa-es:172.17.28.82
-      - msa_es:172.17.28.82
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
@@ -135,9 +133,6 @@ services:
       default:
         aliases:
           - "msa_api"
-    extra_hosts:
-      - msa-es:172.17.28.82
-      - msa_es:172.17.28.82
 
   msa-ui:
     image: ubiqube/msa2-ui:a56349c670c7a23cb0422b422e059d04a09ad524
@@ -251,9 +246,6 @@ services:
       default:
         aliases:
           - "msa_sms"
-    extra_hosts:
-      - msa-es:172.17.28.82
-      - msa_es:172.17.28.82
 
   msa-bud:
     image: ubiqube/msa2-bud:bb8e89c726431d428e392f025fbdc910b1ce41a3
@@ -320,9 +312,6 @@ services:
       default:
         aliases:
           - "msa_alarm"
-    extra_hosts:
-      - msa-es:172.17.28.82
-      - msa_es:172.17.28.82
 
   msa-monitoring:
     image: ubiqube/msa2-monitoring:22ebef1545145011540d5b11577c503bdfd8eea4
@@ -365,9 +354,6 @@ services:
       default:
         aliases:
           - "msa_monitoring"
-    extra_hosts:
-      - msa-es:172.17.28.82
-      - msa_es:172.17.28.82
 
   camunda:
     depends_on:
@@ -467,9 +453,6 @@ services:
       default:
         aliases:
           - "msa_kibana"
-    extra_hosts:
-      - msa-es:172.17.28.82
-      - msa_es:172.17.28.82
 
   msa-ai-ml:
     image: openmsa/openmsa:msa2-ai-ml-2.8.4-63c7fab8c111b6cc85da049f45ebc6175a9b269a
@@ -525,9 +508,6 @@ services:
       default:
         aliases:
           - "msa_cerebro"
-    extra_hosts:
-      - msa-es:172.17.28.82
-      - msa_es:172.17.28.82
 
   msa-dev:
     image: openmsa/openmsa:msa2-linuxdev-2.8.4-cc82f1121bcbfbae9dad6028f57269f7caf0e9f7
