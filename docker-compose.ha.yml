@@ -100,7 +100,7 @@ services:
         max-file: "5"
 
   db-replica:
-    image: ubiqube/msa2-db:b26983ff97a42274c9168ca4a9ab960f952ff69f
+    image: ubiqube/msa2-db:3083370f011537380b7f965d68da86be04581967
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h db"]
       timeout: 20s
