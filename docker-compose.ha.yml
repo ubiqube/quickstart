@@ -412,7 +412,7 @@ services:
         max-file: "5"
 
   msa-kibana:
-    image: openmsa/openmsa:msa2-kibana-2.8.4-49c1c422ad5559815d4f74568904a7214e788932
+    image: ubiqube/msa2-kibana:0105b30d9cf0d00219b2996c2abb5a1d03a0c9ec
     ports:
       - "5601:5601"
     environment:
