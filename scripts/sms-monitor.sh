@@ -49,7 +49,7 @@ monitor_docker_events()
   docker events --filter 'scope=local' --filter "service=${DOCKER_CONTAINER_SMS}" --format '{{json .}}' | while read event
   do
     get_json_field "$event" '.status'
-    if [ "$FIELD" = "restart" ]; then
+    if [ "$FIELD" = "restart" -o "$FIELD" = "start" ]; then
       state="restart"
     elif [ "$FIELD" = "health_status: healthy" ]; then
       if [ "$state" = "restart" ]; then
