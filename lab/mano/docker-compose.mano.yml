@@ -39,6 +39,9 @@ services:
         protocol: tcp
         mode: ingress
 
+  mano-helm3:
+    image: ubiqube/helm3-webapp
+
   mano-vnfm:
     restart: unless-stopped
     image: ubiqube/mano-vnfm-tm22:uat30
