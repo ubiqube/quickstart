@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:7952ecfb8ecd94972fa977cb2b80eb1b7e80ba46
+    image: ubiqube/msa2-front:874cb239a5aa352f910c5c07c80f512f94b78257
     depends_on:
       - msa-api
       - msa-ui
@@ -58,7 +58,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:3083370f011537380b7f965d68da86be04581967
+    image: ubiqube/msa2-db:c880962c3b96ca67ac457ca34c4b5363fcba0c32
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -100,7 +100,7 @@ services:
         max-file: "5"
 
   db-replica:
-    image: ubiqube/msa2-db:3083370f011537380b7f965d68da86be04581967
+    image: ubiqube/msa2-db:c880962c3b96ca67ac457ca34c4b5363fcba0c32
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h db"]
       timeout: 20s
@@ -139,7 +139,7 @@ services:
         max-file: "5"
 
   msa-api:
-    image: ubiqube/msa2-api:47649dfff85d9484c813480944e409be9778dbf9
+    image: ubiqube/msa2-api:5b300286e29aaf9c3f1621c1cd1acc13155a8037
     depends_on:
       - db
     healthcheck:
@@ -179,7 +179,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: ubiqube/msa2-ui:0a9f2cf92861b04b88428a068b1ea8765c219d67
+    image: ubiqube/msa2-ui:7db0b85c4293abf4257e880a152cec6a073ad674
     depends_on:
       - msa-api
     healthcheck:
@@ -257,7 +257,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: ubiqube/msa2-sms:c35da51044e300b9615aa399411c11dd476160b1
+    image: ubiqube/msa2-sms:b79a6a992dec55d2714f629dfc4b1dc17c279e13
     depends_on:
       - db
     healthcheck:
@@ -299,7 +299,7 @@ services:
           - "msa_sms"
 
   msa-bud:
-    image: ubiqube/msa2-bud:0e9d59960aa4d7f92df0b6eb74e07c2167667215
+    image: ubiqube/msa2-bud:1c0b396972541832da0f8c1372c429bbdec87bf8
     depends_on:
       - db
     healthcheck:
@@ -335,7 +335,7 @@ services:
     depends_on:
       - db
       - msa-api
-    image: ubiqube/msa2-alarm:4d724e3993dc07b3b9ccc88a7a44f319c626a584
+    image: ubiqube/msa2-alarm:31384c49f0d8f7511d15bd0e4383e237c7a0ea76
     healthcheck:
       timeout: 5s
       retries: 10
@@ -369,7 +369,7 @@ services:
           - "msa_alarm"
 
   msa-monitoring:
-    image: ubiqube/msa2-monitoring:f1fe34e1bac672628aa61a0833d8de759745357f
+    image: ubiqube/msa2-monitoring:244d2706edda941858881ecd8f17089e3e1ea9b1
     healthcheck:
       timeout: 5s
       retries: 10
