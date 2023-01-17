@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:874cb239a5aa352f910c5c07c80f512f94b78257
+    image: ubiqube/msa2-front:4d3b505c3ba904a1d69b57de842f14eb04acf745
     depends_on:
       - msa-api
       - msa-ui
@@ -172,7 +172,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: ubiqube/msa2-ui:7db0b85c4293abf4257e880a152cec6a073ad674
+    image: ubiqube/msa2-ui:0ea7bae9e7dbe44ae109d721a910b75abf226288
     depends_on:
       - msa-api
     healthcheck:
@@ -315,7 +315,7 @@ services:
     depends_on:
       - db
       - msa-api
-    image: ubiqube/msa2-alarm:31384c49f0d8f7511d15bd0e4383e237c7a0ea76
+    image: ubiqube/msa2-alarm:6debeb4a2fb8f61b2640f53cd88e6051d3a46121
     healthcheck:
       timeout: 5s
       retries: 10
@@ -388,7 +388,7 @@ services:
   camunda:
     depends_on:
       - db
-    image: openmsa/openmsa:msa2-camunda-2.8.4-507b2c9b8361821915c4bd9255bafb47ace89079
+    image: ubiqube/msa2-camunda:23335a0df397d4bc3531366223cd5a239688ee0d
     deploy:
       replicas: 3
       placement:
@@ -468,7 +468,7 @@ services:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       interval: 60s
       start_period: 60s
-    image: openmsa/openmsa:msa2-es-2.8.4-5f5287a3b8c9a4a14735df0624759ceb78371edb
+    image: ubiqube/msa2-es:f24b6d654d0307d5f7c55cd4a65ec8dbc747b1d1
     deploy:
       replicas: 1
       placement:
