@@ -1,5 +1,16 @@
 version: "3.8"
 
+x-es-credential: &es-credential
+    ES_CREDENTIALS: c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+
+x-logging: &logging
+  driver: "json-file"
+  options:
+    mode: non-blocking
+    max-buffer-size: "4m"
+    max-size: "10m"
+    max-file: "5"
+
 services:
   msa-front:
     restart: unless-stopped
@@ -39,12 +50,7 @@ services:
         mode: host
       - "5200-5200:5200-5200/udp"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     volumes:
         - "msa_front_conf:/etc/nginx/custom_conf.d"
     networks:
@@ -85,12 +91,7 @@ services:
       MAX_CONNECTIONS: 1600
     shm_size: 1g
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     volumes:
       - "msa_db:/pgsqldata/pgsql"
 
@@ -109,15 +110,10 @@ services:
       msa-es:
         condition: service_started
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
-      - UBIQUBE_CAPTCHA_SECRET_KEY=6Ld2zF4dAAAAABWD9Q6QAhBql_CIynUeVKaTiBgT
+      <<: *es-credential
+      UBIQUBE_CAPTCHA_SECRET_KEY: 6Ld2zF4dAAAAABWD9Q6QAhBql_CIynUeVKaTiBgT
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     volumes:
       - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_entities:/opt/fmc_entities"
@@ -159,12 +155,7 @@ services:
     - FEATURE_BPM=true
     - UBIQUBE_ES_SECURITY_DISABLED=false
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
@@ -181,7 +172,7 @@ services:
       start_period: 30s      
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      <<: *es-credential
     cap_add:
       - NET_ADMIN
     depends_on:
@@ -192,12 +183,7 @@ services:
       msa-dev:
         condition: service_started
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     volumes:
       - "msa_dev:/opt/devops/"
       - "msa_entities:/opt/fmc_entities"
@@ -224,12 +210,7 @@ services:
       db:
         condition: service_healthy
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     volumes:
       - "msa_bud_logs:/opt/bud/logs/"
     networks:
@@ -253,14 +234,9 @@ services:
       msa-es:
         condition: service_started
     environment:
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+      <<: *es-credential
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     volumes:
       - "msa_sms_logs:/opt/sms/logs"
     networks:
@@ -282,14 +258,9 @@ services:
       msa-dev:
         condition: service_started
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      <<: *es-credential
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     volumes:
       - "msa_dev:/opt/devops/"
       - "msa_entities:/opt/fmc_entities"
@@ -321,6 +292,8 @@ services:
       default:
         aliases:
           - "msa_rsyslog"
+    logging:
+      <<: *logging
 
   camunda:
     restart: unless-stopped
@@ -338,17 +311,12 @@ services:
       WAIT_FOR: 'db:5432'
       WAIT_FOR_TIMEOUT: 60
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
 
   msa-es:
     restart: unless-stopped
     container_name: msa_es
-    image: openmsa/openmsa:msa2-es-2.8.4-5f5287a3b8c9a4a14735df0624759ceb78371edb
+    image: ubiqube/msa2-es:f24b6d654d0307d5f7c55cd4a65ec8dbc747b1d1
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
@@ -356,20 +324,13 @@ services:
       interval: 10s
       start_period: 30s 
     environment:
-      - discovery.type=single-node
-      - script.painless.regex.enabled=true
-      - bootstrap.memory_lock=true
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
-      - xpack.security.enabled=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx1024m"
-
+      discovery.type: "single-node"
+      script.painless.regex.enabled: "true"
+      bootstrap.memory_lock: "true"
+      ES_JAVA_OPTS: "-Xms512m -Xmx1024m"
+      <<: *es-credential
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     volumes:
       - "msa_es:/usr/share/elasticsearch/data"
     ulimits:
@@ -396,12 +357,7 @@ services:
       msa-es:
         condition: service_started
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     ports:
     - "9000:9000"
     networks:
@@ -419,16 +375,11 @@ services:
     ports:
       - "5601:5601"
     environment:
-      - ELASTICSEARCH_URL=http://msa_es:9200
-      - ELASTICSEARCH_HOSTS=http://msa_es:9200
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      ELASTICSEARCH_URL: "http://msa_es:9200"
+      ELASTICSEARCH_HOSTS: "http://msa_es:9200"
+      <<: *es-credential
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
@@ -448,6 +399,8 @@ services:
       default:
         aliases:
           - "msa_ai_ml"
+    logging:
+      <<: *logging
 
   msa-dev:
     restart: unless-stopped
@@ -464,6 +417,8 @@ services:
       default:
         aliases:
           - "msa_dev"
+    logging:
+      <<: *logging
 
   linux-me:
     restart: unless-stopped
@@ -487,6 +442,8 @@ services:
         aliases:
           - "linux_me"
         ipv4_address: 172.20.0.101
+    logging:
+      <<: *logging
 
   linux-me-2:
     restart: unless-stopped
@@ -510,6 +467,8 @@ services:
         aliases:
           - "linux_me_2"
         ipv4_address: 172.20.0.102
+    logging:
+      <<: *logging
 
 volumes:
   msa_api:
