@@ -1,10 +1,21 @@
 version: "3.8"
 
+x-es-credential: &es-credential
+    ES_CREDENTIALS: c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+
+x-logging: &logging
+  driver: "json-file"
+  options:
+    mode: non-blocking
+    max-buffer-size: "4m"
+    max-size: "10m"
+    max-file: "5"
+
 services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:874cb239a5aa352f910c5c07c80f512f94b78257
+    image: openmsa/openmsa:msa2-front-2.8.5-d065eb5d01bfee5c7f1a2674b764c6cc7a5a4f33
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -39,12 +50,7 @@ services:
         mode: host
       - "5200-5200:5200-5200/udp"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     volumes:
         - "msa_front_conf:/etc/nginx/custom_conf.d"
     networks:
@@ -62,7 +68,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: ubiqube/msa2-db:c880962c3b96ca67ac457ca34c4b5363fcba0c32
+    image: openmsa/openmsa:msa2-db-2.8.5-c880962c3b96ca67ac457ca34c4b5363fcba0c32
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -85,19 +91,14 @@ services:
       MAX_CONNECTIONS: 1600
     shm_size: 1g
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     volumes:
       - "msa_db:/pgsqldata/pgsql"
 
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:5b300286e29aaf9c3f1621c1cd1acc13155a8037
+    image: openmsa/openmsa:msa2-api-2.8.5-5b300286e29aaf9c3f1621c1cd1acc13155a8037
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
       retries: 10
@@ -109,15 +110,10 @@ services:
       msa-es:
         condition: service_started
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
-      - UBIQUBE_CAPTCHA_SECRET_KEY=6Ld2zF4dAAAAABWD9Q6QAhBql_CIynUeVKaTiBgT
+      <<: *es-credential
+      UBIQUBE_CAPTCHA_SECRET_KEY: 6Ld2zF4dAAAAABWD9Q6QAhBql_CIynUeVKaTiBgT
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     volumes:
       - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_entities:/opt/fmc_entities"
@@ -135,7 +131,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:7db0b85c4293abf4257e880a152cec6a073ad674
+    image: openmsa/openmsa:msa2-ui-2.8.5-0ea7bae9e7dbe44ae109d721a910b75abf226288
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -158,12 +154,7 @@ services:
     - FEATURE_PERMISSION_PROFILE_LABELS=false
     - FEATURE_BPM=true
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
@@ -172,7 +163,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:b79a6a992dec55d2714f629dfc4b1dc17c279e13
+    image: openmsa/openmsa:msa2-sms-2.8.5-b79a6a992dec55d2714f629dfc4b1dc17c279e13
     healthcheck:
       timeout: 5s
       retries: 10
@@ -180,7 +171,7 @@ services:
       start_period: 30s      
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      <<: *es-credential
     cap_add:
       - NET_ADMIN
     depends_on:
@@ -191,12 +182,7 @@ services:
       msa-dev:
         condition: service_started
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     volumes:
       - "msa_dev:/opt/devops/"
       - "msa_entities:/opt/fmc_entities"
@@ -212,7 +198,7 @@ services:
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: ubiqube/msa2-bud:1c0b396972541832da0f8c1372c429bbdec87bf8
+    image: openmsa/openmsa:msa2-bud-2.8.5-1c0b396972541832da0f8c1372c429bbdec87bf8
     healthcheck:
       timeout: 5s
       retries: 10
@@ -223,12 +209,7 @@ services:
       db:
         condition: service_healthy
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     volumes:
       - "msa_bud_logs:/opt/bud/logs/"
     networks:
@@ -239,7 +220,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: ubiqube/msa2-alarm:31384c49f0d8f7511d15bd0e4383e237c7a0ea76
+    image: openmsa/openmsa:msa2-alarm-2.8.5-6debeb4a2fb8f61b2640f53cd88e6051d3a46121
     healthcheck:
       timeout: 5s
       retries: 10
@@ -252,14 +233,9 @@ services:
       msa-es:
         condition: service_started
     environment:
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+      <<: *es-credential
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     volumes:
       - "msa_sms_logs:/opt/sms/logs"
     networks:
@@ -270,7 +246,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: ubiqube/msa2-monitoring:244d2706edda941858881ecd8f17089e3e1ea9b1
+    image: openmsa/openmsa:msa2-monitoring-2.8.5-244d2706edda941858881ecd8f17089e3e1ea9b1
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -281,14 +257,9 @@ services:
       msa-dev:
         condition: service_started
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      <<: *es-credential
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     volumes:
       - "msa_dev:/opt/devops/"
       - "msa_entities:/opt/fmc_entities"
@@ -306,7 +277,7 @@ services:
     container_name: msa_rsyslog
     depends_on:
       - msa-sms
-    image: openmsa/openmsa:msa2-rsyslog-2.8.4-54a250d9ef49db2454c5ed9111d43cebc8e9ef9a
+    image: openmsa/openmsa:msa2-rsyslog-2.8.5-54a250d9ef49db2454c5ed9111d43cebc8e9ef9a
     ports:
       - target: 514
         published: 514
@@ -320,6 +291,8 @@ services:
       default:
         aliases:
           - "msa_rsyslog"
+    logging:
+      <<: *logging
 
   camunda:
     restart: unless-stopped
@@ -327,7 +300,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    image: openmsa/openmsa:msa2-camunda-2.8.4-507b2c9b8361821915c4bd9255bafb47ace89079
+    image: openmsa/openmsa:msa2-camunda-2.8.5-23335a0df397d4bc3531366223cd5a239688ee0d
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
@@ -337,17 +310,12 @@ services:
       WAIT_FOR: 'db:5432'
       WAIT_FOR_TIMEOUT: 60
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
 
   msa-es:
     restart: unless-stopped
     container_name: msa_es
-    image: ubiqube/msa2-es:ecbddce0b5641a0a766e152a28a115b28f2be365
+    image: openmsa/openmsa:msa2-es-2.8.5-f24b6d654d0307d5f7c55cd4a65ec8dbc747b1d1
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
@@ -355,29 +323,13 @@ services:
       interval: 10s
       start_period: 30s 
     environment:
-      - discovery.type=single-node
-      - script.painless.regex.enabled=true
-      - bootstrap.memory_lock=true
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
-      - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms512m -Xmx1024m"
-
+      discovery.type: "single-node"
+      script.painless.regex.enabled: "true"
+      bootstrap.memory_lock: "true"
+      ES_JAVA_OPTS: "-Xms512m -Xmx1024m"
+      <<: *es-credential
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
-    ports:
-      - target: 9200
-        published: 9200
-        protocol: tcp
-        mode: host
-      - target: 9300
-        published: 9300
-        protocol: tcp
-        mode: host
+      <<: *logging
     volumes:
       - "msa_es:/usr/share/elasticsearch/data"
     ulimits:
@@ -392,7 +344,7 @@ services:
   msa-cerebro:
     restart: unless-stopped
     container_name: msa_cerebro
-    image: openmsa/openmsa:msa2-cerebro-2.8.4-914750e000db1343d9972bfa6652da1efe4aa32f
+    image: openmsa/openmsa:msa2-cerebro-2.8.5-914750e000db1343d9972bfa6652da1efe4aa32f
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -404,12 +356,7 @@ services:
       msa-es:
         condition: service_started
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     ports:
     - "9000:9000"
     networks:
@@ -420,23 +367,18 @@ services:
   msa-kibana:
     restart: unless-stopped
     container_name: msa_kibana
-    image: ubiqube/msa2-kibana:0105b30d9cf0d00219b2996c2abb5a1d03a0c9ec
+    image: openmsa/openmsa:msa2-kibana-2.8.5-118f089ce6a140a7ef9991798c1029bace926539
     depends_on:
       msa-es:
         condition: service_started
     ports:
       - "5601:5601"
     environment:
-      - ELASTICSEARCH_URL=http://msa_es:9200
-      - ELASTICSEARCH_HOSTS=http://msa_es:9200
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      ELASTICSEARCH_URL: "http://msa_es:9200"
+      ELASTICSEARCH_HOSTS: "http://msa_es:9200"
+      <<: *es-credential
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
@@ -445,7 +387,7 @@ services:
   msa-ai-ml:
     restart: unless-stopped
     container_name: msa_ai_ml
-    image: openmsa/openmsa:msa2-ai-ml-2.8.4-63c7fab8c111b6cc85da049f45ebc6175a9b269a
+    image: openmsa/openmsa:msa2-ai-ml-2.8.5-63c7fab8c111b6cc85da049f45ebc6175a9b269a
     healthcheck:
       test: ["CMD-SHELL", "python /msa_proj/health_check.py"]
     ports:
@@ -456,12 +398,14 @@ services:
       default:
         aliases:
           - "msa_ai_ml"
+    logging:
+      <<: *logging
 
   msa-dev:
     restart: unless-stopped
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: openmsa/openmsa:msa2-linuxdev-2.8.4-cc82f1121bcbfbae9dad6028f57269f7caf0e9f7
+    image: openmsa/openmsa:msa2-linuxdev-2.8.5-5844d2a8e891a1c9f1fc4359017512b55985d5d0
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
@@ -472,12 +416,14 @@ services:
       default:
         aliases:
           - "msa_dev"
+    logging:
+      <<: *logging
 
   linux-me:
     restart: unless-stopped
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.8.4-7ebf88e805de70562ac837f06e6f7430a4b21ad3
+    image: openmsa/openmsa:msa2-linuxme-2.8.5-4981889b459e41c6dfe50699e51d839848fea9ba
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -495,12 +441,14 @@ services:
         aliases:
           - "linux_me"
         ipv4_address: 172.20.0.101
+    logging:
+      <<: *logging
 
   linux-me-2:
     restart: unless-stopped
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.8.4-7ebf88e805de70562ac837f06e6f7430a4b21ad3
+    image: openmsa/openmsa:msa2-linuxme-2.8.5-4981889b459e41c6dfe50699e51d839848fea9ba
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -518,6 +466,8 @@ services:
         aliases:
           - "linux_me_2"
         ipv4_address: 172.20.0.102
+    logging:
+      <<: *logging
 
 volumes:
   msa_api:
