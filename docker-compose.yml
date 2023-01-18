@@ -368,7 +368,7 @@ services:
   msa-kibana:
     restart: unless-stopped
     container_name: msa_kibana
-    image: ubiqube/msa2-kibana:118f089ce6a140a7ef9991798c1029bace926539
+    image: openmsa/openmsa:msa2-kibana-2.8.5-118f089ce6a140a7ef9991798c1029bace926539
     depends_on:
       msa-es:
         condition: service_started
