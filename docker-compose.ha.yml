@@ -1,6 +1,17 @@
 # This docker-compose file is provided as an example to create a Docker Swarm based MSActivator setup
 version: "3.8"
 
+x-es-credential: &es-credential
+    ES_CREDENTIALS: c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+
+x-logging: &logging
+  driver: "json-file"
+  options:
+    mode: non-blocking
+    max-buffer-size: "4m"
+    max-size: "10m"
+    max-file: "5"
+
 services:
   msa-front:
     image: ubiqube/msa2-front:874cb239a5aa352f910c5c07c80f512f94b78257
@@ -40,12 +51,7 @@ services:
         mode: ingress
       - "5200-5200:5200-5200/udp"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     volumes:
         - "/mnt/NASVolume/msa_front_conf:/etc/nginx/custom_conf.d"
     #
@@ -90,12 +96,7 @@ services:
     volumes:
       - "/mnt/NASVolume/msa_db:/pgsqldata/pgsql"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
 
   db-replica:
     image: ubiqube/msa2-db:c880962c3b96ca67ac457ca34c4b5363fcba0c32
@@ -126,12 +127,7 @@ services:
       PG_PRIMARY_PORT: 5432
       PG_PRIMARY_HOST: db
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
 
   msa-api:
     image: ubiqube/msa2-api:5b300286e29aaf9c3f1621c1cd1acc13155a8037
@@ -151,7 +147,7 @@ services:
         condition: on-failure
         max_attempts: 10
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      <<: *es-credential
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
@@ -160,12 +156,7 @@ services:
       - "/mnt/NASVolume/msa_api_logs:/opt/wildfly/logs/processLog"
       - "/mnt/NASVolume/msa_api_keystore:/etc/pki/jentreprise"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
@@ -200,12 +191,7 @@ services:
     - FEATURE_PERMISSION_PROFILE_LABELS=false
     - FEATURE_BPM=true
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
@@ -231,12 +217,7 @@ services:
         protocol: tcp
         mode: ingress
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
@@ -253,8 +234,8 @@ services:
       start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
-      - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
+      <<: *es-credential
+      CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
@@ -270,12 +251,7 @@ services:
         constraints:
           - "node.labels.worker==app"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
@@ -300,12 +276,7 @@ services:
         constraints:
           - "node.labels.worker==app"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
@@ -323,8 +294,8 @@ services:
       start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
-      - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
+      <<: *es-credential
+      CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
     deploy:
       replicas: 3
       placement:
@@ -334,12 +305,7 @@ services:
     volumes:
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
@@ -358,8 +324,8 @@ services:
       - msa-dev
       - msa-api
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
-      - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
+      <<: *es-credential
+      CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
@@ -374,12 +340,7 @@ services:
         constraints:
           - "node.labels.worker==app"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
@@ -404,21 +365,16 @@ services:
       WAIT_FOR: 'db:5432'
       WAIT_FOR_TIMEOUT: 60
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
 
   msa-kibana:
     image: ubiqube/msa2-kibana:0105b30d9cf0d00219b2996c2abb5a1d03a0c9ec
     ports:
       - "5601:5601"
     environment:
-      - ELASTICSEARCH_URL=http://msa_es:9200
-      - ELASTICSEARCH_HOSTS=http://msa_es:9200
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      ELASTICSEARCH_URL: "http://msa_es:9200"
+      ELASTICSEARCH_HOSTS: "http://msa_es:9200"
+      <<: *es-credential
     deploy:
       replicas: 1
       placement:
@@ -426,12 +382,7 @@ services:
         constraints:
           - "node.labels.worker==app"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
@@ -452,12 +403,7 @@ services:
         constraints:
           - "node.labels.worker==app"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
@@ -476,12 +422,12 @@ services:
         constraints:
           - "node.labels.worker==app"
     environment:
-      - discovery.type=single-node
-      - script.painless.regex.enabled=true
-      - bootstrap.memory_lock=true
-      - xpack.security.enabled=true
-      - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+      discovery.type: "single-node"
+      script.painless.regex.enabled: "true"
+      bootstrap.memory_lock: "true"
+      xpack.security.enabled: "true"
+      ES_JAVA_OPTS: "-Xms512m -Xmx1024m"
+      <<: *es-credential
     ulimits:
       memlock:
         soft: -1
@@ -493,12 +439,7 @@ services:
     volumes:
      - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
 
   msa-cerebro:
     image: openmsa/openmsa:msa2-cerebro-2.8.4-914750e000db1343d9972bfa6652da1efe4aa32f
@@ -518,12 +459,7 @@ services:
         constraints:
           - "node.labels.worker==app"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
@@ -543,12 +479,7 @@ services:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_svn:/opt/svnroot"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
