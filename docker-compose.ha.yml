@@ -27,7 +27,7 @@ services:
       interval: 10s
       start_period: 30s
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -136,7 +136,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -169,7 +169,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -202,7 +202,7 @@ services:
       - msa-sms
     image: openmsa/openmsa:msa2-rsyslog-2.8.5-54a250d9ef49db2454c5ed9111d43cebc8e9ef9a
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -245,7 +245,7 @@ services:
       - "msa_bulkfiles:/opt/sms/spool/parser"
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -270,7 +270,7 @@ services:
     environment:
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -297,7 +297,7 @@ services:
       <<: *es-credential
       CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -334,7 +334,7 @@ services:
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
       - "msa_monitbulkfiles:/opt/sms/spool/parser"
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -351,7 +351,7 @@ services:
       - db
     image: openmsa/openmsa:msa2-camunda-2.8.5-23335a0df397d4bc3531366223cd5a239688ee0d
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -397,7 +397,7 @@ services:
     volumes:
       - "/mnt/NASVolume/msa_ai_ml_db:/msa_proj/database"
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -453,7 +453,7 @@ services:
     ports:
       - "9000:9000"
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -468,7 +468,7 @@ services:
   msa-dev:
     image: openmsa/openmsa:msa2-linuxdev-2.8.5-5844d2a8e891a1c9f1fc4359017512b55985d5d0
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
