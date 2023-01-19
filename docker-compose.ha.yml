@@ -353,7 +353,7 @@ services:
     environment:
       - node.roles=ingest
       - node.name=alpha_lab_client1
-      - discovery.seed_hosts=172.17.28.82
+      - discovery.seed_hosts=172.17.28.82,172.17.28.83
       - cluster.initial_master_nodes=alpha_lab_node1
       - cluster.name=alpha_lab
       - network.host=0.0.0.0
@@ -361,7 +361,12 @@ services:
       - network.publish_host=172.17.28.84
       - script.painless.regex.enabled=true
       - bootstrap.memory_lock=true
-      - xpack.security.enabled=false
+      - xpack.security.enabled=true
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate 
+      - xpack.security.transport.ssl.client_authentication=required
+      - xpack.security.transport.ssl.keystore.path=elastic-certificates.p12
+      - xpack.security.transport.ssl.truststore.path=elastic-certificates.p12
       - "ES_JAVA_OPTS=-Xms2048m -Xmx2048m"
     ulimits:
       memlock:
