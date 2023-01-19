@@ -14,7 +14,7 @@ x-logging: &logging
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.5-d065eb5d01bfee5c7f1a2674b764c6cc7a5a4f33
+    image: openmsa/openmsa:msa2-front-2.8.5-cf5ed08e2559807a463e0f88d173893b1e1aa1b9
     depends_on:
       - msa-api
       - msa-ui
@@ -49,7 +49,12 @@ services:
         mode: ingress
       - "5200-5200:5200-5200/udp"
     logging:
-      <<: *logging
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     volumes:
       - "/mnt/NASVolume/msa_front_conf:/etc/nginx/custom_conf.d"
       - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
@@ -461,7 +466,7 @@ services:
           - "msa_cerebro"
 
   msa-dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.8.5-5844d2a8e891a1c9f1fc4359017512b55985d5d0
+    image: openmsa/openmsa:msa2-linuxdev-2.8.5-1e2e15527e8b13a3b0f0f76cb9ed21303b93c854
     deploy:
       replicas: 1
       placement:
