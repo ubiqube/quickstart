@@ -50,7 +50,12 @@ services:
         mode: host
       - "5200-5200:5200-5200/udp"
     logging:
-      <<: *logging
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
     volumes:
         - "msa_front_conf:/etc/nginx/custom_conf.d"
     networks:
