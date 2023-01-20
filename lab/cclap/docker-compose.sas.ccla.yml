@@ -145,16 +145,21 @@ services:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     environment:
     - FEATURE_ADMIN=true
+    - FEATURE_REPOSITORY=true
     - FEATURE_CONNECTION_STATUS=true
     - FEATURE_ALARMS=true
     - FEATURE_LICENCE=true
     - FEATURE_TOPOLOGY=true
     - FEATURE_MONITORING_PROFILES=true
-    - FEATURE_SCHEDULE_WORKFLOWS=true
     - FEATURE_PROFILE_AUDIT_LOGS=true
+    - FEATURE_SCHEDULE_WORKFLOWS=true
     - FEATURE_PERMISSION_PROFILES=true
+    - FEATURE_BPM=true
     - FEATURE_AI_ML=true
+    - FEATURE_MICROSERVICE_BULK_OPERATION=true
+    - FEATURE_EDIT_VARIABLES_IN_MICROSERVICE_CONSOLE=true
     - FEATURE_WORKFLOW_OWNER=false
+    - FEATURE_PERMISSION_PROFILE_LABELS=false
     networks:
       default:
         aliases:
