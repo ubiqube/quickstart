@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa_front:
-    image: openmsa/openmsa:msa2-front-2.8.5-cf5ed08e2559807a463e0f88d173893b1e1aa1b9
+    image: openmsa/openmsa:msa2-front-2.8.5-4b91a184d6e114b726b4f1219bd8e05bd8714cc0
     depends_on:
       - msa_api
       - msa_ui
@@ -110,7 +110,7 @@ services:
         aliases:
           - "msa-api"
   msa_ui:
-    image: openmsa/openmsa:msa2-ui-2.8.5-0ea7bae9e7dbe44ae109d721a910b75abf226288
+    image: openmsa/openmsa:msa2-ui-2.8.5-28b4fa72ce3d16b1440002bcc0ee3784b535e839
     depends_on:
       - msa_api
     healthcheck:
