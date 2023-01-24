@@ -30,18 +30,20 @@ services:
       POSTGRES_ADDR: mano-db
       DB_USER: keycloak
       DB_PASSWORD: keycloak
-      JGROUPS_DISCOVERY_PROTOCOL: JDBC_PING
-      JGROUPS_DISCOVERY_PROPERTIES: "datasource_jndi_name=java:jboss/datasources/KeycloakDS"
-      JAVA_OPTS: "-Djboss.as.management.blocking.timeout=600"
     ports:
       - target: 8080
         published: 8110
         protocol: tcp
         mode: ingress
 
+  mano-helm3:
+    image: ubiqube/helm3-webapp
+
   mano-vnfm:
     restart: unless-stopped
-    image: ubiqube/mano-vnfm-tm22:uat7
+    image: ubiqube/mano-vnfm-tm22:uat30
+    environment:
+      - KEYCLOAK_CREDENTIALS_SECRET=XXXX
     depends_on:
       - db
     volumes:
@@ -54,7 +56,9 @@ services:
        
   mano-nfvo:
     restart: unless-stopped
-    image: ubiqube/mano-nfvo-tm22:uat7
+    image: ubiqube/mano-nfvo-tm22:uat30
+    environment:
+      - KEYCLOAK_CREDENTIALS_SECRET=YYYY
     depends_on:
       - db
     volumes:
