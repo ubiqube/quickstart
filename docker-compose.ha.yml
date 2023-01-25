@@ -348,7 +348,7 @@ services:
       <<: *logging
 
   msa-es:
-    image: ubiqube/msa2-es:ecbddce0b5641a0a766e152a28a115b28f2be365
+    image: openmsa/openmsa:msa2-es-2.8.5-f24b6d654d0307d5f7c55cd4a65ec8dbc747b1d1
     deploy:
       replicas: 1
       placement:
