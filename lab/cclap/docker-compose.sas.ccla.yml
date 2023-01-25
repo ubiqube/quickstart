@@ -189,7 +189,7 @@ services:
 #          - "node.labels.worker==apps"
 
   ccla-scan-app:
-    image: ubiqube/cloudclapp-scan:551cd1df6b99932edf5c5f102bddcff64cb6dd32
+    image: ubiqube/cloudclapp-scan:eab7f66cf538fd6ae00775d397d13d58041b3760
     environment:
       - UBIQUBE_ZAP_TOKEN=7da091fe-63a4-48c0-9bfa-7614c49feb7c
     deploy:
