@@ -390,7 +390,7 @@ services:
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
-      - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
+      - "msa_es:/usr/share/elasticsearch/data"
     logging:
       <<: *logging
 
@@ -490,6 +490,7 @@ volumes:
   msa_sms_logs:
   msa_monitbulkfiles:
   msa_api_logs:
+  msa_es:
 
 networks:
   default:
