@@ -372,7 +372,7 @@ services:
       xpack.security.transport.ssl.client_authentication: "required"
       xpack.security.transport.ssl.keystore.path: "elastic-certificates.p12"
       xpack.security.transport.ssl.truststore.path: "elastic-certificates.p12"
-      ES_JAVA_OPTS: "-Xms512m -Xmx1024m"
+      ES_JAVA_OPTS: "-Xms2048m -Xmx2048m"
       <<: *es-credential
     ulimits:
       memlock:
