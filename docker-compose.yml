@@ -332,6 +332,7 @@ services:
       <<: *logging
     volumes:
       - "msa_es:/usr/share/elasticsearch/data"
+      - "msa_es_config:/usr/share/elasticsearch/config"
     ulimits:
       memlock:
         soft: -1
@@ -476,6 +477,7 @@ volumes:
   msa_entities:
   msa_repository:
   msa_es:
+  msa_es_config:
   rrd_repository:
   msa_api_logs:
   msa_api_keystore:
