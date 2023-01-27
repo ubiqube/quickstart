@@ -228,6 +228,7 @@ services:
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
+      - UBIQUBE_INSTALL_AWS_CLI=true
     hostname: "{{.Task.Name}}.{{.Node.Hostname}}"
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
@@ -459,6 +460,7 @@ services:
       default:
         aliases:
           - "msa_dev"
+    command: [ "/docker-entrypoint.sh", "--cloudclapp" ]
     deploy:
       replicas: 1
       placement:

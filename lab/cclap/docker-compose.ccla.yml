@@ -7,6 +7,7 @@ services:
     image: ubiqube/cloudclapp:cf4c847245d23848cd6b10b591b42b3d214966aa
     environment:
       - UBIQUBE_CAPTCHA_SITE_KEY=6Ld2zF4dAAAAAJlqZMIHpPeb3aYhcyy1K3NWPtqi
+      - UBIQUBE_LICENSE_AGREEMENT_LINK=https:\/\/cloudclapp.com\/EndUserLicenceAgreement.html
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
 
@@ -42,4 +43,11 @@ services:
     cap_add:
       - IPC_LOCK
     command: server
+
+  msa-sms:
+    environment:
+      - UBIQUBE_INSTALL_AWS_CLI=true
+
+  msa-dev:
+    command: [ "/docker-entrypoint.sh", "--cloudclapp" ]
 
