@@ -22,4 +22,8 @@ services:
     key-vault:
        extra_hosts:
           db: 20.223.38.173
-
+    msa-front:
+       volumes:
+          - "/mnt/NASVolume/msa_front/cloudclapp_privkey.pem:/etc/nginx/ssl/cloudclapp_server.key"
+          - "/mnt/NASVolume/msa_front/cloudclapp_fullchain.pem:/etc/nginx/ssl/cloudclapp_server.crt"
+          
