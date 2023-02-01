@@ -14,7 +14,7 @@ x-logging: &logging
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:3adecbddf4a4fda1962a090097d05a75478578a5
+    image: ubiqube/msa2-front:3e9ada52734d9c18c03fcb93acc979b00979bf3c
     depends_on:
       - msa-api
       - msa-ui
@@ -25,7 +25,7 @@ services:
       timeout: 2s
       retries: 10
       interval: 10s
-      start_period: 30s
+      start_period: 60s
     deploy:
       replicas: 1
       placement:
@@ -135,7 +135,7 @@ services:
       <<: *logging
 
   msa-api:
-    image: ubiqube/msa2-api:596ec4cef6060dbc7544991cf1c4141648d6a5f3
+    image: ubiqube/msa2-api:4bc4af2e60eeb888ebcc4b80bb6fdf0bcbb894c1
     depends_on:
       - db
     healthcheck:
@@ -471,7 +471,7 @@ services:
           - "msa_cerebro"
 
   msa-dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.8.5-1e2e15527e8b13a3b0f0f76cb9ed21303b93c854
+    image: ubiqube/msa2-linuxdev:edf660749b2f21b6c0deaca395acb0472fc7de95
     deploy:
       replicas: 1
       placement:

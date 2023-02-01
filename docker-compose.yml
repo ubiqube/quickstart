@@ -15,9 +15,12 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:3adecbddf4a4fda1962a090097d05a75478578a5
+    image: ubiqube/msa2-front:3e9ada52734d9c18c03fcb93acc979b00979bf3c
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
+      timeout: 20s
+      interval: 30s
+      retries: 10
     depends_on:
       msa-ui:
         condition: service_healthy
@@ -103,12 +106,12 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:596ec4cef6060dbc7544991cf1c4141648d6a5f3
+    image: ubiqube/msa2-api:4bc4af2e60eeb888ebcc4b80bb6fdf0bcbb894c1
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
       retries: 10
-      interval: 10s
-      start_period: 5s    
+      interval: 30s
+      start_period: 20s    
     depends_on:
       db:
         condition: service_healthy
@@ -139,6 +142,9 @@ services:
     image: ubiqube/msa2-ui:ffead316480d4d7ddd9a99bc471dcd13eff6d6de
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
+      retries: 10
+      interval: 20s
+      start_period: 20s    
     depends_on:
       msa-api:
         condition: service_started
@@ -255,6 +261,10 @@ services:
     image: ubiqube/msa2-monitoring:33c705bf3db8da556fb7532923abc65f10b1c14d
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s
     depends_on:
       db:
         condition: service_healthy
@@ -324,9 +334,9 @@ services:
     image: ubiqube/msa2-es:7b0c2d96ae426da44b255efad0b1a60332f9c385
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
-      timeout: 2s
+      timeout: 10s
       retries: 10
-      interval: 10s
+      interval: 20s
       start_period: 30s 
     environment:
       discovery.type: "single-node"
@@ -396,6 +406,10 @@ services:
     image: openmsa/openmsa:msa2-ai-ml-2.8.5-63c7fab8c111b6cc85da049f45ebc6175a9b269a
     healthcheck:
       test: ["CMD-SHELL", "python /msa_proj/health_check.py"]
+      timeout: 10s
+      retries: 10
+      interval: 20s
+      start_period: 30s 
     ports:
       - "8000:8000"
     volumes:
@@ -411,7 +425,7 @@ services:
     restart: unless-stopped
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: ubiqube/msa2-linuxdev:eb1db19ccc346e4f92afa355bbb06e55cc15c22e
+    image: ubiqube/msa2-linuxdev:edf660749b2f21b6c0deaca395acb0472fc7de95
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
