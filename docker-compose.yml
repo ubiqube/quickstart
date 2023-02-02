@@ -15,7 +15,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:3e9ada52734d9c18c03fcb93acc979b00979bf3c
+    image: ubiqube/msa2-front:84410111b9b3575731ec18ca3ae7f1c9a93c4eae
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
       timeout: 20s
@@ -399,33 +399,12 @@ services:
       default:
         aliases:
           - "msa_kibana"
-          
-  msa-ai-ml:
-    restart: unless-stopped
-    container_name: msa_ai_ml
-    image: openmsa/openmsa:msa2-ai-ml-2.8.5-63c7fab8c111b6cc85da049f45ebc6175a9b269a
-    healthcheck:
-      test: ["CMD-SHELL", "python /msa_proj/health_check.py"]
-      timeout: 10s
-      retries: 10
-      interval: 20s
-      start_period: 30s 
-    ports:
-      - "8000:8000"
-    volumes:
-      - "msa_ai_ml_db:/msa_proj/database"
-    networks:
-      default:
-        aliases:
-          - "msa_ai_ml"
-    logging:
-      <<: *logging
 
   msa-dev:
     restart: unless-stopped
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: ubiqube/msa2-linuxdev:edf660749b2f21b6c0deaca395acb0472fc7de95
+    image: ubiqube/msa2-linuxdev:ce1d34cf2d57d7c1c7cf8351a7ed84a217d9e350
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
