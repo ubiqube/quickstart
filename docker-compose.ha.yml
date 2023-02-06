@@ -225,7 +225,8 @@ services:
   msa-rsyslog:
     depends_on:
       - msa-sms
-    image: openmsa/openmsa:msa2-rsyslog-2.8.4-54a250d9ef49db2454c5ed9111d43cebc8e9ef9a
+        #image: openmsa/openmsa:msa2-rsyslog-2.8.4-54a250d9ef49db2454c5ed9111d43cebc8e9ef9a
+    image: ubiqube/msa2-rsyslog:8.2212
     deploy:
       replicas: 3
       placement:
@@ -281,7 +282,7 @@ services:
       - "msa_bulkfiles:/opt/sms/spool/parser"
       - "msa_sms_logs:/opt/sms/logs"
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -464,7 +465,7 @@ services:
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
-      - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
+      - "msa_es:/usr/share/elasticsearch/data"
     logging:
       driver: "json-file"
       options:
@@ -592,7 +593,7 @@ volumes:
   msa_bulkfiles:
   msa_sms_logs:
   msa_monitbulkfiles:
-
+  msa_es:
 networks:
   default:
     #driver_opts:
