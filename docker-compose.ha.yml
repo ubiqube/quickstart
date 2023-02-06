@@ -1,9 +1,20 @@
 # This docker-compose file is provided as an example to create a Docker Swarm based MSActivator setup
 version: "3.8"
 
+x-es-credential: &es-credential
+    ES_CREDENTIALS: c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+
+x-logging: &logging
+  driver: "json-file"
+  options:
+    mode: non-blocking
+    max-buffer-size: "4m"
+    max-size: "10m"
+    max-file: "5"
+
 services:
   msa-front:
-    image: ubiqube/msa2-front:874cb239a5aa352f910c5c07c80f512f94b78257
+    image: openmsa/openmsa:msa2-front-2.8.5-4b91a184d6e114b726b4f1219bd8e05bd8714cc0
     depends_on:
       - msa-api
       - msa-ui
@@ -14,7 +25,7 @@ services:
       interval: 10s
       start_period: 30s
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -58,7 +69,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:c880962c3b96ca67ac457ca34c4b5363fcba0c32
+    image: openmsa/openmsa:msa2-db-2.8.5-c880962c3b96ca67ac457ca34c4b5363fcba0c32
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -92,15 +103,10 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
       - "/mnt/NASVolume/msa_db:/pgsqldata/pgsql"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
 
   db-replica:
-    image: ubiqube/msa2-db:c880962c3b96ca67ac457ca34c4b5363fcba0c32
+    image: openmsa/openmsa:msa2-db-2.8.5-c880962c3b96ca67ac457ca34c4b5363fcba0c32
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h db"]
       timeout: 20s
@@ -131,21 +137,16 @@ services:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
 
   msa-api:
-    image: ubiqube/msa2-api:5b300286e29aaf9c3f1621c1cd1acc13155a8037
+    image: openmsa/openmsa:msa2-api-2.8.5-5b300286e29aaf9c3f1621c1cd1acc13155a8037
     depends_on:
       - db
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -156,7 +157,7 @@ services:
         condition: on-failure
         max_attempts: 10
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      <<: *es-credential
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
@@ -167,25 +168,20 @@ services:
       - "/mnt/NASVolume/msa_api_logs:/opt/wildfly/logs/processLog"
       - "/mnt/NASVolume/msa_api_keystore:/etc/pki/jentreprise"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
           - "msa_api"
 
   msa-ui:
-    image: ubiqube/msa2-ui:7db0b85c4293abf4257e880a152cec6a073ad674
+    image: openmsa/openmsa:msa2-ui-2.8.5-28b4fa72ce3d16b1440002bcc0ee3784b535e839
     depends_on:
       - msa-api
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -211,12 +207,7 @@ services:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
@@ -225,9 +216,9 @@ services:
   msa-rsyslog:
     depends_on:
       - msa-sms
-    image: openmsa/openmsa:msa2-rsyslog-2.8.4-54a250d9ef49db2454c5ed9111d43cebc8e9ef9a
+    image: openmsa/openmsa:msa2-rsyslog-2.8.5-54a250d9ef49db2454c5ed9111d43cebc8e9ef9a
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -245,19 +236,14 @@ services:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
           - "msa_rsyslog"
 
   msa-sms:
-    image: ubiqube/msa2-sms:b79a6a992dec55d2714f629dfc4b1dc17c279e13
+    image: openmsa/openmsa:msa2-sms-2.8.5-b79a6a992dec55d2714f629dfc4b1dc17c279e13
     depends_on:
       - db
     healthcheck:
@@ -267,9 +253,9 @@ services:
       start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
-      - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
-      - ES_SERVERS="msa-es msa-es-2"
+      <<: *es-credential
+      CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
+      ES_SERVERS: "msa-es msa-es-2"
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
@@ -287,19 +273,14 @@ services:
         constraints:
           - "node.labels.worker==app"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
           - "msa_sms"
 
   msa-bud:
-    image: ubiqube/msa2-bud:1c0b396972541832da0f8c1372c429bbdec87bf8
+    image: openmsa/openmsa:msa2-bud-2.8.5-1c0b396972541832da0f8c1372c429bbdec87bf8
     depends_on:
       - db
     healthcheck:
@@ -320,12 +301,7 @@ services:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
@@ -335,7 +311,7 @@ services:
     depends_on:
       - db
       - msa-api
-    image: ubiqube/msa2-alarm:31384c49f0d8f7511d15bd0e4383e237c7a0ea76
+    image: openmsa/openmsa:msa2-alarm-2.8.5-6debeb4a2fb8f61b2640f53cd88e6051d3a46121
     healthcheck:
       timeout: 5s
       retries: 10
@@ -343,9 +319,9 @@ services:
       start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
-      - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
-      - ES_SERVERS="msa-es msa-es-2"
+      <<: *es-credential
+      CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
+      ES_SERVERS: "msa-es msa-es-2"
     deploy:
       replicas: 1
       placement:
@@ -357,19 +333,14 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
       - "msa_sms_logs:/opt/sms/logs"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
           - "msa_alarm"
 
   msa-monitoring:
-    image: ubiqube/msa2-monitoring:244d2706edda941858881ecd8f17089e3e1ea9b1
+    image: openmsa/openmsa:msa2-monitoring-2.8.5-244d2706edda941858881ecd8f17089e3e1ea9b1
     healthcheck:
       timeout: 5s
       retries: 10
@@ -381,9 +352,9 @@ services:
       - msa-dev
       - msa-api
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
-      - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
-      - ES_SERVERS="msa-es msa-es-2"
+      <<: *es-credential
+      CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
+      ES_SERVERS: "msa-es msa-es-2"
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
@@ -394,18 +365,13 @@ services:
       - "msa_sms_logs:/opt/sms/logs"
       - "msa_monitbulkfiles:/opt/sms/spool/parser"
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
@@ -414,9 +380,9 @@ services:
   camunda:
     depends_on:
       - db
-    image: openmsa/openmsa:msa2-camunda-2.8.4-507b2c9b8361821915c4bd9255bafb47ace89079
+    image: openmsa/openmsa:msa2-camunda-2.8.5-23335a0df397d4bc3531366223cd5a239688ee0d
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -466,20 +432,16 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
       - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
 
   msa-kibana:
-    image: ubiqube/msa2-kibana:0105b30d9cf0d00219b2996c2abb5a1d03a0c9ec
+    image: openmsa/openmsa:msa2-kibana-2.8.5-118f089ce6a140a7ef9991798c1029bace926539
     ports:
       - "5601:5601"
     environment:
-      - ELASTICSEARCH_URL=http://msa_es:9200
-      - ELASTICSEARCH_HOSTS=http://msa_es:9200
+      ELASTICSEARCH_URL: "http://msa_es:9200"
+      ELASTICSEARCH_HOSTS: "http://msa_es:9200"
+      <<: *es-credential
     deploy:
       replicas: 1
       placement:
@@ -490,19 +452,14 @@ services:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
           - "msa_kibana"
 
   msa-ai-ml:
-    image: openmsa/openmsa:msa2-ai-ml-2.8.4-63c7fab8c111b6cc85da049f45ebc6175a9b269a
+    image: openmsa/openmsa:msa2-ai-ml-2.8.5-63c7fab8c111b6cc85da049f45ebc6175a9b269a
     healthcheck:
       test: ["CMD-SHELL", "python /msa_proj/health_check.py"]
     ports:
@@ -512,25 +469,20 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
       - "/mnt/NASVolume/msa_ai_ml_db:/msa_proj/database"
     deploy:
-      replicas: 3
+      replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
           - "msa_ai_ml"
 
   msa-cerebro:
-    image: openmsa/openmsa:msa2-cerebro-2.8.4-914750e000db1343d9972bfa6652da1efe4aa32f
+    image: openmsa/openmsa:msa2-cerebro-2.8.5-914750e000db1343d9972bfa6652da1efe4aa32f
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -550,19 +502,14 @@ services:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
           - "msa_cerebro"
 
   msa-dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.8.4-cc82f1121bcbfbae9dad6028f57269f7caf0e9f7
+    image: openmsa/openmsa:msa2-linuxdev-2.8.5-1e2e15527e8b13a3b0f0f76cb9ed21303b93c854
     deploy:
       replicas: 1
       placement:
@@ -577,12 +524,7 @@ services:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_svn:/opt/svnroot"
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     networks:
       default:
         aliases:
@@ -595,5 +537,4 @@ volumes:
 
 networks:
   default:
-    #driver_opts:
-      #encrypted: "true"
+
