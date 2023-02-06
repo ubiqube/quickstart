@@ -146,7 +146,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -181,7 +181,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -218,7 +218,7 @@ services:
       - msa-sms
     image: openmsa/openmsa:msa2-rsyslog-2.8.5-54a250d9ef49db2454c5ed9111d43cebc8e9ef9a
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -267,7 +267,7 @@ services:
       - "msa_bulkfiles:/opt/sms/spool/parser"
       - "msa_sms_logs:/opt/sms/logs"
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -365,7 +365,7 @@ services:
       - "msa_sms_logs:/opt/sms/logs"
       - "msa_monitbulkfiles:/opt/sms/spool/parser"
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
