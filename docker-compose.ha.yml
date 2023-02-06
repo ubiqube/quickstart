@@ -431,7 +431,8 @@ services:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
       - "msa_es:/usr/share/elasticsearch/data"
-    logging:
+      - "msa_es_config:/usr/share/elasticsearch/config"
+   logging:
       <<: *logging
 
   msa-kibana:
@@ -535,6 +536,7 @@ volumes:
   msa_sms_logs:
   msa_monitbulkfiles:
   msa_es:
+  msa_es_config:
 
 networks:
   default:
