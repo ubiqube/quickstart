@@ -61,7 +61,6 @@ services:
 
   db:
     restart: unless-stopped
-    container_name: msa_db
     image: openmsa/openmsa:msa2-db-2.8.4-a198afb5f5fbd9f67bb0db81ec0de3d7691907f4
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
@@ -96,7 +95,6 @@ services:
 
   msa-api:
     restart: unless-stopped
-    container_name: msa_api
     image: openmsa/openmsa:msa2-api-2.8.4-873406b445cd197526629bfd07a6a6feafae9886
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
@@ -134,7 +132,6 @@ services:
 
   msa-ui:
     restart: unless-stopped
-    container_name: msa_ui
     image: openmsa/openmsa:msa2-ui-2.8.4-c58e742f1ddbca4d7a534a2456372060b4b95531
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
@@ -171,7 +168,6 @@ services:
 
   msa-sms:
     restart: unless-stopped
-    container_name: msa_sms
     image: openmsa/openmsa:msa2-sms-2.8.4-ebc35b20ca0bb366a2bbac5c44c498dbd8c4f86f
     healthcheck:
       timeout: 5s
@@ -211,7 +207,6 @@ services:
 
   msa-bud:
     restart: unless-stopped
-    container_name: msa_bud
     image: openmsa/openmsa:msa2-bud-2.8.4-3450bd12fa42a763c80a247a46b290ad1ae55d20
     healthcheck:
       timeout: 5s
@@ -238,7 +233,6 @@ services:
 
   msa-alarm:
     restart: unless-stopped
-    container_name: msa_alarm
     image: openmsa/openmsa:msa2-alarm-2.8.4-7f9c48a4d903ceb982b856668f5c09980d1eb777
     healthcheck:
       timeout: 5s
@@ -269,7 +263,6 @@ services:
   
   msa-monitoring:
     restart: unless-stopped
-    container_name: msa_monitoring
     image: openmsa/openmsa:msa2-monitoring-2.8.4-27c2314db84f057c4d0eb7494ee5a44dbaaa63e0
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
@@ -303,7 +296,6 @@ services:
 
   msa-rsyslog:
     restart: unless-stopped
-    container_name: msa_rsyslog
     depends_on:
       - msa-sms
     image: openmsa/openmsa:msa2-rsyslog-2.8.4-54a250d9ef49db2454c5ed9111d43cebc8e9ef9a
@@ -323,7 +315,6 @@ services:
 
   camunda:
     restart: unless-stopped
-    container_name: msa_camunda
     depends_on:
       db:
         condition: service_healthy
@@ -346,7 +337,6 @@ services:
 
   msa-es:
     restart: unless-stopped
-    container_name: msa_es
     image: ubiqube/msa2-es:ecbddce0b5641a0a766e152a28a115b28f2be365
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
@@ -390,7 +380,6 @@ services:
 
   msa-cerebro:
     restart: unless-stopped
-    container_name: msa_cerebro
     image: openmsa/openmsa:msa2-cerebro-2.8.4-914750e000db1343d9972bfa6652da1efe4aa32f
     environment:
       AUTH_TYPE: basic
@@ -418,7 +407,6 @@ services:
   
   msa-kibana:
     restart: unless-stopped
-    container_name: msa_kibana
     image: openmsa/openmsa:msa2-kibana-2.8.4-49c1c422ad5559815d4f74568904a7214e788932
     depends_on:
       msa-es:
@@ -443,7 +431,6 @@ services:
           
   msa-ai-ml:
     restart: unless-stopped
-    container_name: msa_ai_ml
     image: openmsa/openmsa:msa2-ai-ml-2.8.4-63c7fab8c111b6cc85da049f45ebc6175a9b269a
     healthcheck:
       test: ["CMD-SHELL", "python /msa_proj/health_check.py"]
@@ -458,7 +445,6 @@ services:
 
   msa-dev:
     restart: unless-stopped
-    container_name: msa_dev
     #build: ./lab/msa_dev
     image: openmsa/openmsa:msa2-linuxdev-2.8.4-cc82f1121bcbfbae9dad6028f57269f7caf0e9f7
     volumes:
@@ -474,7 +460,6 @@ services:
 
   linux-me:
     restart: unless-stopped
-    container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
     image: openmsa/openmsa:msa2-linuxme-2.8.4-7ebf88e805de70562ac837f06e6f7430a4b21ad3
     #build: ./lab/linux.me
@@ -497,7 +482,6 @@ services:
 
   linux-me-2:
     restart: unless-stopped
-    container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
     image: openmsa/openmsa:msa2-linuxme-2.8.4-7ebf88e805de70562ac837f06e6f7430a4b21ad3
     #build: ./lab/linux.me

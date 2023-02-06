@@ -5,3 +5,4 @@
 * systemctl daemon-reload
 * systemctl start sms-monitor
 * systemctl enable sms-monitor
+*chmod +x sms-monitor.sh
