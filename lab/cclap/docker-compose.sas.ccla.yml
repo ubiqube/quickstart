@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:d593bbebdd4b257ba0a97c19f13b6de1931c2247
+    image: ubiqube/msa2-front:0165c16b6d93c46c2c0d61620b14ae15da9fd5c5
     depends_on:
       - msa-api
       - msa-ui
@@ -98,7 +98,7 @@ services:
   #         - "node.labels.manager==true"
 
   msa-api:
-    image: ubiqube/msa2-api:3d2a9f6ac8fe7ea7aedaf6e1ec290225c4a6cdc1
+    image: ubiqube/msa2-api:38497ba641197172e7567e9065a28f5fab0bb597
     depends_on:
       - key-vault
     healthcheck:
@@ -138,7 +138,7 @@ services:
 #      msa-es: ES_IP
 
   msa-ui:
-    image: ubiqube/msa2-ui:31a72b87e076e7331281d54dbd212043e5a31bfa
+    image: ubiqube/msa2-ui:1e8bcf6128cc32f1bf324853fef27e358735af83
     depends_on:
       - msa-api
     healthcheck:
@@ -174,7 +174,7 @@ services:
   cloudclapp:
     depends_on:
       - msa-api
-    image: ubiqube/cloudclapp:31a72b87e076e7331281d54dbd212043e5a31bfa
+    image: ubiqube/cloudclapp:1e8bcf6128cc32f1bf324853fef27e358735af83
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     environment:
@@ -220,7 +220,7 @@ services:
 #          - "node.labels.apps==true"
 
   msa-sms:
-    image: ubiqube/msa2-sms:8087a76d0b43621bc403f2cf1fb58e16f2c70e89
+    image: ubiqube/msa2-sms:535ce7e11edf1ef6ae14713cc24a2955c739376a
     # depends_on:
     #   - db
     healthcheck:
@@ -252,7 +252,7 @@ services:
 #      db: 20.223.38.173
 
   msa-bud:
-    image: ubiqube/msa2-bud:1c0b396972541832da0f8c1372c429bbdec87bf8
+    image: ubiqube/msa2-bud:9b7613ce285b4ec364aee6b384802d2bb96e806f
     # depends_on:
     #   - db
     healthcheck:
@@ -274,7 +274,7 @@ services:
     depends_on:
     #  - db
       - msa-api
-    image: ubiqube/msa2-alarm:8990aa53c36f65a620d22e2c7c45674f4a8753d3
+    image: ubiqube/msa2-alarm:83927b9eda4cfa8fa2619963cb53cadb9b151f90
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -297,7 +297,7 @@ services:
 #      db: 20.223.38.173
 
   msa-monitoring:
-    image: ubiqube/msa2-monitoring:244d2706edda941858881ecd8f17089e3e1ea9b1
+    image: ubiqube/msa2-monitoring:2d92177414e88031f2696ca8ee2f772a0f750346
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -448,7 +448,7 @@ services:
 #      msa-es: ES_IP
 
   msa-dev:
-    image: ubiqube/msa2-linuxdev:eb1db19ccc346e4f92afa355bbb06e55cc15c22e
+    image: ubiqube/msa2-linuxdev:ce1d34cf2d57d7c1c7cf8351a7ed84a217d9e350
     depends_on:
       - msa-es
     volumes:
