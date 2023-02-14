@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:15555b51cd825f6db3701d446829158d25ac43b7
+    image: ubiqube/msa2-front:4ed719f15f525debcfdc639c096b082dc766ed12
     depends_on:
       - msa-api
       - msa-ui
@@ -98,7 +98,7 @@ services:
   #         - "node.labels.manager==true"
 
   msa-api:
-    image: ubiqube/msa2-api:748bb9ed2292af555fdd7efa8d3ab9d0c5bc088a
+    image: ubiqube/msa2-api:4f7921514788b48898083c7f9c8f13f4567b4be9
     depends_on:
       - key-vault
     healthcheck:
