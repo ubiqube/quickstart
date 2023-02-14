@@ -14,7 +14,7 @@ x-logging: &logging
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:134cb72f53fb1aaf8f19059ae8e57b9b7f1da8ae
+    image: ubiqube/msa2-front:c53058503135e39ec82e9d67eb1317d2a3c25b2a
     depends_on:
       - msa-api
       - msa-ui
@@ -316,7 +316,7 @@ services:
           - "msa_alarm"
 
   msa-monitoring:
-    image: ubiqube/msa2-monitoring:2d92177414e88031f2696ca8ee2f772a0f750346
+    image: ubiqube/msa2-monitoring:1c68bc6d28bd9d0d82e97dcc144a6224cc61b28b
     healthcheck:
       timeout: 5s
       retries: 10
