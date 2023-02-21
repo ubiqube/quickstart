@@ -14,7 +14,7 @@ x-logging: &logging
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:60f88c4ca22bfdd602383464975bdfa3f44f9e3f
+    image: ubiqube/msa2-front:b0b45fb4ce4c5f5ca870e0260daa2888279d9da6
     depends_on:
       - msa-api
       - msa-ui
@@ -167,7 +167,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: ubiqube/msa2-ui:6d775d4b556be8327281d6fa4a799cb4d0693a70
+    image: ubiqube/msa2-ui:765b25ac3ce8f5b316e2ad5481622c126174bc1e
     depends_on:
       - msa-api
     healthcheck:
