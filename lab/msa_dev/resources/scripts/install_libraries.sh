@@ -12,15 +12,16 @@ ASSUME_YES=false
 #
 # versioning of the libraries that are installed by the script
 #
-TAG_WF_KIBANA_DASHBOARD=v2.6.0      # https://github.com/openmsa/workflow_kibana
-TAG_WF_TOPOLOGY=v2.6.0              # https://github.com/openmsa/workflow_topology
-TAG_PYTHON_SDK=v2.6.0               # https://github.com/openmsa/python-sdk
-TAG_PHP_SDK=v2.6.1                  # https://github.com/openmsa/php-sdk
-TAG_WF_ETSI_MANO=v2.6.0             # https://github.com/openmsa/etsi-mano
-TAG_ADAPTER=v2.6.2                  # https://github.com/openmsa/Adapters
-TAG_WORKFLOWS=v2.6.0                # https://github.com/openmsa/Workflows
-TAG_MICROSERVICES=v2.6.0            # https://github.com/openmsa/Microservices
+TAG_WF_KIBANA_DASHBOARD=v2.8.4      # https://github.com/openmsa/workflow_kibana
+TAG_WF_TOPOLOGY=v2.8.6              # https://github.com/openmsa/workflow_topology
+TAG_PHP_SDK=v2.6.0                  # https://github.com/openmsa/php-sdk
 TAG_WF_MINILAB=v2.6.0               # https://github.com/ubiqube/workflow_quickstart_minilab
+TAG_PYTHON_SDK=v2.8.5               # https://github.com/openmsa/python-sdk
+TAG_WF_ETSI_MANO=v3.0.0             # https://github.com/openmsa/etsi-mano-workflows
+TAG_ADAPTER=v2.8.6                  # https://github.com/openmsa/Adapters
+TAG_WORKFLOWS=v2.8.5                # https://github.com/openmsa/Workflows
+TAG_MICROSERVICES=v2.8.6            # https://github.com/openmsa/Microservices
+TAG_BLUEPRINTS=CCLA-2.0.0           # https://github.com/openmsa/Blueprints
 
 
 install_license() {
@@ -47,6 +48,7 @@ init_intall() {
     mkdir -p /opt/fmc_repository/CommandDefinition/microservices;
     mkdir -p /opt/fmc_repository/Configuration;
     mkdir -p /opt/fmc_repository/Datafiles;
+    mkdir -p /opt/fmc_repository/Datafiles/Environments;
     mkdir -p /opt/fmc_repository/Documentation;
     mkdir -p /opt/fmc_repository/Firmware;
     mkdir -p /opt/fmc_repository/License;
@@ -103,7 +105,7 @@ update_git_repo () {
                 [Nn]* )
                     echo "> stay on master ? [y]/[N]"
                     read  resp
-                    if [[ $resp != "" && $resp == "y" ]];
+                    if [[ ! -z "$resp" && "$resp" == "y" ]];
                     then
                         echo "> running installation/update on master branch on local repository"
                     else
@@ -118,7 +120,7 @@ update_git_repo () {
             esac
         fi
 
-        if [[ $ASSUME_YES == false && "$TAG" != "" ]];
+        if [[ $ASSUME_YES == false && ! -z "$TAG" ]];
         then
             echo "> installing version $TAG for $REPO_DIR"
             echo "> available release branches"
@@ -149,7 +151,7 @@ update_git_repo () {
             fi
             echo "> Create a new branch: $TAG based on the tag $TAG"
             git checkout tags/$TAG -b $TAG
-        elif [[ $ASSUME_YES == false && "$DEFAULT_BRANCH" != "" ]];
+        elif [[ $ASSUME_YES == false && ! -z "$DEFAULT_BRANCH" ]];
         then
             git stash
             echo "> Checking merge $DEFAULT_BRANCH to $CURRENT_BR"
@@ -201,13 +203,13 @@ update_git_repo () {
         git clone $REPO_URL $REPO_DIR
         cd $REPO_DIR
         git checkout $DEFAULT_BRANCH;
-        if [ "$TAG" != ""  ];
+        if [ ! -z "$TAG" ];
         then
             echo "> Create a new branch: $TAG based on the tag $TAG"
             git checkout tags/$TAG -b $TAG
         fi
 
-        if [ "$DEFAULT_DEV_BRANCH" != ""  ];
+        if [ ! -z "$DEFAULT_DEV_BRANCH" ];
         then
             echo "> Create a new developement branch: $DEFAULT_DEV_BRANCH based on $DEFAULT_BRANCH"
             git checkout -b $DEFAULT_DEV_BRANCH
@@ -245,7 +247,12 @@ update_all_github_repo() {
 
     if [[ $install_type = "all" || $install_type = "mano" ]];
     then
-       update_git_repo "https://github.com/openmsa/etsi-mano.git" "/opt/fmc_repository" "OpenMSA_MANO" $GITHUB_DEFAULT_BRANCH "" $TAG_WF_ETSI_MANO false
+       update_git_repo "https://github.com/openmsa/etsi-mano-workflows.git" "/opt/fmc_repository" "etsi-mano-workflows" $GITHUB_DEFAULT_BRANCH "" $TAG_WF_ETSI_MANO false
+    fi
+    
+    if [[ $install_type = "ccla" ]];
+    then
+       update_git_repo "https://github.com/openmsa/Blueprints" "/opt/fmc_repository" "OpenMSA_Blueprints" $GITHUB_DEFAULT_BRANCH "" $TAG_BLUEPRINTS false
     fi
 
     if [[ $install_type = "all" || $install_type = "py" ]];
@@ -326,6 +333,8 @@ install_microservices () {
     ln -fsn ../OpenMSA_MS/HP HP; ln -fsn ../OpenMSA_MS/.meta_HP .meta_HP;
     echo "  >> LANNER/IPMI"
     ln -fsn ../OpenMSA_MS/LANNER LANNER; ln -fsn ../OpenMSA_MS/.meta_LANNER .meta_LANNER;
+    echo "  >> MONITORING/GENERIC"
+    ln -fsn ../OpenMSA_MS/ASSURANCE ASSURANCE;
 
     echo "DONE"
 
@@ -334,7 +343,7 @@ install_microservices () {
 install_workflows() {
 
     echo "-------------------------------------------------------------------------------"
-    echo " Install some WF from OpenMSA github github repository"
+    echo " Install Workflows from OpenMSA github github repository"
     echo "-------------------------------------------------------------------------------"
     cd /opt/fmc_repository/Process;
     echo "  >> WF references and libs"
@@ -343,12 +352,11 @@ install_workflows() {
     echo "  >> WF tutorials"
     ln -fsn ../OpenMSA_WF/Tutorials Tutorials;
     ln -fsn ../OpenMSA_WF/.meta_Tutorials .meta_Tutorials;
-    echo "  >> BIOS_Automation"
-    ln -fsn ../OpenMSA_WF/BIOS_Automation BIOS_Automation
-    ln -fsn ../OpenMSA_WF/.meta_BIOS_Automation .meta_BIOS_Automation
- #   echo "  >> ETSI-MANO"
- #   ln -fsn ../OpenMSA_MANO/WORKFLOWS/ETSI-MANO ETSI-MANO
- #   ln -fsn ../OpenMSA_MANO/WORKFLOWS/.meta_ETSI-MANO .meta_ETSI-MANO
+#    echo "  >> BIOS_Automation"
+#    ln -fsn ../OpenMSA_WF/BIOS_Automation BIOS_Automation
+#    ln -fsn ../OpenMSA_WF/.meta_BIOS_Automation .meta_BIOS_Automation
+    echo "  >> ETSI-MANO $TAG_WF_ETSI_MANO"
+    ln -fsn ../etsi-mano-workflows etsi-mano-workflows
     echo "  >> Private Cloud - Openstack"
     ln -fsn ../OpenMSA_WF/Private_Cloud Private_Cloud
     ln -fsn ../OpenMSA_WF/.meta_Private_Cloud .meta_Private_Cloud
@@ -367,12 +375,12 @@ install_workflows() {
     echo "  >> MSA / Utils"
     ln -fsn ../OpenMSA_WF/Utils/Manage_Device_Conf_Variables Manage_Device_Conf_Variables
     ln -fsn ../OpenMSA_WF/Utils/.meta_Manage_Device_Conf_Variables .meta_Manage_Device_Conf_Variables
-    echo "  >> MSA / Utils"
-    ln -fsn ../OpenMSA_WF/BIOS_Automation BIOS_Automation
-    ln -fsn ../OpenMSA_WF/.meta_BIOS_Automation .meta_BIOS_Automation
-    echo "  >> AI ML Upgrade MSA"
-    ln -fsn ../OpenMSA_WF/Upgrade_MSActivator Upgrade_MSActivator
-    ln -fsn ../OpenMSA_WF/.meta_Upgrade_MSActivator .meta_Upgrade_MSActivator
+#    echo "  >> MSA / Utils"
+#    ln -fsn ../OpenMSA_WF/BIOS_Automation BIOS_Automation
+#    ln -fsn ../OpenMSA_WF/.meta_BIOS_Automation .meta_BIOS_Automation
+#    echo "  >> AI ML Upgrade MSA"
+#    ln -fsn ../OpenMSA_WF/Upgrade_MSActivator Upgrade_MSActivator
+#    ln -fsn ../OpenMSA_WF/.meta_Upgrade_MSActivator .meta_Upgrade_MSActivator
 
 
     echo "-------------------------------------------------------------------------------"
@@ -384,6 +392,34 @@ install_workflows() {
 
     echo "DONE"
 
+}
+
+install_mano_workflows() {
+
+    echo "-------------------------------------------------------------------------------"
+    echo " Install MANO Workflows from OpenMSA github repository"
+    echo "-------------------------------------------------------------------------------"
+    cd /opt/fmc_repository/Process;
+    echo "  >> WF references and libs"
+    ln -fsn ../php_sdk/Reference Reference;
+    ln -fsn ../php_sdk/.meta_Reference .meta_Reference;
+    echo "  >> ETSI-MANO $TAG_WF_ETSI_MANO"
+    ln -fsn ../etsi-mano-workflows etsi-mano-workflows
+ 
+    echo "DONE"
+
+}
+
+install_ccla_lib() {
+
+    echo "-------------------------------------------------------------------------------"
+    echo " Install Cloudclapp library from OpenMSA github repository"
+    echo "-------------------------------------------------------------------------------"
+    
+    cd /opt/fmc_repository/Blueprints;
+    echo "  >> CCLA references and libs"
+    ln -fsn ../OpenMSA_Blueprints/Catalog Catalog;
+    echo "DONE"
 }
 
 finalize_install() {
@@ -402,6 +438,7 @@ finalize_install() {
         echo "-------------------------------------------------------------------------------"
         echo " service restart"
         echo "-------------------------------------------------------------------------------"
+        echo "  >> execute [sudo docker-compose restart msa_dev] to update the Repository"
         echo "  >> execute [sudo docker-compose restart msa_sms] to restart the CoreEngine service"
         echo "  >> execute [sudo docker-compose restart msa_api] to restart the API service"
         echo "DONE"
@@ -418,8 +455,9 @@ usage() {
     echo "ms:           install/update the microservices from https://github.com/openmsa/Microservices"
     echo "wf:           install/update the worfklows from https://github.com/openmsa/Workflows"
     echo "da:           install/update the adapters from https://github.com/openmsa/Adapters"
-    echo "mano:         install/update the python-sdk from https://github.com/openmsa/etsi-mano"
+    echo "mano:         install/update the mano from https://github.com/openmsa/etsi-mano"
     echo "py:           install/update the python-sdk from https://github.com/openmsa/python-sdk"
+    echo "ccla:         install/update the cloudclapp libraries, like blueprints from https://github.com/openmsa/Blueprints"
     echo
     echo "Options:"
     echo "--lic:          force license installation"
@@ -498,6 +536,12 @@ main() {
         mano)
             init_intall
             update_all_github_repo  $cmd
+            install_mano_workflows
+            ;;
+        ccla)
+            init_intall
+            update_all_github_repo  $cmd
+            install_ccla_lib
             ;;
         *)
             echo "Error: unknown command: $1"
