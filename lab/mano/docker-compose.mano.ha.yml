@@ -31,6 +31,10 @@ services:
         reservations:
           cpus: '0.50'
           memory: 2048M
+    networks:
+      default:
+        aliases:
+          - "mano_artemis"
 
   mano-auth:
     image: jboss/keycloak:16.1.1
@@ -60,6 +64,10 @@ services:
         published: 8110
         protocol: tcp
         mode: ingress
+    networks:
+      default:
+        aliases:
+          - "mano_auth"
 
   mano-helm3:
     image: ubiqube/helm3-webapp
@@ -76,6 +84,10 @@ services:
         reservations:
           cpus: '0.50'
           memory: 2048M
+    networks:
+      default:
+        aliases:
+          - "mano_helm3"
 
   mano-nfvo:
     image: ubiqube/mano-nfvo-tm22:uat30
@@ -95,6 +107,10 @@ services:
     secrets:
       - source: vnfm.keycloak.credentials.secret
         target: keycloak.credentials.secret
+    networks:
+      default:
+        aliases:
+          - "mano_nfvo"
 
   mano-vnfm:
     image: ubiqube/mano-vnfm-tm22:uat30
@@ -114,6 +130,10 @@ services:
     secrets:
       - source: nfvo.keycloak.credentials.secret
         target: keycloak.credentials.secret
+    networks:
+      default:
+        aliases:
+          - "mano_vnfm"
 
 secrets:
   vnfm.keycloak.credentials.secret:
