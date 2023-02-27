@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:4ed719f15f525debcfdc639c096b082dc766ed12
+    image: ubiqube/msa2-front:935d7a705eb5f533841cb1a11993068aa5c57748
     depends_on:
       - msa-api
       - msa-ui
@@ -98,7 +98,7 @@ services:
   #         - "node.labels.manager==true"
 
   msa-api:
-    image: ubiqube/msa2-api:4f7921514788b48898083c7f9c8f13f4567b4be9
+    image: ubiqube/msa2-api:28fb6b0897c21f5619423e713d6e65b5f5225571
     depends_on:
       - key-vault
     healthcheck:
@@ -138,7 +138,7 @@ services:
 #      msa-es: ES_IP
 
   msa-ui:
-    image: ubiqube/msa2-ui:32a99cbf4f7c566121fcaec778440cb3fcbc9fd1
+    image: ubiqube/msa2-ui:f7bdb4cb469d31ff91e6e5fe0fd3d1cd1d55fbf0
     depends_on:
       - msa-api
     healthcheck:
@@ -174,7 +174,7 @@ services:
   cloudclapp:
     depends_on:
       - msa-api
-    image: ubiqube/cloudclapp:32a99cbf4f7c566121fcaec778440cb3fcbc9fd1
+    image: ubiqube/cloudclapp:f7bdb4cb469d31ff91e6e5fe0fd3d1cd1d55fbf0
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     environment:
@@ -224,7 +224,7 @@ services:
 #          - "node.labels.apps==true"
 
   msa-sms:
-    image: ubiqube/msa2-sms:535ce7e11edf1ef6ae14713cc24a2955c739376a
+    image: ubiqube/msa2-sms:2ccddee00915beced393a989d7c21b6569af07cb
     # depends_on:
     #   - db
     healthcheck:
@@ -278,7 +278,7 @@ services:
     depends_on:
     #  - db
       - msa-api
-    image: ubiqube/msa2-alarm:8ba324b4ceb711fb67a0ad88120dbe16de51c126
+    image: ubiqube/msa2-alarm:98f8f47175525f36a696a8d8382d1f3289839106
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -301,7 +301,7 @@ services:
 #      db: 20.223.38.173
 
   msa-monitoring:
-    image: ubiqube/msa2-monitoring:1c68bc6d28bd9d0d82e97dcc144a6224cc61b28b
+    image: ubiqube/msa2-monitoring:94e7b1355f3fa4ba2959b529fcff40e9876b78c4
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -384,7 +384,7 @@ services:
           - "msa_es"
 
   msa-kibana:
-    image: ubiqube/msa2-kibana:118f089ce6a140a7ef9991798c1029bace926539
+    image: ubiqube/msa2-kibana:b5a0a64970f780ffddaf884f6bbff149431f0026
     depends_on:
       - msa-es
     ports:
@@ -452,7 +452,7 @@ services:
 #      msa-es: ES_IP
 
   msa-dev:
-    image: ubiqube/msa2-linuxdev:ce1d34cf2d57d7c1c7cf8351a7ed84a217d9e350
+    image: ubiqube/msa2-linuxdev:d0055a9eb5f35669f88ed06b92005efe3b1c9989
     depends_on:
       - msa-es
     volumes:
