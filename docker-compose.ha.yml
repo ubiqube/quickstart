@@ -437,7 +437,7 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
       - "msa_es:/usr/share/elasticsearch/data"
       - "msa_es_config:/usr/share/elasticsearch/config"
-   logging:
+    logging:
       <<: *logging
 
   msa-kibana:
