@@ -1,0 +1,71 @@
+version: "3.8"
+
+services:
+  cloudclapp:
+    depends_on:
+      - msa-api
+    image: ubiqube/cloudclapp:d3e49706397d79cf9e04bad64a63dfba62ba1159
+    environment:
+      - UBIQUBE_CAPTCHA_SITE_KEY=6Ld2zF4dAAAAAJlqZMIHpPeb3aYhcyy1K3NWPtqi
+      - UBIQUBE_LICENSE_AGREEMENT_LINK=https:\/\/cloudclapp.com\/EndUserLicenceAgreement.html
+    profiles: ["ccla"]
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+
+  ccla-scan-app:
+    image: ubiqube/cloudclapp-scan:eab7f66cf538fd6ae00775d397d13d58041b3760
+    environment:
+      - UBIQUBE_ZAP_TOKEN=7da091fe-63a4-48c0-9bfa-7614c49feb7c
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+
+  ccla-scan-env:
+    image: owasp/zap2docker-stable
+    entrypoint:
+      - zap.sh
+      - -daemon
+      - -host
+      - 0.0.0.0
+      - -config
+      - api.addrs.addr.name=.*
+      - -config
+      - api.addrs.addr.regex=true
+      - -config
+      - api.key=7da091fe-63a4-48c0-9bfa-7614c49feb7c
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+
+  key-vault:
+    depends_on:
+      - db
+    image: vault:latest
+    ports:
+      - "8200:8200"
+    volumes:
+      - ./lab/key_vault/config.hcl:/vault/config/config.hcl
+    environment:
+      VAULT_ADDR: "http://0.0.0.0:8200"
+    cap_add:
+      - IPC_LOCK
+    command: server
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.role==manager"
+
+  msa-sms:
+    environment:
+      - UBIQUBE_INSTALL_AWS_CLI=true
+
+  msa-dev:
+    command: [ "/docker-entrypoint.sh", "--cloudclapp" ]
