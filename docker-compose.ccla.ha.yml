@@ -37,6 +37,10 @@ services:
       - api.addrs.addr.regex=true
       - -config
       - api.key=7da091fe-63a4-48c0-9bfa-7614c49feb7c
+      - -config
+      - network.localServers.mainProxy.alpn.enabled=false
+      - -config
+      - network.localServers.mainProxy.address=0.0.0.0
     deploy:
       replicas: 1
       placement:
