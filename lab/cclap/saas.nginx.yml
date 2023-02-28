@@ -1,6 +1,10 @@
 version: "3.8"
 
 services:
+    db:
+     ports:
+      - "5432:5432"
+      
     msa-front:
        volumes:
         - "/mnt/NASVolume/msa_front_conf/http_nginx.conf:/etc/nginx/conf.d/http_nginx.conf"
