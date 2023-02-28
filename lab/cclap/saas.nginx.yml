@@ -3,6 +3,6 @@ version: "3.8"
 services:
     msa-front:
        volumes:
-        - "/mnt/NASVolume/msa_front/http_nginx.conf:/etc/nginx/conf.d/http_nginx.conf"
-        - "/mnt/NASVolume/msa_front/privkey.pem:/etc/nginx/ssl/server.key"
-        - "/mnt/NASVolume/msa_front/fullchain.pem:/etc/nginx/ssl/server.crt"
+        - "/mnt/NASVolume/msa_front_conf/http_nginx.conf:/etc/nginx/conf.d/http_nginx.conf"
+        - "/mnt/NASVolume/msa_front_conf/privkey.pem:/etc/nginx/ssl/server.key"
+        - "/mnt/NASVolume/msa_front_conf/fullchain.pem:/etc/nginx/ssl/server.crt"
