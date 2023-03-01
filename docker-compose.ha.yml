@@ -436,7 +436,7 @@ services:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
       - "msa_es:/usr/share/elasticsearch/data"
-      - "/mnt/NASVolume/msa_es_config:/usr/share/elasticsearch/config"
+      - "msa_es_config:/usr/share/elasticsearch/config"
     logging:
       <<: *logging
 
@@ -541,6 +541,7 @@ volumes:
   msa_sms_logs:
   msa_monitbulkfiles:
   msa_es:
+  msa_es_config:
 
 networks:
   default:
