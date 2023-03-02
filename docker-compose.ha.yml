@@ -1,8 +1,9 @@
 # This docker-compose file is provided as an example to create a Docker Swarm based MSActivator setup
 version: "3.8"
 
-x-es-credential: &es-credential
+x-es-configuration: &es-configuration
     ES_CREDENTIALS: c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+    ES_SERVERS: "msa-es"
 
 x-logging: &logging
   driver: "json-file"
@@ -151,7 +152,7 @@ services:
         condition: on-failure
         max_attempts: 10
     environment:
-      <<: *es-credential
+      <<: *es-configuration
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
@@ -238,7 +239,7 @@ services:
       start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
-      <<: *es-credential
+      <<: *es-configuration
       CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
@@ -298,7 +299,7 @@ services:
       start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
-      <<: *es-credential
+      <<: *es-configuration
       CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
     deploy:
       replicas: 1
@@ -328,7 +329,7 @@ services:
       - msa-dev
       - msa-api
     environment:
-      <<: *es-credential
+      <<: *es-configuration
       CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
@@ -378,7 +379,7 @@ services:
     environment:
       ELASTICSEARCH_URL: "http://msa_es:9200"
       ELASTICSEARCH_HOSTS: "http://msa_es:9200"
-      <<: *es-credential
+      <<: *es-configuration
     deploy:
       replicas: 1
       placement:
@@ -410,7 +411,7 @@ services:
       bootstrap.memory_lock: "true"
       xpack.security.enabled: "true"
       ES_JAVA_OPTS: "-Xms512m -Xmx1024m"
-      <<: *es-credential
+      <<: *es-configuration
     ulimits:
       memlock:
         soft: -1

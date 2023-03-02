@@ -1,7 +1,8 @@
 version: "3.8"
 
-x-es-credential: &es-credential
+x-es-configuration: &es-configuration
     ES_CREDENTIALS: c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+    ES_SERVERS: "msa-es"
 
 x-logging: &logging
   driver: "json-file"
@@ -60,7 +61,7 @@ services:
       default:
         aliases:
           - "msa_front"   #
-    # uncomment one of the 2 sections below when installing a custom certificate 
+    # uncomment one of the 2 sections below when installing a custom certificate
     # - Docker standard standalone installation
     #volumes:
     #    - "msa_front:/etc/nginx/ssl"
@@ -106,14 +107,14 @@ services:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
       retries: 10
       interval: 10s
-      start_period: 5s    
+      start_period: 5s
     depends_on:
       db:
         condition: service_healthy
       msa-es:
         condition: service_started
     environment:
-      <<: *es-credential
+      <<: *es-configuration
       UBIQUBE_CAPTCHA_SECRET_KEY: 6Ld2zF4dAAAAABWD9Q6QAhBql_CIynUeVKaTiBgT
     logging:
       <<: *logging
@@ -172,10 +173,10 @@ services:
       timeout: 5s
       retries: 10
       interval: 10s
-      start_period: 30s      
+      start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
-      <<: *es-credential
+      <<: *es-configuration
     cap_add:
       - NET_ADMIN
     depends_on:
@@ -237,7 +238,7 @@ services:
       msa-es:
         condition: service_started
     environment:
-      <<: *es-credential
+      <<: *es-configuration
     logging:
       <<: *logging
     volumes:
@@ -246,7 +247,7 @@ services:
       default:
         aliases:
           - "msa_alarm"
-  
+
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
@@ -261,7 +262,7 @@ services:
       msa-dev:
         condition: service_started
     environment:
-      <<: *es-credential
+      <<: *es-configuration
     logging:
       <<: *logging
     volumes:
@@ -325,13 +326,13 @@ services:
       timeout: 2s
       retries: 10
       interval: 10s
-      start_period: 30s 
+      start_period: 30s
     environment:
       discovery.type: "single-node"
       script.painless.regex.enabled: "true"
       bootstrap.memory_lock: "true"
       ES_JAVA_OPTS: "-Xms512m -Xmx1024m"
-      <<: *es-credential
+      <<: *es-configuration
     logging:
       <<: *logging
     volumes:
@@ -367,7 +368,7 @@ services:
       default:
         aliases:
           - "msa_cerebro"
-  
+
   msa-kibana:
     restart: unless-stopped
     container_name: msa_kibana
@@ -380,7 +381,7 @@ services:
     environment:
       ELASTICSEARCH_URL: "http://msa_es:9200"
       ELASTICSEARCH_HOSTS: "http://msa_es:9200"
-      <<: *es-credential
+      <<: *es-configuration
     logging:
       <<: *logging
     networks:
