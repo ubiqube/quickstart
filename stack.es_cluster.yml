@@ -1,6 +1,10 @@
 # This docker-compose file is provided as an example to create a Docker Swarm based MSActivator setup
 version: "3.8"
 
+x-es-configuration: &es-configuration
+    ES_CREDENTIALS: c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+    ES_SERVERS: "msa-es"
+
 services:
   msa_front:
     image: openmsa/openmsa:msa2-front-2.8.6-58c801bfe5791d2edcb601a8d75942eac8d58a8e
@@ -10,11 +14,11 @@ services:
       - camunda
       - msa_ai_ml
     healthcheck:
-      test: ["CMD-SHELL", "curl -k --fail https://localhost"] 
+      test: ["CMD-SHELL", "curl -k --fail https://localhost"]
       timeout: 2s
       retries: 10
       interval: 10s
-      start_period: 30s 
+      start_period: 30s
     deploy:
       replicas: 1
       placement:
@@ -44,7 +48,7 @@ services:
         mode: ingress
       - "5200-5200:5200-5200/udp"
     #
-    # uncomment one of the 2 sections below when installing a custom certificate 
+    # uncomment one of the 2 sections below when installing a custom certificate
     # - Docker standard standalone installation
     #volumes:
     #    - "msa_front:/etc/nginx/ssl"
@@ -82,7 +86,7 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
- 
+
   msa_api:
     image: openmsa/openmsa:msa2-api-2.8.6-a746dc4231157f942cbafaa680eb18e21729190b
     depends_on:
@@ -90,7 +94,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      <<: *es-configuration
     deploy:
       replicas: 1
       placement:
@@ -141,9 +145,9 @@ services:
     depends_on:
       - db
     healthcheck:
-      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"] 
+      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      <<: *es-configuration
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
@@ -173,7 +177,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      <<: *es-configuration
     deploy:
       replicas: 1
       placement:
@@ -190,7 +194,7 @@ services:
       - msa_es
       - msa_dev
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      <<: *es-configuration
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
@@ -233,7 +237,7 @@ services:
       '
     user: "0"
     working_dir: /usr/share/elasticsearch
-    volumes: 
+    volumes:
       - "/mnt/NASVolume/msa_es_certs:/usr/share/elasticsearch/config/certificates"
 
   msa_es:
@@ -243,29 +247,29 @@ services:
       timeout: 2s
       retries: 10
       interval: 10s
-      start_period: 30s 
+      start_period: 30s
     deploy:
       replicas: 1
       placement:
         max_replicas_per_node: 1
-    depends_on: 
+    depends_on:
       - msa_es_create_certs
     environment:
-      - node.name=msa_es
-      - discovery.seed_hosts=msa_es
-      - cluster.initial_master_nodes=msa_es
-      - cluster.name=es_cluster
-      - "script.painless.regex.enabled=true"
-#      - "bootstrap.memory_lock=true"
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
-      - xpack.security.enabled=true
-      - xpack.security.transport.ssl.enabled=true
-      - xpack.security.transport.ssl.verification_mode=certificate
-      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
-      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
-      - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
-      - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
-#      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
+      <<: *es-configuration
+      node.name: "msa_es"
+      discovery.seed_hosts: "msa_es"
+      cluster.initial_master_nodes: "msa_es"
+      cluster.name: "es_cluster"
+      script.painless.regex.enabled: "true"
+#      bootstrap.memory_lock: "true"
+      xpack.security.enabled: "true"
+      xpack.security.transport.ssl.enabled: "true"
+      xpack.security.transport.ssl.verification_mode: "certificate"
+      xpack.security.transport.ssl.key: "/usr/share/elasticsearch/config/certificates/server.pem"
+      xpack.security.transport.ssl.certificate: "/usr/share/elasticsearch/config/certificates/server.crt"
+      xpack.security.http.ssl.key: "/usr/share/elasticsearch/config/certificates/server.pem"
+      xpack.security.http.ssl.certificate: "/usr/share/elasticsearch/config/certificates/server.crt"
+#      ES_JAVA_OPTS: "-Xms1024m -Xmx1024m"
     ports:
       - "9200:9200"
     networks:
@@ -284,9 +288,9 @@ services:
     ports:
       - "5601:5601"
     environment:
-      - ELASTICSEARCH_URL=http://msa_es:9200
-      - ELASTICSEARCH_HOSTS=http://msa_es:9200
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      ELASTICSEARCH_URL: "http://msa_es:9200"
+      ELASTICSEARCH_HOSTS: "http://msa_es:9200"
+      <<: *es-configuration
     networks:
       default:
         aliases:
