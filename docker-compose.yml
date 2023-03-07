@@ -16,7 +16,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:b9cd241bc9a32ca1778bf25675f22d888ab652d1
+    image: ubiqube/msa2-front:776453dc686fd7b691cd93b1b5884600df0a020e
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -157,7 +157,7 @@ services:
     - FEATURE_WORKFLOW_OWNER=false
     - FEATURE_PERMISSION_PROFILE_LABELS=false
     - FEATURE_BPM=true
-    - UBIQUBE_ES_SECURITY_DISABLED=false
+    - UBIQUBE_ES_SECURITY_DISABLED=true
     logging:
       <<: *logging
     networks:
@@ -251,7 +251,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: openmsa/openmsa:msa2-monitoring-2.8.6-94e7b1355f3fa4ba2959b529fcff40e9876b78c4
+    image: ubiqube/msa2-monitoring:4ea1ba6deed355998d7b946b015b61b0e04a0fab
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -262,6 +262,7 @@ services:
       msa-dev:
         condition: service_started
     environment:
+      ES_MON: "yes"
       <<: *es-configuration
     logging:
       <<: *logging
@@ -328,19 +329,38 @@ services:
       interval: 10s
       start_period: 30s
     environment:
-      discovery.type: "single-node"
+      node.roles: ingest
+      node.name: ubiqube_client1
+      discovery.seed_hosts: "172.31.0.161"
+      cluster.initial_master_nodes: "ubiqube_n1"
+      cluster.name: "ubiqube"
+      network.host: "0.0.0.0"
+      http.host: "0.0.0.0"
+      network.publish_host: "172.31.0.146"
       script.painless.regex.enabled: "true"
       bootstrap.memory_lock: "true"
-      ES_JAVA_OPTS: "-Xms512m -Xmx1024m"
+      xpack.security.enabled: "true"
+      xpack.security.transport.ssl.enabled: "true"
+      xpack.security.transport.ssl.verification_mode: "certificate"
+      xpack.security.transport.ssl.client_authentication: "required"
+      xpack.security.transport.ssl.keystore.path: "elastic-certificates.p12"
+      xpack.security.transport.ssl.truststore.path: "elastic-certificates.p12"
+      ES_JAVA_OPTS: "-Xms2048m -Xmx2048m"
       <<: *es-configuration
     logging:
       <<: *logging
     volumes:
       - "msa_es:/usr/share/elasticsearch/data"
+      - "msa_es_config:/usr/share/elasticsearch/config"
     ulimits:
       memlock:
         soft: -1
         hard: -1
+    ports:
+      - "9300:9300"
+      - "9200:9200"
+      - "9300:9300/udp"
+      - "9200:9200/udp"
     networks:
       default:
         aliases:
@@ -464,6 +484,7 @@ volumes:
   msa_entities:
   msa_repository:
   msa_es:
+  msa_es_config:
   rrd_repository:
   msa_api_logs:
   msa_api_keystore:
