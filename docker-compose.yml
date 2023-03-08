@@ -329,23 +329,10 @@ services:
       interval: 10s
       start_period: 30s
     environment:
-      node.roles: ingest
-      node.name: ubiqube_client1
-      discovery.seed_hosts: "172.31.0.161"
-      cluster.initial_master_nodes: "ubiqube_n1"
-      cluster.name: "ubiqube"
-      network.host: "0.0.0.0"
-      http.host: "0.0.0.0"
-      network.publish_host: "172.31.0.146"
+      discovery.type: "single-node"
       script.painless.regex.enabled: "true"
       bootstrap.memory_lock: "true"
-      xpack.security.enabled: "true"
-      xpack.security.transport.ssl.enabled: "true"
-      xpack.security.transport.ssl.verification_mode: "certificate"
-      xpack.security.transport.ssl.client_authentication: "required"
-      xpack.security.transport.ssl.keystore.path: "elastic-certificates.p12"
-      xpack.security.transport.ssl.truststore.path: "elastic-certificates.p12"
-      ES_JAVA_OPTS: "-Xms2048m -Xmx2048m"
+      ES_JAVA_OPTS: "-Xms512m -Xmx1024m"
       <<: *es-configuration
     logging:
       <<: *logging
