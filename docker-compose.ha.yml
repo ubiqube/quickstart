@@ -472,8 +472,8 @@ services:
           - "node.labels.worker==app"
     environment:
       - no_proxy=127.0.0.1,localhost,::1,.repo,10.0.0.0/8,.tm.com.my
-      - http_proxy=http://user@172.17.28.150:8000/
-      - https_proxy=http://user@172.17.28.150:8000/
+      - http_proxy=http://10.242.225.20:8000/
+      - https_proxy=http://10.242.225.20:8000/
     volumes:
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
