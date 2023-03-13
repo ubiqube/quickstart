@@ -102,6 +102,40 @@ services:
     logging:
       <<: *logging
 
+  db-replica:
+    image: openmsa/openmsa:msa2-db-2.8.5-c880962c3b96ca67ac457ca34c4b5363fcba0c32
+    healthcheck:
+      test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h db"]
+      timeout: 20s
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==db"
+    environment:
+      CAMUNDA_PASSWORD: camunda
+      CAMUNDA_DB: process-engine
+      CAMUNDA_USER: camunda
+      KEY_VAULT_USER: key_vault
+      KEY_VAULT_DB: key_vault
+      PG_MODE: replica
+      PG_PRIMARY_USER: postgres
+      PG_PRIMARY_PASSWORD: my_db_password
+      PG_USER: postgres
+      PG_PASSWORD: my_db_password
+      PG_DATABASE: POSTGRESQL
+      PG_ROOT_PASSWORD: my_db_password
+      PG_PRIMARY_PORT: 5432
+      PG_PRIMARY_HOST: db
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+    logging:
+      <<: *logging
+
   msa-api:
     image: openmsa/openmsa:msa2-api-2.8.5-5b300286e29aaf9c3f1621c1cd1acc13155a8037
     depends_on:
