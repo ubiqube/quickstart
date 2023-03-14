@@ -31,7 +31,6 @@ services:
           cpus: '0.50'
           memory: 2048M
 
-
   mano-auth:
     image: jboss/keycloak:16.1.1
     deploy:
