@@ -293,6 +293,8 @@ services:
         published: 514
         protocol: tcp
         mode: host
+    volumes:
+      - "rsyslog_conf:/etc"
     networks:
       default:
         aliases:
@@ -483,6 +485,7 @@ volumes:
   msa_ai_ml_db:
   msa_bulkfiles:
   msa_monitbulkfiles:
+  rsyslog_conf:
 
 networks:
   default:
