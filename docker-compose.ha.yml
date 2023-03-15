@@ -205,7 +205,7 @@ services:
   msa-rsyslog:
     depends_on:
       - msa-sms
-    image: openmsa/openmsa:msa2-rsyslog-2.8.6-54a250d9ef49db2454c5ed9111d43cebc8e9ef9a
+    image: ubiqube/msa2-rsyslog:675fae5eff33a036f425a41c12684b2a06e043db
     deploy:
       replicas: 1
       placement:
@@ -219,6 +219,10 @@ services:
         mode: ingress
       - target: 514
         published: 514
+        protocol: tcp
+        mode: ingress
+      - target: 6514
+        published: 6514
         protocol: tcp
         mode: ingress
     logging:

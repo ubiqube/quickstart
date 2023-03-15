@@ -16,7 +16,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:797bdea951a87f9a1f9cbcf5b880c6cccb24db00
+    image: ubiqube/msa2-front:8d9b06a8a1e70dbcd878696ba4e8dbeaff86d93a
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -283,7 +283,7 @@ services:
     container_name: msa_rsyslog
     depends_on:
       - msa-sms
-    image: openmsa/openmsa:msa2-rsyslog-2.8.6-54a250d9ef49db2454c5ed9111d43cebc8e9ef9a
+    image: ubiqube/msa2-rsyslog:675fae5eff33a036f425a41c12684b2a06e043db
     ports:
       - target: 514
         published: 514
@@ -293,6 +293,10 @@ services:
         published: 514
         protocol: tcp
         mode: host
+      - target: 6514
+        published: 6514
+        protocol: tcp
+        mode: ingress
     volumes:
       - "rsyslog_conf:/etc"
     networks:
