@@ -154,7 +154,7 @@ function add_default_route {
   fi
 }
 
-function add_514_nat_exception {
+function add_nat_exception {
   # $1 - namespace id
   # $2 - destinnation ip prefix
 
@@ -162,6 +162,7 @@ function add_514_nat_exception {
   if [ $? -eq 0 ]; then
     sudo ip netns exec $1 iptables -t nat -I POSTROUTING 2 -m ipvs --ipvs -s 0.0.0.0/0 -d $2 -p udp --dport 514 -j ACCEPT
     sudo ip netns exec $1 iptables -t nat -I POSTROUTING 2 -m ipvs --ipvs -s 0.0.0.0/0 -d $2 -p udp --dport 162 -j ACCEPT
+    sudo ip netns exec $1 iptables -t nat -I POSTROUTING 2 -m ipvs --ipvs -s 0.0.0.0/0 -d $2 -p udp --dport 6514 -j ACCEPT
         if [ $? -eq 0 ]; then
           echo "NAT exception successfully added"
         else
@@ -399,8 +400,8 @@ function main {
       a)
       echo "STEP 8:"
       echo "Updating <<$INGRESS_NS>> namespace..."
-      echo "---> adding NAT UDP 514 exception... "
-      add_514_nat_exception $INGRESS_NS $OVERLAY_NET_1_PREFIX
+      echo "---> adding NAT UDP 514 162 6514 exception... "
+      add_nat_exception $INGRESS_NS $OVERLAY_NET_1_PREFIX
       echo ""
       ;;
 
