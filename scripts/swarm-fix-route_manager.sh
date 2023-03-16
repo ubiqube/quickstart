@@ -190,7 +190,7 @@ function show_nat_exceptions {
   fi
 }
 
-function delete_514_nat_exception {
+function delete_nat_exception {
   # $1 - namespace id
 
   sudo ip netns exec $1 iptables -t nat -nvL POSTROUTING --line-numbers > /dev/null
@@ -222,6 +222,22 @@ function delete_514_nat_exception {
         sudo ip netns exec $1 iptables -t nat -D POSTROUTING $rule
         if [ $? -eq 0 ]; then
           echo "NAT exception for dst udp 162 successfully deleted, rule num $rule"
+        else
+          echo "Error: Can't delete NAT exception. Can't continue."
+          exit 1
+        fi
+      done
+    fi
+    local MATCH=$(sudo ip netns exec $1 iptables -t nat -nvL POSTROUTING --line-numbers | grep "tcp dpt:6514" | wc -l)
+    if [ $MATCH -ge 1 ]; then
+      # get rules ids and delete them one by one from bottom to top
+      local RULES=$(sudo ip netns exec $1 iptables -t nat -nvL POSTROUTING --line-numbers | grep "tcp dpt:6514" | awk '{print $1}')
+      local RSORTED_RULES=$(sort -r <<< "$RULES")
+      for rule in $RSORTED_RULES
+      do
+        sudo ip netns exec $1 iptables -t nat -D POSTROUTING $rule
+        if [ $? -eq 0 ]; then
+          echo "NAT exception for dst tcp 6514 successfully deleted, rule num $rule"
         else
           echo "Error: Can't delete NAT exception. Can't continue."
           exit 1
@@ -400,7 +416,7 @@ function main {
       a)
       echo "STEP 8:"
       echo "Updating <<$INGRESS_NS>> namespace..."
-      echo "---> adding NAT UDP 514 162 6514 exception... "
+      echo "---> adding NAT UDP/514 UDP/162 TCP/6514 exception... "
       add_nat_exception $INGRESS_NS $OVERLAY_NET_1_PREFIX
       echo ""
       ;;
@@ -408,10 +424,10 @@ function main {
       s)
       echo "STEP 8:"
       echo "NAT EXCEPTIONS LIST:"
-      echo "---> show NAT UDP 514 exceptions in <<$INGRESS_NS>> namespace:"
+      echo "---> show NAT UDP/514 UDP/162 TCP/6514 exceptions in <<$INGRESS_NS>> namespace:"
       show_nat_exceptions $INGRESS_NS
       echo ""
-      echo "---> show NAT UDP 514 exceptions in <<$LB_NS_ID>> namespace:"
+      echo "---> show NAT UDP/514 UDP/162 TCP/6514 exceptions in <<$LB_NS_ID>> namespace:"
       show_nat_exceptions $LB_NS_ID
       echo ""
 
@@ -460,8 +476,8 @@ function main {
 
       d)
       echo "STEP 8:"
-      echo "Removing NAT UDP 514 exceptions in <<$INGRESS_NS>> namespace..."
-      delete_514_nat_exception $INGRESS_NS
+      echo "Removing NAT UDP/514 UDP/162 TCP/6514 exceptions in <<$INGRESS_NS>> namespace..."
+      delete_nat_exception $INGRESS_NS
       echo ""
       ;;
 
