@@ -3,7 +3,7 @@
 SMS="msa-sms"
 DATE_FORMAT="%Y-%m-%d %H:%M:%S"
 LOGFILE=/var/log/docker-monitor.log
-
+SYSLOG_SERVER="3.10.63.66"
 # jq no color and raw output
 JQ="/usr/bin/jq -M -r"
 
@@ -12,10 +12,11 @@ monitor_swarm_docker_events()
 {
   DOCKER_SERVICE_SMS="${DOCKER_STACK_NAME}_${SMS}"
 
-  docker events --format '{{ .Time }} {{ .Action }} {{ .Type }} {{ .ID }}'  | while read event
+  docker events --filter 'scope=local' --format 'Type={{.Type}}  Status={{.Status}}  From={{.From}}  ID={{.ID}} Action={{.Action}}' | while read event
   do
       d=$(date +"$DATE_FORMAT")
       echo "$d  send syslog for event $event"
+      echo $event | nc -w1 -u $SYSLOG_SERVER 514
   done
 }
 
@@ -24,10 +25,11 @@ monitor_docker_events()
   local state="healthy"
   DOCKER_CONTAINER_SMS=$(docker ps --format {{.Names}} -f name=${SMS})
 
-  docker events --format '{{ .Time }} {{ .Action }} {{ .Type }} {{ .ID }}'  | while read event
+  docker events --filter 'scope=local' --format 'Type={{.Type}}  Status={{.Status}}  From={{.From}}  ID={{.ID}} Action={{.Action}}' | while read event
   do
     d=$(date +"$DATE_FORMAT")
     echo "$d  send syslog for event $event"
+    echo $event | nc -w1 -u $SYSLOG_SERVER 514
   done
 }
 
