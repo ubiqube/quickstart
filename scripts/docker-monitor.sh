@@ -12,7 +12,7 @@ monitor_swarm_docker_events()
 {
   DOCKER_SERVICE_SMS="${DOCKER_STACK_NAME}_${SMS}"
 
-  docker events --filter 'scope=swarm' --filter 'event=update' --filter "service=${DOCKER_SERVICE_SMS}" --format '{{json .}}' | while read event
+  docker events --format '{{ .Time }} {{ .Action }} {{ .Type }} {{ .ID }}'  | while read event
   do
       d=$(date +"$DATE_FORMAT")
       echo "$d  send syslog for event $event"
@@ -24,7 +24,7 @@ monitor_docker_events()
   local state="healthy"
   DOCKER_CONTAINER_SMS=$(docker ps --format {{.Names}} -f name=${SMS})
 
-  docker events --filter 'scope=local' --filter "service=${DOCKER_CONTAINER_SMS}" --format '{{json .}}' | while read event
+  docker events --format '{{ .Time }} {{ .Action }} {{ .Type }} {{ .ID }}'  | while read event
   do
     d=$(date +"$DATE_FORMAT")
     echo "$d  send syslog for event $event"
