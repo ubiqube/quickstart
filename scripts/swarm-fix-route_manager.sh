@@ -35,7 +35,7 @@ NETNS_DIR="/var/run/docker/netns"
 DOCKER_NETWORK_1="ingress"
 DOCKER_NETWORK_2="a_default"
 INGRESS_NS="ingress_sbox"
-MSA_SMS="msa-sms"
+MSA_SMS="msa-rsyslog"
 MSA_FRONT="msa-front"
 
 function print_help {
