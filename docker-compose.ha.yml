@@ -529,6 +529,25 @@ services:
         aliases:
           - "msa_dev"
 
+  telegraf:
+    image: telegraf:latest
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
+    volumes:
+      - "/mnt/NASVolume/telegraf:/etc/telegraf"
+    ports:
+      - '8125:8125'
+    networks:
+      default:
+        aliases:
+          - "telegraf"
+    logging:
+      <<: *logging
+
 volumes:
   msa_bulkfiles:
   msa_sms_logs:
