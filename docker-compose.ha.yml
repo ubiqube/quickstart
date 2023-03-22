@@ -215,6 +215,7 @@ services:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==sms"
+                  #- "node.role==manager"
     ports:
       - target: 514
         published: 514

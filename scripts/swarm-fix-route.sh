@@ -35,7 +35,7 @@ NETNS_DIR="/var/run/docker/netns"
 DOCKER_NETWORK_1="ingress"
 DOCKER_NETWORK_2="a_default"
 INGRESS_NS="ingress_sbox"
-MSA_SMS="msa-sms"
+MSA_SMS="msa-rsyslog"
 MSA_FRONT="msa-front"
 
 function print_help {
@@ -204,6 +204,22 @@ function delete_514_nat_exception {
         sudo ip netns exec $1 iptables -t nat -D POSTROUTING $rule
         if [ $? -eq 0 ]; then
           echo "NAT exception for dst udp 514 successfully deleted, rule num $rule"
+        else
+          echo "Error: Can't delete NAT exception. Can't continue."
+          exit 1
+        fi
+      done
+    fi
+    local MATCH=$(sudo ip netns exec $1 iptables -t nat -nvL POSTROUTING --line-numbers | grep "tcp dpt:514" | wc -l)
+    if [ $MATCH -ge 1 ]; then
+      # get rules ids and delete them one by one from bottom to top
+      local RULES=$(sudo ip netns exec $1 iptables -t nat -nvL POSTROUTING --line-numbers | grep "tcp dpt:514" | awk '{print $1}')
+      local RSORTED_RULES=$(sort -r <<< "$RULES")
+      for rule in $RSORTED_RULES
+      do
+        sudo ip netns exec $1 iptables -t nat -D POSTROUTING $rule
+        if [ $? -eq 0 ]; then
+          echo "NAT exception for dst tcp 514 successfully deleted, rule num $rule"
         else
           echo "Error: Can't delete NAT exception. Can't continue."
           exit 1
