@@ -540,7 +540,7 @@ services:
     volumes:
       - "/mnt/NASVolume/telegraf:/etc/telegraf"
     ports:
-      - '127.0.0.1:8125:8125/udp'
+      - '8125:8125'
     networks:
       default:
         aliases:
