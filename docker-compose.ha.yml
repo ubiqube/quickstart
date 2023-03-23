@@ -16,7 +16,7 @@ services:
       - camunda
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
-    image: ubiqube/msa2-front:8d9b06a8a1e70dbcd878696ba4e8dbeaff86d93a
+    image: ubiqube/msa2-front:0bbf8ff0c61638705e1a08685c82e26bef3686ec
     deploy:
       replicas: 1
       placement:
@@ -90,7 +90,7 @@ services:
   msa-ui:
     depends_on:
       - msa-api
-    image: ubiqube/msa2-ui:ce0e5125fef2a815d0ad7e666ac4cc92bbe3d06e
+    image: ubiqube/msa2-ui:4474f93a4a21bfca933e92c334ace3d8cce6a583
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     deploy:
@@ -119,7 +119,7 @@ services:
           - "msa_ui"
 
   db:
-    image: ubiqube/msa2-db:7bba39b9a86a0f8ea8033eb26b0838af520eb737
+    image: ubiqube/msa2-db:dfa02f3a48aef057bcb949a9ab237e6f1b4c4c79
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -155,7 +155,7 @@ services:
         max-file: "5"
 
   db-replica:
-    image: ubiqube/msa2-db:7bba39b9a86a0f8ea8033eb26b0838af520eb737
+    image: ubiqube/msa2-db:dfa02f3a48aef057bcb949a9ab237e6f1b4c4c79
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -190,7 +190,7 @@ services:
   msa-api:
     depends_on:
       - db
-    image: ubiqube/msa2-api:2a3095123ca86fe20159755b4fc3dfc3be799462
+    image: ubiqube/msa2-api:88a986c9cd58dcc1de1f634fdd63b1b0c694d664
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     environment:
@@ -229,7 +229,7 @@ services:
   msa-rsyslog:
     depends_on:
       - msa-sms
-    image: ubiqube/msa2-rsyslog:675fae5eff33a036f425a41c12684b2a06e043db
+    image: ubiqube/msa2-rsyslog:2b8212c58a9635275b78ba83b35a7a5fbff46dbb
     ports:
       - target: 514
         published: 514
@@ -246,7 +246,7 @@ services:
       - msa-es
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-    image: ubiqube/msa2-sms:d88002f2032e413e4965019f67dda5720239f494
+    image: ubiqube/msa2-sms:3ffe5e7c573c9953614a74c9bdd090ea20168cfa
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
@@ -278,7 +278,7 @@ services:
       - msa-api
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
-    image: ubiqube/msa2-alarm:5fb4391c282e8f1b3a46a851ccfb3c228701d717
+    image: ubiqube/msa2-alarm:7179d7902ea5d487fbf63e96bcdf62dbde2a42d9
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
