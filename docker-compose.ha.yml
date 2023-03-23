@@ -16,7 +16,7 @@ services:
       - camunda
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
-    image: ubiqube/msa2-front:0bbf8ff0c61638705e1a08685c82e26bef3686ec
+    image: ubiqube/msa2-front:22450dc867fef6474056342912dfaa23918ce5ec
     deploy:
       replicas: 1
       placement:
@@ -90,7 +90,7 @@ services:
   msa-ui:
     depends_on:
       - msa-api
-    image: ubiqube/msa2-ui:4474f93a4a21bfca933e92c334ace3d8cce6a583
+    image: ubiqube/msa2-ui:859a649b541a76710665f85f7da8231d56894c76
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     deploy:
