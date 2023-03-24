@@ -3,7 +3,7 @@
 SMS="msa-sms"
 DATE_FORMAT="%Y-%m-%d %H:%M:%S"
 LOGFILE=/var/log/docker-monitor.log
-SYSLOG_SERVER="3.10.63.66"
+SYSLOG_SERVER="10.242.225.23"
 # jq no color and raw output
 JQ="/usr/bin/jq -M -r"
 
