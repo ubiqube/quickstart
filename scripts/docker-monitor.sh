@@ -14,9 +14,9 @@ monitor_swarm_docker_events()
 
   docker events --filter 'scope=local' --format 'Type={{.Type}}  Status={{.Status}}  From={{.From}}  ID={{.ID}} Action={{.Action}}' | while read event
   do
-      d=$(date +"$DATE_FORMAT")
-      echo "$d  send syslog for event $event"
-      echo $event | nc -w1 -u $SYSLOG_SERVER 514
+    d=$(date +"$DATE_FORMAT")
+    echo "$d  send syslog for event $event"
+    echo "<14> $event" | nc -v -u -w1 $SYSLOG_SERVER 514
   done
 }
 
@@ -29,7 +29,7 @@ monitor_docker_events()
   do
     d=$(date +"$DATE_FORMAT")
     echo "$d  send syslog for event $event"
-    echo $event | nc -w1 -u $SYSLOG_SERVER 514
+    echo "<14> $event" | nc -v -u -w1 $SYSLOG_SERVER 514
   done
 }
 
