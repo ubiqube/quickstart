@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -x
 SMS="msa-sms"
 DATE_FORMAT="%Y-%m-%d %H:%M:%S"
 LOGFILE=/var/log/docker-monitor.log
@@ -12,7 +12,7 @@ monitor_swarm_docker_events()
 {
   DOCKER_SERVICE_SMS="${DOCKER_STACK_NAME}_${SMS}"
 
-  docker events --filter 'scope=local' --format 'Type={{.Type}}  Status={{.Status}}  From={{.From}}  ID={{.ID}} Action={{.Action}}' | while read event
+  docker system events --format 'type={{.Type}}  status={{.Status}}  from={{.From}}  ID={{.ID}} action={{.Action}} scope={{.Scope}}' | while read event
   do
     d=$(date +"$DATE_FORMAT")
     echo "$d  send syslog for event $event"
@@ -25,7 +25,7 @@ monitor_docker_events()
   local state="healthy"
   DOCKER_CONTAINER_SMS=$(docker ps --format {{.Names}} -f name=${SMS})
 
-  docker events --filter 'scope=local' --format 'Type={{.Type}}  Status={{.Status}}  From={{.From}}  ID={{.ID}} Action={{.Action}}' | while read event
+  docker system events --format 'type={{.Type}}  status={{.Status}}  from={{.From}}  ID={{.ID}} action={{.Action}} scope={{.Scope}}' | while read event
   do
     d=$(date +"$DATE_FORMAT")
     echo "$d  send syslog for event $event"
