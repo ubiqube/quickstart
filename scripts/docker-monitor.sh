@@ -4,10 +4,14 @@ set -x
 APPDIR=$(dirname $0)
 source $APPDIR/docker-monitor.inc
 
+if [ -z ${SYSLOG_SERVER} ]; then
+    echo "WARNING: SYSLOG_SERVER not set, update docker-monitor.inc"
+    exit 1
+fi
+
 SMS="msa-sms"
 DATE_FORMAT="%Y-%m-%d %H:%M:%S"
 LOGFILE=/var/log/docker-monitor.log
-SYSLOG_SERVER="3.10.63.66"
 # jq no color and raw output
 JQ="/usr/bin/jq -M -r"
 
