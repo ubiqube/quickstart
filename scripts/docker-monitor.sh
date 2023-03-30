@@ -1,5 +1,9 @@
 #!/bin/bash
 set -x
+
+APPDIR=$(dirname $0)
+source $APPDIR/docker-monitor.inc
+
 SMS="msa-sms"
 DATE_FORMAT="%Y-%m-%d %H:%M:%S"
 LOGFILE=/var/log/docker-monitor.log
@@ -10,8 +14,6 @@ JQ="/usr/bin/jq -M -r"
 # Monitor Docker events
 monitor_swarm_docker_events()
 {
-  DOCKER_SERVICE_SMS="${DOCKER_STACK_NAME}_${SMS}"
-
   docker system events --format 'type={{.Type}}  status={{.Status}}  from={{.From}}  ID={{.ID}} action={{.Action}} scope={{.Scope}}' | while read event
   do
     d=$(date +"$DATE_FORMAT")
@@ -22,9 +24,6 @@ monitor_swarm_docker_events()
 
 monitor_docker_events()
 {
-  local state="healthy"
-  DOCKER_CONTAINER_SMS=$(docker ps --format {{.Names}} -f name=${SMS})
-
   docker system events --format 'type={{.Type}}  status={{.Status}}  from={{.From}}  ID={{.ID}} action={{.Action}} scope={{.Scope}}' | while read event
   do
     d=$(date +"$DATE_FORMAT")
