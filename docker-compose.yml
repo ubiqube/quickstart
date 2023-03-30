@@ -16,7 +16,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:e5c6eaa4354d35e5542d2582ab418eae2c55d314
+    image: ubiqube/msa2-front:ee52555bb44dbaab0e774bc3187825efd6e3c96e
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -102,7 +102,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:009344b3dd88645aa7178a85e191543c14d34e1c
+    image: ubiqube/msa2-api:70054f28fffd06f1c38e00ec48e1b3b7d33c93bf
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
       retries: 10
@@ -135,7 +135,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:f99c80782fdbb7d788271774cacd5d53c76c3d8b
+    image: ubiqube/msa2-ui:d95ac1b70133c2cf5533fe08305df6d30ddaf152
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -283,7 +283,9 @@ services:
     container_name: msa_rsyslog
     depends_on:
       - msa-sms
-    image: ubiqube/msa2-rsyslog:2b8212c58a9635275b78ba83b35a7a5fbff46dbb
+    image: ubiqube/msa2-rsyslog:c7981110f0ff1ee153199786f4abf3c8f5e49db7
+    environment:
+      ACTIONTYPE: "omfwd"
     ports:
       - target: 514
         published: 514
