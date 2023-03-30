@@ -205,7 +205,14 @@ services:
   msa-rsyslog:
     depends_on:
       - msa-sms
-    image: ubiqube/msa2-rsyslog:675fae5eff33a036f425a41c12684b2a06e043db
+    image: ubiqube/msa2-rsyslog:c7981110f0ff1ee153199786f4abf3c8f5e49db7
+    # environment:
+      # enable omfwd acxtion type for syslog Forwarding Output Module
+      # https://www.rsyslog.com/doc/v8-stable/configuration/modules/omfwd.html
+      # default
+      # ACTIONTYPE: "omfwd"
+      # configure a specific port for TLS. Default is 6514
+      # TLS_SYSLOG_PORT: 6514
     deploy:
       replicas: 1
       placement:
