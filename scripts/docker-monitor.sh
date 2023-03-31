@@ -3,7 +3,7 @@ set -x
 
 APPDIR=$(dirname $0)
 source $APPDIR/docker-monitor.inc
-
+HOST=$(hostname)
 if [ -z ${SYSLOG_SERVER} ]; then
     echo "WARNING: SYSLOG_SERVER not set, update docker-monitor.inc"
     exit 1
@@ -18,7 +18,7 @@ JQ="/usr/bin/jq -M -r"
 # Monitor Docker events
 monitor_swarm_docker_events()
 {
-  docker system events --format 'type={{.Type}}  status={{.Status}}  from={{.From}}  ID={{.ID}} action={{.Action}} scope={{.Scope}}' | while read event
+    docker system events --filter 'scope=swarm' --format 'type={{.Type}}  status={{.Status}}  from={{.From}}  ID={{.ID}} action={{.Action}} scope={{.Scope}}  {{range $key, $val := .Actor.Attributes}}{{printf "%s=%s " $key $val }}{{end}}' | while read event
   do
     d=$(date +"$DATE_FORMAT")
     echo "$d  send syslog for event $event"
@@ -28,7 +28,7 @@ monitor_swarm_docker_events()
 
 monitor_docker_events()
 {
-  docker system events --format 'type={{.Type}}  status={{.Status}}  from={{.From}}  ID={{.ID}} action={{.Action}} scope={{.Scope}}' | while read event
+  docker system events --filter 'scope=local' --format 'type={{.Type}}  status={{.Status}}  from={{.From}}  ID={{.ID}} action={{.Action}} scope={{.Scope}}' | while read event
   do
     d=$(date +"$DATE_FORMAT")
     echo "$d  send syslog for event $event"
