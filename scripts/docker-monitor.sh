@@ -3,7 +3,7 @@ set -x
 
 APPDIR=$(dirname $0)
 source $APPDIR/docker-monitor.inc
-
+HOST=$(hostname)
 if [ -z ${SYSLOG_SERVER} ]; then
     echo "WARNING: SYSLOG_SERVER not set, update docker-monitor.inc"
     exit 1
