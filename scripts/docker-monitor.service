@@ -1,0 +1,9 @@
+[Unit]
+Description=Docker Monitor Service
+After=dockerd.target
+
+[Service]
+ExecStart=/root/quickstart/scripts/docker-monitor.sh
+
+[Install]
+WantedBy=multi-user.target
