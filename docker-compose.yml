@@ -16,7 +16,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:ee52555bb44dbaab0e774bc3187825efd6e3c96e
+    image: ubiqube/msa2-front:478324cbdf6dac38e75fbaa475e3f32f3028eb86
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -102,7 +102,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:70054f28fffd06f1c38e00ec48e1b3b7d33c93bf
+    image: ubiqube/msa2-api:b0ec1e67e7d1c4bdf401ce14433813eb1518f55e
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
       retries: 10
@@ -135,7 +135,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:d95ac1b70133c2cf5533fe08305df6d30ddaf152
+    image: ubiqube/msa2-ui:21bcb7aa6ab4b7fba132c254753ebd6218ebb164
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -168,7 +168,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:0ce18fafe2b2ea6d50f1316162cee777b6211de6
+    image: ubiqube/msa2-sms:cbbcf9207440e9f400b060b14412ab21b16d5d9b
     healthcheck:
       timeout: 5s
       retries: 10
@@ -194,7 +194,9 @@ services:
       - "msa_repository:/opt/fmc_repository"
       - "msa_sms_logs:/opt/sms/logs"
       - "msa_svn:/opt/svnroot"
+      - "msa_svn_ws:/opt/sms/spool/routerconfigs"
       - "msa_bulkfiles:/opt/sms/spool/parser"
+      - "msa_bulkfiles_err:/opt/sms/spool/parser-error"
     networks:
       default:
         aliases:
@@ -225,7 +227,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: ubiqube/msa2-alarm:8433ac4a8cf27e0236e1e433df713c111125b0fc
+    image: ubiqube/msa2-alarm:e5013f9ecff20b8af5b466d6a72ded9444f7aeb4
     healthcheck:
       timeout: 5s
       retries: 10
@@ -243,6 +245,8 @@ services:
       <<: *logging
     volumes:
       - "msa_sms_logs:/opt/sms/logs"
+      - "msa_alarmbulkfiles:/opt/sms/spool/alarms"
+      - "msa_alarmbulkfiles_err:/opt/sms/spool/alarms-error"
     networks:
       default:
         aliases:
@@ -251,7 +255,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: ubiqube/msa2-monitoring:49e3038a9ee4931fa9f69fc3dfbfc57c859deeaa
+    image: ubiqube/msa2-monitoring:de5f384bd5c875fab8cb4925d61cb5a7cae0ebe2
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -271,8 +275,9 @@ services:
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "rrd_repository:/opt/rrd"
-      - "msa_bulkfiles:/opt/sms/spool/parser"
       - "msa_sms_logs:/opt/sms/logs"
+      - "msa_monitbulkfiles:/opt/sms/spool/parser"
+      - "msa_monitbulkfiles_err:/opt/sms/spool/parser-error"
     networks:
       default:
         aliases:
@@ -303,7 +308,7 @@ services:
       - target: 6514
         published: 6514
         protocol: tcp
-        mode: ingress
+        mode: host
     volumes:
       - "rsyslog_conf:/etc"
     networks:
@@ -493,10 +498,15 @@ volumes:
   msa_front:
   msa_front_conf:
   msa_svn:
+  msa_svn_ws:
   msa_ai_ml_db:
-  msa_bulkfiles:
-  msa_monitbulkfiles:
   rsyslog_conf:
+  msa_bulkfiles:
+  msa_bulkfiles_err:
+  msa_monitbulkfiles:
+  msa_monitbulkfiles_err:
+  msa_alarmbulkfiles:
+  msa_alarmbulkfiles_err:
 
 networks:
   default:
