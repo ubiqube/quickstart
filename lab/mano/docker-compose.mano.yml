@@ -53,6 +53,10 @@ services:
         published: 8090
         protocol: tcp
         mode: ingress
+    networks:
+      default:
+        aliases:
+          - "mano_vnfm"
        
   mano-nfvo:
     restart: unless-stopped
@@ -68,6 +72,10 @@ services:
         published: 8100
         protocol: tcp
         mode: ingress
+    networks:
+      default:
+        aliases:
+          - "mano_nfvo"
 
 volumes:
   mano_nfvo:
