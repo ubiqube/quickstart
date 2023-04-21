@@ -7,7 +7,7 @@ x-es-configuration: &es-configuration
 
 services:
   msa_front:
-    image: openmsa/openmsa:msa2-front-2.8.7-4119f9db9d5ae9b869fd9bb191a0ae3144d23e2c
+    image: openmsa/openmsa:msa2-front-2.8.7-682b92484210f8e48f8034af7ea8fcb2c435116f
     depends_on:
       - msa_api
       - msa_ui
@@ -319,7 +319,7 @@ services:
         max_replicas_per_node: 1
 
   msa_dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.8.7-d0055a9eb5f35669f88ed06b92005efe3b1c9989
+    image: openmsa/openmsa:msa2-linuxdev-2.8.7-6f2f80bb768a44ffad06dd7b4240c2a01c5c0e27
     depends_on:
       - msa_es
     deploy:
