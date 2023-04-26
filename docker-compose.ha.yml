@@ -8,6 +8,11 @@
 
 version: "3.8"
 
+x-es-configuration: &es-configuration
+    ES_CREDENTIALS: c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+    ES_SERVERS: "msa-es"
+
+
 services:
   msa-front:
     depends_on:
@@ -194,10 +199,8 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      <<: *es-configuration
       - UBIQUBE_CAPTCHA_SECRET_KEY=6LcFwjQfAAAAAFQSLf1dKYPoGtmaLOwoCPSzGl5k
-      - UBIQUBE_SUNCHRO=no
-      - UBIQUBE_BYPASS_CAPTCHA=true
     deploy:
       replicas: 1
       restart_policy:
@@ -248,8 +251,7 @@ services:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     image: ubiqube/msa2-sms:f79b2042d1b97d837083a20699d8988922c02816
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
-      - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
+      <<: *es-configuration
     logging:
       driver: "json-file"
       options:
@@ -280,7 +282,7 @@ services:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     image: ubiqube/msa2-alarm:5c077ef4df9bd77ad6789cbce02beb456e0a99f1
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      <<: *es-configuration
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
     deploy:
       replicas: 1
@@ -308,7 +310,7 @@ services:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     image: ubiqube/msa2-monitoring:de5f384bd5c875fab8cb4925d61cb5a7cae0ebe2
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      <<: *es-configuration
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
     logging:
       driver: "json-file"
@@ -385,7 +387,7 @@ services:
     environment:
       - ELASTICSEARCH_URL=http://msa_es:9200
       - ELASTICSEARCH_HOSTS=http://msa_es:9200
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      <<: *es-configuration
     networks:
       default:
         aliases:
@@ -430,7 +432,7 @@ services:
       - "script.painless.regex.enabled=true"
       - "bootstrap.memory_lock=true"
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
+      <<: *es-configuration
     ulimits:
       memlock:
         soft: -1
