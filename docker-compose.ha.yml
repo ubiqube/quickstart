@@ -108,7 +108,7 @@ services:
   db-replica:
     image: openmsa/openmsa:msa2-db-2.8.5-c880962c3b96ca67ac457ca34c4b5363fcba0c32
     healthcheck:
-      test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h db"]
+      test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
     deploy:
       replicas: 1
