@@ -16,7 +16,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.7-682b92484210f8e48f8034af7ea8fcb2c435116f
+    image: ubiqube/msa2-front:927de7272a5b8c14af48316e18fae95097f1e9ee
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -72,7 +72,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.8.7-c5a834e55c9508434758d7947635640fa978aa1d
+    image: ubiqube/msa2-db:c0d30c768f9b565aab6746718c7d22e3979613ac
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -102,7 +102,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.8.7-6e8c462fbea06596415bb024644598893e7220a3
+    image: ubiqube/msa2-api:92b41cef0268c8acffa87eabb3ea02015456408e
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
       retries: 10
@@ -135,7 +135,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.8.7-1c9ccd157fef826dbeb34b65647628e0c9340310
+    image: ubiqube/msa2-ui:b85a81eb3400a7cf57720ead4142c0460143a946
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -168,7 +168,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: openmsa/openmsa:msa2-sms-2.8.7-06ce61b27a31c4a5b4fcb555f15286d7a12bf072
+    image: ubiqube/msa2-sms:cfe595e6c4e0d2a32761ceb3f4863f6a9a75addb
     healthcheck:
       timeout: 5s
       retries: 10
@@ -205,7 +205,7 @@ services:
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: openmsa/openmsa:msa2-bud-2.8.7-04590d19dafe4acc2742c9a365e9dbdb80e45dfc
+    image: ubiqube/msa2-bud:04590d19dafe4acc2742c9a365e9dbdb80e45dfc
     healthcheck:
       timeout: 5s
       retries: 10
@@ -227,7 +227,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: openmsa/openmsa:msa2-alarm-2.8.7-a9b92668c96ee4a90e5447eb5af1c20b21971787
+    image: ubiqube/msa2-alarm:a9b92668c96ee4a90e5447eb5af1c20b21971787
     healthcheck:
       timeout: 5s
       retries: 10
@@ -255,7 +255,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: openmsa/openmsa:msa2-monitoring-2.8.7-dfcc122af6838113bd9964b6e2a7587098ca8242
+    image: ubiqube/msa2-monitoring:dfcc122af6838113bd9964b6e2a7587098ca8242
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -418,7 +418,7 @@ services:
     restart: unless-stopped
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: openmsa/openmsa:msa2-linuxdev-2.8.7-6f2f80bb768a44ffad06dd7b4240c2a01c5c0e27
+    image: ubiqube/msa2-linuxdev:aaa524220c8ae616d179e737c08a868a118ede2d
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
