@@ -16,7 +16,7 @@ services:
       - camunda
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
-    image: ubiqube/msa2-front:0101d3d0f35aa8329fb976b54752217982232154
+    image: ubiqube/msa2-front:7bc41c1606fc67e4345c400b86cf8c076fc1a199
     deploy:
       replicas: 1
       placement:
@@ -90,7 +90,7 @@ services:
   msa-ui:
     depends_on:
       - msa-api
-    image: ubiqube/msa2-ui:41b6fd31cabb2b66ea6c12c183ae9c23ad9d60d0
+    image: ubiqube/msa2-ui:e715ed6d39ea5603b373c24d9dcb243743937682
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     deploy:
@@ -119,7 +119,7 @@ services:
           - "msa_ui"
 
   db:
-    image: ubiqube/msa2-db:c0d30c768f9b565aab6746718c7d22e3979613ac
+    image: ubiqube/msa2-db:5d83ffef0f6af44a5885a7bd34e732fba8b346ba
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -155,7 +155,7 @@ services:
         max-file: "5"
 
   db-replica:
-    image: ubiqube/msa2-db:c0d30c768f9b565aab6746718c7d22e3979613ac
+    image: ubiqube/msa2-db:5d83ffef0f6af44a5885a7bd34e732fba8b346ba
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -190,7 +190,7 @@ services:
   msa-api:
     depends_on:
       - db
-    image: ubiqube/msa2-api:99f202fa184f62cf9325d66c54b6108d9fb3af71
+    image: ubiqube/msa2-api:a7c649a66b89a9d24e97134bbcbd2f0ac61e7b44
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     environment:
@@ -246,7 +246,7 @@ services:
       - msa-es
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-    image: ubiqube/msa2-sms:cfe595e6c4e0d2a32761ceb3f4863f6a9a75addb
+    image: ubiqube/msa2-sms:18b70bbc2b2958c70af0c321b2e33e97186f7a3b
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
