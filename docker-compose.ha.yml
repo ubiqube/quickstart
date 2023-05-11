@@ -211,8 +211,10 @@ services:
       - msa-sms
     image: openmsa/openmsa:msa2-rsyslog-2.8.7-c7981110f0ff1ee153199786f4abf3c8f5e49db7
     # environment:
-      # enable omfwd acxtion type for syslog Forwarding Output Module
+      # omfwd : enable action type for syslog Forwarding Output Module  (rely on source IP or the hostname to map with the managed entity)
       # https://www.rsyslog.com/doc/v8-stable/configuration/modules/omfwd.html
+      # omudpspoof : UDP spoofing output module (rely on source IP to map with the managed entity)
+      # https://www.rsyslog.com/doc/v8-stable/configuration/modules/omudpspoof.html
       # default
       # ACTIONTYPE: "omfwd"
       # configure a specific port for TLS. Default is 6514
@@ -237,6 +239,7 @@ services:
         protocol: tcp
         mode: ingress
     environment:
+      ACTIONTYPE: "omudpspoof"
       TLS_SYSLOG_PORT: 6514
     volumes:
       - "rsyslog_conf:/etc"
