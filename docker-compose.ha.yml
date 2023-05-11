@@ -144,7 +144,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -177,7 +177,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -220,11 +220,11 @@ services:
       # configure a specific port for TLS. Default is 6514
       # TLS_SYSLOG_PORT: 6514
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==sms"
+          - "node.labels.worker==app"
     ports:
       - target: 514
         published: 514
@@ -275,11 +275,11 @@ services:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==sms"
+          - "node.labels.worker==app"
     logging:
       <<: *logging
     networks:
@@ -304,7 +304,7 @@ services:
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==sms"
+          - "node.labels.worker==app"
     logging:
       <<: *logging
     networks:
@@ -327,11 +327,11 @@ services:
       <<: *es-configuration
       CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==sms"
+          - "node.labels.worker==app"
     volumes:
       - "msa_sms_logs:/opt/sms/logs"
       - "msa_alarmbulkfiles:/opt/sms/spool/alarms"
@@ -371,11 +371,11 @@ services:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==sms"
+          - "node.labels.worker==app"
     logging:
       <<: *logging
     networks:
@@ -430,7 +430,7 @@ services:
       xpack.security.transport.ssl.keystore.path: "elastic-certificates.p12"
       xpack.security.transport.ssl.truststore.path: "elastic-certificates.p12"
       ES_JAVA_OPTS: "-Xms2048m -Xmx2048m"
-      <<: *es-credential
+      <<: *es-configuration
     ulimits:
       memlock:
         soft: -1
@@ -543,6 +543,9 @@ services:
 
 volumes:
   msa_bulkfiles:
+  msa_bulkfiles_err:
+  msa_alarmbulkfiles:
+  msa_alarmbulkfiles_err:
   msa_sms_logs:
   msa_monitbulkfiles:
   msa_api_logs:
