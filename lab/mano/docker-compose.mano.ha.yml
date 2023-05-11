@@ -23,7 +23,7 @@ services:
       placement:	
         max_replicas_per_node: 1
         constraints:	
-          - "node.labels.worker==mano"
+          - "node.labels.worker==app"
       resources:
         limits:
           cpus: '0.50'
@@ -43,7 +43,7 @@ services:
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==mano"            
+          - "node.labels.worker==app"
       resources:
         limits:
           cpus: '0.50'
@@ -76,7 +76,7 @@ services:
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==mano"
+          - "node.labels.worker==app"
       resources:
         limits:
           cpus: '0.50'
@@ -98,7 +98,7 @@ services:
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==mano"
+          - "node.labels.worker==app"
     ports:
       - target: 8080
         published: 8100
@@ -123,7 +123,7 @@ services:
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==mano"
+          - "node.labels.worker==app"
     ports:
       - target: 8080
         published: 8120
@@ -151,7 +151,7 @@ services:
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==mano"
+          - "node.labels.worker==app"
     ports:
       - target: 8080
         published: 8090
@@ -176,7 +176,7 @@ services:
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==mano"
+          - "node.labels.worker==app"
     ports:
       - target: 8080
         published: 8130
