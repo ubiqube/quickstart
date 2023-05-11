@@ -18,7 +18,8 @@ JQ="/usr/bin/jq -M -r"
 # Monitor Docker events
 monitor_swarm_docker_events()
 {
-    docker system events --filter 'scope=swarm' --format 'type={{.Type}}  status={{.Status}}  from={{.From}}  ID={{.ID}} action={{.Action}} scope={{.Scope}}  {{range $key, $val := .Actor.Attributes}}{{printf "%s=%s " $key $val }}{{end}}' | while read event
+  docker system events --filter 'scope=swarm' --format 'type={{.Type}}  status={{.Status}}  from={{.From}}  ID={{.Actor.ID}} action={{.Action}} scope={{.Scope}}  {{range $key, $val := .Actor.Attributes}}{{printf "%s=%s " $key $val }}{{end}}' | while read event
+
   do
     d=$(date +"$DATE_FORMAT")
     echo "$d  send syslog for event $event"
