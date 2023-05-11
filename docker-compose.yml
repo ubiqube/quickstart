@@ -1,7 +1,8 @@
 version: "3.8"
 
-x-es-credential: &es-credential
+x-es-configuration: &es-configuration
     ES_CREDENTIALS: c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+    ES_SERVERS: "msa-es"
 
 x-logging: &logging
   driver: "json-file"
@@ -15,7 +16,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.6-58c801bfe5791d2edcb601a8d75942eac8d58a8e
+    image: openmsa/openmsa:msa2-front-2.8.7-682b92484210f8e48f8034af7ea8fcb2c435116f
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -55,7 +56,7 @@ services:
       default:
         aliases:
           - "msa_front"   #
-    # uncomment one of the 2 sections below when installing a custom certificate 
+    # uncomment one of the 2 sections below when installing a custom certificate
     # - Docker standard standalone installation
     #volumes:
     #    - "msa_front:/etc/nginx/ssl"
@@ -66,7 +67,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.8.6-9ab326b65e8d4080e62f209984dd282977180a5e
+    image: openmsa/openmsa:msa2-db-2.8.7-c5a834e55c9508434758d7947635640fa978aa1d
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -96,19 +97,19 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.8.6-a746dc4231157f942cbafaa680eb18e21729190b
+    image: openmsa/openmsa:msa2-api-2.8.7-6e8c462fbea06596415bb024644598893e7220a3
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
       retries: 10
       interval: 10s
-      start_period: 5s    
+      start_period: 5s
     depends_on:
       db:
         condition: service_healthy
       msa-es:
         condition: service_started
     environment:
-      <<: *es-credential
+      <<: *es-configuration
       UBIQUBE_CAPTCHA_SECRET_KEY: 6Ld2zF4dAAAAABWD9Q6QAhBql_CIynUeVKaTiBgT
     logging:
       <<: *logging
@@ -129,7 +130,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.8.6-bf02442535a661bdaf97284208521867fff64688
+    image: openmsa/openmsa:msa2-ui-2.8.7-1c9ccd157fef826dbeb34b65647628e0c9340310
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -161,15 +162,15 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: openmsa/openmsa:msa2-sms-2.8.6-d7a44fa6e8dbc6329c26217f207161bade96c862
+    image: openmsa/openmsa:msa2-sms-2.8.7-06ce61b27a31c4a5b4fcb555f15286d7a12bf072
     healthcheck:
       timeout: 5s
       retries: 10
       interval: 10s
-      start_period: 30s      
+      start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
-      <<: *es-credential
+      <<: *es-configuration
     cap_add:
       - NET_ADMIN
     depends_on:
@@ -187,7 +188,9 @@ services:
       - "msa_repository:/opt/fmc_repository"
       - "msa_sms_logs:/opt/sms/logs"
       - "msa_svn:/opt/svnroot"
+      - "msa_svn_ws:/opt/sms/spool/routerconfigs"
       - "msa_bulkfiles:/opt/sms/spool/parser"
+      - "msa_bulkfiles_err:/opt/sms/spool/parser-error"
     networks:
       default:
         aliases:
@@ -196,7 +199,7 @@ services:
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: openmsa/openmsa:msa2-bud-2.8.6-9b7613ce285b4ec364aee6b384802d2bb96e806f
+    image: openmsa/openmsa:msa2-bud-2.8.7-04590d19dafe4acc2742c9a365e9dbdb80e45dfc
     healthcheck:
       timeout: 5s
       retries: 10
@@ -218,7 +221,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: openmsa/openmsa:msa2-alarm-2.8.6-2089ffefa1c311cea0f8c3b3b99d506d81df576c
+    image: openmsa/openmsa:msa2-alarm-2.8.7-a9b92668c96ee4a90e5447eb5af1c20b21971787
     healthcheck:
       timeout: 5s
       retries: 10
@@ -231,20 +234,22 @@ services:
       msa-es:
         condition: service_started
     environment:
-      <<: *es-credential
+      <<: *es-configuration
     logging:
       <<: *logging
     volumes:
       - "msa_sms_logs:/opt/sms/logs"
+      - "msa_alarmbulkfiles:/opt/sms/spool/alarms"
+      - "msa_alarmbulkfiles_err:/opt/sms/spool/alarms-error"
     networks:
       default:
         aliases:
           - "msa_alarm"
-  
+
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: openmsa/openmsa:msa2-monitoring-2.8.6-94e7b1355f3fa4ba2959b529fcff40e9876b78c4
+    image: openmsa/openmsa:msa2-monitoring-2.8.7-dfcc122af6838113bd9964b6e2a7587098ca8242
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -255,7 +260,8 @@ services:
       msa-dev:
         condition: service_started
     environment:
-      <<: *es-credential
+      ES_MON: "yes"
+      <<: *es-configuration
     logging:
       <<: *logging
     volumes:
@@ -263,8 +269,9 @@ services:
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "rrd_repository:/opt/rrd"
-      - "msa_bulkfiles:/opt/sms/spool/parser"
       - "msa_sms_logs:/opt/sms/logs"
+      - "msa_monitbulkfiles:/opt/sms/spool/parser"
+      - "msa_monitbulkfiles_err:/opt/sms/spool/parser-error"
     networks:
       default:
         aliases:
@@ -275,7 +282,14 @@ services:
     container_name: msa_rsyslog
     depends_on:
       - msa-sms
-    image: openmsa/openmsa:msa2-rsyslog-2.8.6-54a250d9ef49db2454c5ed9111d43cebc8e9ef9a
+    image: openmsa/openmsa:msa2-rsyslog-2.8.7-c7981110f0ff1ee153199786f4abf3c8f5e49db7
+    # environment:
+      # enable omfwd acxtion type for syslog Forwarding Output Module
+      # https://www.rsyslog.com/doc/v8-stable/configuration/modules/omfwd.html
+      # default
+      # ACTIONTYPE: "omfwd"
+      # configure a specific port for TLS. Default is 6514
+      # TLS_SYSLOG_PORT: 6514
     ports:
       - target: 514
         published: 514
@@ -285,6 +299,12 @@ services:
         published: 514
         protocol: tcp
         mode: host
+      - target: 6514
+        published: 6514
+        protocol: tcp
+        mode: host
+    volumes:
+      - "rsyslog_conf:/etc"
     networks:
       default:
         aliases:
@@ -298,7 +318,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    image: openmsa/openmsa:msa2-camunda-2.8.6-23335a0df397d4bc3531366223cd5a239688ee0d
+    image: openmsa/openmsa:msa2-camunda-2.8.7-23335a0df397d4bc3531366223cd5a239688ee0d
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
@@ -313,19 +333,19 @@ services:
   msa-es:
     restart: unless-stopped
     container_name: msa_es
-    image: openmsa/openmsa:msa2-es-2.8.6-7b0c2d96ae426da44b255efad0b1a60332f9c385
+    image: openmsa/openmsa:msa2-es-2.8.7-0bdbe159f733c75a5ea0696420ded038c87b5d6c
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
       retries: 10
       interval: 10s
-      start_period: 30s 
+      start_period: 30s
     environment:
       discovery.type: "single-node"
       script.painless.regex.enabled: "true"
       bootstrap.memory_lock: "true"
       ES_JAVA_OPTS: "-Xms512m -Xmx1024m"
-      <<: *es-credential
+      <<: *es-configuration
     logging:
       <<: *logging
     volumes:
@@ -335,6 +355,11 @@ services:
       memlock:
         soft: -1
         hard: -1
+    ports:
+      - "9300:9300"
+      - "9200:9200"
+      - "9300:9300/udp"
+      - "9200:9200/udp"
     networks:
       default:
         aliases:
@@ -343,7 +368,7 @@ services:
   msa-cerebro:
     restart: unless-stopped
     container_name: msa_cerebro
-    image: openmsa/openmsa:msa2-cerebro-2.8.6-914750e000db1343d9972bfa6652da1efe4aa32f
+    image: openmsa/openmsa:msa2-cerebro-2.8.7-914750e000db1343d9972bfa6652da1efe4aa32f
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -362,11 +387,11 @@ services:
       default:
         aliases:
           - "msa_cerebro"
-  
+
   msa-kibana:
     restart: unless-stopped
     container_name: msa_kibana
-    image: openmsa/openmsa:msa2-kibana-2.8.6-118f089ce6a140a7ef9991798c1029bace926539
+    image: openmsa/openmsa:msa2-kibana-2.8.7-b5a0a64970f780ffddaf884f6bbff149431f0026
     depends_on:
       msa-es:
         condition: service_started
@@ -375,7 +400,7 @@ services:
     environment:
       ELASTICSEARCH_URL: "http://msa_es:9200"
       ELASTICSEARCH_HOSTS: "http://msa_es:9200"
-      <<: *es-credential
+      <<: *es-configuration
     logging:
       <<: *logging
     networks:
@@ -387,7 +412,7 @@ services:
     restart: unless-stopped
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: openmsa/openmsa:msa2-linuxdev-2.8.6-fd35bfb457fd88b05dea30f50820f14565bbebb3
+    image: openmsa/openmsa:msa2-linuxdev-2.8.7-6f2f80bb768a44ffad06dd7b4240c2a01c5c0e27
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
@@ -405,7 +430,7 @@ services:
     restart: unless-stopped
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.8.6-4981889b459e41c6dfe50699e51d839848fea9ba
+    image: openmsa/openmsa:msa2-linuxme-2.8.7-4981889b459e41c6dfe50699e51d839848fea9ba
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -430,7 +455,7 @@ services:
     restart: unless-stopped
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.8.6-4981889b459e41c6dfe50699e51d839848fea9ba
+    image: openmsa/openmsa:msa2-linuxme-2.8.7-4981889b459e41c6dfe50699e51d839848fea9ba
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -481,9 +506,15 @@ volumes:
   msa_front:
   msa_front_conf:
   msa_svn:
+  msa_svn_ws:
   msa_ai_ml_db:
+  rsyslog_conf:
   msa_bulkfiles:
+  msa_bulkfiles_err:
   msa_monitbulkfiles:
+  msa_monitbulkfiles_err:
+  msa_alarmbulkfiles:
+  msa_alarmbulkfiles_err:
 
 networks:
   default:

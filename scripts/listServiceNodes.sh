@@ -1,7 +1,7 @@
 #!/bin/bash
 # Get the swarm name if any
 DOCKER_STACK_NAME=''
-STACK_NAMES=$(docker stack ls --orchestrator swarm --format {{.Name}} 2>/dev/null)
+STACK_NAMES=$(docker stack ls --format {{.Name}} 2>/dev/null)
 if [ $? -eq 0 ]; then
   for s in $STACK_NAMES; do
     docker stack ps "$s" --filter "name=${s}_${SMS}" -q >/dev/null 2>&1
