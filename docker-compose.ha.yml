@@ -154,6 +154,9 @@ services:
         condition: on-failure
         max_attempts: 10
     environment:
+      - no_proxy=127.0.0.1,localhost,::1,.repo,10.0.0.0/8,.tm.com.my
+      - http_proxy=http://10.242.225.20:8000/
+      - https_proxy=http://10.242.225.20:8000/
       <<: *es-credential
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
