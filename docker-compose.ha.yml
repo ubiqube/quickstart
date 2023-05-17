@@ -405,7 +405,7 @@ services:
       <<: *logging
 
   msa-es:
-    image: openmsa/openmsa:msa2-es-2.8.6-7b0c2d96ae426da44b255efad0b1a60332f9c385
+    image: openmsa/openmsa:msa2-es-2.8.7-0bdbe159f733c75a5ea0696420ded038c87b5d6c
     deploy:
       replicas: 1
       placement:
