@@ -232,15 +232,15 @@ services:
       - target: 514
         published: 514
         protocol: udp
-        mode: host
+        mode: ingress
       - target: 514
         published: 514
         protocol: tcp
-        mode: host
+        mode: ingress
       - target: 6514
         published: 6514
         protocol: tcp
-        mode: host
+        mode: ingress
     environment:
       ACTIONTYPE: "omfwd"
       TLS_SYSLOG_PORT: 6514
