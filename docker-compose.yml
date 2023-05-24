@@ -16,7 +16,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:42fcc95211669c835e747e0a71940a7fb0a985e7
+    image: ubiqube/msa2-front:0bd9b474ebe34db074ac9735f583bc00a26d7eba
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -102,7 +102,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:9401ccc9974477c20554090eed92f4b94f800e89
+    image: ubiqube/msa2-api:7f7f893af91e89d1bb567dd7ea30a5261bf4391d
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
       retries: 10
@@ -355,6 +355,7 @@ services:
     logging:
       <<: *logging
     volumes:
+      - "/mnt/ES_Snapshot:/mnt/ES_Snapshot"
       - "msa_es:/usr/share/elasticsearch/data"
       - "msa_es_config:/usr/share/elasticsearch/config"
     ulimits:
