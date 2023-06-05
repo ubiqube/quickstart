@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+#set -x
 
 APPDIR=$(dirname $0)
 source $APPDIR/docker-monitor.inc
