@@ -93,8 +93,8 @@ services:
     image: ubiqube/mano-nfvo-tm22:uat30
     depends_on:
       - db
-    healthcheck:
-      test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
+#    healthcheck:
+#      test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     volumes:
       - "/mnt/NASVolume/mano_nfvo:/opt/etsi-mano-data"
     deploy:
@@ -120,8 +120,8 @@ services:
     image: ubiqube/mano-nfvo-tm22:uat30
     depends_on:
       - db
-    healthcheck:
-      test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
+#    healthcheck:
+#      test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
@@ -154,8 +154,8 @@ services:
     image: ubiqube/mano-vnfm-tm22:uat30
     depends_on:
       - db
-    healthcheck:
-      test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
+#    healthcheck:
+#      test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     volumes:
       - "/mnt/NASVolume/mano_vnfm:/opt/etsi-mano-data"
     deploy:
@@ -181,8 +181,8 @@ services:
     image: ubiqube/mano-vnfm-tm22:uat30
     depends_on:
       - db
-    healthcheck:
-      test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
+#    healthcheck:
+#      test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
