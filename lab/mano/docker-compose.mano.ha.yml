@@ -94,7 +94,7 @@ services:
     depends_on:
       - db
     healthcheck:
-      test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
+      test: ["CMD-SHELL", "curl --fail http://localhost:8080/ubi-etsi-mano/"]
     volumes:
       - "/mnt/NASVolume/mano_nfvo:/opt/etsi-mano-data"
     deploy:
@@ -121,7 +121,7 @@ services:
     depends_on:
       - db
     healthcheck:
-      test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
+      test: ["CMD-SHELL", "curl --fail http://localhost:8080/ubi-etsi-mano/"]
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
@@ -155,7 +155,7 @@ services:
     depends_on:
       - db
     healthcheck:
-      test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
+      test: ["CMD-SHELL", "curl --fail http://localhost:8080/ubi-etsi-mano/"]
     volumes:
       - "/mnt/NASVolume/mano_vnfm:/opt/etsi-mano-data"
     deploy:
@@ -182,7 +182,7 @@ services:
     depends_on:
       - db
     healthcheck:
-      test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
+      test: ["CMD-SHELL", "curl --fail http://localhost:8080/ubi-etsi-mano/"]
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
