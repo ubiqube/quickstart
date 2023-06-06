@@ -109,6 +109,8 @@ services:
 
   mano-nfvo-brf7:
     image: ubiqube/mano-nfvo-tm22:uat30
+    depends_on:
+      - db
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
@@ -138,6 +140,8 @@ services:
         max-file: "5"
 
   mano-nfvo-kvdc:
+    depends_on:
+      - db
     image: ubiqube/mano-nfvo-tm22:uat30
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
@@ -168,6 +172,8 @@ services:
         max-file: "5"
 
   mano-vnfm-brf7:
+    depends_on:
+      - db
     image: ubiqube/mano-vnfm-tm22:uat30
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
@@ -199,6 +205,8 @@ services:
         max-file: "5"
 
   mano-vnfm-kvdc:
+    depends_on:
+      - db
     image: ubiqube/mano-vnfm-tm22:uat30
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
