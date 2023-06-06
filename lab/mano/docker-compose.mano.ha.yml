@@ -91,6 +91,8 @@ services:
 
   mano-nfvo:
     image: ubiqube/mano-nfvo-tm22:uat30
+    depends_on:
+      - db
     volumes:
       - "/mnt/NASVolume/mano_nfvo:/opt/etsi-mano-data"
     deploy:
@@ -114,6 +116,8 @@ services:
 
   mano-nfvo-tc:
     image: ubiqube/mano-nfvo-tm22:uat30
+    depends_on:
+      - db
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
