@@ -355,7 +355,6 @@ services:
     logging:
       <<: *logging
     volumes:
-      - "/mnt/ES_Snapshot:/mnt/ES_Snapshot"
       - "msa_es:/usr/share/elasticsearch/data"
       - "msa_es_config:/usr/share/elasticsearch/config"
     ulimits:
