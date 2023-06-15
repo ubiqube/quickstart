@@ -22,7 +22,7 @@ monitor_swarm_docker_events()
   do
     d=$(date +"$DATE_FORMAT")
     echo "$d  send syslog for event $event"
-    echo "<14> $event" | nc -v -u -w1 $SYSLOG_SERVER 514
+    echo "<14> hostname=$HOST $event" | nc -v -u -w1 $SYSLOG_SERVER 514
   done
 }
 
