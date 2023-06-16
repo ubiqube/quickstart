@@ -116,7 +116,7 @@ services:
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==db-replica"
+          - "node.labels.worker==db"
     environment:
       CAMUNDA_PASSWORD: camunda
       CAMUNDA_DB: process-engine
