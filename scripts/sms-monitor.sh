@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ "$(docker node inspect --format '{{.ManagerStatus.Leader}}' self)" != true ]; then
+  # this is not an error, only the leader has to do the job
+  # echo "This manager is not the leader, nothing to do"
+  exit 0
+fi
+
 SMS="msa-sms"
 RSYSLOG="msa-rsyslog"
 DATE_FORMAT="%Y-%m-%d %H:%M:%S"
