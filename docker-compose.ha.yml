@@ -16,7 +16,7 @@ services:
       - camunda
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
-    image: ubiqube/msa2-front:7bc41c1606fc67e4345c400b86cf8c076fc1a199
+    image: ubiqube/msa2-front:6a29df5fc2760276ba33c8e30c3f40e778e520
     deploy:
       replicas: 1
       placement:
@@ -66,7 +66,7 @@ services:
   camunda:
     depends_on:
       - db
-    image: ubiqube/msa2-camunda:23335a0df397d4bc3531366223cd5a239688ee0d
+    image: ubiqube/msa2-camunda:8dda18db891417d6899177400920e27f3d6db445
     deploy:
       replicas: 1
       placement:
@@ -90,7 +90,7 @@ services:
   msa-ui:
     depends_on:
       - msa-api
-    image: ubiqube/msa2-ui:e715ed6d39ea5603b373c24d9dcb243743937682
+    image: ubiqube/msa2-ui:8b73c6970549a371089b07cdd7feba62b49dce13
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     deploy:
@@ -119,7 +119,7 @@ services:
           - "msa_ui"
 
   db:
-    image: ubiqube/msa2-db:5d83ffef0f6af44a5885a7bd34e732fba8b346ba
+    image: ubiqube/msa2-db:295cd5b8bb231506c4f6f21aed500c10f0329f0f
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -155,7 +155,7 @@ services:
         max-file: "5"
 
   db-replica:
-    image: ubiqube/msa2-db:5d83ffef0f6af44a5885a7bd34e732fba8b346ba
+    image: ubiqube/msa2-db:295cd5b8bb231506c4f6f21aed500c10f0329f0f
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -190,7 +190,7 @@ services:
   msa-api:
     depends_on:
       - db
-    image: ubiqube/msa2-api:a7c649a66b89a9d24e97134bbcbd2f0ac61e7b44
+    image: ubiqube/msa2-api:e6d8e326a6edfad265335d1f481a612780a56bc3
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     environment:
@@ -306,7 +306,7 @@ services:
       - msa-api
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
-    image: ubiqube/msa2-monitoring:dfcc122af6838113bd9964b6e2a7587098ca8242
+    image: ubiqube/msa2-monitoring:4a1df4d2f11802fc73c8cd5c15ceb9e7988c70ea
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
@@ -335,7 +335,7 @@ services:
   msa-bud:
     depends_on:
       - db
-    image: ubiqube/msa2-bud:04590d19dafe4acc2742c9a365e9dbdb80e45dfc
+    image: ubiqube/msa2-bud:26337e8d7cb89f769fb2c391a66d3d8da3fb357c
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -355,7 +355,7 @@ services:
           - "msa_bud"
 
   msa-cerebro:
-    image: ubiqube/msa2-cerebro:914750e000db1343d9972bfa6652da1efe4aa32f
+    image: ubiqube/msa2-cerebro:20ee9b68766b7432a7faf20244d604393f6fdce4
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -379,7 +379,7 @@ services:
           - "msa_cerebro"
 
   msa-kibana:
-    image: ubiqube/msa2-kibana:b5a0a64970f780ffddaf884f6bbff149431f0026
+    image: ubiqube/msa2-kibana:46a9280639d973021a841c3792aed3948846d73a
     ports:
       - "5601:5601"
     environment:
@@ -420,7 +420,7 @@ services:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       interval: 60s
       start_period: 60s
-    image: ubiqube/msa2-es:0bdbe159f733c75a5ea0696420ded038c87b5d6c
+    image: ubiqube/msa2-es:95d632f4eb657b3d2b367a4bbf56c5a77959e6ac
     deploy:
       replicas: 1
       placement:
