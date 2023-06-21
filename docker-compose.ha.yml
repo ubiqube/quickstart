@@ -16,7 +16,7 @@ services:
       - camunda
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
-    image: ubiqube/msa2-front:6a29df5fc2760276ba33c8e30c3f40e778e520
+    image: ubiqube/msa2-front:6a29df5fc2760276ba33c8e30c3f40e778e52070
     deploy:
       replicas: 1
       placement:
