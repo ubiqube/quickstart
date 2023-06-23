@@ -106,6 +106,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
+      timeout: 5s
       interval: 10s
       start_period: 90s
     depends_on:
