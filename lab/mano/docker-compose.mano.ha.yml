@@ -181,7 +181,7 @@ services:
         protocol: tcp
         mode: ingress
     secrets:
-      - source: vnfm.keycloak.credentials.secret
+      - source: vnfm_ngv.keycloak.credentials.secret
         target: keycloak.credentials.secret
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_nfvo_ngv
@@ -265,4 +265,6 @@ secrets:
   vnfm.keycloak.credentials.secret:
     external: true
   nfvo.keycloak.credentials.secret:
+    external: true
+  vnfm_ngv.keycloak.credentials.secret:
     external: true
