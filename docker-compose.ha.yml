@@ -16,7 +16,7 @@ services:
       - camunda
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
-    image: ubiqube/msa2-front:6a29df5fc2760276ba33c8e30c3f40e778e52070
+    image: ubiqube/msa2-front:e9884aada52434be7974fbbaf8d1f8bc9b9afd0f
     deploy:
       replicas: 1
       placement:
@@ -90,7 +90,7 @@ services:
   msa-ui:
     depends_on:
       - msa-api
-    image: ubiqube/msa2-ui:8b73c6970549a371089b07cdd7feba62b49dce13
+    image: ubiqube/msa2-ui:d004a1f4364e5ea396a9e55b110acf1f5930da89
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     deploy:
@@ -190,7 +190,7 @@ services:
   msa-api:
     depends_on:
       - db
-    image: ubiqube/msa2-api:e6d8e326a6edfad265335d1f481a612780a56bc3
+    image: ubiqube/msa2-api:1fa2bf09371fc48c1bf526506070ffbb9f075bb5
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     environment:
@@ -278,7 +278,7 @@ services:
       - msa-api
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
-    image: ubiqube/msa2-alarm:a9b92668c96ee4a90e5447eb5af1c20b21971787
+    image: ubiqube/msa2-alarm:26c5e47d2306150442b610f0f8c91c40efe4931b
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
@@ -306,7 +306,7 @@ services:
       - msa-api
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
-    image: ubiqube/msa2-monitoring:4a1df4d2f11802fc73c8cd5c15ceb9e7988c70ea
+    image: ubiqube/msa2-monitoring:c9cb68859415b7c1834d7e111f37ff17a9456fdb
     environment:
       - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
@@ -405,7 +405,7 @@ services:
         max-file: "5"
 
   msa-linux:
-    image: ubiqube/msa2-linuxme:4981889b459e41c6dfe50699e51d839848fea9ba
+    image: ubiqube/msa2-linuxme:e84bc462bf01d4956c4a1895b66507d4ba47a227
     healthcheck:
       test: ["CMD-SHELL", "test -f /usr/bin/install_libraries.sh || echo false"]
     cap_add:
@@ -420,7 +420,7 @@ services:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       interval: 60s
       start_period: 60s
-    image: ubiqube/msa2-es:95d632f4eb657b3d2b367a4bbf56c5a77959e6ac
+    image: ubiqube/msa2-es:e71f87cb1759246a727e891bf9b4aab1c2f778a0
     deploy:
       replicas: 1
       placement:
@@ -450,7 +450,7 @@ services:
         max-file: "5"
 
   msa-dev:
-    image: ubiqube/msa2-linuxdev:aaa524220c8ae616d179e737c08a868a118ede2d
+    image: ubiqube/msa2-linuxdev:4b76c583ce988238a3b5aea626de7a5ae13d9756
     depends_on:
       - msa-es
     healthcheck:
