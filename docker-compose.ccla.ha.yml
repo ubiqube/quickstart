@@ -4,7 +4,7 @@ services:
   cloudclapp:
     depends_on:
       - msa-api
-    image: ubiqube/cloudclapp:8b73c6970549a371089b07cdd7feba62b49dce13
+    image: ubiqube/cloudclapp:d004a1f4364e5ea396a9e55b110acf1f5930da89
     environment:
       - UBIQUBE_CAPTCHA_SITE_KEY=6Ld2zF4dAAAAAJlqZMIHpPeb3aYhcyy1K3NWPtqi
       - UBIQUBE_LICENSE_AGREEMENT_LINK=https:\/\/cloudclapp.com\/EndUserLicenceAgreement.html
@@ -16,7 +16,7 @@ services:
         max_replicas_per_node: 1
 
   ccla-scan-app:
-    image: ubiqube/cloudclapp-scan:1ea63bc2cff9947b45ad30324680d7574de5ba47
+    image: ubiqube/cloudclapp-scan:5fd210877816b5c00f7fda2440210c8ada8575cf
     environment:
       - UBIQUBE_ZAP_TOKEN=7da091fe-63a4-48c0-9bfa-7614c49feb7c
     deploy:
