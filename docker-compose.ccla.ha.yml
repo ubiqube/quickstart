@@ -49,7 +49,7 @@ services:
   key-vault:
     depends_on:
       - db
-    image: vault:latest
+    image: hashicorp/vault:latest
     ports:
       - "8200:8200"
     volumes:
