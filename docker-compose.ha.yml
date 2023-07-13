@@ -139,12 +139,7 @@ services:
       <<: *logging
 
   msa-api:
-<<<<<<< HEAD
     image: openmsa/openmsa:msa2-api-2.8.7-c7c919b700e637336c5f67f1ae1e5b16f98e257f
-=======
-    image: ubiqube/msa2-api:c7c919b700e637336c5f67f1ae1e5b16f98e257f
-    #image: openmsa/openmsa:msa2-api-2.8.7-6e8c462fbea06596415bb024644598893e7220a3
->>>>>>> c10bbe871c42ec372a07e15c3afb0ab0f0ee189a
     depends_on:
       - db
     healthcheck:
