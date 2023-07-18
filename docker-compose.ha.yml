@@ -243,7 +243,7 @@ services:
         protocol: tcp
         mode: ingress
     environment:
-      ACTIONTYPE: "omfwd"
+      ACTIONTYPE: "omudpspoof"
       TLS_SYSLOG_PORT: 6514
     volumes:
       - "rsyslog_conf:/etc"
