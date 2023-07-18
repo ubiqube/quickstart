@@ -112,7 +112,9 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 600s
-      retries: 5
+      retries: 10
+      interval: 30s
+
     deploy:
       replicas: 1
       restart_policy:
@@ -383,7 +385,6 @@ services:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
       - "msa_sms_logs:/opt/sms/logs"
-      - "msa_monitbulkfiles:/opt/sms/spool/parser"
       - "msa_bulkfiles:/opt/sms/spool/parser"
       - "msa_bulkfiles_err:/opt/sms/spool/parser-error"
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
@@ -540,6 +541,9 @@ volumes:
   msa_monitbulkfiles:
   msa_es:
   msa_es_config:
+  msa_alarmbulkfiles:
+  msa_alarmbulkfiles_err:
+  msa_bulkfiles_err:
 
 networks:
   default:
