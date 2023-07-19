@@ -15,7 +15,7 @@ x-logging: &logging
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.9-9b61c7097cdcf7cf31d815731ea1d2f12062999a
+    image: openmsa/openmsa:msa2-front-2.8.9_PATCH_1-bc07eb9d8a383e81b300b6181621a4b74ff8d268
     depends_on:
       - msa-api
       - msa-ui
