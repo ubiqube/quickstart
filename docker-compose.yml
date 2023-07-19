@@ -16,7 +16,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.9-9b61c7097cdcf7cf31d815731ea1d2f12062999a
+    image: ubiqube/msa2-front:953ed86b8a1346081bde4675aca06f73a072e453
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -102,7 +102,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.8.9-8a8b3caabf09ff8a31b25709492f7586c9d08f9d
+    image: ubiqube/msa2-api:2afa9bac088801bbd14868e75c181d832dd9014d
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -136,7 +136,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.8.9-659e3a5e5c2b729c900ae21882eafda7ee1b0a44
+    image: ubiqube/msa2-ui:bebae3bdcb80f52b1fc59cc6986626f763b1b82c
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -169,7 +169,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: openmsa/openmsa:msa2-sms-2.8.9-18b70bbc2b2958c70af0c321b2e33e97186f7a3b
+    image: ubiqube/msa2-sms:332df1de2ac4ac84030866d8ce551aeec92d5362
     healthcheck:
       timeout: 5s
       retries: 10
@@ -203,6 +203,29 @@ services:
         aliases:
           - "msa_sms"
 
+  msa-event:
+    depends_on:
+      - db
+      - msa-es
+      - msa-dev
+      - msa-sms
+    healthcheck:
+      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
+    image: ubiqube/msa2-event:2d4c63626ff43c21dacd9bb7bff6a5ce4930f69f
+    environment:
+      <<: *es-configuration
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "20m"
+        max-file: "5"
+    volumes:
+      - "msa_dev:/opt/devops/"
+      - "msa_bulkfiles:/opt/sms/spool/parser"
+      - "msa_bulkfiles_err:/opt/sms/spool/parser-error"
+
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
@@ -228,7 +251,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: openmsa/openmsa:msa2-alarm-2.8.9-26c5e47d2306150442b610f0f8c91c40efe4931b
+    image: ubiqube/msa2-alarm:b0095dae9d48b6294852cb15c266519f40b6d282
     healthcheck:
       timeout: 5s
       retries: 10
@@ -256,7 +279,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: openmsa/openmsa:msa2-monitoring-2.8.9-4a1df4d2f11802fc73c8cd5c15ceb9e7988c70ea
+    image: ubiqube/msa2-monitoring:c9cb68859415b7c1834d7e111f37ff17a9456fdb
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -265,6 +288,8 @@ services:
       msa-es:
         condition: service_started
       msa-dev:
+        condition: service_started
+      msa-sms:
         condition: service_started
     environment:
       ES_MON: "yes"
@@ -288,8 +313,8 @@ services:
     restart: unless-stopped
     container_name: msa_rsyslog
     depends_on:
-      - msa-sms
-    image: openmsa/openmsa:msa2-rsyslog-2.8.9-c7981110f0ff1ee153199786f4abf3c8f5e49db7
+      - msa-event
+    image: ubiqube/msa2-rsyslog:cbd881a366f7971aa981f720f41ce2c9ef097ab9
     # environment:
       # enable omfwd acxtion type for syslog Forwarding Output Module
       # https://www.rsyslog.com/doc/v8-stable/configuration/modules/omfwd.html
@@ -340,7 +365,7 @@ services:
   msa-es:
     restart: unless-stopped
     container_name: msa_es
-    image: openmsa/openmsa:msa2-es-2.8.9-95d632f4eb657b3d2b367a4bbf56c5a77959e6ac
+    image: ubiqube/msa2-es:e71f87cb1759246a727e891bf9b4aab1c2f778a0
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
@@ -419,7 +444,7 @@ services:
     restart: unless-stopped
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: openmsa/openmsa:msa2-linuxdev-2.8.9-f386e5b7b577cbb28cb20a075e911c72137dab8b
+    image: ubiqube/msa2-linuxdev:5b2adb7e5f481308238e4d96cc3dc1f1bf2e0d29
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
