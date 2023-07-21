@@ -102,7 +102,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.8.10_BETA-2afa9bac088801bbd14868e75c181d832dd9014
+    image: openmsa/openmsa:msa2-api-2.8.10_BETA-2afa9bac088801bbd14868e75c181d832dd9014d
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
