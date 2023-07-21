@@ -60,6 +60,8 @@ standaloneInstall(){
     echo $install_ccla_wf
     if [ $install_ccla_wf = '204' ] ; then
         echo "CCLA-WF is now installed.."
+    else
+        echo "CCLA-WF was not installed. Use the API /ccla/libraries/install to install CCLA-WF"
     fi
 
     docker-compose restart msa-api
@@ -111,6 +113,9 @@ haInstall(){
     ha_dev_node_ip=$(getHaNodeIp msa-dev)
     ha_dev_container_ref=$(getHaContainerReference msa-dev)
     echo "DEV $ha_dev_ip $ha_dev_container_ref"
+    ha_api_node_ip=$(getHaNodeIp msa-api)
+    ha_api_container_ref=$(getHaContainerReference msa-api)
+    echo "API $ha_api_node_ip $ha_api_container_ref"
     waitRunningContainer msa-dev $ssh_user@$ha_dev_node_ip
     echo "Checking SSH access to DEV container with user $ssh_user on IP $ha_dev_node_ip to install libraries. If failed, please set SSH key"
     ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec -it $ha_dev_container_ref /bin/bash -c '/usr/bin/install_libraries.sh $(getLibOptions)'"
@@ -118,6 +123,13 @@ haInstall(){
     if [ $ccla = true ] ; then
         echo "Installing CCLA libraries and Blueprints"
         ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec -it $ha_dev_container_ref /bin/bash -c '/usr/bin/install_libraries.sh ccla'"
+    fi
+    install_ccla_wf=$(ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_api_node_ip "docker exec -it $ha_api_container_ref /bin/bash -c 'curl -X POST http://localhost:8480/ubi-api-rest/ccla/libraries/install -s -o /dev/null -w '%{http_code}''")
+    echo $install_ccla_wf
+    if [ $install_ccla_wf = '204' ] ; then
+        echo "CCLA-WF is now installed.."
+    else
+        echo "CCLA-WF was not installed. Use the API /ccla/libraries/install to install CCLA-WF"
     fi
     sleep 5
     echo "Auto restart of API, SMS and ALARM"
