@@ -12,6 +12,7 @@ ha_setup=false
 mini_lab=false
 ssh_user=root
 mano=false
+ccla=false
 
 file_upgrade='.upgrade_unfinished'
 
