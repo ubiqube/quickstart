@@ -40,7 +40,9 @@ standaloneInstall(){
         fi
     fi
 
-    if [ $mano = true ] ; then
+    if [ $mano = true ] && [ $ccla = true ] ; then
+        docker-compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml -f docker-compose.ccla.yml up -d --build
+    elif [ $mano = true ] ; then
         docker-compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml up -d --build
     elif [ $ccla = true ] ; then
         docker-compose -f docker-compose.yml -f docker-compose.ccla.yml up -d --build
@@ -100,7 +102,9 @@ haInstall(){
         echo "No stack found. Fresh HA installation"
     fi
 
-    if [ $mano = true ] ; then
+    if [ $mano = true ] && [ $ccla = true ] ; then
+        docker stack deploy --with-registry-auth -c docker-compose.ha.yml -c lab/mano/docker-compose.mano.ha.yml -c docker-compose.ccla.ha.yml $ha_stack
+    elif [ $mano = true ] ; then
         docker stack deploy --with-registry-auth -c docker-compose.ha.yml -c lab/mano/docker-compose.mano.ha.yml $ha_stack
     elif [ $ccla = true ] ; then
         docker stack deploy --with-registry-auth -c docker-compose.ha.yml -c docker-compose.ccla.ha.yml $ha_stack
