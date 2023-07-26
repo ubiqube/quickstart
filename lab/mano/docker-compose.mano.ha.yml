@@ -282,7 +282,7 @@ services:
           - "node.labels.worker==app"
     ports:
       - target: 8080
-        published: 8121
+        published: 8122
         protocol: tcp
         mode: ingress
     secrets:
@@ -319,7 +319,7 @@ services:
           - "node.labels.worker==app"
     ports:
       - target: 8080
-        published: 8131
+        published: 8132
         protocol: tcp
         mode: ingress
     secrets:
@@ -335,8 +335,6 @@ services:
         max-buffer-size: "4m"
         max-size: "10m"
         max-file: "5"
-
-
 
 secrets:
   vnfm.keycloak.credentials.secret:
