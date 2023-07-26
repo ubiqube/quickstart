@@ -21,7 +21,7 @@ services:
       - msa-ui
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
-      timeout: 2s
+      timeout: 10s
       retries: 10
       interval: 10s
       start_period: 30s
@@ -108,7 +108,9 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 600s
+      interval: 30s
       retries: 5
+      start_period: 300s
     deploy:
       replicas: 1
       restart_policy:
