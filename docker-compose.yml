@@ -136,7 +136,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.8.9_PATCH_1-195f178b03eb5ae10bba3b8840d9e5bdeb511283
+    image: openmsa/openmsa:msa2-ui-2.8.9_PATCH_1-461f7738542dcf132a17fe72a09e62a62dddeab5
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
