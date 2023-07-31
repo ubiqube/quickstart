@@ -168,7 +168,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.8.9_PATCH_1-461f7738542dcf132a17fe72a09e62a62dddeab5
+    image: openmsa/openmsa:msa2-ui-2.8.9_PATCH_1-e133d0f6ad1c6c234fad7563cb959c628afcd8c8
     depends_on:
       - msa-api
     healthcheck:
