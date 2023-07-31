@@ -114,7 +114,7 @@ services:
         aliases:
           - "msa-api"
   msa_ui:
-    image: openmsa/openmsa:msa2-ui-2.8.9_PATCH_1-2a6b8422064c4004d0214366410737fa727dc7ae
+    image: openmsa/openmsa:msa2-ui-2.8.9_PATCH_1-e133d0f6ad1c6c234fad7563cb959c628afcd8c8
     depends_on:
       - msa_api
     healthcheck:
