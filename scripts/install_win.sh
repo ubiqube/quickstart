@@ -12,6 +12,7 @@ ha_setup=false
 mini_lab=false
 ssh_user=root
 mano=false
+ccla=false
 
 file_upgrade='.upgrade_unfinished'
 
@@ -38,15 +39,31 @@ standaloneInstall(){
         fi
     fi
 
-    if [ $mano = false ] ; then
-        docker-compose up -d --build
-    else
+    if [ $mano = true ] && [ $ccla = true ] ; then
+        docker-compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml -f docker-compose.ccla.yml up -d --build
+    elif [ $mano = true ] ; then
         docker-compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml up -d --build
+    elif [ $ccla = true ] ; then
+        docker-compose -f docker-compose.yml -f docker-compose.ccla.yml up -d --build
+    else
+        docker-compose up -d --build
     fi
 
     docker-compose exec -T msa-dev rm -rf /opt/fmc_repository/Process/Reference
 
     docker-compose exec -T -w //usr/bin/ msa-dev bash -c  "./install_libraries.sh $(getLibOptions)"
+    if [ $ccla = true ] ; then
+        echo "Installing CCLA libraries and Blueprints"
+        docker-compose exec -T -w //usr/bin/ msa-dev bash -c  "./install_libraries.sh ccla"
+    fi
+
+    install_ccla_wf=$(docker-compose exec -T msa-api curl -X POST http://localhost:8480/ubi-api-rest/ccla/libraries/install -s -o /dev/null -w "%{http_code}")
+    echo $install_ccla_wf
+    if [ $install_ccla_wf = '204' ] ; then
+        echo "CCLA-WF is now installed.."
+    else
+        echo "CCLA-WF was not installed. Use the API /ccla/libraries/install to install CCLA-WF"
+    fi
 
     docker-compose restart msa-api
     docker-compose restart msa-sms
@@ -83,20 +100,38 @@ echo "############## Applying last images ##############################"
         echo "No stack found. Fresh HA installation"
     fi
 
-    if [ $mano = false ] ; then
-        docker stack deploy --with-registry-auth -c docker-compose.ha.yml $ha_stack
-    else
+    if [ $mano = true ] && [ $ccla = true ] ; then
+        docker stack deploy --with-registry-auth -c docker-compose.ha.yml -c lab/mano/docker-compose.mano.ha.yml -c docker-compose.ccla.ha.yml $ha_stack
+    elif [ $mano = true ] ; then
         docker stack deploy --with-registry-auth -c docker-compose.ha.yml -c lab/mano/docker-compose.mano.ha.yml $ha_stack
+    elif [ $ccla = true ] ; then
+        docker stack deploy --with-registry-auth -c docker-compose.ha.yml -c docker-compose.ccla.ha.yml $ha_stack
+    else
+        docker stack deploy --with-registry-auth -c docker-compose.ha.yml $ha_stack
     fi
 
     echo "############## Install OpenMSA Libraries ##############################"
     ha_dev_node_ip=$(getHaNodeIp msa-dev)
-        ha_dev_container_ref=$(getHaContainerReference msa-dev)
-        echo "DEV $ha_dev_ip $ha_dev_container_ref"
-        echo "Checking SSH access to $ha_dev_node_run with user $ssh_user on IP $ha_dev_node_ip to install libraries. If failed, please set SSH key"
-        ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec -it $ha_dev_container_ref /bin/bash -c '/usr/bin/install_libraries.sh $(getLibOptions)'"
-        docker service update --force "$ha_stack"_msa-api
-        docker service update --force "$ha_stack"_msa-sms
+    ha_dev_container_ref=$(getHaContainerReference msa-dev)
+    ha_api_node_ip=$(getHaNodeIp msa-api)
+    ha_api_container_ref=$(getHaContainerReference msa-api)
+    echo "DEV $ha_dev_ip $ha_dev_container_ref"
+    echo "API $ha_api_node_ip $ha_api_container_ref"
+    echo "Checking SSH access to $ha_dev_node_run with user $ssh_user on IP $ha_dev_node_ip to install libraries. If failed, please set SSH key"
+    ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec -it $ha_dev_container_ref /bin/bash -c '/usr/bin/install_libraries.sh $(getLibOptions)'"
+    if [ $ccla = true ] ; then
+        echo "Installing CCLA libraries and Blueprints"
+        ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec -it $ha_dev_container_ref /bin/bash -c '/usr/bin/install_libraries.sh ccla'"
+    fi
+    install_ccla_wf=$(ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_api_node_ip "docker exec -it $ha_api_container_ref /bin/bash -c 'curl -X POST http://localhost:8480/ubi-api-rest/ccla/libraries/install -s -o /dev/null -w '%{http_code}''")
+    echo $install_ccla_wf
+    if [ $install_ccla_wf = '204' ] ; then
+        echo "CCLA-WF is now installed.."
+    else
+        echo "CCLA-WF was not installed. Use the API /ccla/libraries/install to install CCLA-WF"
+    fi
+    docker service update --force "$ha_stack"_msa-api
+    docker service update --force "$ha_stack"_msa-sms
     docker service update --force "$ha_stack"_msa-alarm
 
         echo "############## Start CROND ############################################"
