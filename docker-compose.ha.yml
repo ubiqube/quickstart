@@ -303,7 +303,7 @@ services:
     depends_on:
       - db
       - msa-api
-    image: openmsa/openmsa:msa2-alarm-2.8.7.3-46c50ff14df0b373c50ceea281bcb3cb72821c5b
+    image: openmsa/openmsa:msa2-alarm-2.8.7.4-465f3f2c19bc55ce3078c27cf5f65e34a4a77b83
     healthcheck:
       timeout: 5s
       retries: 10
