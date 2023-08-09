@@ -16,7 +16,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.10_BETA-733c7a5f98dd4952bb8aad7aed91942e46d675f5
+    image: openmsa/openmsa:msa2-front-2.8.10_BETA-8fddb6307e6dcf12d050944e8b7df7c7280bc2d6
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -72,7 +72,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.8.10_BETA-bf73395fbad1d61efbd87afe9c0120e922c2aea6
+    image: openmsa/openmsa:msa2-db-2.8.10_BETA-298af6abd9919675e31d49b1832ab688e3e7f153
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -102,7 +102,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.8.10_BETA-2afa9bac088801bbd14868e75c181d832dd9014d
+    image: openmsa/openmsa:msa2-api-2.8.10_BETA-b05f0df4fc1bddf4c028e48a85b6b6dff8ccc1b0
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -211,7 +211,7 @@ services:
       - msa-sms
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-    image: openmsa/openmsa:msa2-event-2.8.10_BETA-2d4c63626ff43c21dacd9bb7bff6a5ce4930f69f
+    image: openmsa/openmsa:msa2-event-2.8.10_BETA-3402836b36fe67c2c93185094abf5746ec418944
     environment:
       <<: *es-configuration
     logging:
@@ -229,7 +229,7 @@ services:
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: openmsa/openmsa:msa2-bud-2.8.10_BETA-26337e8d7cb89f769fb2c391a66d3d8da3fb357c
+    image: openmsa/openmsa:msa2-bud-2.8.10_BETA-8dc3d701051133c1aeeb5042102cd25e6ca21bea
     healthcheck:
       timeout: 5s
       retries: 10
@@ -251,7 +251,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: openmsa/openmsa:msa2-alarm-2.8.10_BETA-0dfdce41a29d085133f61198465619379f7db0ae
+    image: openmsa/openmsa:msa2-alarm-2.8.10_BETA-df8dfe8afe6f12eea13dc49f02587a53ca3dd608
     healthcheck:
       timeout: 5s
       retries: 10
@@ -279,7 +279,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: openmsa/openmsa:msa2-monitoring-2.8.10_BETA-c9cb68859415b7c1834d7e111f37ff17a9456fdb
+    image: openmsa/openmsa:msa2-monitoring-2.8.10_BETA-fc0b2fcdc46f83beca5f189d942e31f647474d84
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -444,7 +444,7 @@ services:
     restart: unless-stopped
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: openmsa/openmsa:msa2-linuxdev-2.8.10_BETA-5b2adb7e5f481308238e4d96cc3dc1f1bf2e0d29
+    image: openmsa/openmsa:msa2-linuxdev-2.8.10_BETA-ef3ef5ff20495190fc09b8b46bef151e7eedfff3
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
