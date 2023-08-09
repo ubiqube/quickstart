@@ -169,7 +169,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: openmsa/openmsa:msa2-sms-2.8.10_BETA-332df1de2ac4ac84030866d8ce551aeec92d5362
+    image: openmsa/openmsa:msa2-sms-2.8.10_BETA-a67fb6d88e449138019ac62a970c405028af06cd
     healthcheck:
       timeout: 5s
       retries: 10
