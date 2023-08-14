@@ -15,7 +15,7 @@ x-logging: &logging
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.10_BETA-733c7a5f98dd4952bb8aad7aed91942e46d675f5
+    image: openmsa/openmsa:msa2-front-2.8.10_BETA-591bd2eb0d90b4ec97b74d58ae027cbd02c0ab12
     depends_on:
       - msa-api
       - msa-ui
@@ -69,7 +69,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: openmsa/openmsa:msa2-db-2.8.10_BETA-bf73395fbad1d61efbd87afe9c0120e922c2aea6
+    image: openmsa/openmsa:msa2-db-2.8.10_BETA-298af6abd9919675e31d49b1832ab688e3e7f153
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -104,7 +104,7 @@ services:
       <<: *logging
 
   db-replica:
-    image: openmsa/openmsa:msa2-db-2.8.10_BETA-bf73395fbad1d61efbd87afe9c0120e922c2aea6
+    image: openmsa/openmsa:msa2-db-2.8.10_BETA-298af6abd9919675e31d49b1832ab688e3e7f153
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -135,7 +135,7 @@ services:
       <<: *logging
 
   msa-api:
-    image: openmsa/openmsa:msa2-api-2.8.10_BETA-2afa9bac088801bbd14868e75c181d832dd9014d
+    image: openmsa/openmsa:msa2-api-2.8.10_BETA-e95b3e19a0deb74065e8cd940e61c8e2945d6f96
     depends_on:
       - db
     healthcheck:
@@ -168,7 +168,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.8.10_BETA-75e9e336da318842a2aff592861d99ba2d5a8e33
+    image: openmsa/openmsa:msa2-ui-2.8.10_BETA-51f3935c11adec5ef2defa24c7c4f79c0d23f3aa
     depends_on:
       - msa-api
     healthcheck:
@@ -240,7 +240,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: openmsa/openmsa:msa2-sms-2.8.10_BETA-332df1de2ac4ac84030866d8ce551aeec92d5362
+    image: openmsa/openmsa:msa2-sms-2.8.10_BETA-1e6377484093e22d03d2fc23c0c8b4b0d910a429
     depends_on:
       - db
     healthcheck:
@@ -275,7 +275,7 @@ services:
           - "msa_sms"
 
   msa-bud:
-    image: openmsa/openmsa:msa2-bud-2.8.10_BETA-26337e8d7cb89f769fb2c391a66d3d8da3fb357c
+    image: openmsa/openmsa:msa2-bud-2.8.10_BETA-8dc3d701051133c1aeeb5042102cd25e6ca21bea
     depends_on:
       - db
     healthcheck:
@@ -303,7 +303,7 @@ services:
     depends_on:
       - db
       - msa-api
-    image: openmsa/openmsa:msa2-alarm-2.8.10_BETA-0dfdce41a29d085133f61198465619379f7db0ae
+    image: openmsa/openmsa:msa2-alarm-2.8.10_BETA-df8dfe8afe6f12eea13dc49f02587a53ca3dd608
     healthcheck:
       timeout: 5s
       retries: 10
@@ -331,7 +331,7 @@ services:
           - "msa_alarm"
 
   msa-monitoring:
-    image: openmsa/openmsa:msa2-monitoring-2.8.10_BETA-c9cb68859415b7c1834d7e111f37ff17a9456fdb
+    image: openmsa/openmsa:msa2-monitoring-2.8.10_BETA-fc0b2fcdc46f83beca5f189d942e31f647474d84
     healthcheck:
       timeout: 5s
       retries: 10
@@ -465,7 +465,7 @@ services:
           - "msa_cerebro"
 
   msa-dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.8.10_BETA-5b2adb7e5f481308238e4d96cc3dc1f1bf2e0d29
+    image: openmsa/openmsa:msa2-linuxdev-2.8.10_BETA-ef3ef5ff20495190fc09b8b46bef151e7eedfff3
     deploy:
       replicas: 1
       placement:
