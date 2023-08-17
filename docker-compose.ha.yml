@@ -15,7 +15,7 @@ x-logging: &logging
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.9-9b61c7097cdcf7cf31d815731ea1d2f12062999a
+    image: openmsa/openmsa:msa2-front-2.8.9.1-a27674ca45dcff23dea9049e8d32cdd33dd514e2
     depends_on:
       - msa-api
       - msa-ui
@@ -69,7 +69,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: openmsa/openmsa:msa2-db-2.8.9-8ca7d11af8309f7cde8ba56e2c37ceaa959bb03e
+    image: openmsa/openmsa:msa2-db-2.8.9.1-eaf2c8ab53802d28c9711952deaa1bc1d5405433
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -104,7 +104,7 @@ services:
       <<: *logging
 
   db-replica:
-    image: openmsa/openmsa:msa2-db-2.8.9-8ca7d11af8309f7cde8ba56e2c37ceaa959bb03e
+    image: openmsa/openmsa:msa2-db-2.8.9.1-eaf2c8ab53802d28c9711952deaa1bc1d5405433
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -135,7 +135,7 @@ services:
       <<: *logging
 
   msa-api:
-    image: openmsa/openmsa:msa2-api-2.8.9-8a8b3caabf09ff8a31b25709492f7586c9d08f9d
+    image: openmsa/openmsa:msa2-api-2.8.9.1-7c99f23a1fd9d6816037b452271327dc54e8f63a
     depends_on:
       - db
     healthcheck:
@@ -168,7 +168,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.8.9-659e3a5e5c2b729c900ae21882eafda7ee1b0a44
+    image: openmsa/openmsa:msa2-ui-2.8.9.1-1e7baee989dd429ec2af800a70d1ad4f5cd3d144
     depends_on:
       - msa-api
     healthcheck:
@@ -205,7 +205,7 @@ services:
   msa-rsyslog:
     depends_on:
       - msa-sms
-    image: openmsa/openmsa:msa2-rsyslog-2.8.9-c7981110f0ff1ee153199786f4abf3c8f5e49db7
+    image: openmsa/openmsa:msa2-rsyslog-2.8.9.1-c7981110f0ff1ee153199786f4abf3c8f5e49db7
     # environment:
       # enable omfwd acxtion type for syslog Forwarding Output Module
       # https://www.rsyslog.com/doc/v8-stable/configuration/modules/omfwd.html
@@ -240,7 +240,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: openmsa/openmsa:msa2-sms-2.8.9-18b70bbc2b2958c70af0c321b2e33e97186f7a3b
+    image: openmsa/openmsa:msa2-sms-2.8.9.1-b031be100d9c22054b6e50e8a5c05e5815f30a68
     depends_on:
       - db
     healthcheck:
@@ -275,7 +275,7 @@ services:
           - "msa_sms"
 
   msa-bud:
-    image: openmsa/openmsa:msa2-bud-2.8.9-26337e8d7cb89f769fb2c391a66d3d8da3fb357c
+    image: openmsa/openmsa:msa2-bud-2.8.9.1-26337e8d7cb89f769fb2c391a66d3d8da3fb357c
     depends_on:
       - db
     healthcheck:
@@ -303,7 +303,7 @@ services:
     depends_on:
       - db
       - msa-api
-    image: openmsa/openmsa:msa2-alarm-2.8.9-26c5e47d2306150442b610f0f8c91c40efe4931b
+    image: openmsa/openmsa:msa2-alarm-2.8.9.1-a284d8fcc1063573c2cb1a910fca47f9f9ead416
     healthcheck:
       timeout: 5s
       retries: 10
@@ -331,7 +331,7 @@ services:
           - "msa_alarm"
 
   msa-monitoring:
-    image: openmsa/openmsa:msa2-monitoring-2.8.9-4a1df4d2f11802fc73c8cd5c15ceb9e7988c70ea
+    image: openmsa/openmsa:msa2-monitoring-2.8.9.1-4a1df4d2f11802fc73c8cd5c15ceb9e7988c70ea
     healthcheck:
       timeout: 5s
       retries: 10
@@ -369,7 +369,7 @@ services:
   camunda:
     depends_on:
       - db
-    image: openmsa/openmsa:msa2-camunda-2.8.9-8dda18db891417d6899177400920e27f3d6db445
+    image: openmsa/openmsa:msa2-camunda-2.8.9.1-8dda18db891417d6899177400920e27f3d6db445
     deploy:
       replicas: 1
       placement:
@@ -388,7 +388,7 @@ services:
       <<: *logging
 
   msa-kibana:
-    image: openmsa/openmsa:msa2-kibana-2.8.9-46a9280639d973021a841c3792aed3948846d73a
+    image: openmsa/openmsa:msa2-kibana-2.8.9.1-46a9280639d973021a841c3792aed3948846d73a
     ports:
       - "5601:5601"
     environment:
@@ -413,7 +413,7 @@ services:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       interval: 60s
       start_period: 60s
-    image: openmsa/openmsa:msa2-es-2.8.9-95d632f4eb657b3d2b367a4bbf56c5a77959e6ac
+    image: openmsa/openmsa:msa2-es-2.8.9.1-95d632f4eb657b3d2b367a4bbf56c5a77959e6ac
     deploy:
       replicas: 1
       placement:
@@ -441,7 +441,7 @@ services:
       <<: *logging
 
   msa-cerebro:
-    image: openmsa/openmsa:msa2-cerebro-2.8.9-20ee9b68766b7432a7faf20244d604393f6fdce4
+    image: openmsa/openmsa:msa2-cerebro-2.8.9.1-20ee9b68766b7432a7faf20244d604393f6fdce4
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -465,7 +465,7 @@ services:
           - "msa_cerebro"
 
   msa-dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.8.9-f386e5b7b577cbb28cb20a075e911c72137dab8b
+    image: openmsa/openmsa:msa2-linuxdev-2.8.9.1-f386e5b7b577cbb28cb20a075e911c72137dab8b
     deploy:
       replicas: 1
       placement:
