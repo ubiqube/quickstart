@@ -16,7 +16,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.9.1-08baa2246cc259bf96040da1d9469f52fbc8c56c
+    image: openmsa/openmsa:msa2-front-2.8.9.1-29d53f9235d16272270bf284c3e26e60ac414271
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -102,7 +102,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.8.9.1-f243af56a4ef6a1db5586282a44432680a5337c9
+    image: openmsa/openmsa:msa2-api-2.8.9.1-97c736c37d063f6369259c03a09d307c06b2124c
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -136,7 +136,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.8.9.1-d7a844e4f8bfbc5bc447c256af5e898d3642791e
+    image: openmsa/openmsa:msa2-ui-2.8.9.1-ea3f2fd78d0e55082af49500db4f945a63f1cda6
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -159,6 +159,7 @@ services:
     - FEATURE_PERMISSION_PROFILE_LABELS=false
     - FEATURE_BPM=true
     - UBIQUBE_ES_SECURITY_DISABLED=true
+    - FEATURE_IMPORT_WITH_SAME_AND_UPPERRANK=true
     logging:
       <<: *logging
     networks:
