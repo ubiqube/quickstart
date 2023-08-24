@@ -190,6 +190,8 @@ services:
     - FEATURE_WORKFLOW_OWNER=false
     - FEATURE_PERMISSION_PROFILE_LABELS=false
     - FEATURE_BPM=true
+    - FEATURE_REPOFOLDERLIST=[\"Datafiles\",\"Documentation\",\"Firmware\",\"License\",\"Pki\"]	
+    - FEATURE_HA_DISPLAY=true
     logging:
       <<: *logging
     networks:
@@ -413,10 +415,10 @@ services:
           - "msa_kibana"
 
   msa-es:
-    healthcheck:
-      test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
-      interval: 60s
-      start_period: 60s
+   # healthcheck:
+     # test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
+     # interval: 60s
+     # start_period: 60s
     image: openmsa/openmsa:msa2-es-2.8.10_BETA-68c809af30fb22ed1b68c9ab9598132be2166875
     deploy:
       replicas: 1
@@ -425,10 +427,23 @@ services:
         constraints:
           - "node.labels.worker==app"
     environment:
-      discovery.type: "single-node"
+      # discovery.type: "single-node"
+      node.roles: "ingest"
+      node.name: "ECLv3_Staging_NODE_MSAv3-ES-Client01"
+      discovery.seed_hosts: "10.250.132.54,10.250.132.55,10.250.132.56"
+      cluster.initial_master_nodes: "ECLv3_Staging_NODE_MSAv3-ES-Master01,ECLv3_Staging_NODE_MSAv3-ES-Master02,ECLv3_Staging_NODE_MSAv3-ES-Master03"
+      cluster.name: "ECLv3_Staging"
+      network.host: "0.0.0.0"
+      http.host: "0.0.0.0"
+      network.publish_host: "10.250.132.130"
       script.painless.regex.enabled: "true"
       bootstrap.memory_lock: "true"
       xpack.security.enabled: "true"
+      xpack.security.transport.ssl.enabled: "true"
+      xpack.security.transport.ssl.verification_mode: "certificate"
+      xpack.security.transport.ssl.client_authentication: "required"
+      xpack.security.transport.ssl.keystore.path: "elastic-certificates.p12"
+      xpack.security.transport.ssl.truststore.path: "elastic-certificates.p12"
       ES_JAVA_OPTS: "-Xms512m -Xmx1024m"
       <<: *es-configuration
     ulimits:
@@ -440,10 +455,19 @@ services:
         aliases:
           - "msa_es"
     volumes:
-     - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
+     - "/etc/timezone:/etc/timezone:ro"
+     - "/etc/localtime:/etc/localtime:ro"
+     - "msa_es:/usr/share/elasticsearch/data"
+     - "msa_es_config:/usr/share/elasticsearch/config"
+    #volumes:
+     #- "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
+
     logging:
       <<: *logging
-
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+      
   msa-cerebro:
     image: openmsa/openmsa:msa2-cerebro-2.8.10_BETA-20ee9b68766b7432a7faf20244d604393f6fdce4
     environment:
@@ -491,7 +515,9 @@ services:
 volumes:
   msa_bulkfiles:
   msa_monitbulkfiles:
-
+  msa_es:
+  msa_es_config:
+  
 networks:
   default:
     #driver_opts:
