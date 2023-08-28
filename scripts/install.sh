@@ -34,31 +34,31 @@ standaloneInstall(){
     checkComposeVersion
     if [ $fresh_setup = false ] ; then
         if [ $remove_orphans = false ] ; then
-            docker-compose down
+            docker compose down
         else
-            docker-compose down --remove-orphans
+            docker compose down --remove-orphans
         fi
     fi
 
     if [ $mano = true ] && [ $ccla = true ] ; then
-        docker-compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml -f docker-compose.ccla.yml up -d --build
+        docker compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml -f docker-compose.ccla.yml up -d --build
     elif [ $mano = true ] ; then
-        docker-compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml up -d --build
+        docker compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml up -d --build
     elif [ $ccla = true ] ; then
-        docker-compose -f docker-compose.yml -f docker-compose.ccla.yml up -d --build
+        docker compose -f docker-compose.yml -f docker-compose.ccla.yml up -d --build
     else
-        docker-compose up -d --build
+        docker compose up -d --build
     fi
 
-    docker-compose exec -T msa-dev rm -rf /opt/fmc_repository/Process/Reference
+    docker compose exec -T msa-dev rm -rf /opt/fmc_repository/Process/Reference
 
-    docker-compose exec -T msa-dev /usr/bin/install_libraries.sh $(getLibOptions)
+    docker compose exec -T msa-dev /usr/bin/install_libraries.sh $(getLibOptions)
     if [ $ccla = true ] ; then
         echo "Installing CCLA libraries and Blueprints"
-        docker-compose exec -T msa-dev /usr/bin/install_libraries.sh ccla
+        docker compose exec -T msa-dev /usr/bin/install_libraries.sh ccla
     fi
 
-    install_ccla_wf=$(docker-compose exec -T msa-api curl -X POST http://localhost:8480/ubi-api-rest/ccla/libraries/install -s -o /dev/null -w "%{http_code}")
+    install_ccla_wf=$(docker compose exec -T msa-api curl -X POST http://localhost:8480/ubi-api-rest/ccla/libraries/install -s -o /dev/null -w "%{http_code}")
     echo $install_ccla_wf
     if [ $install_ccla_wf = '204' ] ; then
         echo "CCLA-WF is now installed.."
@@ -66,28 +66,28 @@ standaloneInstall(){
         echo "CCLA-WF was not installed. Use the API /ccla/libraries/install to install CCLA-WF"
     fi
 
-    docker-compose restart msa-api
-    docker-compose restart msa-sms
-    docker-compose restart msa-alarm
+    docker compose restart msa-api
+    docker compose restart msa-sms
+    docker compose restart msa-alarm
 
     echo "Starting crond on API container msa_api"
-    docker-compose exec -T -u root msa-api crond
+    docker compose exec -T -u root msa-api crond
     echo "Done"
 
     if [ $fresh_setup = false ] ; then
         echo "Remove AI ML database. Required on upgrades from 2.4"
-        docker-compose exec -T -u root msa-ai-ml /bin/bash -c 'rm /msa_proj/database/db.sqlite3'
-        docker-compose restart msa-ai-ml
+        docker compose exec -T -u root msa-ai-ml /bin/bash -c 'rm /msa_proj/database/db.sqlite3'
+        docker compose restart msa-ai-ml
 
         echo "Elasticsearch : .kibana_1 index regeneration"
-        docker-compose exec -T -u root -w /home/install/scripts/ msa-es bash -c './kibana_index_update.sh'
+        docker compose exec -T -u root -w /home/install/scripts/ msa-es bash -c './kibana_index_update.sh'
         echo "Done"
     fi
 
 
     echo "Kibana configs & dashboard templates update"
     waitUpKibana 127.0.0.1
-    docker-compose exec -T -u root -w /home/install/scripts msa-kibana bash -c 'php install_default_template_dash_and_visu.php'
+    docker compose exec -T -u root -w /home/install/scripts msa-kibana bash -c 'php install_default_template_dash_and_visu.php'
     echo "Done"
 
     upgrade_done
@@ -180,7 +180,7 @@ upgrade_done(){
 
 miniLabCreation(){
     if [ $ha_setup = false ] ; then
-        docker-compose exec -T msa-dev /usr/bin/create_mini_lab.sh
+        docker compose exec -T msa-dev /usr/bin/create_mini_lab.sh
     else
         ha_dev_node_ip=$(getHaNodeIp msa-dev)
         ha_dev_container_ref=$(getHaContainerReference msa-dev)
@@ -368,7 +368,7 @@ function waitRunningContainer(){
 }
 
 function checkComposeVersion(){
-        compose_vers=$(docker-compose -v | grep -oP '\d+.\d+.\d+')
+        compose_vers=$(docker compose version| grep -oP '\d+\.\d+\.\d+')
         if [ -z "$compose_vers" ]; then
                 echo "No docker compose version found. Exit"
                 exit
