@@ -153,7 +153,8 @@ services:
     - FEATURE_WORKFLOW_OWNER=false
     - FEATURE_PERMISSION_PROFILE_LABELS=false
     - FEATURE_BPM=false
-    - UBIQUBE_ES_SECURITY_DISABLED=true
+    - FEATURE_REPOFOLDERLIST=[\"Datafiles\",\"Documentation\",\"Firmware\",\"License\",\"Pki\"]	
+    - FEATURE_HA_DISPLAY=true
     - FEATURE_IMPORT_WITH_SAME_AND_UPPERRANK=true
     logging:
       <<: *logging
