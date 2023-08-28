@@ -189,9 +189,10 @@ services:
     - FEATURE_EDIT_VARIABLES_IN_MICROSERVICE_CONSOLE=true
     - FEATURE_WORKFLOW_OWNER=false
     - FEATURE_PERMISSION_PROFILE_LABELS=false
-    - FEATURE_BPM=true
+    - FEATURE_BPM=false
     - FEATURE_REPOFOLDERLIST=[\"Datafiles\",\"Documentation\",\"Firmware\",\"License\",\"Pki\"]	
     - FEATURE_HA_DISPLAY=true
+    - FEATURE_IMPORT_WITH_SAME_AND_UPPERRANK=true
     logging:
       <<: *logging
     networks:
