@@ -16,7 +16,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:1f6c2f4c992e67468f7aab264a7c99cc710d8b10
+    image: ubiqube/msa2-front:a84d9c2b4baad597ce9997c20fbdd9130cbfc106
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -97,7 +97,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:f07eec6065e66419d26c4fa95c1a85f70873081c
+    image: ubiqube/msa2-api:56a04ff54ccb0ec5bc917263db1630827cbd89b1
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -131,7 +131,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:f58c708fa85a7ef4d364a4d66abde9758824003c
+    image: ubiqube/msa2-ui:dc85739cebf49d40956d64f54793693ae4193792
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -370,7 +370,7 @@ services:
   msa-es:
     restart: unless-stopped
     container_name: msa_es
-    image: ubiqube/msa2-es:e71f87cb1759246a727e891bf9b4aab1c2f778a0
+    image: ubiqube/msa2-es:68c809af30fb22ed1b68c9ab9598132be2166875
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
@@ -449,7 +449,7 @@ services:
     restart: unless-stopped
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: ubiqube/msa2-linuxdev:ef3ef5ff20495190fc09b8b46bef151e7eedfff3
+    image: ubiqube/msa2-linuxdev:3074be64f1c26ec5f1371403bea372751cf245a7
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
