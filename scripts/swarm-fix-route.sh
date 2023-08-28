@@ -166,6 +166,8 @@ function add_nat_exception {
   else
     echo "WARNING: Can't add NAT exception. "
   fi
+  echo "flushing connection with conntrack... "
+  sudo ip netns exec $1 conntrack -F
 }
 
 function show_nat_exceptions {
