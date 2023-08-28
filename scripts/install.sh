@@ -12,6 +12,7 @@ ha_setup=false
 mini_lab=false
 ssh_user=$USER
 mano=false
+ccla=false
 
 file_upgrade='.upgrade_unfinished'
 
@@ -33,44 +34,60 @@ standaloneInstall(){
     checkComposeVersion
     if [ $fresh_setup = false ] ; then
         if [ $remove_orphans = false ] ; then
-            docker-compose down
+            docker compose down
         else
-            docker-compose down --remove-orphans
+            docker compose down --remove-orphans
         fi
     fi
 
-    if [ $mano = false ] ; then
-        docker-compose up -d --build
+    if [ $mano = true ] && [ $ccla = true ] ; then
+        docker compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml -f docker-compose.ccla.yml up -d --build
+    elif [ $mano = true ] ; then
+        docker compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml up -d --build
+    elif [ $ccla = true ] ; then
+        docker compose -f docker-compose.yml -f docker-compose.ccla.yml up -d --build
     else
-        docker-compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml up -d --build
+        docker compose up -d --build
     fi
 
-    docker-compose exec -T msa-dev rm -rf /opt/fmc_repository/Process/Reference
+    docker compose exec -T msa-dev rm -rf /opt/fmc_repository/Process/Reference
 
-    docker-compose exec -T msa-dev /usr/bin/install_libraries.sh $(getLibOptions)
+    docker compose exec -T msa-dev /usr/bin/install_libraries.sh $(getLibOptions)
+    if [ $ccla = true ] ; then
+        echo "Installing CCLA libraries and Blueprints"
+        docker compose exec -T msa-dev /usr/bin/install_libraries.sh ccla
+    fi
 
-    docker-compose restart msa-api
-    docker-compose restart msa-sms
-    docker-compose restart msa-alarm
+    install_ccla_wf=$(docker compose exec -T msa-api curl -X POST http://localhost:8480/ubi-api-rest/ccla/libraries/install -s -o /dev/null -w "%{http_code}")
+    echo $install_ccla_wf
+    if [ $install_ccla_wf = '204' ] ; then
+        echo "CCLA-WF is now installed.."
+    else
+        echo "CCLA-WF was not installed. Use the API /ccla/libraries/install to install CCLA-WF"
+    fi
+
+    docker compose restart msa-api
+    docker compose restart msa-sms
+    docker compose restart msa-alarm
 
     echo "Starting crond on API container msa_api"
-    docker-compose exec -T -u root msa-api crond
+    docker compose exec -T -u root msa-api crond
     echo "Done"
 
     if [ $fresh_setup = false ] ; then
         echo "Remove AI ML database. Required on upgrades from 2.4"
-        docker-compose exec -T -u root msa-ai-ml /bin/bash -c 'rm /msa_proj/database/db.sqlite3'
-        docker-compose restart msa-ai-ml
+        docker compose exec -T -u root msa-ai-ml /bin/bash -c 'rm /msa_proj/database/db.sqlite3'
+        docker compose restart msa-ai-ml
 
         echo "Elasticsearch : .kibana_1 index regeneration"
-        docker-compose exec -T -u root -w /home/install/scripts/ msa-es bash -c './kibana_index_update.sh'
+        docker compose exec -T -u root -w /home/install/scripts/ msa-es bash -c './kibana_index_update.sh'
         echo "Done"
     fi
 
 
     echo "Kibana configs & dashboard templates update"
     waitUpKibana 127.0.0.1
-    docker-compose exec -T -u root -w /home/install/scripts msa-kibana bash -c 'php install_default_template_dash_and_visu.php'
+    docker compose exec -T -u root -w /home/install/scripts msa-kibana bash -c 'php install_default_template_dash_and_visu.php'
     echo "Done"
 
     upgrade_done
@@ -85,10 +102,14 @@ haInstall(){
         echo "No stack found. Fresh HA installation"
     fi
 
-    if [ $mano = false ] ; then
-        docker stack deploy --with-registry-auth -c docker-compose.ha.yml $ha_stack
-    else
+    if [ $mano = true ] && [ $ccla = true ] ; then
+        docker stack deploy --with-registry-auth -c docker-compose.ha.yml -c lab/mano/docker-compose.mano.ha.yml -c docker-compose.ccla.ha.yml $ha_stack
+    elif [ $mano = true ] ; then
         docker stack deploy --with-registry-auth -c docker-compose.ha.yml -c lab/mano/docker-compose.mano.ha.yml $ha_stack
+    elif [ $ccla = true ] ; then
+        docker stack deploy --with-registry-auth -c docker-compose.ha.yml -c docker-compose.ccla.ha.yml $ha_stack
+    else
+        docker stack deploy --with-registry-auth -c docker-compose.ha.yml $ha_stack
     fi
 
     echo "############## Install OpenMSA Libraries ##############################"
@@ -96,9 +117,24 @@ haInstall(){
     ha_dev_node_ip=$(getHaNodeIp msa-dev)
     ha_dev_container_ref=$(getHaContainerReference msa-dev)
     echo "DEV $ha_dev_ip $ha_dev_container_ref"
+    ha_api_node_ip=$(getHaNodeIp msa-api)
+    ha_api_container_ref=$(getHaContainerReference msa-api)
+    echo "API $ha_api_node_ip $ha_api_container_ref"
     waitRunningContainer msa-dev $ssh_user@$ha_dev_node_ip
     echo "Checking SSH access to DEV container with user $ssh_user on IP $ha_dev_node_ip to install libraries. If failed, please set SSH key"
     ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec -it $ha_dev_container_ref /bin/bash -c '/usr/bin/install_libraries.sh $(getLibOptions)'"
+    sleep 5
+    if [ $ccla = true ] ; then
+        echo "Installing CCLA libraries and Blueprints"
+        ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_dev_node_ip "docker exec -it $ha_dev_container_ref /bin/bash -c '/usr/bin/install_libraries.sh ccla'"
+    fi
+    install_ccla_wf=$(ssh -tt "-o BatchMode=Yes" $ssh_user@$ha_api_node_ip "docker exec -it $ha_api_container_ref /bin/bash -c 'curl -X POST http://localhost:8480/ubi-api-rest/ccla/libraries/install -s -o /dev/null -w '%{http_code}''")
+    echo $install_ccla_wf
+    if [ $install_ccla_wf = '204' ] ; then
+        echo "CCLA-WF is now installed.."
+    else
+        echo "CCLA-WF was not installed. Use the API /ccla/libraries/install to install CCLA-WF"
+    fi
     sleep 5
     echo "Auto restart of API, SMS and ALARM"
     docker service update --force "$ha_stack"_msa-api
@@ -144,7 +180,7 @@ upgrade_done(){
 
 miniLabCreation(){
     if [ $ha_setup = false ] ; then
-        docker-compose exec -T msa-dev /usr/bin/create_mini_lab.sh
+        docker compose exec -T msa-dev /usr/bin/create_mini_lab.sh
     else
         ha_dev_node_ip=$(getHaNodeIp msa-dev)
         ha_dev_container_ref=$(getHaContainerReference msa-dev)
@@ -166,6 +202,7 @@ usage() {
     echo "-c: cleanup unused images after upgrade to save disk space. This option clean all unused images, not only MSA quickstart ones"
     echo "-ro: remove containers for services not defined in the compose file. Use it if some containers use same network as MSA"
     echo "-mano: apply mano containers"
+    echo "-ccla: deploy CCLA containers"
     echo "--swarm-route-only|-sro: run the script 'swarm-fix-route.sh' script"
     exit 0
 }
@@ -189,6 +226,9 @@ main() {
                 ;;
             -mano|--mano)
                 mano=true
+                ;;
+            -ccla|--ccla)
+                ccla=true
                 ;;
             --swarm-route-only|-sro)
                 swarm_route_only=true
@@ -328,7 +368,7 @@ function waitRunningContainer(){
 }
 
 function checkComposeVersion(){
-        compose_vers=$(docker-compose -v | grep -oP '\d+.\d+.\d+')
+        compose_vers=$(docker compose version| grep -oP '\d+\.\d+\.\d+')
         if [ -z "$compose_vers" ]; then
                 echo "No docker compose version found. Exit"
                 exit
