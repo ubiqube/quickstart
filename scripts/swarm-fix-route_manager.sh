@@ -174,6 +174,8 @@ function add_nat_exception {
     echo "Error: Can't add NAT exception. Can't continue."
     exit 1
   fi
+  echo "flushing connection with conntrack... "
+  sudo ip netns exec $1 conntrack -F
 }
 
 function show_nat_exceptions {
