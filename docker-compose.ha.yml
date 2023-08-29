@@ -15,7 +15,7 @@ x-logging: &logging
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.9.1-a27674ca45dcff23dea9049e8d32cdd33dd514e2
+    image: openmsa/openmsa:msa2-front-2.8.9.1-29d53f9235d16272270bf284c3e26e60ac414271
     depends_on:
       - msa-api
       - msa-ui
@@ -135,7 +135,7 @@ services:
       <<: *logging
 
   msa-api:
-    image: openmsa/openmsa:msa2-api-2.8.9.1-7c99f23a1fd9d6816037b452271327dc54e8f63a
+    image: openmsa/openmsa:msa2-api-2.8.9.1-97c736c37d063f6369259c03a09d307c06b2124c
     depends_on:
       - db
     healthcheck:
@@ -168,7 +168,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.8.9.1-1e7baee989dd429ec2af800a70d1ad4f5cd3d144
+    image: openmsa/openmsa:msa2-ui-2.8.9.1-ea3f2fd78d0e55082af49500db4f945a63f1cda6
     depends_on:
       - msa-api
     healthcheck:
@@ -195,6 +195,7 @@ services:
     - FEATURE_WORKFLOW_OWNER=false
     - FEATURE_PERMISSION_PROFILE_LABELS=false
     - FEATURE_BPM=true
+    - FEATURE_IMPORT_WITH_SAME_AND_UPPERRANK=true
     logging:
       <<: *logging
     networks:
@@ -240,7 +241,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: openmsa/openmsa:msa2-sms-2.8.9.1-b031be100d9c22054b6e50e8a5c05e5815f30a68
+    image: openmsa/openmsa:msa2-sms-2.8.9.1-8c37602222f58ef1571bd3d091cc5e91a0d1d02e
     depends_on:
       - db
     healthcheck:
