@@ -230,7 +230,10 @@ services:
       - "msa_dev:/opt/devops/"
       - "msa_bulkfiles:/opt/sms/spool/parser"
       - "msa_bulkfiles_err:/opt/sms/spool/parser-error"
-
+    networks:
+      default:
+        aliases:
+          - "msa_event"
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
@@ -340,8 +343,6 @@ services:
         published: 6514
         protocol: tcp
         mode: host
-    volumes:
-      - "rsyslog_conf:/etc"
     networks:
       default:
         aliases:
