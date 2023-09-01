@@ -27,7 +27,7 @@ services:
       interval: 10s
       start_period: 30s
     deploy:
-      replicas: 1
+      replicas: 2
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -136,7 +136,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     deploy:
-      replicas: 1
+      replicas: 2
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -169,7 +169,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     deploy:
-      replicas: 1
+      replicas: 2
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -212,7 +212,7 @@ services:
       # configure a specific port for TLS. Default is 6514
       # TLS_SYSLOG_PORT: 6514
     deploy:
-      replicas: 1
+      replicas: 2
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -260,7 +260,7 @@ services:
       - "/mnt/NASVolume/msa_bulkfiles_err:/opt/sms/spool/parser-error"
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
     deploy:
-      replicas: 1
+      replicas: 2
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -292,6 +292,12 @@ services:
     image: openmsa/openmsa:msa2-event-2.8.10_beta-3402836b36fe67c2c93185094abf5746ec418944
     environment:
       <<: *es-configuration
+    deploy:
+      replicas: 2
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
     logging:
       driver: "json-file"
       options:
@@ -384,7 +390,7 @@ services:
       - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
       - "/mnt/NASVolume/msa_bulkfiles_err:/opt/sms/spool/parser-error"
     deploy:
-      replicas: 1
+      replicas: 2
       placement:
         max_replicas_per_node: 1
         constraints:
