@@ -264,7 +264,7 @@ services:
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==app2"
+          - "node.labels.worker==app"
     ports:
       - target: 69
         published: 69
