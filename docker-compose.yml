@@ -16,7 +16,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:6ea1fd876ed2eb67fe8190d771c7d8d016d2805c
+    image: ubiqube/msa2-front:a3e06014c34e1bd1e4b44f1c712ac98f8faec684
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -97,7 +97,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:f2c8cb5e43067d69b2d35541072952d50779956b
+    image: ubiqube/msa2-api:bb6cb90e1c30a6041d823ab2aa2719e27200703e
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -131,7 +131,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:b0709b8e6e571c56ff5405e8475aff3eac196e98
+    image: ubiqube/msa2-ui:9750f850194f11992026fccb6f92799bc6ddfa21
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -165,7 +165,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:1e6377484093e22d03d2fc23c0c8b4b0d910a429
+    image: ubiqube/msa2-sms:30fa7eddadd5ffbdd35b1e55a7b0819c27108e00
     healthcheck:
       timeout: 5s
       retries: 10
@@ -356,7 +356,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    image: openmsa/openmsa:msa2-camunda-2.8.9-8dda18db891417d6899177400920e27f3d6db445
+    image: ubiqube/msa2-camunda:f8c348d51da5b64c996cd875ab9d2e365e7ce84f
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
