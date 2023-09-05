@@ -287,6 +287,10 @@ services:
       - msa-dev
       - msa-sms
     healthcheck:
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     image: openmsa/openmsa:msa2-event-2.8.10_beta-3402836b36fe67c2c93185094abf5746ec418944
     environment:
@@ -302,6 +306,12 @@ services:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
       - "/mnt/NASVolume/msa_bulkfiles_err:/opt/sms/spool/parser-error"
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"      
           
 
   msa-bud:
