@@ -250,6 +250,7 @@ services:
     environment:
       <<: *es-configuration
       CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
+      HOST_HOSTNAME: "{{.Node.Hostname}}"
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
