@@ -299,9 +299,9 @@ services:
         max-size: "20m"
         max-file: "5"
     volumes:
-      - "msa_dev:/opt/devops/"
-      - "msa_bulkfiles:/opt/sms/spool/parser"
-      - "msa_bulkfiles_err:/opt/sms/spool/parser-error"
+      - "/mnt/NASVolume/msa_dev:/opt/devops/"
+      - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
+      - "/mnt/NASVolume/msa_bulkfiles_err:/opt/sms/spool/parser-error"
           
 
   msa-bud:
