@@ -7,7 +7,7 @@ x-es-configuration: &es-configuration
 
 services:
   msa_front:
-    image: openmsa/openmsa:msa2-front-2.8.10_beta-c34aad714c321a46dd7f49e4531d6be98ba96066
+    image: openmsa/openmsa:msa2-front-2.8.10_beta-a3e06014c34e1bd1e4b44f1c712ac98f8faec684
     depends_on:
       - msa_api
       - msa_ui
@@ -88,7 +88,7 @@ services:
         condition: on-failure
 
   msa_api:
-    image: openmsa/openmsa:msa2-api-2.8.10_beta-f2c8cb5e43067d69b2d35541072952d50779956b
+    image: openmsa/openmsa:msa2-api-2.8.10_beta-bb6cb90e1c30a6041d823ab2aa2719e27200703e
     depends_on:
       - db
     healthcheck:
@@ -114,7 +114,7 @@ services:
         aliases:
           - "msa-api"
   msa_ui:
-    image: openmsa/openmsa:msa2-ui-2.8.10_beta-505cb6ce1c20933e025d0d04f4b879bead8af6d7
+    image: openmsa/openmsa:msa2-ui-2.8.10_beta-9750f850194f11992026fccb6f92799bc6ddfa21
     depends_on:
       - msa_api
     healthcheck:
@@ -141,7 +141,7 @@ services:
     - FEATURE_PERMISSION_PROFILE_LABELS=false
 
   msa_sms:
-    image: openmsa/openmsa:msa2-sms-2.8.10_beta-1e6377484093e22d03d2fc23c0c8b4b0d910a429
+    image: openmsa/openmsa:msa2-sms-2.8.10_beta-30fa7eddadd5ffbdd35b1e55a7b0819c27108e00
     depends_on:
       - db
     healthcheck:
@@ -210,7 +210,7 @@ services:
   camunda:
     depends_on:
       - db
-    image: openmsa/openmsa:msa2-camunda-2.8.10_beta-8dda18db891417d6899177400920e27f3d6db445
+    image: openmsa/openmsa:msa2-camunda-2.8.10_beta-f8c348d51da5b64c996cd875ab9d2e365e7ce84f
     deploy:
       replicas: 1
       placement:
