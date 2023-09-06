@@ -153,6 +153,7 @@ services:
         max_attempts: 10
     environment:
       <<: *es-configuration
+      HOST_HOSTNAME: "{{.Node.Hostname}}"
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
