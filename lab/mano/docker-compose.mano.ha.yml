@@ -261,7 +261,7 @@ services:
         max-size: "10m"
         max-file: "5"
 
-  mano-nfvo_lab_tc_ubi:
+  mano-nfvo-lab-tc-ubi:
     image: ubiqube/mano-nfvo-tm22:uat30
     depends_on:
       - db
@@ -286,7 +286,7 @@ services:
         protocol: tcp
         mode: ingress
     secrets:
-      - source: vnfm_lab_tc_ubi.keycloak.credentials.secret
+      - source: vnfm.keycloak.credentials.secret
         target: keycloak.credentials.secret
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_nfvo_lab_tc_ubi
@@ -298,7 +298,7 @@ services:
         max-size: "10m"
         max-file: "5"
 
-  mano-vnfm_lab_tc_ubi:
+  mano-vnfm-lab-tc-ubi:
     image: ubiqube/mano-vnfm-tm22:uat30
     depends_on:
       - db
@@ -323,11 +323,11 @@ services:
         protocol: tcp
         mode: ingress
     secrets:
-      - source: nfvo_lab_tc_ubi.keycloak.credentials.secret
+      - source: nfvo.keycloak.credentials.secret
         target: keycloak.credentials.secret
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_vnfm_lab_tc_ubi
-      - MANO_FRONTEND_URL=http://mano-vnfm_lab_tc_ubi:8080/ubi-etsi-mano/sol003
+      - MANO_FRONTEND_URL=http://mano-vnfm-lab-tc-ubi:8080/ubi-etsi-mano/sol003
     logging:
       driver: "json-file"
       options:
@@ -347,4 +347,3 @@ secrets:
     external: true
   nfvo_lab_tc_ubi.keycloak.credentials.secret:
     external: true
-
