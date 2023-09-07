@@ -438,9 +438,9 @@ finalize_install() {
         echo "-------------------------------------------------------------------------------"
         echo " service restart"
         echo "-------------------------------------------------------------------------------"
-        echo "  >> execute [sudo docker-compose restart msa_dev] to update the Repository"
-        echo "  >> execute [sudo docker-compose restart msa_sms] to restart the CoreEngine service"
-        echo "  >> execute [sudo docker-compose restart msa_api] to restart the API service"
+        echo "  >> execute [sudo docker compose restart msa_dev] to update the Repository"
+        echo "  >> execute [sudo docker compose restart msa_sms] to restart the CoreEngine service"
+        echo "  >> execute [sudo docker compose restart msa_api] to restart the API service"
         echo "DONE"
     fi
 }

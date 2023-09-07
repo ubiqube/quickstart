@@ -1,3 +1,13 @@
+# Scripts to be installed on all docker swarm maangers
+
+## Docker monitor
+
+### How to install service
+* copy docker-monitor.service to /etc/systemd/system/
+* systemctl daemon-reload
+* systemctl start docker-monitor
+* systemctl enable docker-monitor
+
 ## SMS monitor
 
 ### How to install service

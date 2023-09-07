@@ -1,20 +1,28 @@
 # This docker-compose file is provided as an example to create a Docker Swarm based MSActivator setup
 version: "3.8"
 
+x-es-configuration: &es-configuration
+    ES_CREDENTIALS: c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+    ES_SERVERS: "msa-es"
+
 services:
   msa_front:
-    image: openmsa/openmsa:msa2-front-2.8.6-58c801bfe5791d2edcb601a8d75942eac8d58a8e
+<<<<<<< HEAD
+    image: openmsa/openmsa:msa2-front-2.8.9.1-a27674ca45dcff23dea9049e8d32cdd33dd514e2
+=======
+    image: openmsa/openmsa:msa2-front-2.8.9.1-08baa2246cc259bf96040da1d9469f52fbc8c56c
+>>>>>>> 4459d7b5da9d92ecb34a92be67a57d80683d546f
     depends_on:
       - msa_api
       - msa_ui
       - camunda
       - msa_ai_ml
     healthcheck:
-      test: ["CMD-SHELL", "curl -k --fail https://localhost"] 
+      test: ["CMD-SHELL", "curl -k --fail https://localhost"]
       timeout: 2s
       retries: 10
       interval: 10s
-      start_period: 30s 
+      start_period: 30s
     deploy:
       replicas: 1
       placement:
@@ -44,7 +52,7 @@ services:
         mode: ingress
       - "5200-5200:5200-5200/udp"
     #
-    # uncomment one of the 2 sections below when installing a custom certificate 
+    # uncomment one of the 2 sections below when installing a custom certificate
     # - Docker standard standalone installation
     #volumes:
     #    - "msa_front:/etc/nginx/ssl"
@@ -55,7 +63,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.8.6-9ab326b65e8d4080e62f209984dd282977180a5e
+    image: openmsa/openmsa:msa2-db-2.8.9.1-eaf2c8ab53802d28c9711952deaa1bc1d5405433
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -82,15 +90,15 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
- 
+
   msa_api:
-    image: openmsa/openmsa:msa2-api-2.8.6-a746dc4231157f942cbafaa680eb18e21729190b
+    image: openmsa/openmsa:msa2-api-2.8.9.1-f243af56a4ef6a1db5586282a44432680a5337c9
     depends_on:
       - db
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      <<: *es-configuration
     deploy:
       replicas: 1
       placement:
@@ -110,7 +118,7 @@ services:
         aliases:
           - "msa-api"
   msa_ui:
-    image: openmsa/openmsa:msa2-ui-2.8.6-bf02442535a661bdaf97284208521867fff64688
+    image: openmsa/openmsa:msa2-ui-2.8.9.1-d7a844e4f8bfbc5bc447c256af5e898d3642791e
     depends_on:
       - msa_api
     healthcheck:
@@ -137,13 +145,13 @@ services:
     - FEATURE_PERMISSION_PROFILE_LABELS=false
 
   msa_sms:
-    image: openmsa/openmsa:msa2-sms-2.8.6-d7a44fa6e8dbc6329c26217f207161bade96c862
+    image: openmsa/openmsa:msa2-sms-2.8.9.1-8c37602222f58ef1571bd3d091cc5e91a0d1d02e
     depends_on:
       - db
     healthcheck:
-      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"] 
+      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      <<: *es-configuration
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
@@ -157,7 +165,7 @@ services:
         max_replicas_per_node: 1
 
   msa_bud:
-    image: openmsa/openmsa:msa2-bud-2.8.6-9b7613ce285b4ec364aee6b384802d2bb96e806f
+    image: openmsa/openmsa:msa2-bud-2.8.9.1-26337e8d7cb89f769fb2c391a66d3d8da3fb357c
     depends_on:
       - db
     deploy:
@@ -169,11 +177,11 @@ services:
     depends_on:
       - db
       - msa_api
-    image: openmsa/openmsa:msa2-alarm-2.8.6-2089ffefa1c311cea0f8c3b3b99d506d81df576c
+    image: openmsa/openmsa:msa2-alarm-2.8.9.1-a284d8fcc1063573c2cb1a910fca47f9f9ead416
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      <<: *es-configuration
     deploy:
       replicas: 1
       placement:
@@ -182,7 +190,7 @@ services:
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
 
   msa_monitoring:
-    image: openmsa/openmsa:msa2-monitoring-2.8.6-94e7b1355f3fa4ba2959b529fcff40e9876b78c4
+    image: openmsa/openmsa:msa2-monitoring-2.8.9.1-4a1df4d2f11802fc73c8cd5c15ceb9e7988c70ea
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -190,7 +198,7 @@ services:
       - msa_es
       - msa_dev
     environment:
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      <<: *es-configuration
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
@@ -206,7 +214,7 @@ services:
   camunda:
     depends_on:
       - db
-    image: openmsa/openmsa:msa2-camunda-2.8.6-23335a0df397d4bc3531366223cd5a239688ee0d
+    image: openmsa/openmsa:msa2-camunda-2.8.9.1-8dda18db891417d6899177400920e27f3d6db445
     deploy:
       replicas: 1
       placement:
@@ -233,39 +241,39 @@ services:
       '
     user: "0"
     working_dir: /usr/share/elasticsearch
-    volumes: 
+    volumes:
       - "/mnt/NASVolume/msa_es_certs:/usr/share/elasticsearch/config/certificates"
 
   msa_es:
-    image: openmsa/openmsa:msa2-es-2.8.6-7b0c2d96ae426da44b255efad0b1a60332f9c385
+    image: openmsa/openmsa:msa2-es-2.8.9.1-95d632f4eb657b3d2b367a4bbf56c5a77959e6ac
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
       retries: 10
       interval: 10s
-      start_period: 30s 
+      start_period: 30s
     deploy:
       replicas: 1
       placement:
         max_replicas_per_node: 1
-    depends_on: 
+    depends_on:
       - msa_es_create_certs
     environment:
-      - node.name=msa_es
-      - discovery.seed_hosts=msa_es
-      - cluster.initial_master_nodes=msa_es
-      - cluster.name=es_cluster
-      - "script.painless.regex.enabled=true"
-#      - "bootstrap.memory_lock=true"
-      - "ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc="
-      - xpack.security.enabled=true
-      - xpack.security.transport.ssl.enabled=true
-      - xpack.security.transport.ssl.verification_mode=certificate
-      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
-      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
-      - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/certificates/server.pem
-      - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/certificates/server.crt
-#      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
+      <<: *es-configuration
+      node.name: "msa_es"
+      discovery.seed_hosts: "msa_es"
+      cluster.initial_master_nodes: "msa_es"
+      cluster.name: "es_cluster"
+      script.painless.regex.enabled: "true"
+#      bootstrap.memory_lock: "true"
+      xpack.security.enabled: "true"
+      xpack.security.transport.ssl.enabled: "true"
+      xpack.security.transport.ssl.verification_mode: "certificate"
+      xpack.security.transport.ssl.key: "/usr/share/elasticsearch/config/certificates/server.pem"
+      xpack.security.transport.ssl.certificate: "/usr/share/elasticsearch/config/certificates/server.crt"
+      xpack.security.http.ssl.key: "/usr/share/elasticsearch/config/certificates/server.pem"
+      xpack.security.http.ssl.certificate: "/usr/share/elasticsearch/config/certificates/server.crt"
+#      ES_JAVA_OPTS: "-Xms1024m -Xmx1024m"
     ports:
       - "9200:9200"
     networks:
@@ -278,15 +286,15 @@ services:
 
 
   msa_kibana:
-    image: openmsa/openmsa:msa2-kibana-2.8.6-118f089ce6a140a7ef9991798c1029bace926539
+    image: openmsa/openmsa:msa2-kibana-2.8.9.1-46a9280639d973021a841c3792aed3948846d73a
     depends_on:
       - msa_es
     ports:
       - "5601:5601"
     environment:
-      - ELASTICSEARCH_URL=http://msa_es:9200
-      - ELASTICSEARCH_HOSTS=http://msa_es:9200
-      - ES_CREDENTIALS=c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+      ELASTICSEARCH_URL: "http://msa_es:9200"
+      ELASTICSEARCH_HOSTS: "http://msa_es:9200"
+      <<: *es-configuration
     networks:
       default:
         aliases:
@@ -297,7 +305,7 @@ services:
         max_replicas_per_node: 1
 
   msa_cerebro:
-    image: openmsa/openmsa:msa2-cerebro-2.8.6-914750e000db1343d9972bfa6652da1efe4aa32f
+    image: openmsa/openmsa:msa2-cerebro-2.8.9.1-20ee9b68766b7432a7faf20244d604393f6fdce4
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -315,7 +323,7 @@ services:
         max_replicas_per_node: 1
 
   msa_dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.8.6-fd35bfb457fd88b05dea30f50820f14565bbebb3
+    image: openmsa/openmsa:msa2-linuxdev-2.8.9.1-f386e5b7b577cbb28cb20a075e911c72137dab8b
     depends_on:
       - msa_es
     deploy:
