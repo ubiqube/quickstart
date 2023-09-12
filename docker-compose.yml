@@ -16,7 +16,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.10_beta-19c90f0851e4555576d4b49ecce8f954f176b9d2
+    image: openmsa/openmsa:msa2-front-2.8.10_beta-a415a78ead66e1abaf59af401313a3e5a5395de9
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -67,7 +67,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.8.10_beta-298af6abd9919675e31d49b1832ab688e3e7f153
+    image: openmsa/openmsa:msa2-db-2.8.10_beta-b41f3167eff7d84d2f64234dcc581816c769bf1d
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -97,7 +97,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.8.10_beta-3b05faf9f536f2299ecd6dcf0a2efddfca0b78e7
+    image: openmsa/openmsa:msa2-api-2.8.10_beta-c546adf2d5836ca8e82dabe4bbfd7568e424c463
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -131,7 +131,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.8.10_beta-450f6f22c750964871de13143d7f0e36cb0a278b
+    image: openmsa/openmsa:msa2-ui-2.8.10_beta-108170029069ac3e1065bb66c1f10ce71daf4fe5
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -166,7 +166,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: openmsa/openmsa:msa2-sms-2.8.10_beta-97c4b44d1ddfac087b0fa6ff18c69d1145f3002a
+    image: openmsa/openmsa:msa2-sms-2.8.10_beta-06c680ff5de2148cddb4ede33fd98834d5cf52da
     healthcheck:
       timeout: 5s
       retries: 10
@@ -217,7 +217,7 @@ services:
       - msa-sms
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-    image: openmsa/openmsa:msa2-event-2.8.10_beta-3402836b36fe67c2c93185094abf5746ec418944
+    image: openmsa/openmsa:msa2-event-2.8.10_beta-51bd24c1e5a4fb438fa21df5b4595ae1a5d003a2
     environment:
       <<: *es-configuration
     logging:
@@ -235,7 +235,7 @@ services:
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: openmsa/openmsa:msa2-bud-2.8.10_beta-8dc3d701051133c1aeeb5042102cd25e6ca21bea
+    image: openmsa/openmsa:msa2-bud-2.8.10_beta-29c89bed5e95a1368e69f221831d385539e03909
     healthcheck:
       timeout: 5s
       retries: 10
@@ -257,7 +257,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: openmsa/openmsa:msa2-alarm-2.8.10_beta-df8dfe8afe6f12eea13dc49f02587a53ca3dd608
+    image: openmsa/openmsa:msa2-alarm-2.8.10_beta-0fc68a6c34435181fdd9031c3bc44fe19492a75b
     healthcheck:
       timeout: 5s
       retries: 10
@@ -285,7 +285,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: openmsa/openmsa:msa2-monitoring-2.8.10_beta-fc0b2fcdc46f83beca5f189d942e31f647474d84
+    image: openmsa/openmsa:msa2-monitoring-2.8.10_beta-47bf8e62bb9e8d6de920153eb25d6e6ce22b968c
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -320,7 +320,7 @@ services:
     container_name: msa_rsyslog
     depends_on:
       - msa-event
-    image: openmsa/openmsa:msa2-rsyslog-2.8.10_beta-cbd881a366f7971aa981f720f41ce2c9ef097ab9
+    image: openmsa/openmsa:msa2-rsyslog-2.8.10_beta-02bb1d60385f106e14eb6d940e7fc69a3e16722d
     # environment:
       # enable omfwd acxtion type for syslog Forwarding Output Module
       # https://www.rsyslog.com/doc/v8-stable/configuration/modules/omfwd.html
@@ -354,7 +354,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    image: openmsa/openmsa:msa2-camunda-2.8.10_beta-f8c348d51da5b64c996cd875ab9d2e365e7ce84f
+    image: openmsa/openmsa:msa2-camunda-2.8.10_beta-4bd40043f46fa18830d349b481821689448d4949
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
@@ -404,7 +404,7 @@ services:
   msa-cerebro:
     restart: unless-stopped
     container_name: msa_cerebro
-    image: openmsa/openmsa:msa2-cerebro-2.8.10_beta-20ee9b68766b7432a7faf20244d604393f6fdce4
+    image: openmsa/openmsa:msa2-cerebro-2.8.10_beta-20fca37feb399b676963d531aaaab37b10588961
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -448,7 +448,7 @@ services:
     restart: unless-stopped
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: openmsa/openmsa:msa2-linuxdev-2.8.10_beta-3074be64f1c26ec5f1371403bea372751cf245a7
+    image: openmsa/openmsa:msa2-linuxdev-2.8.10_beta-dca5fd89e1ca0f4f9ea046e37f112964384c6871
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
