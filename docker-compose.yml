@@ -16,7 +16,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.7-682b92484210f8e48f8034af7ea8fcb2c435116f
+    image: openmsa/openmsa:msa2-front-2.8.9.1-29d53f9235d16272270bf284c3e26e60ac414271
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -72,7 +72,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.8.7-c5a834e55c9508434758d7947635640fa978aa1d
+    image: openmsa/openmsa:msa2-db-2.8.9.1-eaf2c8ab53802d28c9711952deaa1bc1d5405433
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -102,12 +102,13 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.8.7-6e8c462fbea06596415bb024644598893e7220a3
+    image: openmsa/openmsa:msa2-api-2.8.9.1-97c736c37d063f6369259c03a09d307c06b2124c
     healthcheck:
-      test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
-      retries: 10
+      test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
+      retries: 3
+      timeout: 5s
       interval: 10s
-      start_period: 5s
+      start_period: 90s
     depends_on:
       db:
         condition: service_healthy
@@ -135,7 +136,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.8.7-1c9ccd157fef826dbeb34b65647628e0c9340310
+    image: openmsa/openmsa:msa2-ui-2.8.9.1-ea3f2fd78d0e55082af49500db4f945a63f1cda6
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -158,6 +159,7 @@ services:
     - FEATURE_PERMISSION_PROFILE_LABELS=false
     - FEATURE_BPM=true
     - UBIQUBE_ES_SECURITY_DISABLED=true
+    - FEATURE_IMPORT_WITH_SAME_AND_UPPERRANK=true
     logging:
       <<: *logging
     networks:
@@ -168,7 +170,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: openmsa/openmsa:msa2-sms-2.8.7-06ce61b27a31c4a5b4fcb555f15286d7a12bf072
+    image: openmsa/openmsa:msa2-sms-2.8.9.1-8c37602222f58ef1571bd3d091cc5e91a0d1d02e
     healthcheck:
       timeout: 5s
       retries: 10
@@ -205,7 +207,7 @@ services:
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: openmsa/openmsa:msa2-bud-2.8.7-04590d19dafe4acc2742c9a365e9dbdb80e45dfc
+    image: openmsa/openmsa:msa2-bud-2.8.9.1-26337e8d7cb89f769fb2c391a66d3d8da3fb357c
     healthcheck:
       timeout: 5s
       retries: 10
@@ -227,7 +229,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: openmsa/openmsa:msa2-alarm-2.8.7.5-3b748ddfadbe46f3b14674c51077750fe4b8639a
+    image: openmsa/openmsa:msa2-alarm-2.8.9.1-a284d8fcc1063573c2cb1a910fca47f9f9ead416
     healthcheck:
       timeout: 5s
       retries: 10
@@ -255,7 +257,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: openmsa/openmsa:msa2-monitoring-2.8.7-dfcc122af6838113bd9964b6e2a7587098ca8242
+    image: openmsa/openmsa:msa2-monitoring-2.8.9.1-4a1df4d2f11802fc73c8cd5c15ceb9e7988c70ea
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -288,7 +290,7 @@ services:
     container_name: msa_rsyslog
     depends_on:
       - msa-sms
-    image: openmsa/openmsa:msa2-rsyslog-2.8.7-c7981110f0ff1ee153199786f4abf3c8f5e49db7
+    image: openmsa/openmsa:msa2-rsyslog-2.8.9.1-c7981110f0ff1ee153199786f4abf3c8f5e49db7
     # environment:
       # enable omfwd acxtion type for syslog Forwarding Output Module
       # https://www.rsyslog.com/doc/v8-stable/configuration/modules/omfwd.html
@@ -324,7 +326,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    image: openmsa/openmsa:msa2-camunda-2.8.7-23335a0df397d4bc3531366223cd5a239688ee0d
+    image: openmsa/openmsa:msa2-camunda-2.8.9.1-8dda18db891417d6899177400920e27f3d6db445
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
@@ -339,7 +341,7 @@ services:
   msa-es:
     restart: unless-stopped
     container_name: msa_es
-    image: openmsa/openmsa:msa2-es-2.8.7-0bdbe159f733c75a5ea0696420ded038c87b5d6c
+    image: openmsa/openmsa:msa2-es-2.8.9.1-95d632f4eb657b3d2b367a4bbf56c5a77959e6ac
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
@@ -384,7 +386,7 @@ services:
   msa-cerebro:
     restart: unless-stopped
     container_name: msa_cerebro
-    image: openmsa/openmsa:msa2-cerebro-2.8.7-914750e000db1343d9972bfa6652da1efe4aa32f
+    image: openmsa/openmsa:msa2-cerebro-2.8.9.1-20ee9b68766b7432a7faf20244d604393f6fdce4
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -407,7 +409,7 @@ services:
   msa-kibana:
     restart: unless-stopped
     container_name: msa_kibana
-    image: openmsa/openmsa:msa2-kibana-2.8.7-b5a0a64970f780ffddaf884f6bbff149431f0026
+    image: openmsa/openmsa:msa2-kibana-2.8.9.1-46a9280639d973021a841c3792aed3948846d73a
     depends_on:
       msa-es:
         condition: service_started
@@ -428,7 +430,7 @@ services:
     restart: unless-stopped
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: openmsa/openmsa:msa2-linuxdev-2.8.7-6f2f80bb768a44ffad06dd7b4240c2a01c5c0e27
+    image: openmsa/openmsa:msa2-linuxdev-2.8.9.1-f386e5b7b577cbb28cb20a075e911c72137dab8b
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
@@ -446,7 +448,7 @@ services:
     restart: unless-stopped
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.8.7-4981889b459e41c6dfe50699e51d839848fea9ba
+    image: openmsa/openmsa:msa2-linuxme-2.8.9.1-e84bc462bf01d4956c4a1895b66507d4ba47a227
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -471,7 +473,7 @@ services:
     restart: unless-stopped
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.8.7-4981889b459e41c6dfe50699e51d839848fea9ba
+    image: openmsa/openmsa:msa2-linuxme-2.8.9.1-e84bc462bf01d4956c4a1895b66507d4ba47a227
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN

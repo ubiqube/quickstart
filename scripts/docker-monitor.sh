@@ -1,6 +1,12 @@
 #!/bin/bash
 #set -x
 
+if [ "$(docker node inspect --format '{{.ManagerStatus.Leader}}' self)" != true ]; then
+  # this is not an error, only the leader has to do the job
+  # echo "This manager is not the leader, nothing to do"
+  exit 0
+fi
+
 APPDIR=$(dirname $0)
 source $APPDIR/docker-monitor.inc
 HOST=$(hostname)
