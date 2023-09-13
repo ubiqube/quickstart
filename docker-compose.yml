@@ -16,7 +16,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:54bd4b6f0b12d4b9413f4b77a87fad7263e94430
+    image: ubiqube/msa2-front:18440db97607e35806907fd737945cec8418a011
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -67,7 +67,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: ubiqube/msa2-db:298af6abd9919675e31d49b1832ab688e3e7f153
+    image: ubiqube/msa2-db:b41f3167eff7d84d2f64234dcc581816c769bf1d
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -97,7 +97,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:bb6cb90e1c30a6041d823ab2aa2719e27200703e
+    image: ubiqube/msa2-api:dafe0b5e8652c3adbda4f9363ef2e2d7a0607a00
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -131,7 +131,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:450f6f22c750964871de13143d7f0e36cb0a278b
+    image: ubiqube/msa2-ui:108170029069ac3e1065bb66c1f10ce71daf4fe5
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -165,7 +165,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:1102e34511f2e4b9fe917394c0cc9360018095f4
+    image: ubiqube/msa2-sms:06c680ff5de2148cddb4ede33fd98834d5cf52da
     healthcheck:
       timeout: 5s
       retries: 10
@@ -216,7 +216,7 @@ services:
       - msa-sms
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-    image: ubiqube/msa2-event:2d4c63626ff43c21dacd9bb7bff6a5ce4930f69f
+    image: ubiqube/msa2-event:51bd24c1e5a4fb438fa21df5b4595ae1a5d003a2
     environment:
       <<: *es-configuration
     logging:
@@ -259,7 +259,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: ubiqube/msa2-alarm:df8dfe8afe6f12eea13dc49f02587a53ca3dd608
+    image: ubiqube/msa2-alarm:0fc68a6c34435181fdd9031c3bc44fe19492a75b
     healthcheck:
       timeout: 5s
       retries: 10
@@ -287,7 +287,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: ubiqube/msa2-monitoring:fc0b2fcdc46f83beca5f189d942e31f647474d84
+    image: ubiqube/msa2-monitoring:47bf8e62bb9e8d6de920153eb25d6e6ce22b968c
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -322,7 +322,7 @@ services:
     container_name: msa_rsyslog
     depends_on:
       - msa-event
-    image: ubiqube/msa2-rsyslog:cbd881a366f7971aa981f720f41ce2c9ef097ab9
+    image: ubiqube/msa2-rsyslog:02bb1d60385f106e14eb6d940e7fc69a3e16722d
     # environment:
       # enable omfwd acxtion type for syslog Forwarding Output Module
       # https://www.rsyslog.com/doc/v8-stable/configuration/modules/omfwd.html
