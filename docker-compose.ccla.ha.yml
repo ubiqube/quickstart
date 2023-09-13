@@ -70,5 +70,9 @@ services:
     environment:
       - UBIQUBE_INSTALL_AWS_CLI=true
 
+  msa-api:
+    environment:
+      - UBIQUBE_BYPASS_CAPTCHA=true
+
   msa-dev:
     command: [ "/docker-entrypoint.sh", "--cloudclapp" ]
