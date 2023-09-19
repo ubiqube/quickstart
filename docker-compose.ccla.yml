@@ -35,8 +35,10 @@ services:
       - network.localServers.mainProxy.address=0.0.0.0
 
   key-vault:
+    restart: unless-stopped
     depends_on:
-      - db
+      db: 
+        condition: service_healthy
     image: hashicorp/vault:latest
     ports:
       - "8200:8200"
