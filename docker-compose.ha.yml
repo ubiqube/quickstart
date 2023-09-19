@@ -158,6 +158,9 @@ services:
       - "/mnt/NASVolume/msa_api_keystore:/etc/pki/jentreprise"
     logging:
       <<: *logging
+    ports:
+      - "8480:8480"
+      - "8787:8787"
     networks:
       default:
         aliases:
