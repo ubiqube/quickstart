@@ -114,6 +114,9 @@ services:
       UBIQUBE_CAPTCHA_SECRET_KEY: 6Ld2zF4dAAAAABWD9Q6QAhBql_CIynUeVKaTiBgT
     logging:
       <<: *logging
+    ports:
+      - "8480:8480"
+      - "8787:8787"
     volumes:
       - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_entities:/opt/fmc_entities"
