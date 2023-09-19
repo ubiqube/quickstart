@@ -4,6 +4,7 @@ services:
   cloudclapp:
     depends_on:
       - msa-api
+    container_name: ccla_ui
     image: openmsa/openmsa:cloudclapp-2.8.9-c1c1271bdd53a75dda4261624c04b02251a9d696
     environment:
       - UBIQUBE_CAPTCHA_SITE_KEY=6Ld2zF4dAAAAAJlqZMIHpPeb3aYhcyy1K3NWPtqi
@@ -12,11 +13,13 @@ services:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
 
   ccla-scan-app:
+    container_name: ccla_scan_app
     image: openmsa/openmsa:cloudclapp-scan-2.8.9-5fd210877816b5c00f7fda2440210c8ada8575cf
     environment:
       - UBIQUBE_ZAP_TOKEN=7da091fe-63a4-48c0-9bfa-7614c49feb7c
 
   ccla-scan-env:
+    container_name: ccla_scan_env
     image: owasp/zap2docker-stable:2.11.1
     entrypoint:
       - zap.sh
@@ -39,6 +42,7 @@ services:
     depends_on:
       db: 
         condition: service_healthy
+    container_name: key_vault
     image: hashicorp/vault:latest
     ports:
       - "8200:8200"
