@@ -432,6 +432,8 @@ services:
     container_name: msa_dev
     #build: ./lab/msa_dev
     image: ubiqube/msa2-linuxdev:482255e81f157b43fa8bb05a0998c94ddc57fde7
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /usr/bin/install_libraries.sh || echo false"]
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
