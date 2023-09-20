@@ -133,6 +133,18 @@ services:
         aliases:
           - "msa_api"
 
+  msa-broker:
+    restart: unless-stopped
+    container_name: msa_broker
+    image: docker.io/ubiqube/msa2-broker:cfdf683c6c5fc23606b442750d7c64f334585aa8
+    depends_on:
+      - db
+    environment:
+      ARTEMIS_PASSWORD: simetraehcapa
+      ARTEMIS_USER: artemis
+    volumes:
+      - "msa_broker:/var/lib/artemis-instance"
+
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
@@ -485,6 +497,7 @@ services:
 
 volumes:
   msa_api:
+  msa_broker:
   msa_db:
   msa_dev:
   msa_entities:
