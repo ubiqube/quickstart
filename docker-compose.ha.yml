@@ -15,7 +15,7 @@ x-logging: &logging
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.11_BETA-570deeb50bc7635635bad19b63d3387c7413937b
+    image: openmsa/openmsa:msa2-front-2.8.11_BETA-81227f6d535213e3f1614821301c37063b095d3c
     depends_on:
       - msa-api
       - msa-ui
@@ -130,7 +130,7 @@ services:
       <<: *logging
 
   msa-api:
-    image: openmsa/openmsa:msa2-api-2.8.11_BETA-1aa006a1e8f7d38cb0b0911e397691d601b6db20
+    image: openmsa/openmsa:msa2-api-2.8.11_BETA-3ede443d77a7b9adfc89b43333aaefa87a15c1ad
     depends_on:
       - db
     healthcheck:
@@ -167,7 +167,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.8.11_BETA-738d6fa3c5f254f60a272a8bcf57eca28c68e480
+    image: openmsa/openmsa:msa2-ui-2.8.11_BETA-64f2fb43fc8033e12585506588f9a87e0cff6f57
     depends_on:
       - msa-api
     healthcheck:
@@ -242,7 +242,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: openmsa/openmsa:msa2-sms-2.8.11_BETA-8534c48ecc2f726f59cbe6508917b15de4e43f55
+    image: openmsa/openmsa:msa2-sms-2.8.11_BETA-b7492e15c32ecf3e5268aa3a749db8a94601ba65
     depends_on:
       - db
     healthcheck:
@@ -316,7 +316,7 @@ services:
       - "/mnt/NASVolume/msa_bulkfiles_err:/opt/sms/spool/parser-error"
       
   msa-bud:
-    image: openmsa/openmsa:msa2-bud-2.8.11_BETA-6e7ab54762152900c649b6429e0acd5955e82226
+    image: openmsa/openmsa:msa2-bud-2.8.11_BETA-dfd8d6cd5028d812c3eb5d9f5f2f2b8321ba0e82
     depends_on:
       - db
     healthcheck:
@@ -344,7 +344,7 @@ services:
     depends_on:
       - db
       - msa-api
-    image: openmsa/openmsa:msa2-alarm-2.8.11_BETA-f6f23d0d1ccc651fb351a794db7140a5cd7d9ee8
+    image: openmsa/openmsa:msa2-alarm-2.8.11_BETA-3ca241dbe2ffc38eebb9615394ef8edc33410104
     healthcheck:
       timeout: 5s
       retries: 10
@@ -372,7 +372,7 @@ services:
           - "msa_alarm"
 
   msa-monitoring:
-    image: openmsa/openmsa:msa2-monitoring-2.8.11_BETA-2383056f221b373ac66f13781b1dc3e5c392bc7a
+    image: openmsa/openmsa:msa2-monitoring-2.8.11_BETA-e1ad498063b6de3bf9176c9b575b182ad3c918f5
     healthcheck:
       timeout: 5s
       retries: 10
@@ -528,7 +528,7 @@ services:
           - "msa_cerebro"
 
   msa-dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.8.11_BETA-6b15689be1df2702b2c77a31742b5c86b93e1222
+    image: openmsa/openmsa:msa2-linuxdev-2.8.11_BETA-5dd66e8aa3c763058f343462bffa1fd1eee30b26
     deploy:
       replicas: 1
       placement:
