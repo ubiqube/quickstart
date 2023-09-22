@@ -15,7 +15,7 @@ x-logging: &logging
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.11_BETA-bb9e6f5d89be535c8253a8a1e8dafe23b1c70f3e
+    image: openmsa/openmsa:msa2-front-2.8.11_BETA-570deeb50bc7635635bad19b63d3387c7413937b
     depends_on:
       - msa-api
       - msa-ui
@@ -130,7 +130,7 @@ services:
       <<: *logging
 
   msa-api:
-    image: openmsa/openmsa:msa2-api-2.8.11_BETA-49ea68c67a53d1e7ffb87cc7ff448ac415bb7f35
+    image: openmsa/openmsa:msa2-api-2.8.11_BETA-1aa006a1e8f7d38cb0b0911e397691d601b6db20
     depends_on:
       - db
     healthcheck:
@@ -528,7 +528,7 @@ services:
           - "msa_cerebro"
 
   msa-dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.8.11_BETA-482255e81f157b43fa8bb05a0998c94ddc57fde7
+    image: openmsa/openmsa:msa2-linuxdev-2.8.11_BETA-6b15689be1df2702b2c77a31742b5c86b93e1222
     deploy:
       replicas: 1
       placement:
