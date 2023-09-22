@@ -16,7 +16,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.11_BETA-bb9e6f5d89be535c8253a8a1e8dafe23b1c70f3e
+    image: openmsa/openmsa:msa2-front-2.8.11_BETA-570deeb50bc7635635bad19b63d3387c7413937b
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -97,7 +97,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.8.11_BETA-49ea68c67a53d1e7ffb87cc7ff448ac415bb7f35
+    image: openmsa/openmsa:msa2-api-2.8.11_BETA-1aa006a1e8f7d38cb0b0911e397691d601b6db20
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -451,7 +451,7 @@ services:
     restart: unless-stopped
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: openmsa/openmsa:msa2-linuxdev-2.8.11_BETA-482255e81f157b43fa8bb05a0998c94ddc57fde7
+    image: openmsa/openmsa:msa2-linuxdev-2.8.11_BETA-6b15689be1df2702b2c77a31742b5c86b93e1222
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
