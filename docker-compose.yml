@@ -16,7 +16,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.11_beta-2dd06880d49c7637a776bd843d170c327306621f
+    image: openmsa/openmsa:msa2-front-2.8.11_beta-7adb59b2085e6f7cdd2862bb31aa84f8e406e500
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -67,7 +67,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.8.11_beta-682a3dd59f43aec7b014873e4dd732b8a00ebca3
+    image: openmsa/openmsa:msa2-db-2.8.11_beta-14c5b3653101c77729f4d1e0ef55df9ca2d38b45
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -134,7 +134,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.8.11_beta-64f2fb43fc8033e12585506588f9a87e0cff6f57
+    image: openmsa/openmsa:msa2-ui-2.8.11_beta-f61cf4d51c88039052612f44cd651a3670a75d84
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
