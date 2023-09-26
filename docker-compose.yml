@@ -216,6 +216,7 @@ services:
           - "msa_sms"
 
   msa-parse:
+    container_name: msa_parse
     depends_on:
       - db
       - msa-es
