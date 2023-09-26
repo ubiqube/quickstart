@@ -7,7 +7,7 @@ x-es-configuration: &es-configuration
 
 services:
   msa_front:
-    image: openmsa/openmsa:msa2-front-2.8.8-c9ed1cd1acfe4edcaab3997e256f12f8304797d2
+    image: openmsa/openmsa:msa2-front-2.8.8.1-ef63965cf198333377294c538e3e7f22a3e1c444
     depends_on:
       - msa_api
       - msa_ui
@@ -88,7 +88,7 @@ services:
         condition: on-failure
 
   msa_api:
-    image: openmsa/openmsa:msa2-api-2.8.8-0b494d43769d8c8d674c0ae199d9e526ba8de6a9
+    image: openmsa/openmsa:msa2-api-2.8.8.1-aa1ac969fa079fa7a30ce1f16ba04b743a945511
     depends_on:
       - db
     healthcheck:
@@ -173,7 +173,7 @@ services:
     depends_on:
       - db
       - msa_api
-    image: openmsa/openmsa:msa2-alarm-2.8.8-36375654225fb67565f14c51739f9d13e5b0c782
+    image: openmsa/openmsa:msa2-alarm-2.8.8.1-7a89e16370d9f7b0d689102f47772c179f91df73
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
