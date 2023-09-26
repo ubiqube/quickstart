@@ -227,7 +227,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: openmsa/openmsa:msa2-alarm-2.8.8-36375654225fb67565f14c51739f9d13e5b0c782
+    image: openmsa/openmsa:msa2-alarm-2.8.8.1-7a89e16370d9f7b0d689102f47772c179f91df73
     healthcheck:
       timeout: 5s
       retries: 10
