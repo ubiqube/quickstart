@@ -15,7 +15,7 @@ x-logging: &logging
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.11_beta-7adb59b2085e6f7cdd2862bb31aa84f8e406e500
+    image: openmsa/openmsa:msa2-front-2.8.11_beta-5bbb6f1da8620d4598e0c5cdda5e7b3642f8a946
     depends_on:
       - msa-api
       - msa-ui
@@ -167,7 +167,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.8.11_beta-f61cf4d51c88039052612f44cd651a3670a75d84
+    image: openmsa/openmsa:msa2-ui-2.8.11_beta-ff3e5ee2d51bf67a6a165f47c06bc9fb7b0a19ae
     depends_on:
       - msa-api
     healthcheck:
@@ -294,7 +294,7 @@ services:
       - msa-sms
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-    image: openmsa/openmsa:msa2-parse-2.8.11_beta-34d85f0a585fd6bd8695e435fd16be53d5933382
+    image: openmsa/openmsa:msa2-parse-2.8.11_beta-9dc8b40595007fb83dbcc41e8440742dfdb2512a
     environment:
       <<: *es-configuration
     deploy:
@@ -344,7 +344,7 @@ services:
     depends_on:
       - db
       - msa-api
-    image: openmsa/openmsa:msa2-alarm-2.8.11_beta-3573b7e4936ddd1f5ee0cacfc97294762d12212a
+    image: openmsa/openmsa:msa2-alarm-2.8.11_beta-a107ade505ba94ed05f7fcb45acd6b8a238214e4
     healthcheck:
       timeout: 5s
       retries: 10
