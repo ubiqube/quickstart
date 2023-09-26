@@ -6,6 +6,10 @@ By following this quickstart you will be able to test out the full capabilities 
 
 This project is part of the link:https://ubiqube.com/wp-content/docs/latest/user-guide/quickstart.html[Quickstart] guide.
 
+== Cloudclapp
+
+To install Cloudclapp(TM), use the --ccla option of the install script
+
 == ETSI-MANO modules
 
 The images for the MANO implementation are located under the lab/mano directory

@@ -155,6 +155,7 @@ services:
     - FEATURE_BPM=true
     - UBIQUBE_ES_SECURITY_DISABLED=true
     - FEATURE_ALARMS_AUTO_ACKNOWLEDGE=true
+    - FEATURE_IMPORT_WITH_SAME_AND_UPPERRANK=true
     logging:
       <<: *logging
     networks:
