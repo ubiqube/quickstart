@@ -5,7 +5,7 @@ services:
     depends_on:
       - msa-api
     container_name: ccla_ui
-    image: ubiqube/cloudclapp:ac16180e8c81348857a3547ceba711ee990b3b62
+    image: ubiqube/cloudclapp:f61cf4d51c88039052612f44cd651a3670a75d84
     environment:
       - UBIQUBE_CAPTCHA_SITE_KEY=6Ld2zF4dAAAAAJlqZMIHpPeb3aYhcyy1K3NWPtqi
       - UBIQUBE_LICENSE_AGREEMENT_LINK=https:\/\/cloudclapp.com\/EndUserLicenceAgreement.html
