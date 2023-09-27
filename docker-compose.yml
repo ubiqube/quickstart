@@ -158,7 +158,9 @@ services:
     - FEATURE_BPM=false
     - FEATURE_REPOFOLDERLIST=["Datafiles","Documentation","Firmware","License","Pki"]
     - FEATURE_HA_DISPLAY=true
-    - FEATURE_IMPORT_WITH_SAME_AND_UPPERRANK=true
+    - FEATURE_IMPORT_WITH_SAME_AND_UPPERRANK=false
+    - FEATURE_IMPORT_WITH_UPPERRANK=false
+
     logging:
       <<: *logging
     networks:
