@@ -16,7 +16,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.11_beta-5bbb6f1da8620d4598e0c5cdda5e7b3642f8a946
+    image: openmsa/openmsa:msa2-front-2.8.11_beta-c204c8988e776bb1329ed5ef0e300d57f425ea79
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -97,7 +97,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.8.11_beta-1b77afcddadb696690785d6bbeddfbe5d5473ccc
+    image: openmsa/openmsa:msa2-api-2.8.11_beta-b77bffd4a347dceaa46a9a68602d516a9ad5e652
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -134,7 +134,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.8.11_beta-ff3e5ee2d51bf67a6a165f47c06bc9fb7b0a19ae
+    image: openmsa/openmsa:msa2-ui-2.8.11_beta-960bc6cd036cd0f9f5161d2e62cde27ed5367087
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -220,7 +220,7 @@ services:
       - msa-sms
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-    image: openmsa/openmsa:msa2-parse-2.8.11_beta-9dc8b40595007fb83dbcc41e8440742dfdb2512a
+    image: openmsa/openmsa:msa2-parse-2.8.11_beta-077dfee1ee36f6f0618a2d51c83c68f10e3a6d73
     environment:
       <<: *es-configuration
     logging:
