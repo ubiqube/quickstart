@@ -255,7 +255,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: openmsa/openmsa:msa2-sms-2.8.9.1-b031be100d9c22054b6e50e8a5c05e5815f30a68
+    image: ubiqube/msa2-sms:2144e1e8528f56c6668d364252735914080e97cd
     depends_on:
       - db
     healthcheck:
