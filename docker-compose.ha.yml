@@ -15,7 +15,7 @@ x-logging: &logging
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.11_beta-e0c6fd4abd87c64ee1fd34ba95e76551be3e85a9
+    image: openmsa/openmsa:msa2-front-2.8.11_beta-75126017f93ccba0f391d22e04ba080f4fce3121
     depends_on:
       - msa-api
       - msa-ui
@@ -64,7 +64,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: openmsa/openmsa:msa2-db-2.8.11_beta-14c5b3653101c77729f4d1e0ef55df9ca2d38b45
+    image: openmsa/openmsa:msa2-db-2.8.11_beta-37bee0e021b539b150ae9ee11a37d4fad8b2136c
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -99,7 +99,7 @@ services:
       <<: *logging
 
   db-replica:
-    image: openmsa/openmsa:msa2-db-2.8.11_beta-14c5b3653101c77729f4d1e0ef55df9ca2d38b45
+    image: openmsa/openmsa:msa2-db-2.8.11_beta-37bee0e021b539b150ae9ee11a37d4fad8b2136c
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -130,7 +130,7 @@ services:
       <<: *logging
 
   msa-api:
-    image: openmsa/openmsa:msa2-api-2.8.11_beta-b77bffd4a347dceaa46a9a68602d516a9ad5e652
+    image: openmsa/openmsa:msa2-api-2.8.11_beta-3cc7c9d83372cc3ec0f206593def3710e1626f5c
     depends_on:
       - db
     healthcheck:
@@ -167,7 +167,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.8.11_beta-df20888f89ea9534dd0d2cccc6dafbcd93274d32
+    image: openmsa/openmsa:msa2-ui-2.8.11_beta-6a052c10da57369cbe97eef0721976c281570b5d
     depends_on:
       - msa-api
     healthcheck:
@@ -243,7 +243,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: openmsa/openmsa:msa2-sms-2.8.11_beta-b7492e15c32ecf3e5268aa3a749db8a94601ba65
+    image: openmsa/openmsa:msa2-sms-2.8.11_beta-78ffcf33331e865883d0dc4fc154405be6067121
     depends_on:
       - db
     healthcheck:
@@ -295,7 +295,7 @@ services:
       - msa-sms
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-    image: openmsa/openmsa:msa2-parse-2.8.11_beta-077dfee1ee36f6f0618a2d51c83c68f10e3a6d73
+    image: openmsa/openmsa:msa2-parse-2.8.11_beta-7acba72c79e5572412f22883cbaaec95afd92d87
     environment:
       <<: *es-configuration
     deploy:
@@ -345,7 +345,7 @@ services:
     depends_on:
       - db
       - msa-api
-    image: openmsa/openmsa:msa2-alarm-2.8.11_beta-a107ade505ba94ed05f7fcb45acd6b8a238214e4
+    image: openmsa/openmsa:msa2-alarm-2.8.11_beta-135bcaff0cd74255d183b5cd6eec6dee07a9ea0d
     healthcheck:
       timeout: 5s
       retries: 10
