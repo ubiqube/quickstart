@@ -195,6 +195,7 @@ services:
     - FEATURE_WORKFLOW_OWNER=false
     - FEATURE_PERMISSION_PROFILE_LABELS=false
     - FEATURE_BPM=true
+    - FEATURE_IMPORT_WITH_SAME_AND_UPPERRANK=true
     logging:
       <<: *logging
     networks:
@@ -254,6 +255,7 @@ services:
     environment:
       <<: *es-configuration
       CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
+      HOST_HOSTNAME: "{{.Node.Hostname}}"
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
@@ -389,17 +391,6 @@ services:
       WAIT_FOR_TIMEOUT: 60
     logging:
       <<: *logging
-
-  msa-broker:
-    restart: unless-stopped
-    image: docker.io/ubiqube/msa2-broker:cfdf683c6c5fc23606b442750d7c64f334585aa8
-    depends_on:
-      - db
-    environment:
-      ARTEMIS_PASSWORD: simetraehcapa
-      ARTEMIS_USER: artemis
-    volumes:
-      - "/mnt/NASVolume/mano_artemis:/var/lib/artemis-instance"
 
   msa-kibana:
     image: ubiqube/msa2-kibana:46a9280639d973021a841c3792aed3948846d73a
