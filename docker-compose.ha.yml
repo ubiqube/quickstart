@@ -15,7 +15,7 @@ x-logging: &logging
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:1a3187a0567734f16959763e52e62689d57e9cd9
+    image: ubiqube/msa2-front:af5332588e9e9e85c3501393ba4029b5ca31a1ca
     depends_on:
       - msa-api
       - msa-ui
@@ -69,7 +69,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:37bee0e021b539b150ae9ee11a37d4fad8b2136c
+    image: ubiqube/msa2-db:14c5b3653101c77729f4d1e0ef55df9ca2d38b45
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
