@@ -69,7 +69,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:14c5b3653101c77729f4d1e0ef55df9ca2d38b45
+    image: ubiqube/msa2-db:37bee0e021b539b150ae9ee11a37d4fad8b2136c
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
