@@ -278,6 +278,67 @@ services:
         aliases:
           - "msa_sms"
 
+  msa-parse:
+    depends_on:
+      - db
+      - msa-es
+      - msa-dev
+      - msa-sms
+    healthcheck:
+      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
+    image: ubiqube/msa2-parse:7acba72c79e5572412f22883cbaaec95afd92d87
+    environment:
+      <<: *es-configuration
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "20m"
+        max-file: "5"
+    volumes:
+      - "/mnt/NASVolume/msa_dev:/opt/devops/"
+      - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
+      - "/mnt/NASVolume/msa_bulkfiles_err:/opt/sms/spool/parser-error"
+    deploy:
+      replicas: 3
+      placement:
+        max_replicas_per_node: 1
+    networks:
+      default:
+        aliases:
+          - "msa_parse"
+
+  msa-snmptrap:
+    depends_on:
+      - db
+      - msa-es
+      - msa-dev
+    healthcheck:
+      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
+    image: ubiqube/msa2-snmptrap:d1ed2b661ba78a6e9b7800eebe0521e48524944e
+    environment:
+      <<: *es-configuration
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "20m"
+        max-file: "5"
+    volumes:
+      - "/mnt/NASVolume/msa_dev:/opt/devops/"
+      - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
+      - "/mnt/NASVolume/msa_bulkfiles_err:/opt/sms/spool/parser-error"
+    deploy:
+      replicas: 3
+      placement:
+        max_replicas_per_node: 1
+    networks:
+      default:
+        aliases:
+          - "msa_snmptrap"
+
   msa-bud:
     image: ubiqube/msa2-bud:ec466ed2a694255e6d40106fabb36d6d4cece19a
     depends_on:
