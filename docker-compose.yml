@@ -349,7 +349,7 @@ services:
     restart: unless-stopped
     container_name: msa_rsyslog
     depends_on:
-      - msa-event
+      - msa-parse
     image: openmsa/openmsa:msa2-rsyslog-2.8.10-02bb1d60385f106e14eb6d940e7fc69a3e16722d
     # environment:
       # enable omfwd acxtion type for syslog Forwarding Output Module
