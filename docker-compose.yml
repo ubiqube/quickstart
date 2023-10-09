@@ -555,6 +555,7 @@ services:
 
 volumes:
   msa_api:
+  msa_broker:
   msa_db:
   msa_dev:
   msa_entities:
