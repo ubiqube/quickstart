@@ -16,7 +16,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.10-45a3e2639d30aebbed9eec90df8a1b56fb081922
+    image: ubiqube/msa2-front:caa9c2673a5d1c76f63f42673dcf15b3671cb8cd
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -67,7 +67,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.8.10-b41f3167eff7d84d2f64234dcc581816c769bf1d
+    image: ubiqube/msa2-db:37bee0e021b539b150ae9ee11a37d4fad8b2136c
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -97,7 +97,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.8.10-e319faf63a121502937e0710f29dab394db2f532
+    image: ubiqube/msa2-api:2006015ce7ed63ddd8ed98597e4e89898627309d
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -131,7 +131,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.8.10-b0d35cb691843f221e34d499caf7ff8b2131f23d
+    image: ubiqube/msa2-ui:1c8cadbe6d1b97b692a0c8e1af6a82112061e0fd
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -166,7 +166,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: openmsa/openmsa:msa2-sms-2.8.10-06c680ff5de2148cddb4ede33fd98834d5cf52da
+    image: ubiqube/msa2-sms:78ffcf33331e865883d0dc4fc154405be6067121
     healthcheck:
       timeout: 5s
       retries: 10
@@ -209,7 +209,7 @@ services:
         aliases:
           - "msa_sms"
 
-  msa-event:
+  msa-parse:
     depends_on:
       - db
       - msa-es
@@ -217,7 +217,7 @@ services:
       - msa-sms
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-    image: openmsa/openmsa:msa2-event-2.8.10-51bd24c1e5a4fb438fa21df5b4595ae1a5d003a2
+    image: ubiqube/msa2-parse:7acba72c79e5572412f22883cbaaec95afd92d87
     environment:
       <<: *es-configuration
     logging:
@@ -234,7 +234,34 @@ services:
     networks:
       default:
         aliases:
-          - "msa_event"
+          - "msa_parse"
+
+  msa-snmptrap:
+    depends_on:
+      - db
+      - msa-es
+      - msa-dev
+    healthcheck:
+      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
+    image: ubiqube/msa2-snmptrap:d1ed2b661ba78a6e9b7800eebe0521e48524944e
+    environment:
+      <<: *es-configuration
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "20m"
+        max-file: "5"
+    volumes:
+      - "msa_dev:/opt/devops/"
+      - "msa_bulkfiles:/opt/sms/spool/parser"
+      - "msa_bulkfiles_err:/opt/sms/spool/parser-error"
+    networks:
+      default:
+        aliases:
+          - "msa_snmptrap"
+
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
@@ -350,6 +377,17 @@ services:
           - "msa_rsyslog"
     logging:
       <<: *logging
+
+  msa-broker:
+    restart: unless-stopped
+    image: ubiqube/msa2-broker:cfdf683c6c5fc23606b442750d7c64f334585aa8
+    depends_on:
+      - db
+    environment:
+      ARTEMIS_PASSWORD: simetraehcapa
+      ARTEMIS_USER: artemis
+    volumes:
+      - "msa_broker:/var/lib/artemis-instance"
 
   camunda:
     restart: unless-stopped
