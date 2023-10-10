@@ -265,7 +265,7 @@ services:
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: openmsa/openmsa:msa2-bud-2.8.10-29c89bed5e95a1368e69f221831d385539e03909
+    image: ubiqube/msa2-bud:ec466ed2a694255e6d40106fabb36d6d4cece19a
     healthcheck:
       timeout: 5s
       retries: 10
@@ -287,7 +287,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: openmsa/openmsa:msa2-alarm-2.8.10-0fc68a6c34435181fdd9031c3bc44fe19492a75b
+    image: ubiqube/msa2-alarm:135bcaff0cd74255d183b5cd6eec6dee07a9ea0d
     healthcheck:
       timeout: 5s
       retries: 10
@@ -315,7 +315,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: openmsa/openmsa:msa2-monitoring-2.8.10-47bf8e62bb9e8d6de920153eb25d6e6ce22b968c
+    image: ubiqube/msa2-monitoring:e1ad498063b6de3bf9176c9b575b182ad3c918f5
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
