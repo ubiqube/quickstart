@@ -350,7 +350,7 @@ services:
     container_name: msa_rsyslog
     depends_on:
       - msa-parse
-    image: openmsa/openmsa:msa2-rsyslog-2.8.10-02bb1d60385f106e14eb6d940e7fc69a3e16722d
+    image: ubiqube/msa2-rsyslog:bea5e3569a045442d6fd6b9d593fdf5048e0d71e
     # environment:
       # enable omfwd acxtion type for syslog Forwarding Output Module
       # https://www.rsyslog.com/doc/v8-stable/configuration/modules/omfwd.html
