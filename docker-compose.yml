@@ -267,7 +267,7 @@ msa-snmptrap:
         aliases:
           - "msa_snmptrap"
           
-  msa-bud:
+msa-bud:
     restart: unless-stopped
     container_name: msa_bud
     image: openmsa/openmsa:msa2-bud-2.8.11_beta-ec466ed2a694255e6d40106fabb36d6d4cece19a
