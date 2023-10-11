@@ -327,7 +327,7 @@ services:
       - msa-dev
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-    image: ubiqube/msa2-snmptrap:d1ed2b661ba78a6e9b7800eebe0521e48524944e
+    image: openmsa/openmsa:msa2-snmptrap-2.8.11_beta-d1ed2b661ba78a6e9b7800eebe0521e48524944e
     environment:
       <<: *es-configuration
     logging:
