@@ -342,9 +342,11 @@ services:
       - "/mnt/NASVolume/msa_snmptrapbulkfiles:/opt/sms/spool/parser"
       - "/mnt/NASVolume/msa_snmptrapbulkfiles_err:/opt/sms/spool/parser-error"
     deploy:
-      replicas: 3
+      replicas: 2
       placement:
         max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
     networks:
       default:
         aliases:
