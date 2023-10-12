@@ -1,0 +1,17 @@
+#!/bin/bash
+
+echo 'stopping the stack and wait 10 seondes'
+docker stack rm msa
+sleep 10
+
+echo 'restart docker service on all nodes and wait 10 seondes'
+for i in $(cat /root/all_swarm_nodes ); do ssh $i "systemctl restart docker" ;done
+sleep 10
+
+echo 'deploying the stack and wait 10 seondes'
+docker stack deploy --with-registry-auth --prune --resolve-image changed -c docker-compose.ha.yml -c docker-compose.ha.specific.yml -c docker-compose-ntt-ecl-api.yml msa
+sleep 10
+
+echo 'swarm fix all nodes'
+./scripts/swarm-fix-all-nodes.sh
+

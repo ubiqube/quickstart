@@ -1,0 +1,4 @@
+#!/bin/bash
+docker stack deploy --with-registry-auth --prune --resolve-image changed -c docker-compose.ha.yml -c docker-compose.ha.specific.yml -c docker-compose-ntt-ecl-api.yml msa
+./scripts/swarm-fix-all-nodes.sh
+
