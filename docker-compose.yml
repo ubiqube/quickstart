@@ -575,6 +575,10 @@ volumes:
   rsyslog_conf:
   msa_bulkfiles:
   msa_bulkfiles_err:
+  msa_parsebulkfiles:
+  msa_parsebulkfiles_err:
+  msa_snmptrapbulkfiles:
+  msa_snmptrapbulkfiles_err:
   msa_monitbulkfiles:
   msa_monitbulkfiles_err:
   msa_alarmbulkfiles:
