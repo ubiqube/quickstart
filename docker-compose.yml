@@ -16,7 +16,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:91b676ae2259b9b18890e074dec22c58f983b525
+    image: ubiqube/msa2-front:031577b59707cd80678fcecc56b48b9f85d1e7e4
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -97,7 +97,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:0006f444473ffcf6e14be169d741c5ded95042eb
+    image: ubiqube/msa2-api:a07e79f846e1ffc18c67ba32e75d98f6e5e83dad
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -229,8 +229,8 @@ services:
         max-file: "5"
     volumes:
       - "msa_dev:/opt/devops/"
-      - "msa_bulkfiles:/opt/sms/spool/parser"
-      - "msa_bulkfiles_err:/opt/sms/spool/parser-error"
+      - "msa_parsebulkfiles:/opt/sms/spool/parser"
+      - "msa_parsebulkfiles_err:/opt/sms/spool/parser-error"
     networks:
       default:
         aliases:
@@ -255,8 +255,8 @@ services:
         max-file: "5"
     volumes:
       - "msa_dev:/opt/devops/"
-      - "msa_bulkfiles:/opt/sms/spool/parser"
-      - "msa_bulkfiles_err:/opt/sms/spool/parser-error"
+      - "msa_snmptrapbulkfiles:/opt/sms/spool/parser"
+      - "msa_snmptrapbulkfiles_err:/opt/sms/spool/parser-error"
     networks:
       default:
         aliases:
