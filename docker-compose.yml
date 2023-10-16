@@ -16,7 +16,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:95e9c3aaa400c4993325debbfe2fa51a86def79a
+    image: ubiqube/msa2-front:b170b57ecb29a4df451fffdeaa5f24a685748bd6
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -67,7 +67,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: ubiqube/msa2-db:37bee0e021b539b150ae9ee11a37d4fad8b2136c
+    image: ubiqube/msa2-db:2e2276196b682cf86d2e49aab066e310ddacbb08
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -97,7 +97,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:0b4b70eac49b7c6f9f2d2b6eb831767c4cdb1277
+    image: ubiqube/msa2-api:078fcd5b358ac0cf68a438979988f24b93d03e7c
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -131,7 +131,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:c33096d059879760c5356262dcfd5f4c9fb970a2
+    image: ubiqube/msa2-ui:8d9847865c3b95824363b20c704ad545d1bed210
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -166,7 +166,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:78ffcf33331e865883d0dc4fc154405be6067121
+    image: ubiqube/msa2-sms:fded8db366a85030e1b8bdc9a41977f7326b483e
     healthcheck:
       timeout: 5s
       retries: 10
@@ -217,7 +217,7 @@ services:
       - msa-sms
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-    image: ubiqube/msa2-parse:7acba72c79e5572412f22883cbaaec95afd92d87
+    image: ubiqube/msa2-parse:78a28c5f58c6c2225ce7aae65a46601c73da4218
     environment:
       <<: *es-configuration
     logging:
