@@ -541,7 +541,6 @@ services:
     volumes:
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
-      - "/mnt/NASVolume/msa_api:/opt/ubi-jentreprise/generated/conf"
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_svn:/opt/svnroot"
 
