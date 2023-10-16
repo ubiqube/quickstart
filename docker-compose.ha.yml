@@ -15,7 +15,7 @@ x-logging: &logging
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:b170b57ecb29a4df451fffdeaa5f24a685748bd6
+    image: ubiqube/msa2-front:5ac45de20046b141365997608b8fee987fd41b0e
     depends_on:
       - msa-api
       - msa-ui
@@ -531,7 +531,7 @@ services:
           - "msa_cerebro"
 
   msa-dev:
-    image: ubiqube/msa2-linuxdev:f8d88e2ea92a4ce6aa8f8b36b62ac4ac68919e5e
+    image: ubiqube/msa2-linuxdev:0b7cf0756912a7d80679f2895e9feaf65208075d
     deploy:
       replicas: 1
       placement:
