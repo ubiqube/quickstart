@@ -30,6 +30,8 @@ services:
         condition: service_started
       msa-rsyslog:
         condition: service_started
+      msa-snmptrap:
+        condition: service_started
     ports:
       - target: 80
         published: 80
@@ -210,6 +212,8 @@ services:
           - "msa_sms"
 
   msa-parse:
+    restart: unless-stopped
+    container_name: msa_parse
     depends_on:
       - db
       - msa-es
@@ -237,6 +241,8 @@ services:
           - "msa_parse"
 
   msa-snmptrap:
+    restart: unless-stopped
+    container_name: msa_snmptrap
     depends_on:
       - db
       - msa-es
@@ -380,6 +386,7 @@ services:
 
   msa-broker:
     restart: unless-stopped
+    container_name: msa_broker
     image: ubiqube/msa2-broker:cfdf683c6c5fc23606b442750d7c64f334585aa8
     depends_on:
       - db
