@@ -544,7 +544,6 @@ services:
       - "/mnt/NASVolume/msa_api:/opt/ubi-jentreprise/generated/conf"
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_svn:/opt/svnroot"
-      # - "/mnt/NASVolume/msa_svn_ws:/opt/sms/spool/routerconfigs"
 
     logging:
       <<: *logging
