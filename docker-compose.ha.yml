@@ -15,7 +15,7 @@ x-logging: &logging
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.11_beta-031577b59707cd80678fcecc56b48b9f85d1e7e4
+    image: openmsa/openmsa:msa2-front-2.8.11_beta-05925afc48f1e3b2eec36233b9955464c7f51452
     depends_on:
       - msa-api
       - msa-ui
@@ -64,7 +64,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: openmsa/openmsa:msa2-db-2.8.11_beta-37bee0e021b539b150ae9ee11a37d4fad8b2136c
+    image: openmsa/openmsa:msa2-db-2.8.11_beta-2e2276196b682cf86d2e49aab066e310ddacbb08
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -99,7 +99,7 @@ services:
       <<: *logging
 
   db-replica:
-    image: openmsa/openmsa:msa2-db-2.8.11_beta-37bee0e021b539b150ae9ee11a37d4fad8b2136c
+    image: openmsa/openmsa:msa2-db-2.8.11_beta-2e2276196b682cf86d2e49aab066e310ddacbb08
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -130,7 +130,7 @@ services:
       <<: *logging
 
   msa-api:
-    image: openmsa/openmsa:msa2-api-2.8.11_beta-a07e79f846e1ffc18c67ba32e75d98f6e5e83dad
+    image: openmsa/openmsa:msa2-api-2.8.11_beta-0b59d8f411a541b6754f159e707670108d8c4b7a
     depends_on:
       - db
     healthcheck:
@@ -167,7 +167,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.8.11_beta-c33096d059879760c5356262dcfd5f4c9fb970a2
+    image: openmsa/openmsa:msa2-ui-2.8.11_beta-a61bfcde4a81cb0add0771373377ef70da83a667
     depends_on:
       - msa-api
     healthcheck:
@@ -243,7 +243,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: openmsa/openmsa:msa2-sms-2.8.11_beta-78ffcf33331e865883d0dc4fc154405be6067121
+    image: openmsa/openmsa:msa2-sms-2.8.11_beta-fded8db366a85030e1b8bdc9a41977f7326b483e
     depends_on:
       - db
     healthcheck:
@@ -295,7 +295,7 @@ services:
       - msa-sms
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-    image: openmsa/openmsa:msa2-parse-2.8.11_beta-7acba72c79e5572412f22883cbaaec95afd92d87
+    image: openmsa/openmsa:msa2-parse-2.8.11_beta-78a28c5f58c6c2225ce7aae65a46601c73da4218
     environment:
       <<: *es-configuration
     deploy:
@@ -491,7 +491,7 @@ services:
      # test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
      # interval: 60s
      # start_period: 60s
-    image: openmsa/openmsa:msa2-es-2.8.11_beta-44738ecbc4f9e6ce84d8162fdda9a8196cfa34e5
+    image: openmsa/openmsa:msa2-es-2.8.11_beta-d5c696ad9954e162913da74f92a4d19c08ac530e
     deploy:
       replicas: 1
       placement:
@@ -565,7 +565,7 @@ services:
           - "msa_cerebro"
 
   msa-dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.8.11_beta-f8d88e2ea92a4ce6aa8f8b36b62ac4ac68919e5e
+    image: openmsa/openmsa:msa2-linuxdev-2.8.11_beta-1c9b45d750bd0553470ff1c517697c599cadb287
     deploy:
       replicas: 1
       placement:
