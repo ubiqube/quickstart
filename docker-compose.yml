@@ -16,7 +16,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:ed1fde35c0b6725e13b4119c9705daac1228c1f9
+    image: ubiqube/msa2-front:b2a793655427d706f4c9eb1ce2ea150f4eb54771
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -40,10 +40,6 @@ services:
       - target: 443
         published: 443
         protocol: tcp
-        mode: host
-      - target: 162
-        published: 162
-        protocol: udp
         mode: host
     logging:
       driver: "json-file"
@@ -252,6 +248,11 @@ services:
     image: ubiqube/msa2-snmptrap:d1ed2b661ba78a6e9b7800eebe0521e48524944e
     environment:
       <<: *es-configuration
+    ports:
+      - target: 162
+        published: 162
+        protocol: udp
+        mode: host
     logging:
       driver: "json-file"
       options:
@@ -356,7 +357,7 @@ services:
     container_name: msa_rsyslog
     depends_on:
       - msa-parse
-    image: ubiqube/msa2-rsyslog:bea5e3569a045442d6fd6b9d593fdf5048e0d71e
+    image: ubiqube/msa2-rsyslog:a52168436059f888daef8ab304e17a7ebb7f79be
     # environment:
       # enable omfwd acxtion type for syslog Forwarding Output Module
       # https://www.rsyslog.com/doc/v8-stable/configuration/modules/omfwd.html
