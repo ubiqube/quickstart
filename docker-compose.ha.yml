@@ -15,7 +15,7 @@ x-logging: &logging
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.11_beta-05925afc48f1e3b2eec36233b9955464c7f51452
+    image: openmsa/openmsa:msa2-front-2.8.11_beta-1a799113a8b35e2df07dd3a8b9e4814a71f71258
     depends_on:
       - msa-api
       - msa-ui
@@ -130,7 +130,7 @@ services:
       <<: *logging
 
   msa-api:
-    image: openmsa/openmsa:msa2-api-2.8.11_beta-0b59d8f411a541b6754f159e707670108d8c4b7a
+    image: openmsa/openmsa:msa2-api-2.8.11_beta-e7f8df194277576c26b021a96ce50e60f8950252
     depends_on:
       - db
     healthcheck:
@@ -167,7 +167,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.8.11_beta-a61bfcde4a81cb0add0771373377ef70da83a667
+    image: openmsa/openmsa:msa2-ui-2.8.11_beta-c3a1a979ceff6ca3110cfaeb4f639d9765ec19fa
     depends_on:
       - msa-api
     healthcheck:
@@ -208,7 +208,7 @@ services:
   msa-rsyslog:
     depends_on:
       - msa-sms
-    image: openmsa/openmsa:msa2-rsyslog-2.8.11_beta-bea5e3569a045442d6fd6b9d593fdf5048e0d71e
+    image: openmsa/openmsa:msa2-rsyslog-2.8.11_beta-a52168436059f888daef8ab304e17a7ebb7f79be
     # environment:
       # enable omfwd acxtion type for syslog Forwarding Output Module
       # https://www.rsyslog.com/doc/v8-stable/configuration/modules/omfwd.html
@@ -295,7 +295,7 @@ services:
       - msa-sms
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-    image: openmsa/openmsa:msa2-parse-2.8.11_beta-78a28c5f58c6c2225ce7aae65a46601c73da4218
+    image: openmsa/openmsa:msa2-parse-2.8.11_beta-e5a6a0322e7fb623187a883353985d23cc7f0c18
     environment:
       <<: *es-configuration
     deploy:
