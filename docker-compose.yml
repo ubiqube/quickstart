@@ -20,7 +20,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:4a1bac9b28b8b88cee8a204b5347789ed632a42d
+    image: ubiqube/msa2-front:2d66e706cd0a1adcab6bd373325e5035df490007
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -99,7 +99,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:8ebbcbb77151ba0dcefd5bc68b86da5470f073ae
+    image: ubiqube/msa2-api:7fd5839af41fd781abc350838c91a9e1b7b19502
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -133,7 +133,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:c3a1a979ceff6ca3110cfaeb4f639d9765ec19fa
+    image: ubiqube/msa2-ui:af9417c458797adefbd1e598ab54c7d5991d96fb
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -523,7 +523,7 @@ services:
     restart: unless-stopped
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: ubiqube/msa2-linuxdev:1c9b45d750bd0553470ff1c517697c599cadb287
+    image: ubiqube/msa2-linuxdev:4a83165184950cdc0bf058f3c7d25819e1d37b86
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
