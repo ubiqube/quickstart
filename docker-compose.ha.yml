@@ -1,37 +1,31 @@
-# This docker-compose file is provided as an example to create a Docker Swarm based MSActivator setup
+# NOTE: The tags in this file get updated automatically via
+# the update_tag script, just like the main docker-compose.yml
+
 version: "3.8"
 
 x-es-configuration: &es-configuration
     ES_CREDENTIALS: c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     ES_SERVERS: "msa-es"
 
-x-logging: &logging
-  driver: "json-file"
-  options:
-    mode: non-blocking
-    max-buffer-size: "4m"
-    max-size: "10m"
-    max-file: "5"
+x-kafka-syslogs: &kafka-syslogs
+    KAFKA_SERVER: "kafka:9094"
+    KAFKA_TOPIC: "syslogs"
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.10_beta-a3e06014c34e1bd1e4b44f1c712ac98f8faec684
     depends_on:
       - msa-api
       - msa-ui
       - camunda
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
-      timeout: 2s
-      retries: 10
-      interval: 10s
-      start_period: 30s
+    image: openmsa/openmsa:msa2-front-2.8.11-beta-3426126a3f856b37003ab903dcf3dbf64ea41523
     deploy:
-      replicas: 1
+      replicas: 2
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==app"
+          - "node.role==manager"
     ports:
       - target: 80
         published: 80
@@ -45,6 +39,10 @@ services:
         published: 162
         protocol: udp
         mode: ingress
+    networks:
+      default:
+        aliases:
+          - "msa_front"
     logging:
       driver: "json-file"
       options:
@@ -52,10 +50,10 @@ services:
         max-buffer-size: "4m"
         max-size: "10m"
         max-file: "5"
-    volumes:
-        - "/mnt/NASVolume/msa_front_conf:/etc/nginx/custom_conf.d"
     #
-    # uncomment one of the 2 sections below when installing a custom certificate
+    # uncomment this section when installing a custom certificate
+    #
+    # uncomment one of the 2 section below when installing a custom certificate
     # - Docker standard standalone installation
     #volumes:
     #    - "msa_front:/etc/nginx/ssl"
@@ -63,21 +61,78 @@ services:
     #volumes:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
+  camunda:
+    depends_on:
+      - db
+    image: openmsa/openmsa:msa2-camunda-2.8.11-beta-4bd40043f46fa18830d349b481821689448d4949
+    deploy:
+      replicas: 3
+      placement:
+        max_replicas_per_node: 1
+    environment:
+      DB_DRIVER: org.postgresql.Driver
+      DB_URL: 'jdbc:postgresql://db:5432/process-engine'
+      DB_USERNAME: camunda
+      DB_PASSWORD: camunda
+      DB_VALIDATE_ON_BORROW: 'true'
+      WAIT_FOR: 'db:5432'
+      WAIT_FOR_TIMEOUT: 60
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
+
+  msa-broker:
+    restart: unless-stopped
+    image: openmsa/openmsa:ubiqube-2.8.11-beta-106d2b650da8b38ebde9c29315bc83db2f8e14bd
+    depends_on:
+      - db
+    environment:
+      ARTEMIS_PASSWORD: simetraehcapa
+      ARTEMIS_USER: artemis
+    volumes:
+      - "/mnt/NASVolume/mano_artemis:/var/lib/artemis-instance"
+
+  msa-ui:
+    depends_on:
+      - msa-api
+    image: openmsa/openmsa:msa2-ui-2.8.11-beta-bea77fcf3d59f6be89ef20657c64537ce60eae24
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
+    deploy:
+      replicas: 3
+      placement:
+        max_replicas_per_node: 1
+    environment:
+    - FEATURE_ADMIN=true
+    - FEATURE_REPOSITORY=true
+    - FEATURE_CONNECTION_STATUS=true
+    - FEATURE_ALARMS=true
+    - FEATURE_LICENCE=true
+    - FEATURE_TOPOLOGY=true
+    - FEATURE_MONITORING_PROFILES=true
+    - FEATURE_PROFILE_AUDIT_LOGS=true
+    - FEATURE_PERMISSION_PROFILES=true
+    - FEATURE_BPM=true
+    - FEATURE_AI_ML=false
+    - FEATURE_MICROSERVICE_BULK_OPERATION=true
+    - FEATURE_EDIT_VARIABLES_IN_MICROSERVICE_CONSOLE=true
+    - FEATURE_WORKFLOW_OWNER=false
+    - FEATURE_PERMISSION_PROFILE_LABELS=false
+    networks:
+      default:
+        aliases:
+          - "msa_ui"
+
   db:
-    image: openmsa/openmsa:msa2-db-2.8.10_beta-298af6abd9919675e31d49b1832ab688e3e7f153
+    image: openmsa/openmsa:msa2-db-2.8.11-beta-2e2276196b682cf86d2e49aab066e310ddacbb08
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
-      interval: 30s
-      retries: 5
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==db"
+    shm_size: 1g
     environment:
       CAMUNDA_PASSWORD: camunda
       CAMUNDA_DB: process-engine
@@ -95,22 +150,24 @@ services:
       MAX_CONNECTIONS: 1600
     volumes:
       - "/mnt/NASVolume/msa_db:/pgsqldata/pgsql"
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - "node.role==manager"
     logging:
-      <<: *logging
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
 
   db-replica:
-    image: openmsa/openmsa:msa2-db-2.8.10_beta-298af6abd9919675e31d49b1832ab688e3e7f153
+    image: openmsa/openmsa:msa2-db-2.8.11-beta-2e2276196b682cf86d2e49aab066e310ddacbb08
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.db==replica"
     environment:
       CAMUNDA_PASSWORD: camunda
       CAMUNDA_DB: process-engine
@@ -126,29 +183,57 @@ services:
       PG_ROOT_PASSWORD: my_db_password
       PG_PRIMARY_PORT: 5432
       PG_PRIMARY_HOST: db
-    logging:
-      <<: *logging
-
-  msa-api:
-    image: openmsa/openmsa:msa2-api-2.8.10_beta-bb6cb90e1c30a6041d823ab2aa2719e27200703e
-    depends_on:
-      - db
-    healthcheck:
-      test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     deploy:
       replicas: 1
       placement:
-        max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==app"
-      update_config:
-        parallelism: 1
-      restart_policy:
-        condition: on-failure
-        max_attempts: 10
+          - "node.role==manager"
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
+
+  kafka:
+    image: bitnami/kafka:3.5
+    ports:
+      - "9094:9094"
+    volumes:
+      - "/mnt/NASVolume/kafka_data:/bitnami"
+    environment:
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+     - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092,EXTERNAL://kafka:9094
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_CFG_LOG_CLEANER_ENABLE=true
+      - KAFKA_CFG_LOG_CLEANUP_POLICY=delete
+      - KAFKA_CFG_LOG_RETENTION_BYTES=2000000000
+      - KAFKA_CFG_LOG_RETENTION_MS=86400000
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+
+  msa-api:
+    depends_on:
+      - db
+    image: openmsa/openmsa:msa2-api-2.8.11-beta-7fd5839af41fd781abc350838c91a9e1b7b19502
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     environment:
       <<: *es-configuration
-      HOST_HOSTNAME: "{{.Node.Hostname}}"
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+      placement:
+        max_replicas_per_node: 1
+      update_config:
+        parallelism: 1
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
@@ -156,115 +241,48 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/msa_api_logs:/opt/wildfly/logs/processLog"
       - "/mnt/NASVolume/msa_api_keystore:/etc/pki/jentreprise"
-    logging:
-      <<: *logging
     networks:
       default:
         aliases:
           - "msa_api"
-
-  msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.8.10_beta-9750f850194f11992026fccb6f92799bc6ddfa21
-    depends_on:
-      - msa-api
-    healthcheck:
-      test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
-    deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
-    environment:
-    - FEATURE_ADMIN=true
-    - FEATURE_REPOSITORY=true
-    - FEATURE_CONNECTION_STATUS=true
-    - FEATURE_ALARMS=true
-    - FEATURE_LICENCE=true
-    - FEATURE_TOPOLOGY=true
-    - FEATURE_MONITORING_PROFILES=true
-    - FEATURE_PROFILE_AUDIT_LOGS=true
-    - FEATURE_PERMISSION_PROFILES=true
-    - FEATURE_AI_ML=false
-    - FEATURE_MICROSERVICE_BULK_OPERATION=false
-    - FEATURE_EDIT_VARIABLES_IN_MICROSERVICE_CONSOLE=true
-    - FEATURE_WORKFLOW_OWNER=false
-    - FEATURE_PERMISSION_PROFILE_LABELS=false
-    - FEATURE_BPM=true
-    - FEATURE_IMPORT_WITH_SAME_AND_UPPERRANK=true
     logging:
-      <<: *logging
-    networks:
-      default:
-        aliases:
-          - "msa_ui"
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
 
   msa-rsyslog:
     depends_on:
-      - msa-event
-    image: openmsa/openmsa:msa2-rsyslog-2.8.10_beta-cbd881a366f7971aa981f720f41ce2c9ef097ab9
-    # environment:
-      # enable omfwd acxtion type for syslog Forwarding Output Module
-      # https://www.rsyslog.com/doc/v8-stable/configuration/modules/omfwd.html
-      # default
-      # ACTIONTYPE: "omfwd"
-      # configure a specific port for TLS. Default is 6514
-      # TLS_SYSLOG_PORT: 6514
-    deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+      - msa-parse
+    image: openmsa/openmsa:msa2-rsyslog-2.8.11-beta-a52168436059f888daef8ab304e17a7ebb7f79be
+# uncomment following lines for using kafka, to be done on msa-parse as well
+#    environment:
+#      ACTIONTYPE: "omkafka"
+#      <<: *kafka-syslogs
     ports:
       - target: 514
         published: 514
         protocol: udp
-        mode: ingress
+        mode: host
       - target: 514
         published: 514
         protocol: tcp
-        mode: ingress
+        mode: host
       - target: 6514
         published: 6514
         protocol: tcp
-        mode: ingress
-    logging:
-      <<: *logging
-    networks:
-      default:
-        aliases:
-          - "msa_rsyslog"
+        mode: host
 
   msa-sms:
-    image: openmsa/openmsa:msa2-sms-2.8.10_beta-30fa7eddadd5ffbdd35b1e55a7b0819c27108e00
     depends_on:
       - db
+      - msa-es
+      - msa-dev
     healthcheck:
-      timeout: 5s
-      retries: 10
-      interval: 10s
-      start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-    environment:
-      <<: *es-configuration
-      CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
-      HOST_HOSTNAME: "{{.Node.Hostname}}"
-    volumes:
-      - "/mnt/NASVolume/msa_dev:/opt/devops/"
-      - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
-      - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
-      - "/mnt/NASVolume/rrd_repository:/opt/rrd"
-      - "/mnt/NASVolume/msa_svn:/opt/svnroot"
-      - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
-      - "/mnt/NASVolume/msa_bulkfiles_err:/opt/sms/spool/parser-error"
-      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
-    deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+    image: openmsa/openmsa:msa2-sms-2.8.11-beta-fded8db366a85030e1b8bdc9a41977f7326b483e
     ports:
       - target: 69
         published: 69
@@ -274,26 +292,75 @@ services:
         published: 5200
         protocol: udp
         mode: host
+    environment:
+      <<: *es-configuration
+      CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
+      HOST_HOSTNAME: "{{.Node.Hostname}}"
     logging:
-      <<: *logging
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "20m"
+        max-file: "5"
+    volumes:
+      - "/mnt/NASVolume/msa_dev:/opt/devops/"
+      - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
+      - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
+      - "/mnt/NASVolume/msa_svn:/opt/svnroot"
+      - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
+      - "/mnt/NASVolume/msa_bulkfiles_err:/opt/sms/spool/parser-error"
+    deploy:
+      replicas: 3
+      placement:
+        max_replicas_per_node: 1
     networks:
       default:
         aliases:
           - "msa_sms"
 
-  msa-event:
+  msa-parse:
     depends_on:
       - db
+      - kafka
       - msa-es
       - msa-dev
       - msa-sms
     healthcheck:
-      timeout: 5s
-      retries: 10
-      interval: 10s
-      start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-    image: openmsa/openmsa:msa2-event-2.8.10_beta-3402836b36fe67c2c93185094abf5746ec418944
+    image: openmsa/openmsa:msa2-parse-2.8.11-beta-e5a6a0322e7fb623187a883353985d23cc7f0c18
+    environment:
+      <<: *es-configuration
+# uncomment following line for using kafka, to be done on msa-rsyslog as well
+#     <<: *kafka-syslogs
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "20m"
+        max-file: "5"
+    volumes:
+      - "/mnt/NASVolume/msa_dev:/opt/devops/"
+      - "/mnt/NASVolume/msa_parsebulkfiles:/opt/sms/spool/parser"
+      - "/mnt/NASVolume/msa_parsebulkfiles_err:/opt/sms/spool/parser-error"
+    deploy:
+      replicas: 3
+      placement:
+        max_replicas_per_node: 1
+    networks:
+      default:
+        aliases:
+          - "msa_parse"
+
+  msa-snmptrap:
+    depends_on:
+      - db
+      - msa-es
+      - msa-dev
+    healthcheck:
+      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
+    image: openmsa/openmsa:msa2-snmptrap-2.8.11-beta-d1ed2b661ba78a6e9b7800eebe0521e48524944e
     environment:
       <<: *es-configuration
     logging:
@@ -305,168 +372,180 @@ services:
         max-file: "5"
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
-      - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
-      - "/mnt/NASVolume/msa_bulkfiles_err:/opt/sms/spool/parser-error"
+      - "/mnt/NASVolume/msa_snmptrapbulkfiles:/opt/sms/spool/parser"
+      - "/mnt/NASVolume/msa_snmptrapbulkfiles_err:/opt/sms/spool/parser-error"
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"      
-          
-
-  msa-bud:
-    image: openmsa/openmsa:msa2-bud-2.8.10_beta-8dc3d701051133c1aeeb5042102cd25e6ca21bea
-    depends_on:
-      - db
-    healthcheck:
-      timeout: 5s
-      retries: 10
-      interval: 10s
-      start_period: 30s
-      test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
-    environment:
-      - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
-    deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
-    logging:
-      <<: *logging
     networks:
       default:
         aliases:
-          - "msa_bud"
+          - "msa_snmptrap"
 
   msa-alarm:
     depends_on:
       - db
+      - msa-es
       - msa-api
-    image: openmsa/openmsa:msa2-alarm-2.8.10_beta-df8dfe8afe6f12eea13dc49f02587a53ca3dd608
     healthcheck:
-      timeout: 5s
-      retries: 10
-      interval: 10s
-      start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
+    image: openmsa/openmsa:msa2-alarm-2.8.11-beta-135bcaff0cd74255d183b5cd6eec6dee07a9ea0d
     environment:
       <<: *es-configuration
       CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "20m"
+        max-file: "5"
     volumes:
-      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
       - "/mnt/NASVolume/msa_alarmbulkfiles:/opt/sms/spool/alarms"
       - "/mnt/NASVolume/msa_alarmbulkfiles_err:/opt/sms/spool/alarms-error"
-    logging:
-      <<: *logging
     networks:
       default:
         aliases:
           - "msa_alarm"
 
   msa-monitoring:
-    image: openmsa/openmsa:msa2-monitoring-2.8.10_beta-fc0b2fcdc46f83beca5f189d942e31f647474d84
-    healthcheck:
-      timeout: 5s
-      retries: 10
-      interval: 10s
-      start_period: 30s
-      test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
       - db
+      - msa-es
       - msa-dev
-      - msa-api
+      - msa-sms
+    healthcheck:
+      test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
+    image: openmsa/openmsa:msa2-monitoring-2.8.11-beta-e1ad498063b6de3bf9176c9b575b182ad3c918f5
     environment:
       <<: *es-configuration
       CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "20m"
+        max-file: "5"
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
-      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
-      - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
-      - "/mnt/NASVolume/msa_bulkfiles_err:/opt/sms/spool/parser-error"
+      - "/mnt/NASVolume/msa_monitbulkfiles:/opt/sms/spool/parser"
+      - "/mnt/NASVolume/msa_monitbulkfiles_err:/opt/sms/spool/parser-error"
     deploy:
-      replicas: 1
+      replicas: 3
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
-    logging:
-      <<: *logging
     networks:
       default:
         aliases:
           - "msa_monitoring"
 
-  camunda:
+  msa-bud:
     depends_on:
       - db
-    image: openmsa/openmsa:msa2-camunda-2.8.10_beta-f8c348d51da5b64c996cd875ab9d2e365e7ce84f
+    image: openmsa/openmsa:msa2-bud-2.8.11-beta-ec466ed2a694255e6d40106fabb36d6d4cece19a
+    healthcheck:
+      test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
+    environment:
+      CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
     deploy:
       replicas: 1
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "20m"
+        max-file: "5"
+    networks:
+      default:
+        aliases:
+         - "msa_bud"
+
+  msa-cerebro:
+    image: openmsa/openmsa:msa2-cerebro-2.8.11-beta-20ee9b68766b7432a7faf20244d604393f6fdce4
+    environment:
+      AUTH_TYPE: basic
+      BASIC_AUTH_USER: cerebro
+      BASIC_AUTH_PWD: "N@X{M4tfw'5%)+35"
+    entrypoint:
+      - /opt/cerebro/bin/cerebro
+      - -Dhosts.0.host=http://msa_es:9200
+    depends_on:
+      - msa-es
+    ports:
+      - "9000:9000"
+    deploy:
+      replicas: 2
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==app"
-    environment:
-      DB_DRIVER: org.postgresql.Driver
-      DB_URL: 'jdbc:postgresql://db:5432/process-engine'
-      DB_USERNAME: camunda
-      DB_PASSWORD: camunda
-      DB_VALIDATE_ON_BORROW: 'true'
-      WAIT_FOR: 'db:5432'
-      WAIT_FOR_TIMEOUT: 60
-    logging:
-      <<: *logging
+          - "node.role==manager"
+    networks:
+      default:
+        aliases:
+          - "msa_cerebro"
 
   msa-kibana:
-    image: openmsa/openmsa:msa2-kibana-2.8.10_beta-46a9280639d973021a841c3792aed3948846d73a
+    image: openmsa/openmsa:msa2-kibana-2.8.11-beta-340fe34887a196ba9e2dcaf0304d231b4a4240a1
     ports:
       - "5601:5601"
     environment:
       ELASTICSEARCH_URL: "http://msa_es:9200"
       ELASTICSEARCH_HOSTS: "http://msa_es:9200"
       <<: *es-configuration
+    networks:
+      default:
+        aliases:
+          - "msa_kibana"
     deploy:
       replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==app"
+          - "node.role==manager"
     logging:
-      <<: *logging
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
+
+  msa-linux:
+    image: openmsa/openmsa:msa2-linuxme-2.8.11-beta-e84bc462bf01d4956c4a1895b66507d4ba47a227
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /usr/bin/install_libraries.sh || echo false"]
+    cap_add:
+      - sys_rawio
     networks:
       default:
         aliases:
-          - "msa_kibana"
+          - "msa_linux"
 
   msa-es:
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       interval: 60s
       start_period: 60s
-    image: openmsa/openmsa:msa2-es-2.8.10_beta-68c809af30fb22ed1b68c9ab9598132be2166875
+    image: openmsa/openmsa:msa2-es-2.8.11-beta-954493cf92829415426016cd5255d4ea7faf41b6
     deploy:
       replicas: 1
       placement:
         max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
     environment:
       discovery.type: "single-node"
       script.painless.regex.enabled: "true"
       bootstrap.memory_lock: "true"
-      xpack.security.enabled: "true"
-      ES_JAVA_OPTS: "-Xms512m -Xmx1024m"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
       <<: *es-configuration
     ulimits:
       memlock:
@@ -479,57 +558,37 @@ services:
     volumes:
      - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
     logging:
-      <<: *logging
-
-  msa-cerebro:
-    image: openmsa/openmsa:msa2-cerebro-2.8.10_beta-20ee9b68766b7432a7faf20244d604393f6fdce4
-    environment:
-      AUTH_TYPE: basic
-      BASIC_AUTH_USER: cerebro
-      BASIC_AUTH_PWD: "N@X{M4tfw'5%)+35"
-    entrypoint:
-      - /opt/cerebro/bin/cerebro
-      - -Dhosts.0.host=http://msa_es:9200
-    ports:
-      - "9000:9000"
-    deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
-    logging:
-      <<: *logging
-    networks:
-      default:
-        aliases:
-          - "msa_cerebro"
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
 
   msa-dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.8.10_beta-3074be64f1c26ec5f1371403bea372751cf245a7
+    image: openmsa/openmsa:msa2-linuxdev-2.8.11-beta-4a83165184950cdc0bf058f3c7d25819e1d37b86
+    depends_on:
+      - msa-es
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /usr/bin/install_libraries.sh || echo false"]
     deploy:
       replicas: 1
       placement:
-        max_replicas_per_node: 1
         constraints:
-          - "node.labels.worker==app"
+          - "node.role==manager"
     volumes:
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
+      - "/mnt/NASVolume/msa_api:/opt/ubi-jentreprise/generated/conf"
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_svn:/opt/svnroot"
-    logging:
-      <<: *logging
+      - "/mnt/NASVolume/msa_svn_ws:/opt/sms/spool/routerconfigs"
     networks:
       default:
         aliases:
           - "msa_dev"
 
-volumes:
-  msa_bulkfiles:
-  msa_monitbulkfiles:
-
 networks:
   default:
-    #driver_opts:
-      #encrypted: "true"
+#    driver_opts:
+#      encrypted: "true"
