@@ -20,7 +20,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:755a484b541956d60229d0b2c3c2b6aa16be7899
+    image: ubiqube/msa2-front:f8ed2924101246707703c384d3ffd85ae15cc083
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -99,7 +99,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:894e7b70639a7e36e2b60146fd8367c8ef7d180f
+    image: ubiqube/msa2-api:4542e838809605a68c1b97c2fedbd60f14bb4c0d
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -225,6 +225,7 @@ services:
     image: ubiqube/msa2-parse:e5a6a0322e7fb623187a883353985d23cc7f0c18
     environment:
       <<: *es-configuration
+      <<: *kafka-syslogs
     logging:
       driver: "json-file"
       options:
@@ -363,13 +364,15 @@ services:
     depends_on:
       - msa-parse
     image: ubiqube/msa2-rsyslog:a52168436059f888daef8ab304e17a7ebb7f79be
-    # environment:
+    environment:
       # enable omfwd acxtion type for syslog Forwarding Output Module
       # https://www.rsyslog.com/doc/v8-stable/configuration/modules/omfwd.html
       # default
       # ACTIONTYPE: "omfwd"
       # configure a specific port for TLS. Default is 6514
       # TLS_SYSLOG_PORT: 6514
+      ACTIONTYPE: "omkafka"
+      <<: *kafka-syslogs    
     ports:
       - target: 514
         published: 514
