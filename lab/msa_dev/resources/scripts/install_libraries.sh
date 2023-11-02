@@ -257,7 +257,7 @@ update_all_github_repo() {
 
     if [[ $install_type = "all" || $install_type = "py" ]];
     then
-        update_git_repo "https://github.com/openmsa/python-sdk.git" "/tmp/" "python_sdk" "develop" "" $TAG_PYTHON_SDK false
+        update_git_repo "https://github.com/openmsa/python-sdk.git" "/tmp/" "python_sdk" "master" "" $TAG_PYTHON_SDK false
     fi
 
 #    if [[ $install_type = "all" || $install_type = "quickstart" ]];
