@@ -15,7 +15,7 @@ x-logging: &logging
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.9.1-e87ac05b09165c8b49c9d2957799faf8a84b18fe
+    image: ubiqube/msa2-front:190181ae3e2477f79d42e338d1f7bc75f35d2b9a
     depends_on:
       - msa-api
       - msa-ui
