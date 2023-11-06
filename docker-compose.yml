@@ -299,7 +299,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: ubiqube/msa2-alarm:135bcaff0cd74255d183b5cd6eec6dee07a9ea0d
+    image: ubiqube/msa2-alarm:4b5a6df506d7c301900dc344934ada8a2fa56e81
     healthcheck:
       timeout: 5s
       retries: 10
