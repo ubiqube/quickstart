@@ -20,7 +20,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:0bb3ac093003d163eb94150fbcbf3df43137e1f6
+    image: ubiqube/msa2-front:26cb3e43539b78ed47240d23db41e8d296c025cc
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -327,7 +327,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: ubiqube/msa2-monitoring:e1ad498063b6de3bf9176c9b575b182ad3c918f5
+    image: ubiqube/msa2-monitoring:d27d6d0ce9caf666c4c826d9a541db2060e79142
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
