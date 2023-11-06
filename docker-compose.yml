@@ -277,7 +277,7 @@ services:
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: ubiqube/msa2-bud:ec466ed2a694255e6d40106fabb36d6d4cece19a
+    image: ubiqube/msa2-bud:4a4e54877ccb25ea2cdff99729ec4d0b713be193
     healthcheck:
       timeout: 5s
       retries: 10
