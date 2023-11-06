@@ -222,7 +222,7 @@ services:
       - msa-sms
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-    image: ubiqube/msa2-parse:e5a6a0322e7fb623187a883353985d23cc7f0c18
+    image: ubiqube/msa2-parse:758d5cd5729b182f9db8615808d169040f09400a
     environment:
       <<: [*es-configuration, *kafka-syslogs]
     logging:
