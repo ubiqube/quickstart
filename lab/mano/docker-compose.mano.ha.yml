@@ -1,6 +1,17 @@
 # vim:noai:ts=2:sw=2
 version: "3.8"
-                    
+
+x-placement: &placement
+  replicas: 1
+  placement:
+    max_replicas_per_node: 1
+    constraints:
+      - "node.labels.worker==app"
+
+x-es-config: &es-config
+  MANAGEMENT_ELASTIC_METRICS_EXPORT_USER_NAME: superuser
+  MANAGEMENT_ELASTIC_METRICS_EXPORT_PASSWORD: x^ZyuGM6~u=+fY2G
+              
 services:
   db:
     environment:
