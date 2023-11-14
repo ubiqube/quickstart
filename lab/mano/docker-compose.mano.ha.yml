@@ -49,7 +49,7 @@ services:
     volumes:
       - "mano_artemis:/var/lib/artemis-instance"
 
- mano-auth:
+  mano-auth:
     restart: unless-stopped
     image: docker.io/openmsa/mano-keycloak:3.2.0
     deploy:
