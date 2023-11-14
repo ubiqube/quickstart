@@ -11,7 +11,7 @@ x-placement: &placement
 x-es-config: &es-config
   MANAGEMENT_ELASTIC_METRICS_EXPORT_USER_NAME: superuser
   MANAGEMENT_ELASTIC_METRICS_EXPORT_PASSWORD: x^ZyuGM6~u=+fY2G
-              
+
 services:
   db:
     environment:
@@ -58,7 +58,7 @@ services:
         protocol: tcp
         mode: ingress
     volumes:
-      - "mano_artemis:/var/lib/artemis-instance"
+      - "/mnt/NASVolume/artemis-instance:/var/lib/artemis-instance"
 
   mano-auth:
     restart: unless-stopped
