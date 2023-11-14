@@ -522,8 +522,21 @@ services:
           mode: non-blocking
           max-buffer-size: "4m"
           max-size: "10m"
-          max-file: "5"           
+          max-file: "5"      
 
+mano-zipkin:
+    image: docker.io/openzipkin/zipkin
+    environment:
+      - STORAGE_TYPE=elasticsearch
+      - ES_HOSTS=http://msa-es:9200
+      - ES_USERNAME=superuser
+      - ES_PASSWORD=x^ZyuGM6~u=+fY2G
+    ports:
+      - target: 9411
+        published: 9411
+        protocol: tcp
+        mode: ingress
+        
 secrets:
   vnfm.keycloak.credentials.secret:
     external: true
