@@ -20,7 +20,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:84fb220c2b28169cb2b999b12dd221f4b5d7dd17
+    image: ubiqube/msa2-front:38e24e83e919686c545028d081579516e116b5a2
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -340,7 +340,10 @@ services:
       msa-sms:
         condition: service_started
     environment:
-      ES_MON: "yes"
+    # "yes" : ES + RRD
+    # "only" : ES only (no RRD)
+    # any other values ("no" is recommanded!) RRD only (no ES)
+      ES_MON: "no"
       <<: *es-configuration
     logging:
       <<: *logging
@@ -432,7 +435,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    image: openmsa/openmsa:msa2-camunda-2.8.10-4bd40043f46fa18830d349b481821689448d4949
+    image: ubiqube/msa2-camunda:d313b068adf0a1ee1c7cf0c7d9eba225297f420e
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
@@ -482,7 +485,7 @@ services:
   msa-cerebro:
     restart: unless-stopped
     container_name: msa_cerebro
-    image: openmsa/openmsa:msa2-cerebro-2.8.10-20fca37feb399b676963d531aaaab37b10588961
+    image: ubiqube/msa2-cerebro:8374160f95e2349711204189a3bf8a385f7252b5
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -505,7 +508,7 @@ services:
   msa-kibana:
     restart: unless-stopped
     container_name: msa_kibana
-    image: openmsa/openmsa:msa2-kibana-2.8.10-46a9280639d973021a841c3792aed3948846d73a
+    image: ubiqube/msa2-kibana:54e81a717d1f9aa7acc372643c6966e23b8b66fe
     depends_on:
       msa-es:
         condition: service_started
