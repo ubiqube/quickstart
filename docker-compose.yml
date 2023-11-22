@@ -20,7 +20,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:874a744dd8cf6802ac5ba177ea3889a56ba0ec1d
+    image: ubiqube/msa2-front:9f63031fa788a1db700569fcce3086708788c985
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -435,12 +435,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    image: ubiqube/msa2-camunda:d313b068adf0a1ee1c7cf0c7d9eba225297f420e
+    image: ubiqube/msa2-camunda:d95c1ded1750a35df6593fb5a8bcd376b4a76dd0
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
       DB_USERNAME: camunda
       DB_PASSWORD: camunda
+      DB_VALIDATION_QUERY: 'SELECT 1'
       DB_VALIDATE_ON_BORROW: 'true'
       WAIT_FOR: 'db:5432'
       WAIT_FOR_TIMEOUT: 60
