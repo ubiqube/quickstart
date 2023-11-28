@@ -20,7 +20,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:b0c615db55e84e9ba2ace0f91640e368ab0a9347
+    image: ubiqube/msa2-front:203c4838826eefd9f6f8c96573c4cf318a08d7b4
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -222,7 +222,7 @@ services:
       - msa-sms
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-    image: ubiqube/msa2-parse:dda41ee06a003995361dd7dff77afae005943b6d
+    image: ubiqube/msa2-parse:379cfb2abd6e2a2b6471463b23c195031dd0b7fe
     environment:
       <<: [*es-configuration, *kafka-syslogs]
     logging:
@@ -327,7 +327,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: ubiqube/msa2-monitoring:346ee0f20a6a9b17cae56b34f04f44771d1d0be6
+    image: ubiqube/msa2-monitoring:72658f501ad29982fdca2ce5e52a82b97800fd99
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
