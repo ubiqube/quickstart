@@ -64,7 +64,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: openmsa/openmsa:msa2-db-2.8.11_beta-74212229dbc6a909ad92a82ac62b50fdeec9d6fa
+    image: openmsa/openmsa:msa2-db-2.8.11_beta-939d8b3634db82302e03e2057e24db319a0c4a81
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
