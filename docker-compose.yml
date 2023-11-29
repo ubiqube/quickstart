@@ -16,7 +16,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.11_beta-4c9c96d734106d691ba1cddb3226fc2b04ebd0e1
+    image: openmsa/openmsa:msa2-front-2.8.11_beta-3727f269dd96b188797d7e85c5d9c0c989891d2b
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
