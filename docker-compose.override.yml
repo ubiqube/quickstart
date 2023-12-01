@@ -54,7 +54,7 @@ services:
 
 
   export-es-events:
-    image: ubiqube/export-es-events:2c5fa362f31e2f4cdf3d6039b4f9e46000b1aa84
+    image: ubiqube/export-es-events:6ac26bf0c15f347b71379ab7b4afc1e1b6cdc08a
     restart: always
     depends_on:
       msa-es:
