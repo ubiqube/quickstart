@@ -1,0 +1,81 @@
+version: "3.8"
+
+x-es-configuration: &es-configuration
+    ES_CREDENTIALS: c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+    ES_SERVERS: "msa-es"
+
+services:
+  msa-api:
+    ports:
+      - "8787:8787"
+    environment:
+      - LOGGING_LEVEL_ROOT=DEBUG
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8787
+  #   image: ubiqube/msa2-api:MSA-13282-2
+
+  #msa-ui:
+  #   image: ubiqube/msa2-ui:1c8cadbe6d1b97b692a0c8e1af6a82112061e0fd
+
+  #msa-front:
+  #   image: ubiqube/msa2-front:b51d8082376fa69cca6f06363cb5b5b92184cc02
+
+  # msa-ui:
+  #  environment:
+  #    - FEATURE_REPOFOLDERLIST=[\"Datafiles\",\"Documentation\",\"Firmware\",\"License\",\"Pki\"]
+  #    - FEATURE_HA_DISPLAY=true
+  #    - FEATURE_IMPORT_WITH_SAME_AND_UPPERRANK=false
+        #image: ubiqube/msa2-ui:9bb2cc4857ce3971c6b203fc4be8cbf3dd548ab6
+ #msa-front:
+ #   image: ubiqube/msa2-front:bb9e6f5d89be535c8253a8a1e8dafe23b1c70f3e
+
+ #msa-ui:
+ #  image: ubiqube/msa2-ui:741a05df1fda11543bb63813f01266b278992429
+  #msa-front:
+  # image: ubiqube/msa2-front:c9db4991086ec3edc25aace78d144a37875eaf2f
+
+        # msa-ui:
+        #image: ubiqube/msa2-ui:ff8d45fd26f13fe589eef49181ac146ffe064c3c
+
+  ntt-api:
+    image: ubiqube/nttsec-api:b5b29473275026a029097a1770f1da47bb9b3267
+    depends_on:
+      - msa-api
+    ports:
+      - "8580:8580"
+      - "8587:8587"
+    environment:
+      - LOGGING_LEVEL_ROOT=DEBUG
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8587
+      - NTT_RAPIDGATEWAY_API_URL=http://10.1.144.129:8080
+      - NTT_REMEDYGATEWAY_API_URL=http://10.1.144.129:8080
+
+        #msa-sms:
+        #  image: ubiqube/msa2-sms:host-hostname-2.8.10.2
+
+
+  export-es-events:
+    image: ubiqube/export-es-events:2c5fa362f31e2f4cdf3d6039b4f9e46000b1aa84
+    restart: always
+    depends_on:
+      msa-es:
+        condition: service_started
+    environment:
+      ELASTICSEARCH_URL: "http://msa_es:9200"
+      ELASTICSEARCH_HOSTS: "http://msa_es:9200"
+      #UBI_ES_RTCE_REMOTEACCESS: "ubiqube@10.1.144.244"
+      UBI_ES_RTCE_REMOTEACCESS: "ubique@10.31.1.57"
+      #UBI_ES_RTCE_REMOTE_PATH: "/dev/null"
+      UBI_ES_RTCE_REMOTE_PATH: "/data/logreplayUQ"
+      UBI_ES_RTCE_REMOTE_PERIOD: "1"
+      UBI_ES_NODE_ID: "es_msa"
+      UBI_ES_LOGINDEX_NAME: "ubilogs"
+      #UBI_SSH_PRIVATE_KEY: "/var/lib/docker/volumes/quickstart_msa_export-es-events/_data/conf/id_rsa_msa.125"
+      UBI_SSH_PRIVATE_KEY: "/var/lib/docker/volumes/quickstart_msa_export-es-events/_data/conf/id_rsa.58"
+      <<: *es-configuration
+
+    command: tail -f /dev/null
+    volumes:
+      - "msa_export-es-events:/opt/ubi-elasticsearch"
+    
+volumes:    
+  msa_export-es-events:
