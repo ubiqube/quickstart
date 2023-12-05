@@ -37,7 +37,7 @@ services:
         #image: ubiqube/msa2-ui:ff8d45fd26f13fe589eef49181ac146ffe064c3c
 
   ntt-api:
-    image: ubiqube/nttsec-api:b5b29473275026a029097a1770f1da47bb9b3267
+    image: ubiqube/nttsec-api:f82ccce24b9ff12f2c74f26963641762cb5ed6b6
     depends_on:
       - msa-api
     ports:
@@ -54,19 +54,19 @@ services:
 
 
   export-es-events:
-    image: ubiqube/export-es-events:8e6c5e8c5c574e205399395cb501b5c6253601d9
+    image: ubiqube/export-es-events:1fc2f74a2c08eddf90f34b355bacab0ffa3f780f
     restart: always
     depends_on:
       msa-es:
         condition: service_started
     environment:
-      ELASTICSEARCH_URL: "http://msa_es:9200"
-      ELASTICSEARCH_HOSTS: "http://msa_es:9200"
+      ELASTICSEARCH_URL: "msa_es:9200"
+      ELASTICSEARCH_HOSTS: "msa_es:9200"
       
       #for .125 MSA
       UBI_ES_RTCE_REMOTEACCESS: "ubiqube@10.1.144.244"
       UBI_ES_RTCE_REMOTE_PATH: "/data/logreplayUQ"
-      UBI_SSH_PRIVATE_KEY: "/opt/ubi-elasticsearch/conf/id_rsa.125"
+      UBI_SSH_PRIVATE_KEY: "/opt/ubi-elasticsearch/conf/id_rsa_msa.125"
       
       #For ubiqube lab .58
       #UBI_ES_RTCE_REMOTEACCESS: "ses@10.31.1.145"
