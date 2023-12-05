@@ -41,7 +41,7 @@ services:
 
   mano-vnfm:
     restart: unless-stopped
-    image: ubiqube/mano-vnfm-tm22:uat30
+    image: openmsa/mano-vnfm:3.2.1
     environment:
       - KEYCLOAK_CREDENTIALS_SECRET=XXXX
     depends_on:
@@ -60,7 +60,7 @@ services:
        
   mano-nfvo:
     restart: unless-stopped
-    image: ubiqube/mano-nfvo-tm22:uat30
+    image: openmsa/mano-nfvo:3.2.1
     environment:
       - KEYCLOAK_CREDENTIALS_SECRET=YYYY
     depends_on:
