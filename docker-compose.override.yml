@@ -54,7 +54,7 @@ services:
 
 
   export-es-events:
-    image: ubiqube/export-es-events:6ac26bf0c15f347b71379ab7b4afc1e1b6cdc08a
+    image: ubiqube/export-es-events:8e6c5e8c5c574e205399395cb501b5c6253601d9
     restart: always
     depends_on:
       msa-es:
@@ -62,15 +62,20 @@ services:
     environment:
       ELASTICSEARCH_URL: "http://msa_es:9200"
       ELASTICSEARCH_HOSTS: "http://msa_es:9200"
-      #UBI_ES_RTCE_REMOTEACCESS: "ubiqube@10.1.144.244"
-      UBI_ES_RTCE_REMOTEACCESS: "ubique@10.31.1.57"
-      #UBI_ES_RTCE_REMOTE_PATH: "/dev/null"
+      
+      #for .125 MSA
+      UBI_ES_RTCE_REMOTEACCESS: "ubiqube@10.1.144.244"
       UBI_ES_RTCE_REMOTE_PATH: "/data/logreplayUQ"
+      UBI_SSH_PRIVATE_KEY: "/opt/ubi-elasticsearch/conf/id_rsa.125"
+      
+      #For ubiqube lab .58
+      #UBI_ES_RTCE_REMOTEACCESS: "ses@10.31.1.145"
+      #UBI_ES_RTCE_REMOTE_PATH: "/home/ses"
+      #UBI_SSH_PRIVATE_KEY: "/opt/ubi-elasticsearch/conf/id_rsa.58"
+
       UBI_ES_RTCE_REMOTE_PERIOD: "1"
       UBI_ES_NODE_ID: "es_msa"
       UBI_ES_LOGINDEX_NAME: "ubilogs"
-      #UBI_SSH_PRIVATE_KEY: "/var/lib/docker/volumes/quickstart_msa_export-es-events/_data/conf/id_rsa_msa.125"
-      UBI_SSH_PRIVATE_KEY: "/var/lib/docker/volumes/quickstart_msa_export-es-events/_data/conf/id_rsa.58"
       <<: *es-configuration
 
     command: tail -f /dev/null
