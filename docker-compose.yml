@@ -20,7 +20,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:02fdd46ec903affe7d9430fbe195eba3977c5d05
+    image: ubiqube/msa2-front:b3429955084ef464c302c9b6529f8b86fea05ab9
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -69,7 +69,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: ubiqube/msa2-db:875fbaab38544225401874858f05bea8bc12eb69
+    image: ubiqube/msa2-db:87f830087ef7172f3d85405d29c91253442d6f5d
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -216,10 +216,14 @@ services:
     restart: unless-stopped
     container_name: msa_parse
     depends_on:
-      - db
-      - msa-es
-      - msa-dev
-      - msa-sms
+      db:
+        condition: service_healthy
+      msa-es:
+        condition: service_healthy
+      msa-dev:
+        condition: service_started
+      msa-sms:
+        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     image: ubiqube/msa2-parse:379cfb2abd6e2a2b6471463b23c195031dd0b7fe
@@ -245,9 +249,12 @@ services:
     restart: unless-stopped
     container_name: msa_snmptrap
     depends_on:
-      - db
-      - msa-es
-      - msa-dev
+      db:
+        condition: service_healthy
+      msa-es:
+        condition: service_started
+      msa-dev:
+        condition: service_started
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     image: ubiqube/msa2-snmptrap:5274de187bccc5638ece7b3c115bf499dd5585e4
@@ -327,7 +334,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: ubiqube/msa2-monitoring:71bc069d5728ed9ef74fc1a69db4315139bd8348
+    image: ubiqube/msa2-monitoring:b3d2c289de5f25bed5033598a52dee0c2a250691
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -365,6 +372,7 @@ services:
     container_name: msa_rsyslog
     depends_on:
       - msa-parse
+      - kafka
     image: ubiqube/msa2-rsyslog:ce35fbb9c7441f1c4041af6e431a0cfae2809785
     environment:
       # enable omfwd acxtion type for syslog Forwarding Output Module
@@ -420,7 +428,7 @@ services:
   msa-broker:
     restart: unless-stopped
     container_name: msa_broker
-    image: ubiqube/msa2-broker:07fe57805fa6697bb991cf7d865aa645c96f2ed8
+    image: ubiqube/msa2-broker:4725a0b2c9a64ab0df2295ce5d76e928bed0255e
     depends_on:
       - db
     environment:
