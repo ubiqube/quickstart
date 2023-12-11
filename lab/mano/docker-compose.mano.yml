@@ -1,19 +1,56 @@
+# vim:noai:ts=2:sw=2
 version: "3.8"
+
+x-placement: &placement
+  replicas: 1
+  placement:
+    max_replicas_per_node: 1
+    constraints:
+      - "node.labels.worker==app"
+
+x-es-config: &es-config
+  MANAGEMENT_ELASTIC_METRICS_EXPORT_USER_NAME: superuser
+  MANAGEMENT_ELASTIC_METRICS_EXPORT_PASSWORD: x^ZyuGM6~u=+fY2G
+  MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://mano-zipkin:9411/api/v2/spans
 
 services:
   db:
     restart: unless-stopped
     environment:
+      MANO_USER: mano
+      MANO_PASSWORD: mano
       MANOVNFM_USER: mano_vnfm
       MANOVNFM_PASSWORD: mano
       MANONFVO_USER: mano_nfvo
       MANONFVO_PASSWORD: mano
+      MANOEM_USER: mano_em
+      MANOEM_PASSWORD: mano
       KEYCLOAK_USER: keycloak
-      KEYCLAOK_PASSWORD: keycloak
+      KEYCLOAK_PASSWORD: keycloak
+      KEYCLOAK_DB: keycloak
     networks:
       default:
         aliases:
           - "mano-db"
+
+  mano-alarm:
+    restart: unless-stopped
+    image: docker.io/openmsa/mano-alarm:3.2.1
+    depends_on:
+      - db
+    environment:
+      <<: *es-config
+    healthcheck:
+      test: curl --fail http://localhost:8080/actuator/health
+      interval: 1m
+      timeout: 10s
+      retries: 5
+      start_period: 1m
+    ports:
+      - target: 8080
+        published: 8120
+        protocol: tcp
+        mode: ingress
 
   mano-artemis:
     restart: unless-stopped
@@ -21,43 +58,81 @@ services:
 
   mano-auth:
     restart: unless-stopped
-    image: jboss/keycloak:16.1.1
+    image: docker.io/ubiqube/mano-keycloak:3.2.0.1
     environment:
+      # Unused?
       KEYCLOAK_USER: admin
+      # Unused?
       KEYCLOAK_PASSWORD: ubiqube
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: ubiqube
       DB_VENDOR: postgres
       DB_ADDR: mano-db
       POSTGRES_ADDR: mano-db
       DB_USER: keycloak
       DB_PASSWORD: keycloak
+    healthcheck:
+      test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8080'
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 1m
     ports:
       - target: 8080
         published: 8110
         protocol: tcp
         mode: ingress
 
-  mano-helm3:
-    image: ubiqube/helm3-webapp
-
-  mano-vnfm:
-    restart: unless-stopped
-    image: ubiqube/mano-vnfm-tm22:uat30
-    environment:
-      - KEYCLOAK_CREDENTIALS_SECRET=XXXX
-    depends_on:
-      - db
-    volumes:
-      - "mano_vnfm:/opt/etsi-mano-data"
-    ports:
-      - target: 8080
-        published: 8090
-        protocol: tcp
-        mode: ingress
+  msa-es:
     networks:
       default:
         aliases:
-          - "mano_vnfm"
-       
+          - "msa_es"
+          - "mano-es"
+
+  mano-helm3:
+    image: docker.io/ubiqube/mano-helm3:3.1.0
+    deploy:
+      <<: *placement
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 2048M
+        reservations:
+          cpus: '0.50'
+          memory: 2048M
+
+  mano-logstash:
+    image: docker.elastic.co/logstash/logstash:7.17.9
+    healthcheck:
+      test: curl --fail http://localhost:9600/
+      interval: 1m
+      timeout: 10s
+      retries: 5
+      start_period: 1m
+    ports:
+      - "5000:5000"
+    volumes:
+      - "./lab/mano/logstash/pipeline:/usr/share/logstash/pipeline"
+      - "./lab/mano/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml"
+
+  mano-juju:
+    image: docker.io/openmsa/mano-juju:1.0.0
+
+  mano-mon:
+    image: openmsa/mano-mon:3.2.0
+    depends_on:
+      - db
+    environment:
+      <<: *es-config
+      _JAVA_OPTIONS: -Xmx512m
+    healthcheck:
+      test: curl --fail http://localhost:8080/actuator/health
+      interval: 1m
+      timeout: 10s
+      retries: 5
+      start_period: 1m
+
   mano-nfvo:
     restart: unless-stopped
     image: ubiqube/mano-nfvo-tm22:uat30
@@ -65,6 +140,11 @@ services:
       - KEYCLOAK_CREDENTIALS_SECRET=YYYY
     depends_on:
       - db
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8080/ubi-etsi-mano/"]
+      timeout: 240s
+      interval: 30s
+      retries: 5
     volumes:
       - "mano_nfvo:/opt/etsi-mano-data"
     ports:
@@ -77,6 +157,54 @@ services:
         aliases:
           - "mano_nfvo"
 
+  mano-vnfm:
+    restart: unless-stopped
+    image: ubiqube/mano-vnfm-tm22:uat30
+    environment:
+      - KEYCLOAK_CREDENTIALS_SECRET=XXXX
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8080/ubi-etsi-mano/"]
+      timeout: 240s
+      interval: 30s
+      retries: 5
+    volumes:
+      - "mano_vnfm:/opt/etsi-mano-data"
+    ports:
+      - target: 8080
+        published: 8090
+        protocol: tcp
+        mode: ingress
+    networks:
+      default:
+        aliases:
+          - "mano_vnfm"
+
+  mano-zipkin:
+    image: docker.io/openzipkin/zipkin
+    environment:
+      - STORAGE_TYPE=elasticsearch
+      - ES_HOSTS=http://msa-es:9200
+      - ES_USERNAME=superuser
+      - ES_PASSWORD=x^ZyuGM6~u=+fY2G
+    ports:
+      - target: 9411
+        published: 9411
+        protocol: tcp
+        mode: ingress
+        
+secrets:
+  vnfm.keycloak.credentials.secret:
+    external: true
+  nfvo.keycloak.credentials.secret:
+    external: true
+  vnfm_ngv.keycloak.credentials.secret:
+    external: true
+  vnfm_lab_tc_ubi.keycloak.credentials.secret:
+    external: true
+  nfvo_lab_tc_ubi.keycloak.credentials.secret:
+    external: true
 volumes:
   mano_nfvo:
   mano_vnfm:
