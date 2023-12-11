@@ -1,27 +1,42 @@
 # vim:noai:ts=2:sw=2
 version: "3.8"
-                    
+
+x-placement: &placement
+  replicas: 1
+  placement:
+    max_replicas_per_node: 1
+    constraints:
+      - "node.labels.worker==app"
+
+x-es-config: &es-config
+  MANAGEMENT_ELASTIC_METRICS_EXPORT_USER_NAME: superuser
+  MANAGEMENT_ELASTIC_METRICS_EXPORT_PASSWORD: x^ZyuGM6~u=+fY2G
+
 services:
   db:
-    networks:
-      default:
-        aliases:
-          - "mano-db"
     environment:
       MANOVNFM_USER: mano_vnfm
       MANOVNFM_PASSWORD: mano
       MANONFVO_USER: mano_nfvo
       MANONFVO_PASSWORD: mano
       KEYCLOAK_USER: keycloak
-      KEYCLAOK_PASSWORD: keycloak
+      KEYCLOAK_PASSWORD: keycloak
+      KEYCLOAK_DB: keycloak
+    networks:
+      default:
+        aliases:
+          - "mano-db"
 
   mano-artemis:
+    restart: unless-stopped
     image: openmsa/artemis:2.19.0
+    depends_on:
+      - db
     deploy:
       replicas: 1
-      placement:	
+      placement:
         max_replicas_per_node: 1
-        constraints:	
+        constraints:
           - "node.labels.worker==app"
       resources:
         limits:
@@ -30,6 +45,21 @@ services:
         reservations:
           cpus: '0.50'
           memory: 2048M
+    environment:
+      ARTEMIS_PASSWORD: simetraehcapa
+      ARTEMIS_USER: artemis
+    ports:
+      - target: 8161
+        published: 8161
+        protocol: tcp
+        mode: ingress
+      - target: 61616
+        published: 61616
+        protocol: tcp
+        mode: ingress
+    volumes:
+      - "/mnt/NASVolume/artemis-instance:/var/lib/artemis-instance"
+
 
   mano-auth:
     image: jboss/keycloak:16.1.1
@@ -59,33 +89,62 @@ services:
         published: 8110
         protocol: tcp
         mode: ingress
+    networks:
+      default:
+        aliases:
+          - "mano_auth"
 
-  mano-helm3:
-    image: ubiqube/helm3-webapp
+  msa-es:
+    networks:
+      default:
+        aliases:
+          - "msa_es"
+          - "mano-es"
+
+  mano-logstash:
+    image: docker.elastic.co/logstash/logstash:7.17.9
+    healthcheck:
+      test: curl --fail http://localhost:9600/
+      interval: 1m
+      timeout: 10s
+      retries: 5
+      start_period: 1m
+    ports:
+      - "5000:5000"
+    volumes:
+      - "./lab/mano/logstash/pipeline:/usr/share/logstash/pipeline"
+      - "./lab/mano/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml"
+
+  mano-mon:
+    image: openmsa/mano-mon:3.2.0
+    depends_on:
+      - db
+    environment:
+      <<: *es-config
+      _JAVA_OPTIONS: -Xmx512m
+    healthcheck:
+      test: curl --fail http://localhost:8080/actuator/health
+      interval: 1m
+      timeout: 10s
+      retries: 5
+      start_period: 1m
+
+  mano-nfvo:
+    image: ubiqube/mano-nfvo-tm22:uat30
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8080/ubi-etsi-mano/"]
+      timeout: 240s
+      interval: 30s
+      retries: 5
+    volumes:
+      - "/mnt/NASVolume/mano_nfvo:/opt/etsi-mano-data"
     deploy:
       replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
-          - node.role==worker
-      resources:
-        limits:
-          cpus: '0.25'
-          memory: 1022M
-        reservations:
-          cpus: '0.25'
-          memory: 1024M
-
-
-  mano-nfvo:
-    image: ubiqube/mano-nfvo-tm22:uat30
-    volumes:
-      - "/mnt/NASVolume/mano_nfvo:/opt/etsi-mano-data"
-    deploy:
-      replicas: 1
-      placement:	
-        max_replicas_per_node: 1
-        constraints:	
           - "node.labels.worker==app"
     ports:
       - target: 8080
@@ -95,16 +154,101 @@ services:
     secrets:
       - source: vnfm.keycloak.credentials.secret
         target: keycloak.credentials.secret
+    networks:
+      default:
+        aliases:
+          - "mano_nfvo"
+
+  mano-nfvo-tc:
+    image: ubiqube/mano-nfvo-tm22:uat30
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8080/ubi-etsi-mano/"]
+      timeout: 240s
+      interval: 30s
+      retries: 5
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/mnt/NASVolume/mano_nfvo_tc:/opt/etsi-mano-data"
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
+    ports:
+      - target: 8080
+        published: 8120
+        protocol: tcp
+        mode: ingress
+    secrets:
+      - source: vnfm.keycloak.credentials.secret
+        target: keycloak.credentials.secret
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_nfvo_tc
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
+
+  mano-nfvo-ngv:
+    image: ubiqube/mano-nfvo-tm22:uat30
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8080/ubi-etsi-mano/"]
+      timeout: 240s
+      interval: 30s
+      retries: 5
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/mnt/NASVolume/mano_nfvo_tc:/opt/etsi-mano-data"
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
+    ports:
+      - target: 8080
+        published: 8121
+        protocol: tcp
+        mode: ingress
+    secrets:
+      - source: vnfm_ngv.keycloak.credentials.secret
+        target: keycloak.credentials.secret
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_nfvo_ngv
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
 
   mano-vnfm:
     image: ubiqube/mano-vnfm-tm22:uat30
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8080/ubi-etsi-mano/"]
+      timeout: 240s
+      interval: 30s
+      retries: 5
     volumes:
       - "/mnt/NASVolume/mano_vnfm:/opt/etsi-mano-data"
     deploy:
       replicas: 1
-      placement:	
+      placement:
         max_replicas_per_node: 1
-        constraints:	
+        constraints:
           - "node.labels.worker==app"
     ports:
       - target: 8080
@@ -114,9 +258,312 @@ services:
     secrets:
       - source: nfvo.keycloak.credentials.secret
         target: keycloak.credentials.secret
+    networks:
+      default:
+        aliases:
+          - "mano_vnfm"
+
+  mano-vnfm-tc:
+    image: ubiqube/mano-vnfm-tm22:uat30
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8080/ubi-etsi-mano/"]
+      timeout: 240s
+      interval: 30s
+      retries: 5
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/mnt/NASVolume/mano_vnfm_tc:/opt/etsi-mano-data"
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
+    ports:
+      - target: 8080
+        published: 8130
+        protocol: tcp
+        mode: ingress
+    secrets:
+      - source: nfvo.keycloak.credentials.secret
+        target: keycloak.credentials.secret
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_vnfm_tc
+      - MANO_FRONTEND_URL=http://mano-vnfm-tc:8080/ubi-etsi-mano/sol003
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
+
+  mano-nfvo-lab-tc-ubi:
+    image: openmsa/mano-nfvo:3.2.1
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8080/nfvo-webapp/"]
+      timeout: 240s
+      interval: 30s
+      retries: 5
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/mnt/NASVolume/mano_nfvo_lab_tc_ubi:/opt/etsi-mano-data"
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
+    ports:
+      - target: 8080
+        published: 8122
+        protocol: tcp
+        mode: ingress
+    secrets:
+      - source: vnfm.keycloak.credentials.secret
+        target: keycloak.credentials.secret
+    environment:
+      <<: *es-config
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://mano-zipkin:9411/api/v2/spans
+      MANO_FRONTEND_URL: http://mano-nfvo-lab-tc-ubi:8080/nfvo-webapp/sol003
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_DATASOURCE_PASSWORD: mano
+      SPRING_DATASOURCE_URL: jdbc:postgresql://mano-db:5432/mano_nfvo_lab_tc_ubi
+      SPRING_DATASOURCE_USERNAME: mano_nfvo
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      _JAVA_OPTIONS: -Xmx4g
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
+
+  mano-vnfm-lab-tc-ubi:
+    image: openmsa/mano-vnfm:3.2.1
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8080/vnfm-webapp/"]
+      timeout: 240s
+      interval: 30s
+      retries: 5
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/mnt/NASVolume/mano_vnfm_lab_tc_ubi:/opt/etsi-mano-data"
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
+    ports:
+      - target: 8080
+        published: 8132
+        protocol: tcp
+        mode: ingress
+    secrets:
+      - source: nfvo.keycloak.credentials.secret
+        target: keycloak.credentials.secret
+    environment:
+      <<: *es-config
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://mano-zipkin:9411/api/v2/spans
+      MANO_FRONTEND_URL: http://mano-vnfm-lab-tc-ubi:8080/vnfm-webapp/sol003
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_DATASOURCE_PASSWORD: mano
+      SPRING_DATASOURCE_PASSWORD: mano
+      SPRING_DATASOURCE_URL: jdbc:postgresql://mano-db:5432/mano_vnfm_lab_tc_ubi
+      SPRING_DATASOURCE_USERNAME: mano_vnfm
+      SPRING_DATASOURCE_USERNAME: mano_vnfm
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      _JAVA_OPTIONS: -Xmx4g
+    logging:
+      driver: "json-file"
+      options:
+        mode: non-blocking
+        max-buffer-size: "4m"
+        max-size: "10m"
+        max-file: "5"
+
+  mano-nfvo-lab-tc-ubi-wi:
+      image: ubiqube/mano-nfvo-tm22:uat30
+      depends_on:
+        - db
+      healthcheck:
+        test: ["CMD-SHELL", "curl --fail http://localhost:8080/ubi-etsi-mano/"]
+        timeout: 240s
+        interval: 30s
+        retries: 5
+      volumes:
+        - "/etc/timezone:/etc/timezone:ro"
+        - "/etc/localtime:/etc/localtime:ro"
+        - "/mnt/NASVolume/mano_nfvo_lab-tc-ubi-wi:/opt/etsi-mano-data"
+      deploy:
+        replicas: 1
+        placement:
+          max_replicas_per_node: 1
+          constraints:
+            - "node.labels.worker==app"
+      ports:
+        - target: 8080
+          published: 8133
+          protocol: tcp
+          mode: ingress
+      secrets:
+        - source: vnfm.keycloak.credentials.secret
+          target: keycloak.credentials.secret
+      environment:
+        - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_nfvo_lab_tc_ubi_wi
+      logging:
+        driver: "json-file"
+        options:
+          mode: non-blocking
+          max-buffer-size: "4m"
+          max-size: "10m"
+          max-file: "5"
+
+  mano-vnfm-lab-tc-ubi-wi:
+      image: ubiqube/mano-vnfm-tm22:uat30
+      depends_on:
+        - db
+      healthcheck:
+        test: ["CMD-SHELL", "curl --fail http://localhost:8080/ubi-etsi-mano/"]
+        timeout: 240s
+        interval: 30s
+        retries: 5
+      volumes:
+        - "/etc/timezone:/etc/timezone:ro"
+        - "/etc/localtime:/etc/localtime:ro"
+        - "/mnt/NASVolume/mano_vnfm_lab-tc-ubi-wi:/opt/etsi-mano-data"
+      deploy:
+        replicas: 1
+        placement:
+          max_replicas_per_node: 1
+          constraints:
+            - "node.labels.worker==app"
+      ports:
+        - target: 8080
+          published: 8134
+          protocol: tcp
+          mode: ingress
+      secrets:
+        - source: nfvo.keycloak.credentials.secret
+          target: keycloak.credentials.secret
+      environment:
+        - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_vnfm_lab_tc_ubi_wi
+        - MANO_FRONTEND_URL=http://mano-vnfm-lab-tc-ubi-wi:8080/ubi-etsi-mano/sol003
+      logging:
+        driver: "json-file"
+        options:
+          mode: non-blocking
+          max-buffer-size: "4m"
+          max-size: "10m"
+          max-file: "5"
+
+  mano-nfvo-labtcsim:
+        image: ubiqube/mano-nfvo-tm22:uat30
+        depends_on:
+          - db
+        healthcheck:
+          test: ["CMD-SHELL", "curl --fail http://localhost:8080/ubi-etsi-mano/"]
+          timeout: 240s
+          interval: 30s
+          retries: 5
+        volumes:
+          - "/etc/timezone:/etc/timezone:ro"
+          - "/etc/localtime:/etc/localtime:ro"
+          - "/mnt/NASVolume/mano_nfvo_labtcsim:/opt/etsi-mano-data"
+        deploy:
+          replicas: 1
+          placement:
+            max_replicas_per_node: 1
+            constraints:
+              - "node.labels.worker==app"
+        ports:
+          - target: 8080
+            published: 8144
+            protocol: tcp
+            mode: ingress
+        secrets:
+          - source: vnfm.keycloak.credentials.secret
+            target: keycloak.credentials.secret
+        environment:
+          - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_nfvo_labtcsim
+        logging:
+          driver: "json-file"
+          options:
+            mode: non-blocking
+            max-buffer-size: "4m"
+            max-size: "10m"
+            max-file: "5"
+
+  mano-vnfm-labtcsim:
+      image: ubiqube/mano-vnfm-tm22:uat30
+      depends_on:
+        - db
+      healthcheck:
+        test: ["CMD-SHELL", "curl --fail http://localhost:8080/ubi-etsi-mano/"]
+        timeout: 240s
+        interval: 30s
+        retries: 5
+      volumes:
+        - "/etc/timezone:/etc/timezone:ro"
+        - "/etc/localtime:/etc/localtime:ro"
+        - "/mnt/NASVolume/mano_vnfm_labtcsim:/opt/etsi-mano-data"
+      deploy:
+        replicas: 1
+        placement:
+          max_replicas_per_node: 1
+          constraints:
+            - "node.labels.worker==app"
+      ports:
+        - target: 8080
+          published: 8155
+          protocol: tcp
+          mode: ingress
+      secrets:
+        - source: nfvo.keycloak.credentials.secret
+          target: keycloak.credentials.secret
+      environment:
+        - SPRING_DATASOURCE_URL=jdbc:postgresql://mano-db:5432/mano_vnfm_labtcsim
+        - MANO_FRONTEND_URL=http://mano-vnfm-labtcsim:8080/ubi-etsi-mano/sol003
+      logging:
+        driver: "json-file"
+        options:
+          mode: non-blocking
+          max-buffer-size: "4m"
+          max-size: "10m"
+          max-file: "5"
+
+  mano-zipkin:
+    image: docker.io/openzipkin/zipkin
+    environment:
+      - STORAGE_TYPE=elasticsearch
+      - ES_HOSTS=http://msa-es:9200
+      - ES_USERNAME=superuser
+      - ES_PASSWORD=x^ZyuGM6~u=+fY2G
+    ports:
+      - target: 9411
+        published: 9411
+        protocol: tcp
+        mode: ingress
 
 secrets:
   vnfm.keycloak.credentials.secret:
     external: true
   nfvo.keycloak.credentials.secret:
+    external: true
+  vnfm_ngv.keycloak.credentials.secret:
+    external: true
+  vnfm_lab_tc_ubi.keycloak.credentials.secret:
+    external: true
+  nfvo_lab_tc_ubi.keycloak.credentials.secret:
     external: true
