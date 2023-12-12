@@ -447,8 +447,6 @@ services:
     ports:
       - "9300:9300"
       - "9200:9200"
-      - "9300:9300/udp"
-      - "9200:9200/udp"
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
