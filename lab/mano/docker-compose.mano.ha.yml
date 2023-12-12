@@ -34,7 +34,7 @@ services:
 
   mano-alarm:
     restart: unless-stopped
-    image: nexus.ubiqube.com/openmsa/mano-alarm-oci-ci:latest
+    image: docker.io/openmsa/mano-alarm:3.2.1
     depends_on:
       - db
     environment:
@@ -83,7 +83,7 @@ services:
           memory: 2048M
 
   mano-auth:
-    image: docker.io/ubiqube/mano-keycloak:latest
+    image: docker.io/ubiqube/mano-keycloak:3.2.0.1
     deploy:
       replicas: 1
       placement:
