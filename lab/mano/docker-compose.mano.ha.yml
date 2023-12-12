@@ -89,7 +89,7 @@ services:
         max-file: "5"
 
   mano-auth:
-    image: docker.io/ubiqube/mano-keycloak:3.2.0.1
+    image: docker.io/openmsa/mano-keycloak:3.2.0.1
     deploy:
       replicas: 1
       placement:
@@ -132,7 +132,7 @@ services:
           - "mano-es"
 
   mano-helm3:
-    image: docker.io/ubiqube/mano-helm3:3.1.0
+    image: docker.io/openmsa/mano-helm3:3.1.0
     deploy:
       <<: *placement
       resources:
