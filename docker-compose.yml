@@ -20,7 +20,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:b7ab718d7fabea47e52c5038f293913cde1b8a2c
+    image: ubiqube/msa2-front:847ffa07ab5b9c361f3c44333d2a6801ea44db8d
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -69,7 +69,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: ubiqube/msa2-db:2cc46f4468995ae2b0da3c3bdff4ee1247a36ca4
+    image: ubiqube/msa2-db:ffa6c87f8ca10d352b5b47c048cc8db913048021
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -169,7 +169,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:cb9fb769b59ce548c91e3e9ddf853e0f003cc22a
+    image: ubiqube/msa2-sms:a0f7339b454f140b52fb20d0239ede154c78270a
     healthcheck:
       timeout: 5s
       retries: 10
@@ -215,6 +215,7 @@ services:
   msa-parse:
     restart: unless-stopped
     container_name: msa_parse
+    image: ubiqube/msa2-parse:4e9c84235f9dd9fa331914157a0c7861be43b2fc
     depends_on:
       db:
         condition: service_healthy
@@ -226,7 +227,6 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-    image: ubiqube/msa2-parse:2ab3cdca75c2947353a70fd5eeed641d6a2707d9
     environment:
       <<: [*es-configuration, *kafka-syslogs]
     logging:
@@ -248,6 +248,7 @@ services:
   msa-snmptrap:
     restart: unless-stopped
     container_name: msa_snmptrap
+    image: ubiqube/msa2-snmptrap:291c318fdb314e9abd12e30746a95ab9eaf2c247
     depends_on:
       db:
         condition: service_healthy
@@ -257,7 +258,6 @@ services:
         condition: service_started
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-    image: ubiqube/msa2-snmptrap:29128d04222fba53b15f0fb2482be4a17348ea37
     environment:
       <<: *es-configuration
     ports:
@@ -306,7 +306,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: ubiqube/msa2-alarm:12f0e9bd9526f8f6c6668499374c5a966a959a95
+    image: ubiqube/msa2-alarm:3d43c862ab10c421e2ff1fe118c1b1aa51d05edc
     healthcheck:
       timeout: 5s
       retries: 10
