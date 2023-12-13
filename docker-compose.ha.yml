@@ -198,6 +198,9 @@ services:
     - FEATURE_HA_DISPLAY=true
     - FEATURE_IMPORT_WITH_SAME_AND_UPPERRANK=false
     - FEATURE_IMPORT_WITH_UPPERRANK=false
+    - FEATURE_ENABLE_GLOBAL_SEARCH=false
+    - FEATURE_ENABLE_MANAGER_LOGOUT=false
+    - FEATURE_INCIDENT_TICKET_MANAGEMENT=true
     logging:
       <<: *logging
     networks:
