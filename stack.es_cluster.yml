@@ -7,7 +7,7 @@ x-es-configuration: &es-configuration
 
 services:
   msa_front:
-    image: openmsa/openmsa:msa2-front-2.8.11_beta-76985e96eefc21d5341f6c7001ac2d5f8de3018d
+    image: openmsa/openmsa:msa2-front-2.8.11_beta-483488387d4ace7331d9e40ab06c918672f9db58
     depends_on:
       - msa_api
       - msa_ui
@@ -59,7 +59,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.8.11_beta-2cc46f4468995ae2b0da3c3bdff4ee1247a36ca4
+    image: openmsa/openmsa:msa2-db-2.8.11_beta-ffa6c87f8ca10d352b5b47c048cc8db913048021
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -88,7 +88,7 @@ services:
         condition: on-failure
 
   msa_api:
-    image: openmsa/openmsa:msa2-api-2.8.11_beta-0455e6168498cf2c0fa71e29ca67af7648fe4bf5
+    image: openmsa/openmsa:msa2-api-2.8.11_beta-df6c6419895e55d32a71d9e7bf312811e006948e
     depends_on:
       - db
     healthcheck:
@@ -114,7 +114,7 @@ services:
         aliases:
           - "msa-api"
   msa_ui:
-    image: openmsa/openmsa:msa2-ui-2.8.11_beta-3ea7414f65f8c9387bffdde87959a1dadc90f395
+    image: openmsa/openmsa:msa2-ui-2.8.11_beta-f053d4ec5a89de8f941b6c150316761f12f3a820
     depends_on:
       - msa_api
     healthcheck:
@@ -141,7 +141,7 @@ services:
     - FEATURE_PERMISSION_PROFILE_LABELS=false
 
   msa_sms:
-    image: openmsa/openmsa:msa2-sms-2.8.11_beta-cb9fb769b59ce548c91e3e9ddf853e0f003cc22a
+    image: openmsa/openmsa:msa2-sms-2.8.11_beta-a0f7339b454f140b52fb20d0239ede154c78270a
     depends_on:
       - db
     healthcheck:
@@ -161,7 +161,7 @@ services:
         max_replicas_per_node: 1
 
   msa_bud:
-    image: openmsa/openmsa:msa2-bud-2.8.11_beta-a1f1a06c246caaae1e386531a7fe68b2e1d1d0b8
+    image: openmsa/openmsa:msa2-bud-2.8.11_beta-0f1726a8f27d4f789e06fcbf5e3129486734f645
     depends_on:
       - db
     deploy:
@@ -173,7 +173,7 @@ services:
     depends_on:
       - db
       - msa_api
-    image: openmsa/openmsa:msa2-alarm-2.8.11_beta-12f0e9bd9526f8f6c6668499374c5a966a959a95
+    image: openmsa/openmsa:msa2-alarm-2.8.11_beta-12dee3d8e5cd243409edf5a2b438e84e09483ef5
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -186,7 +186,7 @@ services:
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
 
   msa_monitoring:
-    image: openmsa/openmsa:msa2-monitoring-2.8.11_beta-5ffb3cc801f43c02bf39d01e6e0101467f0e0306
+    image: openmsa/openmsa:msa2-monitoring-2.8.11_beta-a3e826a1025e3b7130705188f59bcb5de5c9a762
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
