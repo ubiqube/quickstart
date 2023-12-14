@@ -47,7 +47,7 @@ services:
       start_period: 1m
     ports:
       - target: 8080
-        published: 8120
+        published: 9120
         protocol: tcp
         mode: ingress
 
