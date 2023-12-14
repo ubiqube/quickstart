@@ -34,7 +34,7 @@ services:
 
   mano-alarm:
     restart: unless-stopped
-    image: docker.io/openmsa/mano-alarm:3.2.1
+    image: docker.io/openmsa/mano-alarm-oci-ci:latest
     depends_on:
       - db
     environment:
@@ -122,7 +122,7 @@ services:
           - "mano-es"
 
   mano-helm3:
-    image: docker.io/ubiqube/mano-helm3:3.1.0
+    image: docker.io/openmsa/mano-helm3:3.1.0
     deploy:
       <<: *placement
       resources:
