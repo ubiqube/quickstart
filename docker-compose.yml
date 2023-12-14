@@ -183,6 +183,7 @@ services:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
       <<: *es-configuration
+    - CHECK_SIGNATURES_FORTIWAF=true
     cap_add:
       - NET_ADMIN
     depends_on:
