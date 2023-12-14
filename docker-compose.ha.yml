@@ -257,6 +257,7 @@ services:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
       <<: *es-configuration
+    - CHECK_SIGNATURES_FORTIWAF=true
       CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
       HOST_HOSTNAME: "{{.Node.Hostname}}"
     volumes:
