@@ -151,7 +151,7 @@ services:
     image: docker.io/openmsa/mano-juju:1.0.0
 
   mano-mon:
-    image: openmsa/mano-mon:3.2.0
+    image: openmsa/mano-mon:3.2.0.1
     depends_on:
       - db
     environment:
