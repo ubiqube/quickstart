@@ -156,6 +156,9 @@ services:
       - db
     environment:
       <<: *es-config
+      SPRING_DATASOURCE_USERNAME: mano_mon
+      SPRING_DATASOURCE_PASSWORD: mano
+      SPRING_DATASOURCE_URL: jdbc:postgresql://mano-db/mano_mon
       _JAVA_OPTIONS: -Xmx512m
     healthcheck:
       test: curl --fail http://localhost:8080/actuator/health
