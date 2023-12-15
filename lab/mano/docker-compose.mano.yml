@@ -35,7 +35,7 @@ services:
 
   mano-alarm:
     restart: unless-stopped
-    image: docker.io/openmsa/mano-alarm:3.2.1
+    image: openmsa/mano-alarm-oci-ci:latest
     depends_on:
       - db
     environment:
