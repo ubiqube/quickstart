@@ -115,7 +115,7 @@ services:
       - "5000:5000"
     volumes:
       - "./lab/mano/logstash/pipeline:/usr/share/logstash/pipeline"
-      - "./lab/mano/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml"
+      - "./lab/mano/logstash/config:/usr/share/logstash/config"
 
   mano-juju:
     image: openmsa/mano-juju:1.0.0
