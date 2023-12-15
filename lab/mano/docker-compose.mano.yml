@@ -69,7 +69,7 @@ services:
 
   mano-auth:
     restart: unless-stopped
-    image: docker.io/ubiqube/mano-keycloak:3.2.0.1
+    image: openmsa/mano-keycloak:3.2.0.1
     environment:
       # Unused?
       KEYCLOAK_USER: admin
@@ -101,7 +101,7 @@ services:
           - "mano-es"
 
   mano-helm3:
-    image: docker.io/ubiqube/helm3-webapp
+    image: openmsa/mano-helm3:3.1.0
 
   mano-logstash:
     image: docker.elastic.co/logstash/logstash:7.17.9
@@ -118,10 +118,10 @@ services:
       - "./lab/mano/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml"
 
   mano-juju:
-    image: nexus.ubiqube.com/openmsa/mano-juju-oci-ci:latest
+    image: openmsa/mano-juju:1.0.0
 
   mano-mon:
-    image: nexus.ubiqube.com/openmsa/mano-mon-oci-ci:latest
+    image: openmsa/mano-mon:3.2.0.1
     depends_on:
       - db
     environment:
@@ -136,7 +136,7 @@ services:
 
   mano-nfvo:
     restart: unless-stopped
-    image: nexus.ubiqube.com/openmsa/mano-nfvo-oci-ci
+    image: openmsa/mano-nfvo:3.2.1
     depends_on:
       - db
     environment:
@@ -164,7 +164,7 @@ services:
 
   mano-vnfm:
     restart: unless-stopped
-    image: nexus.ubiqube.com/openmsa/mano-vnfm-oci-ci
+    image: openmsa/mano-vnfm:3.2.1
     depends_on:
       - db
     environment:
