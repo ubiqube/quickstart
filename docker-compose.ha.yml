@@ -39,9 +39,9 @@ x-placement_db_rep: &placement_db_rep
       - "node.labels.db==replica"
 
 x-healthcheck: &healthcheck
-  timeout: s
+  timeout: 10s
   retries: 10
-  interval: 20s
+  interval: 30s
   start_period: 120s
 
 services:
