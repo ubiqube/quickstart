@@ -230,12 +230,7 @@ services:
     environment:
       <<: [*es-configuration, *kafka-syslogs]
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "20m"
-        max-file: "5"
+      <<: *logging
     volumes:
       - "msa_dev:/opt/devops/"
       - "msa_parsebulkfiles:/opt/sms/spool/parser"
@@ -266,12 +261,7 @@ services:
         protocol: udp
         mode: host
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "20m"
-        max-file: "5"
+      <<: *logging
     volumes:
       - "msa_dev:/opt/devops/"
       - "msa_snmptrapbulkfiles:/opt/sms/spool/parser"

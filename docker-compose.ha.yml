@@ -13,9 +13,13 @@ x-logging: &logging
     max-size: "10m"
     max-file: "5"
 
+x-kafka-syslogs: &kafka-syslogs
+    KAFKA_SERVER: "kafka:9094"
+    KAFKA_TOPIC: "syslogs"
+
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.10-45a3e2639d30aebbed9eec90df8a1b56fb081922
+    image: ubiqube/msa2-front:7278bc69f38973ae20777dfb01e1ab2d251d0d95
     depends_on:
       - msa-api
       - msa-ui
@@ -41,15 +45,6 @@ services:
         published: 443
         protocol: tcp
         mode: ingress
-      - target: 162
-        published: 162
-        protocol: udp
-        mode: ingress
-      - target: 69
-        published: 69
-        protocol: udp
-        mode: ingress
-      - "5200-5200:5200-5200/udp"
     logging:
       driver: "json-file"
       options:
@@ -69,11 +64,11 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: openmsa/openmsa:msa2-db-2.8.10-b41f3167eff7d84d2f64234dcc581816c769bf1d
+    image: ubiqube/msa2-db:ffa6c87f8ca10d352b5b47c048cc8db913048021
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
-      timeout: 20s
-      interval: 30s
+      timeout: 120s
+      interval: 10s
       retries: 5
     deploy:
       replicas: 1
@@ -98,16 +93,19 @@ services:
       PG_ROOT_PASSWORD: my_db_password
       PG_PRIMARY_PORT: 5432
       MAX_CONNECTIONS: 1600
+    shm_size: 1g
     volumes:
       - "/mnt/NASVolume/msa_db:/pgsqldata/pgsql"
     logging:
       <<: *logging
 
   db-replica:
-    image: openmsa/openmsa:msa2-db-2.8.10-b41f3167eff7d84d2f64234dcc581816c769bf1d
+    image: ubiqube/msa2-db:ffa6c87f8ca10d352b5b47c048cc8db913048021
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
-      timeout: 20s
+      timeout: 600s
+      retries: 40
+      interval: 30s
     deploy:
       replicas: 1
       restart_policy:
@@ -131,17 +129,18 @@ services:
       PG_ROOT_PASSWORD: my_db_password
       PG_PRIMARY_PORT: 5432
       PG_PRIMARY_HOST: db
+    shm_size: 1g
     logging:
       <<: *logging
 
   msa-api:
-    image: openmsa/openmsa:msa2-api-2.8.10-e319faf63a121502937e0710f29dab394db2f532
+    image: ubiqube/msa2-api:c20c37df028ca7ac866d4603c1824336436d83b8
     depends_on:
       - db
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     deploy:
-      replicas: 1
+      replicas: 1c
       placement:
         max_replicas_per_node: 1
         constraints:
@@ -169,10 +168,15 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.8.10-b0d35cb691843f221e34d499caf7ff8b2131f23d
+    image: ubiqube/msa2-ui:828e4d7195e18dc63948972643dc1c31582a56b5
     depends_on:
       - msa-api
     healthcheck:
+    healthcheck:
+      timeout: 5s
+      retries: 2
+      interval: 10s
+      start_period: 30s
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     deploy:
       replicas: 1
@@ -197,6 +201,7 @@ services:
     - FEATURE_PERMISSION_PROFILE_LABELS=false
     - FEATURE_BPM=true
     - FEATURE_IMPORT_WITH_SAME_AND_UPPERRANK=true
+    - FEATURE_REPOFOLDERLIST=[\"Datafiles\"]
     logging:
       <<: *logging
     networks:
@@ -242,7 +247,19 @@ services:
   msa-rsyslog:
     depends_on:
       - msa-event
-    image: openmsa/openmsa:msa2-rsyslog-2.8.10-02bb1d60385f106e14eb6d940e7fc69a3e16722d
+    image: ubiqube/msa2-rsyslog:ce35fbb9c7441f1c4041af6e431a0cfae2809785
+    healthcheck:
+      timeout: 5s
+      retries: 2
+      interval: 10s
+      start_period: 30s
+      test: ["CMD-SHELL", "top -p 1 -bn1 | grep rsyslog | awk '{if ($$9 > 99) exit 1; else exit 0;}'"]
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
     # environment:
       # enable omfwd acxtion type for syslog Forwarding Output Module
       # https://www.rsyslog.com/doc/v8-stable/configuration/modules/omfwd.html
@@ -250,12 +267,8 @@ services:
       # ACTIONTYPE: "omfwd"
       # configure a specific port for TLS. Default is 6514
       # TLS_SYSLOG_PORT: 6514
-    deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+      ACTIONTYPE: "omkafka"
+      <<: *kafka-syslogs  
     ports:
       - target: 514
         published: 514
@@ -277,7 +290,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: openmsa/openmsa:msa2-sms-2.8.10-06c680ff5de2148cddb4ede33fd98834d5cf52da
+    image: ubiqube/msa2-sms:a0f7339b454f140b52fb20d0239ede154c78270a
     depends_on:
       - db
     healthcheck:
@@ -286,6 +299,12 @@ services:
       interval: 10s
       start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
     environment:
       <<: *es-configuration
       CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
@@ -296,22 +315,90 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
       - "/mnt/NASVolume/msa_svn:/opt/svnroot"
-      - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
-      - "/mnt/NASVolume/msa_bulkfiles_err:/opt/sms/spool/parser-error"
-      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
+      - "msa_bulkfiles:/opt/sms/spool/parser"
+      - "msa_bulkfiles_err:/opt/sms/spool/parser-error"
+      - "msa_sms_logs:/opt/sms/logs"
+    ports:
+      - target: 69
+        published: 69
+        protocol: udp
+        mode: host
+      - target: 5200
+        published: 5200
+        protocol: udp
+        mode: host
+    logging:
+      <<: *logging
+    networks:
+      default:
+        aliases:
+          - "msa_sms"
+
+  msa-parse:
+    container_name: msa_parse
+    image: ubiqube/msa2-parse:6ca6448762d68b5fd2276adb2489e357b9996493
+    depends_on:
+      - db
+      - msa-dev
+    healthcheck:
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s
+      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     deploy:
       replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
+    environment:
+      <<: [*es-configuration, *kafka-syslogs]
     logging:
       <<: *logging
+    volumes:
+      - "/mnt/NASVolume/msa_dev:/opt/devops/"
+      - "msa_parsebulkfiles:/opt/sms/spool/parser"
+      - "msa_parsebulkfiles_err:/opt/sms/spool/parser-error"
     networks:
       default:
         aliases:
-          - "msa_sms"  
+          - "msa_parse"
 
+  msa-snmptrap:
+    container_name: msa_snmptrap
+    image: ubiqube/msa2-snmptrap:dee5c28ec7481c77cac4bbdf54ad94d36217072c
+    depends_on:
+      - db
+    healthcheck:
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s
+      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
+    environment:
+      <<: *es-configuration
+    ports:
+      - target: 162
+        published: 162
+        protocol: udp
+        mode: host
+    logging:
+      <<: *logging
+    volumes:
+      - "msa_dev:/opt/devops/"
+      - "msa_snmptrapbulkfiles:/opt/sms/spool/parser"
+      - "msa_snmptrapbulkfiles_err:/opt/sms/spool/parser-error"
+    networks:
+      default:
+        aliases:
+          - "msa_snmptrap"
 
   msa-bud:
     image: openmsa/openmsa:msa2-bud-2.8.10-29c89bed5e95a1368e69f221831d385539e03909
@@ -342,26 +429,27 @@ services:
     depends_on:
       - db
       - msa-api
-    image: openmsa/openmsa:msa2-alarm-2.8.10-0fc68a6c34435181fdd9031c3bc44fe19492a75b
+      - msa-dev
+    image: ubiqube/msa2-alarm:12dee3d8e5cd243409edf5a2b438e84e09483ef5
     healthcheck:
       timeout: 5s
       retries: 10
       interval: 10s
       start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
-    environment:
-      <<: *es-configuration
-      CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
     deploy:
       replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
+    environment:
+      <<: *es-configuration
+      CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
     volumes:
-      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
-      - "/mnt/NASVolume/msa_alarmbulkfiles:/opt/sms/spool/alarms"
-      - "/mnt/NASVolume/msa_alarmbulkfiles_err:/opt/sms/spool/alarms-error"
+      - "msa_sms_logs:/opt/sms/logs"
+      - "msa_alarmbulkfiles:/opt/sms/spool/alarms"
+      - "msa_alarmbulkfiles_err:/opt/sms/spool/alarms-error"
     logging:
       <<: *logging
     networks:
@@ -370,17 +458,23 @@ services:
           - "msa_alarm"
 
   msa-monitoring:
-    image: openmsa/openmsa:msa2-monitoring-2.8.10-47bf8e62bb9e8d6de920153eb25d6e6ce22b968c
+    depends_on:
+      - db
+      - msa-dev
+      - msa-api
+    image: ubiqube/msa2-monitoring:a3e826a1025e3b7130705188f59bcb5de5c9a762
     healthcheck:
       timeout: 5s
       retries: 10
       interval: 10s
       start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
-    depends_on:
-      - db
-      - msa-dev
-      - msa-api
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
     environment:
       <<: *es-configuration
       CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
@@ -405,10 +499,67 @@ services:
         aliases:
           - "msa_monitoring"
 
+  kafka:
+    image: bitnami/kafka:3.5
+    healthcheck:
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
+    ports:
+      - "9094:9094"
+    environment:
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092,EXTERNAL://kafka:9094
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_CFG_LOG_CLEANER_ENABLE=true
+      - KAFKA_CFG_LOG_CLEANUP_POLICY=delete
+      - KAFKA_CFG_LOG_RETENTION_BYTES=2000000000
+      - KAFKA_CFG_LOG_RETENTION_MS=86400000
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+    logging:
+      <<: *logging
+    volumes:
+      - "kafka_data:/bitnami"
+
+  msa-broker:
+    depends_on:
+      - db
+    image: ubiqube/msa2-broker:4725a0b2c9a64ab0df2295ce5d76e928bed0255e
+    healthcheck:
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
+    environment:
+      ARTEMIS_PASSWORD: simetraehcapa
+      ARTEMIS_USER: artemis
+    logging:
+      <<: *logging
+    volumes:
+      - "/mnt/NASVolume/mano_artemis:/var/lib/artemis-instance"
+
   camunda:
     depends_on:
       - db
-    image: openmsa/openmsa:msa2-camunda-2.8.10-4bd40043f46fa18830d349b481821689448d4949
+    image: ubiqube/msa2-camunda:d95c1ded1750a35df6593fb5a8bcd376b4a76dd0
     deploy:
       replicas: 1
       placement:
@@ -427,19 +578,19 @@ services:
       <<: *logging
 
   msa-kibana:
-    image: openmsa/openmsa:msa2-kibana-2.8.10-46a9280639d973021a841c3792aed3948846d73a
-    ports:
-      - "5601:5601"
-    environment:
-      ELASTICSEARCH_URL: "http://msa_es:9200"
-      ELASTICSEARCH_HOSTS: "http://msa_es:9200"
-      <<: *es-configuration
+    image: ubiqube/msa2-kibana:54e81a717d1f9aa7acc372643c6966e23b8b66fe
     deploy:
       replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
           - "node.labels.worker==app"
+    environment:
+      ELASTICSEARCH_URL: "http://msa_es:9200"
+      ELASTICSEARCH_HOSTS: "http://msa_es:9200"
+      <<: *es-configuration
+    ports:
+      - "5601:5601"
     logging:
       <<: *logging
     networks:
@@ -448,11 +599,11 @@ services:
           - "msa_kibana"
 
   msa-es:
+    image: openmsa/openmsa:msa2-es-2.8.10-68c809af30fb22ed1b68c9ab9598132be2166875
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       interval: 60s
       start_period: 60s
-    image: openmsa/openmsa:msa2-es-2.8.10-68c809af30fb22ed1b68c9ab9598132be2166875
     deploy:
       replicas: 1
       placement:
@@ -481,6 +632,12 @@ services:
 
   msa-cerebro:
     image: openmsa/openmsa:msa2-cerebro-2.8.10-20fca37feb399b676963d531aaaab37b10588961
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.worker==app"
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -490,12 +647,6 @@ services:
       - -Dhosts.0.host=http://msa_es:9200
     ports:
       - "9000:9000"
-    deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
     logging:
       <<: *logging
     networks:
@@ -504,7 +655,7 @@ services:
           - "msa_cerebro"
 
   msa-dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.8.10-dca5fd89e1ca0f4f9ea046e37f112964384c6871
+    image: ubiqube/msa2-linuxdev:e2f18f31a68294c53ab379a47b821375c4ae6c78
     deploy:
       replicas: 1
       placement:
@@ -516,6 +667,8 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_svn:/opt/svnroot"
+      - "/mnt/NASVolume/msa_api:/opt/ubi-jentreprise/generated/conf"
+      - "/mnt/NASVolume/msa_svn_ws:/opt/sms/spool/routerconfigs"
     logging:
       <<: *logging
     networks:
@@ -524,8 +677,14 @@ services:
           - "msa_dev"
 
 volumes:
-  msa_bulkfiles:
+  msa_sms_logs:
   msa_monitbulkfiles:
+  msa_es:
+  msa_es_config:
+  msa_alarmbulkfiles:
+  msa_alarmbulkfiles_err:
+  msa_bulkfiles:
+  msa_bulkfiles_err:  
 
 networks:
   default:
