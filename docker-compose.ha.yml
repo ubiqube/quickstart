@@ -23,8 +23,6 @@ x-placement_app: &placement_app
     max_replicas_per_node: 1
     constraints:	
       - "node.labels.worker==app"
-    update_config:
-      parallelism: 1
 
 x-placement_db: &placement_db
   replicas: 1
