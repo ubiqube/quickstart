@@ -25,9 +25,6 @@ x-placement_app: &placement_app
       - "node.labels.worker==app"
     update_config:
       parallelism: 1
-    restart_policy:
-      condition: on-failure
-      max_attempts: 10
 
 x-placement_db: &placement_db
   replicas: 1
@@ -163,8 +160,8 @@ services:
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
-      - "/mnt/NASVolume/msa_api_logs:/opt/wildfly/logs/processLog"
       - "/mnt/NASVolume/msa_api_keystore:/etc/pki/jentreprise"
+      - "msa_api_logs:/opt/wildfly/logs/processLog"
     logging:
       <<: *logging
     networks:
@@ -593,7 +590,8 @@ volumes:
   msa_alarmbulkfiles:
   msa_alarmbulkfiles_err:
   msa_bulkfiles:
-  msa_bulkfiles_err:  
+  msa_bulkfiles_err: 
+  msa_api_logs: 
 
 networks:
   default:
