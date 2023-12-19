@@ -584,12 +584,15 @@ services:
 volumes:
   msa_sms_logs:
   msa_monitbulkfiles:
-  msa_es:
-  msa_es_config:
+  msa_monitbulkfiles_err:
+  msa_parsebulkfiles:
+  msa_parsebulkfiles_err:
   msa_alarmbulkfiles:
   msa_alarmbulkfiles_err:
   msa_bulkfiles:
   msa_bulkfiles_err: 
+  msa_es:
+  msa_es_config:
   msa_api_logs: 
 
 networks:
