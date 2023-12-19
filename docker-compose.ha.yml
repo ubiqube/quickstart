@@ -590,7 +590,9 @@ volumes:
   msa_alarmbulkfiles:
   msa_alarmbulkfiles_err:
   msa_bulkfiles:
-  msa_bulkfiles_err: 
+  msa_bulkfiles_err:
+  msa_snmptrapbulkfiles:
+  msa_snmptrapbulkfiles_err:
   msa_es:
   msa_es_config:
   msa_api_logs: 
