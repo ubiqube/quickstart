@@ -337,7 +337,7 @@ services:
     logging:
       <<: *logging
     volumes:
-      - "msa_dev:/opt/devops/"
+      - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "msa_snmptrapbulkfiles:/opt/sms/spool/parser"
       - "msa_snmptrapbulkfiles_err:/opt/sms/spool/parser-error"
     networks:
