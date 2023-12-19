@@ -17,6 +17,32 @@ x-kafka-syslogs: &kafka-syslogs
     KAFKA_SERVER: "kafka:9094"
     KAFKA_TOPIC: "syslogs"
 
+x-placement_app: &placement_app
+  replicas: 1
+  placement:	
+    max_replicas_per_node: 1
+    constraints:	
+      - "node.labels.worker==app"
+    update_config:
+      parallelism: 1
+    restart_policy:
+      condition: on-failure
+      max_attempts: 10
+
+x-placement_db: &placement_db
+  replicas: 1
+  placement:	
+    max_replicas_per_node: 1
+    constraints:	
+      - "node.labels.worker==db"
+      
+x-placement_db_rep: &placement_db_rep
+  replicas: 1
+  placement:	
+    max_replicas_per_node: 1
+    constraints:	
+      - "node.labels.db==replica"
+
 services:
   msa-front:
     image: ubiqube/msa2-front:7278bc69f38973ae20777dfb01e1ab2d251d0d95
@@ -31,11 +57,7 @@ services:
       interval: 10s
       start_period: 30s
     deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+      <<: *placement_app
     ports:
       - target: 80
         published: 80
@@ -71,13 +93,7 @@ services:
       interval: 10s
       retries: 5
     deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==db"
+      <<: *placement_db
     environment:
       CAMUNDA_PASSWORD: camunda
       CAMUNDA_DB: process-engine
@@ -107,13 +123,7 @@ services:
       retries: 40
       interval: 30s
     deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.db==replica"
+      <<: *placement_db_rep
     environment:
       CAMUNDA_PASSWORD: camunda
       CAMUNDA_DB: process-engine
@@ -138,18 +148,13 @@ services:
     depends_on:
       - db
     healthcheck:
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s    
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     deploy:
-      replicas: 1c
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
-      update_config:
-        parallelism: 1
-      restart_policy:
-        condition: on-failure
-        max_attempts: 10
+      <<: *placement_app
     environment:
       <<: *es-configuration
       HOST_HOSTNAME: "{{.Node.Hostname}}"
@@ -172,18 +177,13 @@ services:
     depends_on:
       - msa-api
     healthcheck:
-    healthcheck:
       timeout: 5s
       retries: 2
       interval: 10s
       start_period: 30s
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+      <<: *placement_app
     environment:
     - FEATURE_ADMIN=true
     - FEATURE_REPOSITORY=true
@@ -209,41 +209,6 @@ services:
         aliases:
           - "msa_ui"
 
-  msa-event:
-    depends_on:
-      - db
-      - msa-es
-      - msa-dev
-      - msa-sms
-    healthcheck:
-      timeout: 5s
-      retries: 10
-      interval: 10s
-      start_period: 30s
-      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-    image: openmsa/openmsa:msa2-event-2.8.10-51bd24c1e5a4fb438fa21df5b4595ae1a5d003a2
-    environment:
-      <<: *es-configuration
-      CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
-      HOST_HOSTNAME: "{{.Node.Hostname}}"
-    logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "20m"
-        max-file: "5"
-    volumes:
-      - "/mnt/NASVolume/msa_dev:/opt/devops/"
-      - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
-      - "/mnt/NASVolume/msa_bulkfiles_err:/opt/sms/spool/parser-error"
-    deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"   
-
   msa-rsyslog:
     depends_on:
       - msa-event
@@ -255,11 +220,7 @@ services:
       start_period: 30s
       test: ["CMD-SHELL", "top -p 1 -bn1 | grep rsyslog | awk '{if ($$9 > 99) exit 1; else exit 0;}'"]
     deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+      <<: *placement_app
     # environment:
       # enable omfwd acxtion type for syslog Forwarding Output Module
       # https://www.rsyslog.com/doc/v8-stable/configuration/modules/omfwd.html
@@ -300,11 +261,7 @@ services:
       start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+      <<: *placement_app
     environment:
       <<: *es-configuration
       CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
@@ -347,11 +304,7 @@ services:
       start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+      <<: *placement_app
     environment:
       <<: [*es-configuration, *kafka-syslogs]
     logging:
@@ -377,11 +330,7 @@ services:
       start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+      <<: *placement_app
     environment:
       <<: *es-configuration
     ports:
@@ -413,11 +362,7 @@ services:
     environment:
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
     deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+      <<: *placement_app
     logging:
       <<: *logging
     networks:
@@ -438,11 +383,7 @@ services:
       start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+      <<: *placement_app
     environment:
       <<: *es-configuration
       CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
@@ -470,11 +411,7 @@ services:
       start_period: 30s
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+      <<: *placement_app
     environment:
       <<: *es-configuration
       CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
@@ -507,11 +444,7 @@ services:
       interval: 10s
       start_period: 30s
     deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+      <<: *placement_app
     ports:
       - "9094:9094"
     environment:
@@ -543,11 +476,7 @@ services:
       interval: 10s
       start_period: 30s
     deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+      <<: *placement_app
     environment:
       ARTEMIS_PASSWORD: simetraehcapa
       ARTEMIS_USER: artemis
@@ -561,11 +490,7 @@ services:
       - db
     image: ubiqube/msa2-camunda:d95c1ded1750a35df6593fb5a8bcd376b4a76dd0
     deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+      <<: *placement_app
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
@@ -580,11 +505,7 @@ services:
   msa-kibana:
     image: ubiqube/msa2-kibana:54e81a717d1f9aa7acc372643c6966e23b8b66fe
     deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+      <<: *placement_app
     environment:
       ELASTICSEARCH_URL: "http://msa_es:9200"
       ELASTICSEARCH_HOSTS: "http://msa_es:9200"
@@ -605,11 +526,7 @@ services:
       interval: 60s
       start_period: 60s
     deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+      <<: *placement_app
     environment:
       discovery.type: "single-node"
       script.painless.regex.enabled: "true"
@@ -633,11 +550,7 @@ services:
   msa-cerebro:
     image: openmsa/openmsa:msa2-cerebro-2.8.10-20fca37feb399b676963d531aaaab37b10588961
     deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+      <<: *placement_app
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -657,11 +570,7 @@ services:
   msa-dev:
     image: ubiqube/msa2-linuxdev:e2f18f31a68294c53ab379a47b821375c4ae6c78
     deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+      <<: *placement_app
     volumes:
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
