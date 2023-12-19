@@ -38,6 +38,12 @@ x-placement_db_rep: &placement_db_rep
     constraints:	
       - "node.labels.db==replica"
 
+x-healthcheck: &healthcheck
+  timeout: 5s
+  retries: 10
+  interval: 10s
+  start_period: 30s
+
 services:
   msa-front:
     image: ubiqube/msa2-front:7278bc69f38973ae20777dfb01e1ab2d251d0d95
@@ -46,11 +52,8 @@ services:
       - msa-ui
       - camunda
     healthcheck:
+      <<: *healthcheck
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
-      timeout: 2s
-      retries: 10
-      interval: 10s
-      start_period: 30s
     deploy:
       <<: *placement_app
     ports:
@@ -288,7 +291,6 @@ services:
           - "msa_sms"
 
   msa-parse:
-    container_name: msa_parse
     image: ubiqube/msa2-parse:6ca6448762d68b5fd2276adb2489e357b9996493
     depends_on:
       - db
@@ -315,7 +317,6 @@ services:
           - "msa_parse"
 
   msa-snmptrap:
-    container_name: msa_snmptrap
     image: ubiqube/msa2-snmptrap:dee5c28ec7481c77cac4bbdf54ad94d36217072c
     depends_on:
       - db
