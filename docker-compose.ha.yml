@@ -419,7 +419,7 @@ services:
     logging:
       <<: *logging
     volumes:
-      - "/mnt/NASVolume/kafka_data:/bitnami/kafka"
+      - "/mnt/NASVolume/kafka_data:/bitnami/kafka/config"
 
   msa-broker:
     depends_on:
