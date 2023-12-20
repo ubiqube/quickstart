@@ -251,7 +251,6 @@ services:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
-      - "/mnt/NASVolume/rrd_repository:/opt/rrd"
       - "/mnt/NASVolume/msa_svn:/opt/svnroot"
       - "msa_bulkfiles:/opt/sms/spool/parser"
       - "msa_bulkfiles_err:/opt/sms/spool/parser-error"
@@ -385,8 +384,8 @@ services:
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
-      - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
-      - "/mnt/NASVolume/msa_bulkfiles_err:/opt/sms/spool/parser-error"
+      - "msa_monitbulkfiles:/opt/sms/spool/parser"
+      - "msa_monitbulkfiles_err:/opt/sms/spool/parser-error"
     logging:
       <<: *logging
     networks:
@@ -399,7 +398,11 @@ services:
     healthcheck:
       <<: *healthcheck
     deploy:
-      <<: *placement_app
+      replicas: 1
+      placement:	
+        max_replicas_per_node: 1
+      constraints:	
+        - "node.labels.worker==app"
     ports:
       - "9094:9094"
     environment:
@@ -419,7 +422,7 @@ services:
     logging:
       <<: *logging
     volumes:
-      - "/mnt/NASVolume/kafka_data:/bitnami/kafka/config"
+      - "/mnt/NASVolume/kafka_data:/bitnami/kafka"
 
   msa-broker:
     depends_on:
