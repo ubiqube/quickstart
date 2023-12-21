@@ -1,20 +1,55 @@
 # vim:noai:ts=2:sw=2
 version: "3.8"
                     
+x-placement: &placement
+  replicas: 1
+  placement:
+    max_replicas_per_node: 1
+    constraints:
+      - "node.labels.worker==app"
+
+x-es-config: &es-config
+  MANAGEMENT_ELASTIC_METRICS_EXPORT_USER_NAME: superuser
+  MANAGEMENT_ELASTIC_METRICS_EXPORT_PASSWORD: x^ZyuGM6~u=+fY2G
+  MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://mano-zipkin:9411/api/v2/spans
+
 services:
   db:
-    networks:
-      default:
-        aliases:
-          - "mano-db"
     environment:
+      MANO_USER: mano
+      MANO_PASSWORD: mano
       MANOVNFM_USER: mano_vnfm
       MANOVNFM_PASSWORD: mano
       MANONFVO_USER: mano_nfvo
       MANONFVO_PASSWORD: mano
+      MANOEM_USER: mano_em
+      MANOEM_PASSWORD: mano
       KEYCLOAK_USER: keycloak
       KEYCLOAK_PASSWORD: keycloak
       KEYCLOAK_DB: keycloak
+    networks:
+      default:
+        aliases:
+          - "mano-db"
+
+  mano-alarm:
+    restart: unless-stopped
+    image: docker.io/openmsa/mano-alarm-oci-ci:3.2.0
+    depends_on:
+      - db
+    environment:
+      <<: *es-config
+    healthcheck:
+      test: curl --fail http://localhost:8080/actuator/health
+      interval: 1m
+      timeout: 10s
+      retries: 5
+      start_period: 1m
+    ports:
+      - target: 8080
+        published: 8120
+        protocol: tcp
+        mode: ingress
 
   mano-artemis:
     image: openmsa/artemis:2.19.0
@@ -31,9 +66,20 @@ services:
         reservations:
           cpus: '0.50'
           memory: 2048M
+    environment:
+      ARTEMIS_PASSWORD: simetraehcapa
+      ARTEMIS_USER: artemis
+    ports:
+      - target: 8161
+        published: 8161
+        protocol: tcp
+        mode: ingress
+      - target: 61616
+        published: 61616
+        protocol: tcp
+        mode: ingress
     volumes:
-      - "/etc/timezone:/etc/timezone:ro"
-      - "/etc/localtime:/etc/localtime:ro"
+      - "/mnt/NASVolume/artemis-instance:/var/lib/artemis-instance"
     logging:
       driver: "json-file"
       options:
@@ -43,7 +89,7 @@ services:
         max-file: "5"
 
   mano-auth:
-    image: jboss/keycloak:16.1.1
+    image: docker.io/openmsa/mano-keycloak:3.2.0.1
     deploy:
       replicas: 1
       placement:
@@ -70,9 +116,6 @@ services:
         published: 8110
         protocol: tcp
         mode: ingress
-    volumes:
-      - "/etc/timezone:/etc/timezone:ro"
-      - "/etc/localtime:/etc/localtime:ro"
     logging:
       driver: "json-file"
       options:
@@ -81,14 +124,17 @@ services:
         max-size: "10m"
         max-file: "5"
 
+  msa-es:
+    networks:
+      default:
+        aliases:
+          - "msa_es"
+          - "mano-es"
+
   mano-helm3:
-    image: ubiqube/helm3-webapp
+    image: docker.io/openmsa/mano-helm3:3.1.0
     deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+      <<: *placement
       resources:
         limits:
           cpus: '0.50'
@@ -96,9 +142,6 @@ services:
         reservations:
           cpus: '0.50'
           memory: 2048M
-    volumes:
-      - "/etc/timezone:/etc/timezone:ro"
-      - "/etc/localtime:/etc/localtime:ro"
     logging:
       driver: "json-file"
       options:
@@ -106,6 +149,40 @@ services:
         max-buffer-size: "4m"
         max-size: "10m"
         max-file: "5"
+
+  mano-logstash:
+    image: docker.elastic.co/logstash/logstash:7.17.9
+    healthcheck:
+      test: curl --fail http://localhost:9600/
+      interval: 1m
+      timeout: 10s
+      retries: 5
+      start_period: 1m
+    ports:
+      - "5000:5000"
+    volumes:
+      - "/mnt/NASVolume/config/logstash/pipeline:/usr/share/logstash/pipeline"
+      - "/mnt/NASVolume/config/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml"
+
+  mano-juju:
+    image: docker.io/openmsa/mano-juju:1.0.0
+
+  mano-mon:
+    image: openmsa/mano-mon:3.2.0
+    depends_on:
+      - db
+    environment:
+      <<: *es-config
+      SPRING_DATASOURCE_USERNAME: mano_mon
+      SPRING_DATASOURCE_PASSWORD: mano
+      SPRING_DATASOURCE_URL: jdbc:postgresql://mano-db/mano_mon
+      _JAVA_OPTIONS: -Xmx512m
+    healthcheck:
+      test: curl --fail http://localhost:8080/actuator/health
+      interval: 1m
+      timeout: 10s
+      retries: 5
+      start_period: 1m
 
   mano-nfvo-brf7:
     image: ubiqube/mano-nfvo-tm22:uat30
@@ -236,6 +313,19 @@ services:
         max-buffer-size: "4m"
         max-size: "10m"
         max-file: "5"
+
+  mano-zipkin:
+    image: docker.io/openzipkin/zipkin
+    environment:
+      - STORAGE_TYPE=elasticsearch
+      - ES_HOSTS=http://msa-es:9200
+      - ES_USERNAME=superuser
+      - ES_PASSWORD=x^ZyuGM6~u=+fY2G
+    ports:
+      - target: 9411
+        published: 9411
+        protocol: tcp
+        mode: ingress
 
 secrets:
   vnfm.keycloak.credentials.secret:
