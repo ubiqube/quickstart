@@ -246,8 +246,8 @@ services:
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/msa_svn:/opt/svnroot"
-      - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
-      - "/mnt/NASVolume/msa_bulkfiles_err:/opt/sms/spool/parser-error"
+      - "msa_bulkfiles:/opt/sms/spool/parser"
+      - "msa_bulkfiles_err:/opt/sms/spool/parser-error"
     ports:
       - target: 69
         published: 69
@@ -281,8 +281,8 @@ services:
     volumes:
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
-      - "/mnt/NASVolume/msa_parsebulkfiles:/opt/sms/spool/parser"
-      - "/mnt/NASVolume/msa_parsebulkfiles_err:/opt/sms/spool/parser-error"
+      - "msa_parsebulkfiles:/opt/sms/spool/parser"
+      - "msa_parsebulkfiles_err:/opt/sms/spool/parser-error"
     networks:
       default:
         aliases:
@@ -309,8 +309,8 @@ services:
     volumes:
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
-      - "/mnt/NASVolume/msa_snmptrapbulkfiles:/opt/sms/spool/parser"
-      - "/mnt/NASVolume/msa_snmptrapbulkfiles_err:/opt/sms/spool/parser-error"
+      - "msa_snmptrapbulkfiles:/opt/sms/spool/parser"
+      - "msa_snmptrapbulkfiles_err:/opt/sms/spool/parser-error"
     networks:
       default:
         aliases:
@@ -350,8 +350,8 @@ services:
       CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
     volumes:
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
-      - "/mnt/NASVolume/msa_alarmbulkfiles:/opt/sms/spool/alarms"
-      - "/mnt/NASVolume/msa_alarmbulkfiles_err:/opt/sms/spool/alarms-error"
+      - "msa_alarmbulkfiles:/opt/sms/spool/alarms"
+      - "msa_alarmbulkfiles_err:/opt/sms/spool/alarms-error"
     logging:
       <<: *logging
     networks:
@@ -379,8 +379,8 @@ services:
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
-      - "/mnt/NASVolume/msa_monitbulkfiles:/opt/sms/spool/parser"
-      - "/mnt/NASVolume/msa_monitbulkfiles_err:/opt/sms/spool/parser-error"
+      - "msa_monitbulkfiles:/opt/sms/spool/parser"
+      - "msa_monitbulkfiles_err:/opt/sms/spool/parser-error"
     logging:
       <<: *logging
     networks:
