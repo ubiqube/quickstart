@@ -30,13 +30,6 @@ x-placement_db: &placement_db
     max_replicas_per_node: 1
     constraints:	
       - "node.labels.worker==db"
-      
-x-placement_db_rep: &placement_db_rep
-  replicas: 1
-  placement:	
-    max_replicas_per_node: 1
-    constraints:	
-      - "node.labels.db==replica"
 
 x-healthcheck: &healthcheck
   timeout: 10s
@@ -116,7 +109,7 @@ services:
       <<: *healthcheck
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
     deploy:
-      <<: *placement_db_rep
+      <<: *placement_db
     environment:
       CAMUNDA_PASSWORD: camunda
       CAMUNDA_DB: process-engine
