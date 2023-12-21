@@ -380,6 +380,11 @@ function get_overlay_net_prefix {
   fi
 }
 
+function flushNetfilterRules {
+  echo "flushing connection with conntrack... "
+  sudo conntrack -F
+}
+
 function main {
 
   echo "STEP 1:"
@@ -486,6 +491,8 @@ function main {
         set_rp_filter $MSA_SMS_NS_ID $MSA_SMS_IFACE 2
         echo ""
       fi
+      echo "LAST STEP Flushing Netfilter rules:"
+      flushNetfilterRules
       ;;
 
       s)
@@ -590,6 +597,8 @@ function main {
         set_rp_filter $MSA_SMS_NS_ID $MSA_SMS_IFACE 1
         echo ""
       fi
+      echo "LAST STEP Flushing Netfilter rules:"
+      flushNetfilterRules
       ;;
 
       *)
