@@ -16,7 +16,7 @@ First - ensure you have quickstart setup created:
 $ git clone https://github.com/ubiqube/quickstart.git
 $ cd quickstart
 $ sudo docker login
-$ sudo docker-compose up -d
+$ sudo docker compose up -d
 ```
 
 Command to check available networks:
@@ -26,7 +26,7 @@ $ sudo docker network ls
 
 then run SD-WAN lab:
 ```sh
-$ sudo docker-compose -f ./lab/sdwan/docker-compose.yml up -d
+$ sudo docker compose -f ./lab/sdwan/docker-compose.yml up -d
 ```
 
 ## Diagram - underlay netwotk
