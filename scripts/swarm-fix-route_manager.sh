@@ -382,6 +382,11 @@ function get_overlay_net_prefix {
   fi
 }
 
+function flushNetfilterRules {
+  echo "flushing connection with conntrack... "
+  sudo conntrack -F
+}
+
 function main {
 
   echo "STEP 1:"
@@ -438,6 +443,8 @@ function main {
       echo "---> adding NAT UDP/514 UDP/162 TCP/514 TCP/6514 exception... "
       add_nat_exception $INGRESS_NS $OVERLAY_NET_1_PREFIX
       echo ""
+      echo "Last STEP: Flush Netfilter rule on the host"
+      flushNetfilterRules
       ;;
 
       s)
@@ -497,6 +504,8 @@ function main {
       echo "STEP 8:"
       echo "Removing NAT UDP/514 UDP/162 TCP/514 TCP/6514 exceptions in <<$INGRESS_NS>> namespace..."
       delete_nat_exception $INGRESS_NS
+      echo "Last STEP: Flush Netfilter rule on the host"
+      flushNetfilterRules
       echo ""
       ;;
 
