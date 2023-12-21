@@ -153,7 +153,7 @@ services:
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/msa_api_keystore:/etc/pki/jentreprise"
-      - "msa_api_logs:/opt/wildfly/logs/processLog"
+      - "/mnt/NASVolume/msa_api_logs:/opt/wildfly/logs/processLog"
     logging:
       <<: *logging
     networks:
@@ -248,13 +248,13 @@ services:
       CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
       HOST_HOSTNAME: "{{.Node.Hostname}}"
     volumes:
+      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/msa_svn:/opt/svnroot"
-      - "msa_bulkfiles:/opt/sms/spool/parser"
-      - "msa_bulkfiles_err:/opt/sms/spool/parser-error"
-      - "msa_sms_logs:/opt/sms/logs"
+      - "/mnt/NASVolume/msa_bulkfiles:/opt/sms/spool/parser"
+      - "/mnt/NASVolume/msa_bulkfiles_err:/opt/sms/spool/parser-error"
     ports:
       - target: 69
         published: 69
@@ -286,9 +286,10 @@ services:
     logging:
       <<: *logging
     volumes:
+      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
-      - "msa_parsebulkfiles:/opt/sms/spool/parser"
-      - "msa_parsebulkfiles_err:/opt/sms/spool/parser-error"
+      - "/mnt/NASVolume/msa_parsebulkfiles:/opt/sms/spool/parser"
+      - "/mnt/NASVolume/msa_parsebulkfiles_err:/opt/sms/spool/parser-error"
     networks:
       default:
         aliases:
@@ -313,9 +314,10 @@ services:
     logging:
       <<: *logging
     volumes:
+      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
-      - "msa_snmptrapbulkfiles:/opt/sms/spool/parser"
-      - "msa_snmptrapbulkfiles_err:/opt/sms/spool/parser-error"
+      - "/mnt/NASVolume/msa_snmptrapbulkfiles:/opt/sms/spool/parser"
+      - "/mnt/NASVolume/msa_snmptrapbulkfiles_err:/opt/sms/spool/parser-error"
     networks:
       default:
         aliases:
@@ -354,9 +356,9 @@ services:
       <<: *es-configuration
       CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
     volumes:
-      - "msa_sms_logs:/opt/sms/logs"
-      - "msa_alarmbulkfiles:/opt/sms/spool/alarms"
-      - "msa_alarmbulkfiles_err:/opt/sms/spool/alarms-error"
+      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
+      - "/mnt/NASVolume/msa_alarmbulkfiles:/opt/sms/spool/alarms"
+      - "/mnt/NASVolume/msa_alarmbulkfiles_err:/opt/sms/spool/alarms-error"
     logging:
       <<: *logging
     networks:
@@ -379,13 +381,13 @@ services:
       <<: *es-configuration
       CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
     volumes:
+      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/rrd_repository:/opt/rrd"
-      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
-      - "msa_monitbulkfiles:/opt/sms/spool/parser"
-      - "msa_monitbulkfiles_err:/opt/sms/spool/parser-error"
+      - "/mnt/NASVolume/msa_monitbulkfiles:/opt/sms/spool/parser"
+      - "/mnt/NASVolume/msa_monitbulkfiles_err:/opt/sms/spool/parser-error"
     logging:
       <<: *logging
     networks:
