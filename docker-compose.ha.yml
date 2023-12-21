@@ -400,11 +400,7 @@ services:
     healthcheck:
       <<: *healthcheck
     deploy:
-      replicas: 1
-      placement:	
-        max_replicas_per_node: 1
-        constraints:	
-          - "node.labels.worker==app"
+      <<: *placement_app
     ports:
       - "9094:9094"
     environment:
