@@ -383,6 +383,7 @@ function get_overlay_net_prefix {
 function flushNetfilterRules {
   echo "flushing connection with conntrack... "
   sudo conntrack -F
+  exit 1
 }
 
 function main {
