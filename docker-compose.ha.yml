@@ -19,16 +19,16 @@ x-kafka-syslogs: &kafka-syslogs
 
 x-placement_app: &placement_app
   replicas: 1
-  placement:	
+  placement:
     max_replicas_per_node: 1
-    constraints:	
+    constraints:
       - "node.labels.worker==app"
 
 x-placement_db: &placement_db
   replicas: 1
-  placement:	
+  placement:
     max_replicas_per_node: 1
-    constraints:	
+    constraints:
       - "node.labels.worker==db"
 
 x-healthcheck: &healthcheck
