@@ -382,6 +382,12 @@ function get_overlay_net_prefix {
   fi
 }
 
+function flushNetfilterRules {
+  echo "flushing connection with conntrack... "
+  sudo conntrack -F
+  exit 0
+}
+
 function main {
 
   echo "STEP 1:"
