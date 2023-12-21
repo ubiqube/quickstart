@@ -173,6 +173,8 @@ services:
       default:
         aliases:
           - "msa_api"
+    extra_hosts:
+      - "idssldapdev.tm.com.my:172.20.223.120"
 
   msa-ui:
     image: openmsa/openmsa:msa2-ui-2.8.9.3-63f26005df1c2610e98bd6a1aab1296cdedae078
@@ -343,6 +345,7 @@ services:
       - "msa_alarmbulkfiles_err:/opt/sms/spool/alarms-error"
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
+      - "/mnt/NASVolume/postfix_main.cf:/etc/postfix/main.cf"
     logging:
       <<: *logging
     networks:
@@ -447,8 +450,6 @@ services:
     ports:
       - "9300:9300"
       - "9200:9200"
-      - "9300:9300/udp"
-      - "9200:9200/udp"
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
