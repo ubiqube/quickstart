@@ -438,6 +438,8 @@ function main {
       echo "---> adding NAT UDP/514 UDP/162 TCP/514 TCP/6514 exception... "
       add_nat_exception $INGRESS_NS $OVERLAY_NET_1_PREFIX
       echo ""
+      echo "LAST STEP Flushing Netfilter rules:"
+      flushNetfilterRules
       ;;
 
       s)
@@ -498,6 +500,8 @@ function main {
       echo "Removing NAT UDP/514 UDP/162 TCP/514 TCP/6514 exceptions in <<$INGRESS_NS>> namespace..."
       delete_nat_exception $INGRESS_NS
       echo ""
+      echo "LAST STEP Flushing Netfilter rules:"
+      flushNetfilterRules
       ;;
 
 
