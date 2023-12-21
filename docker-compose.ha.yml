@@ -46,7 +46,7 @@ x-healthcheck: &healthcheck
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:7278bc69f38973ae20777dfb01e1ab2d251d0d95
+    image: ubiqube/msa2-front:ff900ca038df1538cfcd5f9604c3e44ea1e867e5
     depends_on:
       - msa-api
       - msa-ui
@@ -84,7 +84,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:ffa6c87f8ca10d352b5b47c048cc8db913048021
+    image: ubiqube/msa2-db:081eb0656d990cd231ba1c15c1d14501b7426eea
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
@@ -111,7 +111,7 @@ services:
       <<: *logging
 
   db-replica:
-    image: ubiqube/msa2-db:ffa6c87f8ca10d352b5b47c048cc8db913048021
+    image: ubiqube/msa2-db:081eb0656d990cd231ba1c15c1d14501b7426eea
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
@@ -162,7 +162,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: ubiqube/msa2-ui:828e4d7195e18dc63948972643dc1c31582a56b5
+    image: ubiqube/msa2-ui:10e4a2088eedcce4309a752f4c658da43daf53a5
     depends_on:
       - msa-api
     healthcheck:
@@ -322,7 +322,7 @@ services:
           - "msa_snmptrap"
 
   msa-bud:
-    image: openmsa/openmsa:msa2-bud-2.8.10-29c89bed5e95a1368e69f221831d385539e03909
+    image: ubiqube/msa2-bud:0f1726a8f27d4f789e06fcbf5e3129486734f645
     depends_on:
       - db
     healthcheck:
@@ -479,7 +479,7 @@ services:
           - "msa_kibana"
 
   msa-es:
-    image: openmsa/openmsa:msa2-es-2.8.10-68c809af30fb22ed1b68c9ab9598132be2166875
+    image: ubiqube/msa2-es:ba6a2c71fcc016b507d6472c688b56ad1e14774e
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
@@ -506,7 +506,7 @@ services:
       <<: *logging
 
   msa-cerebro:
-    image: openmsa/openmsa:msa2-cerebro-2.8.10-20fca37feb399b676963d531aaaab37b10588961
+    image: ubiqube/msa2-cerebro:8374160f95e2349711204189a3bf8a385f7252b5
     healthcheck:
       <<: *healthcheck
     deploy:
