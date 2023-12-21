@@ -201,7 +201,7 @@ services:
     image: ubiqube/msa2-rsyslog:ce35fbb9c7441f1c4041af6e431a0cfae2809785
     healthcheck:
       <<: *healthcheck
-      test: ["CMD-SHELL", "top -p 1 -bn1 | grep rsyslog | awk '{if ($$9 > 99) exit 1; else exit 0;}'"]
+      test: ["CMD-SHELL", "ps -p 1 -h -o%cpu | awk '{if ($$1 > 99) exit 1; else exit 0;}'"]
     deploy:
       <<: *placement_app
     environment:
