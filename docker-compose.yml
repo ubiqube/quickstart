@@ -230,12 +230,7 @@ services:
     environment:
       <<: [*es-configuration, *kafka-syslogs]
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "20m"
-        max-file: "5"
+      <<: *logging
     volumes:
       - "msa_dev:/opt/devops/"
       - "msa_parsebulkfiles:/opt/sms/spool/parser"
@@ -266,12 +261,7 @@ services:
         protocol: udp
         mode: host
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "20m"
-        max-file: "5"
+      <<: *logging
     volumes:
       - "msa_dev:/opt/devops/"
       - "msa_snmptrapbulkfiles:/opt/sms/spool/parser"
@@ -408,8 +398,6 @@ services:
     image: bitnami/kafka:3.5
     ports:
       - "9094:9094"
-    volumes:
-      - "kafka_data:/bitnami"
     environment:
       - KAFKA_CFG_NODE_ID=0
       - KAFKA_CFG_PROCESS_ROLES=controller,broker
@@ -424,6 +412,10 @@ services:
       - KAFKA_CFG_LOG_RETENTION_BYTES=2000000000
       - KAFKA_CFG_LOG_RETENTION_MS=86400000
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+    logging:
+      <<: *logging
+    volumes:
+      - "/mnt/NASVolume/kafka_data:/bitnami"
 
   msa-broker:
     restart: unless-stopped
@@ -434,8 +426,10 @@ services:
     environment:
       ARTEMIS_PASSWORD: simetraehcapa
       ARTEMIS_USER: artemis
+    logging:
+      <<: *logging
     volumes:
-      - "msa_broker:/var/lib/artemis-instance"
+      - "/mnt/NASVolume/artemis-instance:/var/lib/artemis-instance"
 
   camunda:
     restart: unless-stopped
