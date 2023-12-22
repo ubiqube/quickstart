@@ -279,7 +279,7 @@ services:
     logging:
       <<: *logging
     volumes:
-      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
+      - "msa_sms_logs:/opt/sms/logs"
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "msa_parsebulkfiles:/opt/sms/spool/parser"
       - "msa_parsebulkfiles_err:/opt/sms/spool/parser-error"
@@ -307,7 +307,7 @@ services:
     logging:
       <<: *logging
     volumes:
-      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
+      - "msa_sms_logs:/opt/sms/logs"
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "msa_snmptrapbulkfiles:/opt/sms/spool/parser"
       - "msa_snmptrapbulkfiles_err:/opt/sms/spool/parser-error"
@@ -349,7 +349,7 @@ services:
       <<: *es-configuration
       CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
     volumes:
-      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
+      - "msa_sms_logs:/opt/sms/logs"
       - "msa_alarmbulkfiles:/opt/sms/spool/alarms"
       - "msa_alarmbulkfiles_err:/opt/sms/spool/alarms-error"
     logging:
@@ -374,7 +374,7 @@ services:
       <<: *es-configuration
       CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
     volumes:
-      - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
+      - "msa_sms_logs:/opt/sms/logs"
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
