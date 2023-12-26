@@ -198,7 +198,6 @@ services:
     deploy:
       <<: *placement_app
     environment:
-      <<: *kafka-syslogs  
     # environment:
       # enable omfwd acxtion type for syslog Forwarding Output Module
       # https://www.rsyslog.com/doc/v8-stable/configuration/modules/omfwd.html
@@ -207,6 +206,7 @@ services:
       # configure a specific port for TLS. Default is 6514
       # TLS_SYSLOG_PORT: 6514
       ACTIONTYPE: "omkafka"
+      <<: *kafka-syslogs  
     ports:
       - target: 514
         published: 514
