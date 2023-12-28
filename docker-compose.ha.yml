@@ -47,7 +47,7 @@ x-healthcheck: &healthcheck
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:7d4f13a9a54a9646f2f7a9599e4a12c2ec1272ad
+    image: ubiqube/msa2-front:37adadef35f02fd708374484cb3e92a189d1d1fb
     depends_on:
       - msa-api
       - msa-ui
@@ -201,7 +201,7 @@ services:
   msa-rsyslog:
     depends_on:
       - msa-event
-    image: ubiqube/msa2-rsyslog:ce35fbb9c7441f1c4041af6e431a0cfae2809785
+    image: ubiqube/msa2-rsyslog:ff52e9cdfb5452b114e94eb76bfb8679d380fa03
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "ps -p 1 -h -o%cpu | awk '{if ($$1 > 99) exit 1; else exit 0;}'"]
@@ -371,7 +371,7 @@ services:
       - db
       - msa-dev
       - msa-api
-    image: ubiqube/msa2-monitoring:a3e826a1025e3b7130705188f59bcb5de5c9a762
+    image: ubiqube/msa2-monitoring:c40880f906a707488ef54de7989cc55a6dd76755
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
