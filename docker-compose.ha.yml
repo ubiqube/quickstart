@@ -24,6 +24,14 @@ x-placement_app: &placement_app
     constraints:
       - "node.labels.worker==app"
 
+# rsyslog ports are in mode host so we have to configure one replica per worker
+x-placement_rsyslog: &placement_rsyslog
+  replicas: 1
+  placement:
+    max_replicas_per_node: 1
+    constraints:
+      - "node.labels.worker==app"
+
 x-placement_db: &placement_db
   replicas: 1
   placement:
@@ -196,7 +204,7 @@ services:
       <<: *healthcheck
       test: ["CMD-SHELL", "ps -p 1 -h -o%cpu | awk '{if ($$1 > 99) exit 1; else exit 0;}'"]
     deploy:
-      <<: *placement_app
+      <<: *placement_rsyslog
     environment:
     # environment:
       # enable omfwd acxtion type for syslog Forwarding Output Module
@@ -208,18 +216,15 @@ services:
       ACTIONTYPE: "omkafka"
       <<: *kafka-syslogs  
     ports:
+    # rsyslog port can support only one protocol (TCP or UDP) per port and must be in host mode
       - target: 514
         published: 514
         protocol: udp
-        mode: ingress
-      - target: 514
-        published: 514
-        protocol: tcp
-        mode: ingress
+        mode: host
       - target: 6514
         published: 6514
         protocol: tcp
-        mode: ingress
+        mode: host
     logging:
       <<: *logging
     networks:
