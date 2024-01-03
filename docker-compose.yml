@@ -420,7 +420,7 @@ services:
   msa-broker:
     restart: unless-stopped
     container_name: msa_broker
-    image: ubiqube/msa2-broker:4725a0b2c9a64ab0df2295ce5d76e928bed0255e
+    image: openmsa/openmsa:msa2-broker-2.8.11-4725a0b2c9a64ab0df2295ce5d76e928bed0255e
     depends_on:
       - db
     environment:
