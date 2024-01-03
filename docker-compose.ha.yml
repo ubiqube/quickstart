@@ -47,7 +47,7 @@ x-healthcheck: &healthcheck
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:ff900ca038df1538cfcd5f9604c3e44ea1e867e5
+    image: openmsa/openmsa:msa2-front-2.8.11-3b8107ec477a0a0dae24e2f9902b594cbdbaf529
     depends_on:
       - msa-api
       - msa-ui
@@ -85,7 +85,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:081eb0656d990cd231ba1c15c1d14501b7426eea
+    image: openmsa/openmsa:msa2-db-2.8.11-081eb0656d990cd231ba1c15c1d14501b7426eea
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
@@ -112,7 +112,7 @@ services:
       <<: *logging
 
   db-replica:
-    image: ubiqube/msa2-db:081eb0656d990cd231ba1c15c1d14501b7426eea
+    image: openmsa/openmsa:msa2-db-2.8.11-081eb0656d990cd231ba1c15c1d14501b7426eea
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
@@ -137,7 +137,7 @@ services:
       <<: *logging
 
   msa-api:
-    image: ubiqube/msa2-api:c20c37df028ca7ac866d4603c1824336436d83b8
+    image: openmsa/openmsa:msa2-api-2.8.11-9dc29aa56c12f8c5cc3f88306312d0efa4a179a4
     depends_on:
       - db
     healthcheck:
@@ -163,7 +163,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: ubiqube/msa2-ui:10e4a2088eedcce4309a752f4c658da43daf53a5
+    image: openmsa/openmsa:msa2-ui-2.8.11-10e4a2088eedcce4309a752f4c658da43daf53a5
     depends_on:
       - msa-api
     healthcheck:
@@ -199,7 +199,7 @@ services:
   msa-rsyslog:
     depends_on:
       - msa-event
-    image: ubiqube/msa2-rsyslog:ce35fbb9c7441f1c4041af6e431a0cfae2809785
+    image: openmsa/openmsa:msa2-rsyslog-2.8.11-ce35fbb9c7441f1c4041af6e431a0cfae2809785
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "ps -p 1 -h -o%cpu | awk '{if ($$1 > 99) exit 1; else exit 0;}'"]
@@ -233,7 +233,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: ubiqube/msa2-sms:a0f7339b454f140b52fb20d0239ede154c78270a
+    image: openmsa/openmsa:msa2-sms-2.8.11-a0f7339b454f140b52fb20d0239ede154c78270a
     depends_on:
       - db
     healthcheck:
@@ -270,7 +270,7 @@ services:
           - "msa_sms"
 
   msa-parse:
-    image: ubiqube/msa2-parse:6ca6448762d68b5fd2276adb2489e357b9996493
+    image: openmsa/openmsa:msa2-parse-2.8.11-6ca6448762d68b5fd2276adb2489e357b9996493
     depends_on:
       - db
       - msa-dev
@@ -294,7 +294,7 @@ services:
           - "msa_parse"
 
   msa-snmptrap:
-    image: ubiqube/msa2-snmptrap:dee5c28ec7481c77cac4bbdf54ad94d36217072c
+    image: openmsa/openmsa:msa2-snmptrap-2.8.11-dee5c28ec7481c77cac4bbdf54ad94d36217072c
     depends_on:
       - db
     healthcheck:
@@ -322,7 +322,7 @@ services:
           - "msa_snmptrap"
 
   msa-bud:
-    image: ubiqube/msa2-bud:0f1726a8f27d4f789e06fcbf5e3129486734f645
+    image: openmsa/openmsa:msa2-bud-2.8.11-0f1726a8f27d4f789e06fcbf5e3129486734f645
     depends_on:
       - db
     healthcheck:
@@ -344,7 +344,7 @@ services:
       - db
       - msa-api
       - msa-dev
-    image: ubiqube/msa2-alarm:12dee3d8e5cd243409edf5a2b438e84e09483ef5
+    image: openmsa/openmsa:msa2-alarm-2.8.11-12dee3d8e5cd243409edf5a2b438e84e09483ef5
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
@@ -369,7 +369,7 @@ services:
       - db
       - msa-dev
       - msa-api
-    image: ubiqube/msa2-monitoring:a3e826a1025e3b7130705188f59bcb5de5c9a762
+    image: openmsa/openmsa:msa2-monitoring-2.8.11-c40880f906a707488ef54de7989cc55a6dd76755
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
@@ -439,7 +439,7 @@ services:
   camunda:
     depends_on:
       - db
-    image: ubiqube/msa2-camunda:d95c1ded1750a35df6593fb5a8bcd376b4a76dd0
+    image: openmsa/openmsa:msa2-camunda-2.8.11-d95c1ded1750a35df6593fb5a8bcd376b4a76dd0
     healthcheck:
       <<: *healthcheck
     deploy:
@@ -456,7 +456,7 @@ services:
       <<: *logging
 
   msa-kibana:
-    image: ubiqube/msa2-kibana:54e81a717d1f9aa7acc372643c6966e23b8b66fe
+    image: openmsa/openmsa:msa2-kibana-2.8.11-54e81a717d1f9aa7acc372643c6966e23b8b66fe
     healthcheck:
       <<: *healthcheck
     deploy:
@@ -475,7 +475,7 @@ services:
           - "msa_kibana"
 
   msa-es:
-    image: ubiqube/msa2-es:ba6a2c71fcc016b507d6472c688b56ad1e14774e
+    image: openmsa/openmsa:msa2-es-2.8.11-ba6a2c71fcc016b507d6472c688b56ad1e14774e
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
@@ -502,7 +502,7 @@ services:
       <<: *logging
 
   msa-cerebro:
-    image: ubiqube/msa2-cerebro:8374160f95e2349711204189a3bf8a385f7252b5
+    image: openmsa/openmsa:msa2-cerebro-2.8.11-8374160f95e2349711204189a3bf8a385f7252b5
     healthcheck:
       <<: *healthcheck
     deploy:
@@ -524,7 +524,7 @@ services:
           - "msa_cerebro"
 
   msa-dev:
-    image: ubiqube/msa2-linuxdev:e2f18f31a68294c53ab379a47b821375c4ae6c78
+    image: openmsa/openmsa:msa2-linuxdev-2.8.11-e2f18f31a68294c53ab379a47b821375c4ae6c78
     healthcheck:
       <<: *healthcheck
     deploy:
