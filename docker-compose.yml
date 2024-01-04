@@ -415,7 +415,7 @@ services:
     logging:
       <<: *logging
     volumes:
-      - "/mnt/NASVolume/kafka_data:/bitnami"
+      - "kafka_data:/bitnami"
 
   msa-broker:
     restart: unless-stopped
@@ -429,7 +429,7 @@ services:
     logging:
       <<: *logging
     volumes:
-      - "/mnt/NASVolume/artemis-instance:/var/lib/artemis-instance"
+      - "msa_broker:/var/lib/artemis-instance"
 
   camunda:
     restart: unless-stopped
