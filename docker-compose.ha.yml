@@ -25,7 +25,7 @@ x-placement_app: &placement_app
       - "node.labels.worker==app"
 
 # rsyslog ports are in mode host so we have to configure one replica per worker
-x-placement_app: &placement_rsyslog
+x-placement_rsyslog: &placement_rsyslog
   replicas: 1
   placement:
     max_replicas_per_node: 1
@@ -47,7 +47,7 @@ x-healthcheck: &healthcheck
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:37adadef35f02fd708374484cb3e92a189d1d1fb
+    image: ubiqube/msa2-front:60f1c5a9da41cefd552ba6c8ebb8e4c0c26850d0
     depends_on:
       - msa-api
       - msa-ui
@@ -137,7 +137,7 @@ services:
       <<: *logging
 
   msa-api:
-    image: ubiqube/msa2-api:075d1b3f653f4b338e09201614b489f6f7434373
+    image: ubiqube/msa2-api:6393f5135cdb554a4c4efd988cee6059bb7541bf
     depends_on:
       - db
     healthcheck:
@@ -163,7 +163,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: ubiqube/msa2-ui:72846587efd277c2344facee00b396b418dfc379
+    image: ubiqube/msa2-ui:a27ff52919258f43f3f1cd779da4ec75274ab5c0
     depends_on:
       - msa-api
     healthcheck:
@@ -272,7 +272,7 @@ services:
           - "msa_sms"
 
   msa-parse:
-    image: ubiqube/msa2-parse:6ca6448762d68b5fd2276adb2489e357b9996493
+    image: ubiqube/msa2-parse:a127ef8fdb97b3212b7e2d69b3e8328c5c69f589
     depends_on:
       - db
       - msa-dev
@@ -296,7 +296,7 @@ services:
           - "msa_parse"
 
   msa-snmptrap:
-    image: ubiqube/msa2-snmptrap:dee5c28ec7481c77cac4bbdf54ad94d36217072c
+    image: ubiqube/msa2-snmptrap:426d1aaeeadaf239db554577f5f7666b206b51e9
     depends_on:
       - db
     healthcheck:
@@ -324,7 +324,7 @@ services:
           - "msa_snmptrap"
 
   msa-bud:
-    image: ubiqube/msa2-bud:0f1726a8f27d4f789e06fcbf5e3129486734f645
+    image: ubiqube/msa2-bud:1e9de820086e9182c60b7d19799daec485fc6900
     depends_on:
       - db
     healthcheck:
@@ -346,7 +346,7 @@ services:
       - db
       - msa-api
       - msa-dev
-    image: ubiqube/msa2-alarm:12dee3d8e5cd243409edf5a2b438e84e09483ef5
+    image: ubiqube/msa2-alarm:99843b2b7c2cd4c224eb9bdacc6801fefed60496
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
@@ -526,7 +526,7 @@ services:
           - "msa_cerebro"
 
   msa-dev:
-    image: ubiqube/msa2-linuxdev:e2f18f31a68294c53ab379a47b821375c4ae6c78
+    image: ubiqube/msa2-linuxdev:051f07e79b8afaa266f95674dea6b7727d519b9f
     healthcheck:
       <<: *healthcheck
     deploy:
