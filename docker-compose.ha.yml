@@ -484,7 +484,7 @@ services:
     deploy:
       <<: *placement_app
     environment:
-      discovery.type: "single-node"
+      # discovery.type: "single-node"
       script.painless.regex.enabled: "true"
       bootstrap.memory_lock: "true"
       xpack.security.enabled: "true"
