@@ -478,9 +478,9 @@ services:
 
   msa-es:
     image: openmsa/openmsa:msa2-es-2.8.12-ba6a2c71fcc016b507d6472c688b56ad1e14774e
-    healthcheck:
-      <<: *healthcheck
-      test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
+    # healthcheck:
+     # <<: *healthcheck
+     # test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
     deploy:
       <<: *placement_app
     environment:
