@@ -47,7 +47,7 @@ x-healthcheck: &healthcheck
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.11-1237ec2f5bbe55c806207318fb93ef21cdf7363f
+    image: openmsa/openmsa:msa2-front-2.8.11-8681998c26370bec594aaa0983f1fe9676a3ade7
     depends_on:
       - msa-api
       - msa-ui
@@ -524,7 +524,7 @@ services:
           - "msa_cerebro"
 
   msa-dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.8.11-e2f18f31a68294c53ab379a47b821375c4ae6c78
+    image: openmsa/openmsa:msa2-linuxdev-2.8.11-15401bf33e93e836e56d57e526b36d6983f2dabc
     healthcheck:
       <<: *healthcheck
     deploy:
