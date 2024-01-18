@@ -20,7 +20,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.12-16f2c46491bf64e575477b4e2a2fd9934677abe1
+    image: openmsa/openmsa:msa2-front-2.8.12-f1f4533b1b2073b1f724385ace14d810a55a2da9
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -69,7 +69,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.8.12-282b539067e4ff30778dfed9ba22c4d02704c557
+    image: openmsa/openmsa:msa2-db-2.8.12-53aa94d07a20cf7506eddfd476accbc0b4964353
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -99,7 +99,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.8.12-6301b73f180dfb81f0bb628a94d0688d74ac44d7
+    image: openmsa/openmsa:msa2-api-2.8.12-f32f1e6775dc726dd78feb1b7d9e708fff4bd4e8
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -133,7 +133,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.8.12-f0da29a4b34d05ad357e4e08b360b4f2d7057d2b
+    image: openmsa/openmsa:msa2-ui-2.8.12-6db6409cb425e8eb5d0e7a0b45098c843cd394c4
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -415,7 +415,7 @@ services:
     logging:
       <<: *logging
     volumes:
-      - "/mnt/NASVolume/kafka_data:/bitnami"
+      - "kafka_data:/bitnami"
 
   msa-broker:
     restart: unless-stopped
@@ -429,7 +429,7 @@ services:
     logging:
       <<: *logging
     volumes:
-      - "/mnt/NASVolume/artemis-instance:/var/lib/artemis-instance"
+      - "msa_broker:/var/lib/artemis-instance"
 
   camunda:
     restart: unless-stopped
@@ -532,7 +532,7 @@ services:
     restart: unless-stopped
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: openmsa/openmsa:msa2-linuxdev-2.8.12-051f07e79b8afaa266f95674dea6b7727d519b9f
+    image: openmsa/openmsa:msa2-linuxdev-2.8.12-19e1a777d7a454586d21218cfe26e1bbe44974cc
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
