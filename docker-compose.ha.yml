@@ -47,7 +47,7 @@ x-healthcheck: &healthcheck
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:7df9b7e83bfe8946de6015e0ce4a8ab96e9a8a9d
+    image: openmsa/openmsa:msa2-front-2.8.12-f1f4533b1b2073b1f724385ace14d810a55a2da9
     depends_on:
       - msa-api
       - msa-ui
@@ -85,7 +85,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: ubiqube/msa2-db:68c823686a7f1ea92c5a51916f2fa76eec5a030e
+    image: openmsa/openmsa:msa2-db-2.8.12-53aa94d07a20cf7506eddfd476accbc0b4964353
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
@@ -112,7 +112,7 @@ services:
       <<: *logging
 
   db-replica:
-    image: ubiqube/msa2-db:68c823686a7f1ea92c5a51916f2fa76eec5a030e
+    image: openmsa/openmsa:msa2-db-2.8.12-53aa94d07a20cf7506eddfd476accbc0b4964353
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
@@ -137,7 +137,7 @@ services:
       <<: *logging
 
   msa-api:
-    image: ubiqube/msa2-api:bf51460d1ea3e6d732817f2f568d2412507b11f9
+    image: openmsa/openmsa:msa2-api-2.8.12-f32f1e6775dc726dd78feb1b7d9e708fff4bd4e8
     depends_on:
       - db
     healthcheck:
@@ -163,7 +163,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: ubiqube/msa2-ui:48419886dbbc7edf52e093c51d0b9cdeb5bc50a8
+    image: openmsa/openmsa:msa2-ui-2.8.12-6db6409cb425e8eb5d0e7a0b45098c843cd394c4
     depends_on:
       - msa-api
     healthcheck:
@@ -526,7 +526,7 @@ services:
           - "msa_cerebro"
 
   msa-dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.8.12-051f07e79b8afaa266f95674dea6b7727d519b9f
+    image: openmsa/openmsa:msa2-linuxdev-2.8.12-19e1a777d7a454586d21218cfe26e1bbe44974cc
     healthcheck:
       <<: *healthcheck
     deploy:
