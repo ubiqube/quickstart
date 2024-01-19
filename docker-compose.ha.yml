@@ -47,7 +47,7 @@ x-healthcheck: &healthcheck
 
 services:
   msa-front:
-    image: ubiqube/msa2-front:f1f4533b1b2073b1f724385ace14d810a55a2da9
+    image: ubiqube/msa2-front:bf64cd5861ba0b4ca5ea536f5524e0d9a551ea94
     depends_on:
       - msa-api
       - msa-ui
@@ -163,7 +163,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: ubiqube/msa2-ui:6db6409cb425e8eb5d0e7a0b45098c843cd394c4
+    image: ubiqube/msa2-ui:72ec449e1c6f3c9aa2f7727636b320241d433a6b
     depends_on:
       - msa-api
     healthcheck:
@@ -235,7 +235,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: openmsa/openmsa:msa2-sms-2.8.12-a0f7339b454f140b52fb20d0239ede154c78270a
+    image: ubiqube/msa2-sms:921ec6ca15fa0063659dbbd306c9af49fdd9bd62
     depends_on:
       - db
     healthcheck:
