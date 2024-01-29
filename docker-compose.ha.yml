@@ -188,7 +188,7 @@ services:
     - FEATURE_WORKFLOW_OWNER=false
     - FEATURE_PERMISSION_PROFILE_LABELS=false
     - FEATURE_BPM=true
-    - UBIQUBE_ES_SECURITY_DISABLED=true
+#   - UBIQUBE_ES_SECURITY_DISABLED=true
     - FEATURE_ALARMS_AUTO_CLEARANCE=false
     - FEATURE_IMPORT_WITH_SAME_AND_UPPERRANK=true
     - FEATURE_REPOFOLDERLIST=[\"Datafiles\"]
@@ -487,7 +487,7 @@ services:
     environment:
       discovery.type: "single-node"
       script.painless.regex.enabled: "true"
-      bootstrap.memory_lock: "true"
+#      bootstrap.memory_lock: "true"
       xpack.security.enabled: "true"
       ES_JAVA_OPTS: "-Xms512m -Xmx1024m"
       <<: *es-configuration
