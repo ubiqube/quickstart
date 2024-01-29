@@ -116,6 +116,7 @@ services:
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
+      start_period: 4m
     deploy:
       <<: *placement_db
     environment:
