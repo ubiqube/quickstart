@@ -47,7 +47,7 @@ x-healthcheck: &healthcheck
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.12-740eaf74218b561b1a986806ff7c39e8ef6750e1
+    image: openmsa/openmsa:msa2-front-2.8.12-fe073cd8a9d4144cdcc77fea24de4900d58cf98c
     depends_on:
       - msa-api
       - msa-ui
@@ -235,7 +235,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: openmsa/openmsa:msa2-sms-2.8.12-921ec6ca15fa0063659dbbd306c9af49fdd9bd62
+    image: openmsa/openmsa:msa2-sms-2.8.12-4312cd1b769c58ecb37b93df801b629ba7ee6085
     depends_on:
       - db
     healthcheck:
@@ -272,7 +272,7 @@ services:
           - "msa_sms"
 
   msa-parse:
-    image: openmsa/openmsa:msa2-parse-2.8.12-a127ef8fdb97b3212b7e2d69b3e8328c5c69f589
+    image: openmsa/openmsa:msa2-parse-2.8.12-425880e99c38e31f236c9b9ff2b572d5fcd412e0
     depends_on:
       - db
       - msa-dev
@@ -296,7 +296,7 @@ services:
           - "msa_parse"
 
   msa-snmptrap:
-    image: openmsa/openmsa:msa2-snmptrap-2.8.12-426d1aaeeadaf239db554577f5f7666b206b51e9
+    image: openmsa/openmsa:msa2-snmptrap-2.8.12-524fc25dc9e1c130f56f6225c13fcacf3fa641b9
     depends_on:
       - db
     healthcheck:
@@ -324,7 +324,7 @@ services:
           - "msa_snmptrap"
 
   msa-bud:
-    image: openmsa/openmsa:msa2-bud-2.8.12-1e9de820086e9182c60b7d19799daec485fc6900
+    image: openmsa/openmsa:msa2-bud-2.8.12-8f966ed33801b46f2265c8946cd91ef1375e25c4
     depends_on:
       - db
     healthcheck:
@@ -346,7 +346,7 @@ services:
       - db
       - msa-api
       - msa-dev
-    image: openmsa/openmsa:msa2-alarm-2.8.12-99843b2b7c2cd4c224eb9bdacc6801fefed60496
+    image: openmsa/openmsa:msa2-alarm-2.8.12-c9dd545bc3a232ca698cd6522a57a413e8ebbc08
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
@@ -371,7 +371,7 @@ services:
       - db
       - msa-dev
       - msa-api
-    image: openmsa/openmsa:msa2-monitoring-2.8.12-b88d87b07aa892255e7f99de460a01fdd905bc63
+    image: openmsa/openmsa:msa2-monitoring-2.8.12-795304247ccead366eabb830bf6feaf70d44608f
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
