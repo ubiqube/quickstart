@@ -20,7 +20,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.12-c6e0437d716543e359b790a0257812c6283abbf0
+    image: openmsa/openmsa:msa2-front-2.8.12-f9f8a11f7ab6637ae040bcc49565bc62fb4d5c30
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -69,7 +69,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.8.12-a2170370a41b5c48d0aa9592aadd667f24195fd8
+    image: openmsa/openmsa:msa2-db-2.8.12-567810d79468e4d3ea53cd462c7586d7be0c541d
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -243,7 +243,7 @@ services:
   msa-snmptrap:
     restart: unless-stopped
     container_name: msa_snmptrap
-    image: openmsa/openmsa:msa2-snmptrap-2.8.12-426d1aaeeadaf239db554577f5f7666b206b51e9
+    image: openmsa/openmsa:msa2-snmptrap-2.8.12-524fc25dc9e1c130f56f6225c13fcacf3fa641b9
     depends_on:
       db:
         condition: service_healthy
