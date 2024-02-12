@@ -47,7 +47,7 @@ x-healthcheck: &healthcheck
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.12-1332d1a16cc03158c93cea592484d8974fd8894d
+    image: openmsa/openmsa:msa2-front-2.8.12-a1cf0a4db3c5a2aec40c10c47cb132ea5e39e710
     depends_on:
       - msa-api
       - msa-ui
@@ -85,7 +85,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: openmsa/openmsa:msa2-db-2.8.12-2dbbea9c73992aacc7ee440bf1ce9c11efd02384
+    image: openmsa/openmsa:msa2-db-2.8.12-b6f1164cfce47c6d3a61be8450fc952258e94f38
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
@@ -112,7 +112,7 @@ services:
       <<: *logging
 
   db-replica:
-    image: openmsa/openmsa:msa2-db-2.8.12-2dbbea9c73992aacc7ee440bf1ce9c11efd02384
+    image: openmsa/openmsa:msa2-db-2.8.12-b6f1164cfce47c6d3a61be8450fc952258e94f38
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
@@ -137,7 +137,7 @@ services:
       <<: *logging
 
   msa-api:
-    image: openmsa/openmsa:msa2-api-2.8.12-d751e16fe3f1ccf8934b936739b27eba2545b169
+    image: openmsa/openmsa:msa2-api-2.8.12-9e80a33c599a3824b55d9d368e9fd602b44deb8a
     depends_on:
       - db
     healthcheck:
@@ -163,7 +163,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.8.12-7f23a224e81347728a90d0e028ecdb255fda6ab6
+    image: openmsa/openmsa:msa2-ui-2.8.12-d5e9329d7087f271ee5644d13c8a9fedb90f483b
     depends_on:
       - msa-api
     healthcheck:
@@ -426,7 +426,7 @@ services:
   msa-broker:
     depends_on:
       - db
-    image: openmsa/openmsa:msa2-broker-2.8.12-4725a0b2c9a64ab0df2295ce5d76e928bed0255e
+    image: openmsa/openmsa:msa2-broker-2.8.12-a637ce7b1d31f9da37a22b0fdaad954dcdf0870e
     healthcheck:
       <<: *healthcheck
     deploy:
@@ -442,7 +442,7 @@ services:
   camunda:
     depends_on:
       - db
-    image: openmsa/openmsa:msa2-camunda-2.8.12-d95c1ded1750a35df6593fb5a8bcd376b4a76dd0
+    image: openmsa/openmsa:msa2-camunda-2.8.12-0f60a3c018c1b7dcde68259c9dadf71862373510
     healthcheck:
       <<: *healthcheck
     deploy:
