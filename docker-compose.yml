@@ -20,7 +20,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.12-5dbaadb6f97e7ba8c036f89f7c000ca939e6acf4
+    image: openmsa/openmsa:msa2-front-2.8.12-44b70530b36622d4d3668d78daf028062b99900a
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -69,7 +69,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.8.12-b6f1164cfce47c6d3a61be8450fc952258e94f38
+    image: openmsa/openmsa:msa2-db-2.8.12-f67d8e1a7c86b4c51360afdabb2cab0a2eccaf6c
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -99,7 +99,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.8.12-a1226428c1fa06ae59bf5b310feadf0e4be0e3ee
+    image: openmsa/openmsa:msa2-api-2.8.12-3c7f832d1a84e94fa935fead004d5b4701924b5a
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -133,7 +133,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.8.12-d732cfa8157efb39764f20c845e8ae7a48f40ded
+    image: openmsa/openmsa:msa2-ui-2.8.12-88f95cc0b8d0817a9931d760be57e7834730b6bd
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -296,7 +296,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: openmsa/openmsa:msa2-alarm-2.8.12-52f4c9cf3e4248d8ad971cec306089b26cce916e
+    image: openmsa/openmsa:msa2-alarm-2.8.12-c6fe567fd39296b96d4018b701d50ca964806236
     healthcheck:
       timeout: 5s
       retries: 10
@@ -532,7 +532,7 @@ services:
     restart: unless-stopped
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: openmsa/openmsa:msa2-linuxdev-2.8.12-19e1a777d7a454586d21218cfe26e1bbe44974cc
+    image: openmsa/openmsa:msa2-linuxdev-2.8.12-8514137d5f7670d00933a0ebbd50e8d886df9466
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
