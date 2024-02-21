@@ -20,7 +20,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:e2d0d19a62456f5e5301e5051efe7b63d64c7341
+    image: ubiqube/msa2-front:cbff89651b4c37f1c45bb8e78bf0e192331234ed
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -69,7 +69,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: ubiqube/msa2-db:f67d8e1a7c86b4c51360afdabb2cab0a2eccaf6c
+    image: ubiqube/msa2-db:022995b822977b251dbe80ecc000d5bbef656617
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -99,7 +99,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:6e275ba1273a50ecfc30d2cb7aa0adf38b19e650
+    image: ubiqube/msa2-api:48f701b7055b292d20c036bd050ad43f9745a190
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -133,7 +133,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:729b98517fed3557642054ad8cad21eeccc8c69d
+    image: ubiqube/msa2-ui:138c2b98c9fc92ab841af6156bcc28dfb54c8c42
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -169,7 +169,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:4312cd1b769c58ecb37b93df801b629ba7ee6085
+    image: ubiqube/msa2-sms:930aebeba6eb45f7af63627f976a872b23e4100b
     healthcheck:
       timeout: 5s
       retries: 10
@@ -412,6 +412,7 @@ services:
       - KAFKA_CFG_LOG_RETENTION_BYTES=2000000000
       - KAFKA_CFG_LOG_RETENTION_MS=86400000
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+      - KAFKA_CFG_MESSAGE_MAX_BYTES=1048576
     logging:
       <<: *logging
     volumes:
