@@ -20,7 +20,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.12-e1565e8a7c814acebb308b0a2a791adf53636ac0
+    image: openmsa/openmsa:msa2-front-2.8.12-cbff89651b4c37f1c45bb8e78bf0e192331234ed
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -69,7 +69,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.8.12-b3470590c1c01ded86e4570633cc243247846bf5
+    image: openmsa/openmsa:msa2-db-2.8.12-022995b822977b251dbe80ecc000d5bbef656617
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -99,7 +99,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.8.12-d33ff4b892d2b1d1f0db296196f3603289ea1027
+    image: openmsa/openmsa:msa2-api-2.8.12-48f701b7055b292d20c036bd050ad43f9745a190
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -133,7 +133,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.8.12-8f64bf2cb794a4d5ab1bcc7d5c4b3e8af446f6b7
+    image: openmsa/openmsa:msa2-ui-2.8.12-138c2b98c9fc92ab841af6156bcc28dfb54c8c42
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -169,7 +169,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: openmsa/openmsa:msa2-sms-2.8.12-4312cd1b769c58ecb37b93df801b629ba7ee6085
+    image: openmsa/openmsa:msa2-sms-2.8.12-930aebeba6eb45f7af63627f976a872b23e4100b
     healthcheck:
       timeout: 5s
       retries: 10
