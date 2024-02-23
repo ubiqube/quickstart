@@ -108,6 +108,7 @@ services:
       MAX_CONNECTIONS: 1600
     volumes:
       - "/mnt/NASVolume/msa_db:/pgsqldata/pgsql"
+    shm_size: 1g
     logging:
       <<: *logging
 
@@ -200,7 +201,8 @@ services:
 
   msa-rsyslog:
     depends_on:
-      - msa-event
+      - msa-parse
+      - kafka
     image: openmsa/openmsa:msa2-rsyslog-2.8.12-ff52e9cdfb5452b114e94eb76bfb8679d380fa03
     healthcheck:
       <<: *healthcheck
@@ -208,17 +210,13 @@ services:
     deploy:
       <<: *placement_rsyslog
     environment:
-    # environment:
-      # enable omfwd acxtion type for syslog Forwarding Output Module
-      # https://www.rsyslog.com/doc/v8-stable/configuration/modules/omfwd.html
-      # default
-      # ACTIONTYPE: "omfwd"
+      # ACTIONTYPE: omudpspoof or omkafka
       # configure a specific port for TLS. Default is 6514
       # TLS_SYSLOG_PORT: 6514
       ACTIONTYPE: "omkafka"
       <<: *kafka-syslogs  
     ports:
-    # rsyslog port can support only one protocol (TCP or UDP) per port and must be in host mode
+      # thanks to docker swarm rsyslog port can support only one protocol (TCP or UDP) per port and must be in host mode
       - target: 514
         published: 514
         protocol: udp
@@ -238,6 +236,7 @@ services:
     image: openmsa/openmsa:msa2-sms-2.8.12-930aebeba6eb45f7af63627f976a872b23e4100b
     depends_on:
       - db
+      - msa-dev
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
@@ -275,6 +274,8 @@ services:
     image: openmsa/openmsa:msa2-parse-2.8.12-425880e99c38e31f236c9b9ff2b572d5fcd412e0
     depends_on:
       - db
+      - kafka
+      - msa-es
       - msa-dev
     healthcheck:
       <<: *healthcheck
@@ -299,6 +300,8 @@ services:
     image: openmsa/openmsa:msa2-snmptrap-2.8.12-524fc25dc9e1c130f56f6225c13fcacf3fa641b9
     depends_on:
       - db
+      - msa-es
+      - msa-dev
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
@@ -336,6 +339,8 @@ services:
       <<: *placement_app
     logging:
       <<: *logging
+    volumes:
+      - "msa_sms_logs:/opt/sms/logs"
     networks:
       default:
         aliases:
@@ -344,6 +349,7 @@ services:
   msa-alarm:
     depends_on:
       - db
+      - msa-es
       - msa-api
       - msa-dev
     image: openmsa/openmsa:msa2-alarm-2.8.12-c6fe567fd39296b96d4018b701d50ca964806236
@@ -369,8 +375,9 @@ services:
   msa-monitoring:
     depends_on:
       - db
+      - msa-es
       - msa-dev
-      - msa-api
+      - msa-sms
     image: openmsa/openmsa:msa2-monitoring-2.8.12-795304247ccead366eabb830bf6feaf70d44608f
     healthcheck:
       <<: *healthcheck
