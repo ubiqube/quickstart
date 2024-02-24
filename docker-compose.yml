@@ -337,7 +337,7 @@ services:
       # ES_MON
       # "yes" : ES + RRD
       # "only" : ES only (no RRD)
-      # any other values ("no" is recommanded!) RRD only (no ES)
+      # any other values ("no" is recommended!) RRD only (no ES)
       ES_MON: "no"
       <<: *es-configuration
     logging:

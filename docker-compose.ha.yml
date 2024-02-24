@@ -216,7 +216,7 @@ services:
       ACTIONTYPE: "omkafka"
       <<: *kafka-syslogs  
     ports:
-      # thanks to docker swarm rsyslog port can support only one protocol (TCP or UDP) per port and must be in host mode
+      # on docker swarm rsyslog port can support only one protocol (TCP or UDP) per port and MUST be in host mode
       - target: 514
         published: 514
         protocol: udp
