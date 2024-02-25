@@ -32,10 +32,6 @@ services:
         condition: service_started
       camunda:
         condition: service_started
-      msa-rsyslog:
-        condition: service_started
-      msa-snmptrap:
-        condition: service_started
     ports:
       - target: 80
         published: 80
@@ -117,7 +113,6 @@ services:
     logging:
       <<: *logging
     volumes:
-      - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "rrd_repository:/opt/rrd"
@@ -178,8 +173,6 @@ services:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
       <<: *es-configuration
-    cap_add:
-      - NET_ADMIN
     depends_on:
       db:
         condition: service_healthy
@@ -225,6 +218,8 @@ services:
         condition: service_started
       msa-sms:
         condition: service_healthy
+      kafka:
+        condition: service_started
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -308,6 +303,8 @@ services:
         condition: service_healthy
       msa-es:
         condition: service_started
+      msa-api:
+        condition: service_healthy
     environment:
       <<: *es-configuration
     logging:
@@ -337,9 +334,10 @@ services:
       msa-sms:
         condition: service_started
     environment:
-    # "yes" : ES + RRD
-    # "only" : ES only (no RRD)
-    # any other values ("no" is recommanded!) RRD only (no ES)
+      # ES_MON
+      # "yes" : ES + RRD
+      # "only" : ES only (no RRD)
+      # any other values ("no" is recommended!) RRD only (no ES)
       ES_MON: "no"
       <<: *es-configuration
     logging:
@@ -365,10 +363,7 @@ services:
       - kafka
     image: openmsa/openmsa:msa2-rsyslog-2.8.12-ff52e9cdfb5452b114e94eb76bfb8679d380fa03
     environment:
-      # enable omfwd acxtion type for syslog Forwarding Output Module
-      # https://www.rsyslog.com/doc/v8-stable/configuration/modules/omfwd.html
-      # default
-      # ACTIONTYPE: "omfwd"
+      # ACTIONTYPE: omudpspoof or omkafka
       # configure a specific port for TLS. Default is 6514
       # TLS_SYSLOG_PORT: 6514
       ACTIONTYPE: "omkafka"
@@ -412,6 +407,7 @@ services:
       - KAFKA_CFG_LOG_RETENTION_BYTES=2000000000
       - KAFKA_CFG_LOG_RETENTION_MS=86400000
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+      - KAFKA_CFG_MESSAGE_MAX_BYTES=1048576
     logging:
       <<: *logging
     volumes:
@@ -531,7 +527,6 @@ services:
   msa-dev:
     restart: unless-stopped
     container_name: msa_dev
-    #build: ./lab/msa_dev
     image: openmsa/openmsa:msa2-linuxdev-2.8.12-8514137d5f7670d00933a0ebbd50e8d886df9466
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
@@ -598,7 +593,6 @@ services:
 
 volumes:
   kafka_data:
-  msa_api:
   msa_broker:
   msa_db:
   msa_dev:
