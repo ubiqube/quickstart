@@ -7,7 +7,7 @@ x-es-configuration: &es-configuration
 
 services:
   msa_front:
-    image: openmsa/openmsa:msa2-front-2.8.13-2f1fbbe6dd9b9b0208db35ad630bc5a35b369cd3
+    image: openmsa/openmsa:msa2-front-2.8.13-754db482594d84bacfe575d25081ca3fd7fbf855
     depends_on:
       - msa_api
       - msa_ui
@@ -114,7 +114,7 @@ services:
         aliases:
           - "msa-api"
   msa_ui:
-    image: openmsa/openmsa:msa2-ui-2.8.13-9321d8a77df3ed8d71250024bf88c3036b5c9513
+    image: openmsa/openmsa:msa2-ui-2.8.13-048aa4587a17a7826e78df52287918f4ee0d6b6c
     depends_on:
       - msa_api
     healthcheck:
@@ -141,7 +141,7 @@ services:
     - FEATURE_PERMISSION_PROFILE_LABELS=false
 
   msa_sms:
-    image: openmsa/openmsa:msa2-sms-2.8.13-84c0e19e424625e08d4d3d3f25c762a86b341fc4
+    image: openmsa/openmsa:msa2-sms-2.8.13-1f4bd61d73805d476e291d76e09d70bb4ac0472e
     depends_on:
       - db
     healthcheck:
@@ -161,7 +161,7 @@ services:
         max_replicas_per_node: 1
 
   msa_bud:
-    image: openmsa/openmsa:msa2-bud-2.8.13-529c48a6c551302af4894aa643caa0708e37e503
+    image: openmsa/openmsa:msa2-bud-2.8.13-69cc20fc8192f1aebce8d2d3cd30f9c498d48234
     depends_on:
       - db
     deploy:
@@ -173,7 +173,7 @@ services:
     depends_on:
       - db
       - msa_api
-    image: openmsa/openmsa:msa2-alarm-2.8.13-c6fe567fd39296b96d4018b701d50ca964806236
+    image: openmsa/openmsa:msa2-alarm-2.8.13-c166ec96a777f94018607e2cca33d26c9d6eab2b
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -186,7 +186,7 @@ services:
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
 
   msa_monitoring:
-    image: openmsa/openmsa:msa2-monitoring-2.8.13-795304247ccead366eabb830bf6feaf70d44608f
+    image: openmsa/openmsa:msa2-monitoring-2.8.13-4b41ac8c4a06f3c555c9eed9546ec846709a46eb
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
