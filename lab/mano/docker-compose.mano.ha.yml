@@ -35,6 +35,8 @@ services:
   mano-alarm:
     restart: unless-stopped
     image: docker.io/openmsa/mano-alarm-oci-ci:3.2.0
+    deploy:
+      <<: *placement
     depends_on:
       - db
     environment:
@@ -52,13 +54,9 @@ services:
         mode: ingress
 
   mano-artemis:
-    image: openmsa/artemis:2.19.0
+    image: openmsa/mano-artemis:2.19.0
     deploy:
-      replicas: 1
-      placement:	
-        max_replicas_per_node: 1
-        constraints:	
-          - "node.labels.worker==app"
+      <<: *placement
       resources:
         limits:
           cpus: '0.50'
@@ -91,11 +89,7 @@ services:
   mano-auth:
     image: docker.io/openmsa/mano-keycloak:3.2.0.1
     deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+      <<: *placement
       resources:
         limits:
           cpus: '0.50'
@@ -152,6 +146,8 @@ services:
 
   mano-logstash:
     image: docker.elastic.co/logstash/logstash:7.17.9
+    deploy:
+      <<: *placement
     healthcheck:
       test: curl --fail http://localhost:9600/
       interval: 1m
@@ -169,6 +165,8 @@ services:
 
   mano-mon:
     image: openmsa/mano-mon:3.2.0
+    deploy:
+      <<: *placement
     depends_on:
       - db
     environment:
@@ -193,11 +191,7 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
       - "/mnt/NASVolume/mano_nfvo_brf7:/opt/etsi-mano-data"
     deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+      <<: *placement
     ports:
       - target: 8080
         published: 8120
@@ -225,11 +219,7 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
       - "/mnt/NASVolume/mano_nfvo_kvdc:/opt/etsi-mano-data"
     deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+      <<: *placement
     ports:
       - target: 8080
         published: 8100
@@ -257,11 +247,7 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
       - "/mnt/NASVolume/mano_vnfm_brf7:/opt/etsi-mano-data"
     deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+      <<: *placement
     ports:
       - target: 8080
         published: 8130
@@ -290,11 +276,7 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
       - "/mnt/NASVolume/mano_vnfm_kvdc:/opt/etsi-mano-data"
     deploy:
-      replicas: 1
-      placement:	
-        max_replicas_per_node: 1
-        constraints:	
-          - "node.labels.worker==app"
+      <<: *placement
     ports:
       - target: 8080
         published: 8090
@@ -316,6 +298,8 @@ services:
 
   mano-zipkin:
     image: docker.io/openzipkin/zipkin
+    deploy:
+      <<: *placement
     environment:
       - STORAGE_TYPE=elasticsearch
       - ES_HOSTS=http://msa-es:9200
