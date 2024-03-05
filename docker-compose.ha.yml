@@ -109,7 +109,7 @@ services:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 600s
       retries: 40
-      interval: 30s
+      interval: 500s
 
     deploy:
       replicas: 1
