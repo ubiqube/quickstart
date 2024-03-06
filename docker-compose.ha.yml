@@ -47,7 +47,7 @@ x-healthcheck: &healthcheck
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.13-5f833b6a4e258a553328f9cb85550d0e794c0316
+    image: openmsa/openmsa:msa2-front-2.8.13-ead299da4b89eef77fc039e31eb14f05cb1360ff
     depends_on:
       - msa-api
       - msa-ui
@@ -138,7 +138,7 @@ services:
       <<: *logging
 
   msa-api:
-    image: openmsa/openmsa:msa2-api-2.8.13-632f9967f41435294fe3b161eeb88af0cca9102f
+    image: openmsa/openmsa:msa2-api-2.8.13-7030d8b450ed8545095c5d74111508d3f1d75c9c
     depends_on:
       - db
     healthcheck:
@@ -164,7 +164,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.8.13-ef7b879c44b534ec600ea9220951b63eb4e70f49
+    image: openmsa/openmsa:msa2-ui-2.8.13-5e24536fce6db4d047612138227e664c7ad14530
     depends_on:
       - msa-api
     healthcheck:
@@ -271,7 +271,7 @@ services:
           - "msa_sms"
 
   msa-parse:
-    image: openmsa/openmsa:msa2-parse-2.8.13-b90b8098a06acd8a13105000944e1bb5265f7de3
+    image: openmsa/openmsa:msa2-parse-2.8.13-3cba1c4e7907645f172c9584ab336c062ab6b574
     depends_on:
       - db
       - kafka
@@ -352,7 +352,7 @@ services:
       - msa-es
       - msa-api
       - msa-dev
-    image: openmsa/openmsa:msa2-alarm-2.8.13-c166ec96a777f94018607e2cca33d26c9d6eab2b
+    image: openmsa/openmsa:msa2-alarm-2.8.13-eef74189165c1c015934ab15dd9b04398cb302dd
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
@@ -378,7 +378,7 @@ services:
       - msa-es
       - msa-dev
       - msa-sms
-    image: openmsa/openmsa:msa2-monitoring-2.8.13-4b41ac8c4a06f3c555c9eed9546ec846709a46eb
+    image: openmsa/openmsa:msa2-monitoring-2.8.13-d56c82244399afa28da2213630c9d236e2330847
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
