@@ -20,7 +20,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:54a3f44a33732d326808dd6db58db2eabcae4428
+    image: ubiqube/msa2-front:25f8d88c22fd55f9e68ca59c32d22f3198ffc02a
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -95,7 +95,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:91eff6a454ae4bd38982899cd7c04263038f4eac
+    image: ubiqube/msa2-api:7206299a48c8d95366dcd9b8289c83f07c66fa57
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -128,7 +128,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:c2bcb2a962e52813f060b8139fd9f5dcb539f63c
+    image: ubiqube/msa2-ui:1d7cda1e85d304a062ae6f0c39a93ad4f230d0c4
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -153,7 +153,7 @@ services:
     - UBIQUBE_ES_SECURITY_DISABLED=true
     - FEATURE_ALARMS_AUTO_CLEARANCE=false
     - FEATURE_IMPORT_WITH_SAME_AND_UPPERRANK=true
-    - FEATURE_REPOFOLDERLIST=[\"Datafiles\"]
+    - FEATURE_REPOFOLDERLIST=[\"Datafiles\", \"Shared\"]
     logging:
       <<: *logging
     networks:
