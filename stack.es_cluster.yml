@@ -139,7 +139,7 @@ services:
     - FEATURE_EDIT_VARIABLES_IN_MICROSERVICE_CONSOLE=true
     - FEATURE_WORKFLOW_OWNER=false
     - FEATURE_PERMISSION_PROFILE_LABELS=false
-    - FEATURE_REPOFOLDERLIST=[\"Datafiles\", \"Shared\"]
+    - FEATURE_REPOFOLDERLIST=[\"Datafiles\"]
 
   msa_sms:
     image: openmsa/openmsa:msa2-sms-2.8.13-f9b30ccd98681f8a6d3837e429932140abdee8e6
