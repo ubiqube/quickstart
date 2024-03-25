@@ -7,7 +7,7 @@ x-es-configuration: &es-configuration
 
 services:
   msa_front:
-    image: openmsa/openmsa:msa2-front-2.8.13-bede5e9cb8e1725c7004d24c7fe306a488e649da
+    image: openmsa/openmsa:msa2-front-2.8.13-8ade2473c8e3ab4155b48a5b34f157c55b7285fd
     depends_on:
       - msa_api
       - msa_ui
@@ -88,7 +88,7 @@ services:
         condition: on-failure
 
   msa_api:
-    image: openmsa/openmsa:msa2-api-2.8.13-ca4d86bfd7546e9503816b449206c7c5312b7101
+    image: openmsa/openmsa:msa2-api-2.8.13-32231ecc2e5d52ca07d0242ccb9c505f10302d6f
     depends_on:
       - db
     healthcheck:
@@ -114,7 +114,7 @@ services:
         aliases:
           - "msa-api"
   msa_ui:
-    image: openmsa/openmsa:msa2-ui-2.8.13-d60e63c571aeb3557d322a844b77c377ecab89ed
+    image: openmsa/openmsa:msa2-ui-2.8.13-4d1a7319457b1ee35eecceb31d4212ed5b9d79bb
     depends_on:
       - msa_api
     healthcheck:
@@ -142,7 +142,7 @@ services:
     - FEATURE_REPOFOLDERLIST=[\"Datafiles\"]
 
   msa_sms:
-    image: openmsa/openmsa:msa2-sms-2.8.13-f9b30ccd98681f8a6d3837e429932140abdee8e6
+    image: openmsa/openmsa:msa2-sms-2.8.13-2d9b1a0650664030289df94625ed0fb9b67fd856
     depends_on:
       - db
     healthcheck:
@@ -162,7 +162,7 @@ services:
         max_replicas_per_node: 1
 
   msa_bud:
-    image: openmsa/openmsa:msa2-bud-2.8.13-8d54fdf6fbb08ffe98f57a91125a01975575f543
+    image: openmsa/openmsa:msa2-bud-2.8.13-0fd4fdadf17a489fb3afa3682cf13484080d6e33
     depends_on:
       - db
     deploy:
@@ -174,7 +174,7 @@ services:
     depends_on:
       - db
       - msa_api
-    image: openmsa/openmsa:msa2-alarm-2.8.13-eef74189165c1c015934ab15dd9b04398cb302dd
+    image: openmsa/openmsa:msa2-alarm-2.8.13-74a9a6ea2b28b5f128f678f70406065b157e7c18
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -187,7 +187,7 @@ services:
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
 
   msa_monitoring:
-    image: openmsa/openmsa:msa2-monitoring-2.8.13-d56c82244399afa28da2213630c9d236e2330847
+    image: openmsa/openmsa:msa2-monitoring-2.8.13-ab3b98a885289836a78037e74a695f0cd35c3497
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
