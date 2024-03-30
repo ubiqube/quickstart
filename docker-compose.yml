@@ -95,7 +95,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:d057c91f0fb97403a9efb8685b39ab0ba83f0ccb
+    image: ubiqube/msa2-api:1ccb3171190a62ed250c6dd1694322d27d2ffe53
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
