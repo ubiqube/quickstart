@@ -20,7 +20,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.13-ce53ea25954df3602598482241e9ba24d9fa58dc
+    image: openmsa/openmsa:msa2-front-2.8.13-88eeebb31a0d9406e0aec57ce5a8af73c23fc78c
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -128,7 +128,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.8.13-6615354372fe546e42cf803133c4ec8c7c716a23
+    image: openmsa/openmsa:msa2-ui-2.8.13-f28f13837e1cea360fb80f5641be6db16a183d74
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -570,7 +570,7 @@ services:
     restart: unless-stopped
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.8.13-e84bc462bf01d4956c4a1895b66507d4ba47a227
+    image: openmsa/openmsa:msa2-linuxme-2.8.13-
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
