@@ -570,7 +570,7 @@ services:
     restart: unless-stopped
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.8.13-
+    image: openmsa/openmsa:msa2-linuxme-2.8.13-e84bc462bf01d4956c4a1895b66507d4ba47a227
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
