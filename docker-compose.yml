@@ -611,13 +611,13 @@ services:
 
       # ELASTICSEARCH_URL: "msa_es:9200"
       # #For elasticsearch scripts /opt/ubi-es-ilm/log_retention_management.php
-      # UBI_ES_INDEX_MULTIPLE_TTL:         "type:traffic NOT (hostname:scvmutm-jpyk01 OR hostname:scvmutm-jpyk02 OR hostname:NCS1619)|7d,type:traffic AND ( hostname:scvmutm-jpyk01 OR hostname:scvmutm-jpyk02 OR hostname:NCS1619)|30d,*|90d"
-      # UBI_ES_NETFLOW_INDEX_MULTIPLE_TTL: "*|1w"
+      # UBI_ES_INDEX_MULTIPLE_TTL:         "*|90d"
+      # UBI_ES_NETFLOW_INDEX_MULTIPLE_TTL: "*|90d"
       # UBI_ES_LOG_SEARCH_INDEX_LIST:      "ubilogs"
       # UBI_ES_RETENTION_INDEX_NAME:       "ubilogs*"
       # UBI_ES_RETENTION_NETFLOW_INDEX_NAME: "ubiaudit*"
       # UBI_ES_RETENTION_ALARM_INDEX_NAME: "ubialarm*"
-      # UBI_ES_ALARM_INDEX_MULTIPLE_TTL:   "*|3d"
+      # UBI_ES_ALARM_INDEX_MULTIPLE_TTL:   "*|90d"
       # UBI_ES_CACHE_INDEX_DEFAULT_TTL:    "1w"
       # UBI_ES_DELETE_SCROLL_SIZE:         "4000"
       # UBI_ES_MAX_DOCS:                   ""

@@ -1,0 +1,129 @@
+version: "3.8"
+
+x-es-configuration: &es-configuration
+    ES_CREDENTIALS: c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+    ES_SERVERS: "msa-es"
+
+services:
+ 
+   msa-broker:
+    volumes:
+      - "msa_broker:/var/lib/artemis-instance"
+
+   kafka:
+    volumes:
+      - "kafka_data:/bitnami"
+
+
+   msa-ui:
+    environment:
+    - FEATURE_ADMIN=true
+    - FEATURE_REPOSITORY=true
+    - FEATURE_CONNECTION_STATUS=true
+    - FEATURE_ALARMS=true
+    - FEATURE_LICENCE=true
+    - FEATURE_TOPOLOGY=true
+    - FEATURE_MONITORING_PROFILES=true
+    - FEATURE_PROFILE_AUDIT_LOGS=true
+    - FEATURE_PERMISSION_PROFILES=true
+    - FEATURE_AI_ML=false
+    - FEATURE_MICROSERVICE_BULK_OPERATION=false
+    - FEATURE_EDIT_VARIABLES_IN_MICROSERVICE_CONSOLE=true
+    - FEATURE_WORKFLOW_OWNER=false
+    - FEATURE_PERMISSION_PROFILE_LABELS=false
+    - FEATURE_BPM=false
+    - FEATURE_REPOFOLDERLIST=["Datafiles","Documentation","Firmware","License","Pki"]
+    - FEATURE_HA_DISPLAY=true
+    - FEATURE_IMPORT_WITH_SAME_AND_UPPERRANK=false
+    - FEATURE_IMPORT_WITH_UPPERRANK=false
+    - FEATURE_ENABLE_GLOBAL_SEARCH=false
+    - FEATURE_ENABLE_MANAGER_LOGOUT=false
+    - FEATURE_INCIDENT_TICKET_MANAGEMENT=true
+    - FEATURE_HIDEDEFAULT_OPTION=true
+    - FEATURE_LOGSVISIBILITY=["type=utm","type=attack","type=traffic"]
+    - FEATURE_NTT_DISPLAY=true
+
+
+   ntt-api:
+    image: ubiqube/nttsec-api:b7b63db288cb4fd70a868df6121879a34cd7fee2
+    depends_on:
+      - msa-api
+    ports:
+      - "8580:8580"
+      - "8587:8587"
+    environment:
+      - LOGGING_LEVEL_ROOT=DEBUG
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8587
+      - NTT_RAPIDGATEWAY_API_URL=http://10.1.144.129:8080
+      - NTT_REMEDYGATEWAY_API_URL=http://10.1.144.129:8080
+
+        #msa-sms:
+        #  image: ubiqube/msa2-sms:host-hostname-2.8.10.2
+
+
+   export-es-events:
+    image: ubiqube/export-es-events:5aaf18e5332a5d914333629f30a90b4a3487f201
+    tty: true
+    init: true
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "find /opt/export-es-events/log -type f -mmin -5"]
+    depends_on:
+      msa-es:
+        condition: service_started
+    environment:
+      ELASTICSEARCH_URL: "msa_es:9200"
+      ELASTICSEARCH_HOSTS: "msa_es:9200"
+
+      #for .125 MSA
+      #UBI_ES_RTCE_REMOTEACCESS: "ubiqube@10.1.144.244"
+      #UBI_ES_RTCE_REMOTE_PATH: "/data/logreplayUQ"
+      #UBI_SSH_PRIVATE_KEY: "/opt/export-es-events/conf/id_rsa_msa.125"
+
+      #For ubiqube lab Ubilab .58
+      UBI_ES_RTCE_REMOTEACCESS: "ses@10.31.1.145"
+      UBI_ES_RTCE_REMOTE_PATH: "/home/ses"
+      UBI_SSH_PRIVATE_KEY: "/opt/export-es-events/conf/id_rsa.58"
+
+      UBI_ES_RTCE_REMOTE_PERIOD: "5"
+      UBI_ES_LOGINDEX_NAME: "ubilogs"
+      #for single MSA:
+      UBI_PROCESS_TASK_FILTER_WORKER1: ' {\"regexp\": {\"customer_id\": {\"value\": \".*[012]\"}}} | {\"regexp\": {\"customer_id\": {\"value\": \".*[345]\"}}} | {\"regexp\": {\"customer_id\": {\"value\": \".*[6789]\"}}} '
+      UBI_ES_RTCE_REMOTE_PATH_WORKER1: "/data/logreplayUQ"
+
+      #change HOST_HOSTNAME for 211 to MSA_211 (the last number of HOST_HOSTNAME should be odd):
+      HOST_HOSTNAME: 'MSA_125'
+
+      # For elasticsearch.scripts.log_retention_management.php
+      UBI_ES_INDEX_MULTIPLE_TTL:         "*|2d"  
+      UBI_ES_NETFLOW_INDEX_MULTIPLE_TTL: "*|1w"
+      ##UBI_ES_WEBPORTAL_ENDPOINT:         "10.250.132.216"
+      UBI_ES_LOG_SEARCH_INDEX_LIST:      "ubilogs"
+      UBI_ES_RETENTION_INDEX_NAME:       "ubilogs*"
+      UBI_ES_RETENTION_NETFLOW_INDEX_NAME: "ubiflows*"
+      UBI_ES_RETENTION_ALARM_INDEX_NAME: "UBI_ES_RETENTION_ALARM_INDEX_NAME"
+      UBI_ES_ALARM_INDEX_MULTIPLE_TTL:   "*|3d"
+      UBI_ES_CACHE_INDEX_DEFAULT_TTL:    "1w"
+      UBI_ES_DELETE_SCROLL_SIZE:         "4000"
+      UBI_ES_MAX_DOCS:                   ""
+  
+
+
+      #For HA MSA, one msa_export per workers, but
+      #HOST_HOSTNAME: "{{.Node.Hostname}}"
+      #UBI_PROCESS_TASK_FILTER_WORKER1: ' {\"regexp\": {\"customer_id\": {\"value\": \".*[01]\"}}} | {\"regexp\": {\"customer_id\": {\"value\": \".*[23]\"}}} | {\"regexp\": {\"customer_id\": {\"value\": \".*[45]\"}}} '
+      #UBI_PROCESS_TASK_FILTER_WORKER2: ' {\"regexp\": {\"customer_id\": {\"value\": \".*[67]\"}}} | {\"regexp\": {\"customer_id\": {\"value\": \".*[8]\"}}} | {\"regexp\": {\"customer_id\": {\"value\": \".*[9]\"}}} '
+      #UBI_PROCESS_TASK_FILTER_WORKER3: ' {\"regexp\": {\"customer_id\": {\"value\": \".*[7]\"}}} | {\"regexp\": {\"customer_id\": {\"value\": \".*[8]\"}}} | {\"regexp\": {\"customer_id\": {\"value\": \".*[9]\"}}} '
+      #UBI_ES_RTCE_REMOTE_PATH_WORKER1: "/data/logreplayUQ"
+      #UBI_ES_RTCE_REMOTE_PATH_WORKER2: "/data/logreplayUQ2"
+      #UBI_ES_RTCE_REMOTE_PATH_WORKER3: "/data/logreplayUQ"
+            
+      <<: *es-configuration
+
+    volumes:
+      - "msa_export-es-events:/opt/export-es-events"
+
+
+    
+volumes:    
+  msa_export-es-events:

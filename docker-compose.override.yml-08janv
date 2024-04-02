@@ -1,0 +1,80 @@
+version: "3.8"
+
+x-es-configuration: &es-configuration
+    ES_CREDENTIALS: c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+    ES_SERVERS: "msa-es"
+
+services:
+
+   msa-broker:
+    restart: unless-stopped
+    image: docker.io/ubiqube/msa2-broker:4725a0b2c9a64ab0df2295ce5d76e928bed0255e
+    depends_on:
+      - db
+    environment:
+      ARTEMIS_PASSWORD: simetraehcapa
+      ARTEMIS_USER: artemis
+    volumes:
+      - "msa_broker:/var/lib/artemis-instance"
+
+
+   ntt-api:
+    image: ubiqube/nttsec-api:b7b63db288cb4fd70a868df6121879a34cd7fee2
+    depends_on:
+      - msa-api
+    ports:
+      - "8580:8580"
+      - "8587:8587"
+    environment:
+      - LOGGING_LEVEL_ROOT=DEBUG
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8587
+      - NTT_RAPIDGATEWAY_API_URL=http://10.1.144.129:8080
+      - NTT_REMEDYGATEWAY_API_URL=http://10.1.144.129:8080
+
+        #msa-sms:
+        #  image: ubiqube/msa2-sms:host-hostname-2.8.10.2
+
+
+   export-es-events:
+    image: ubiqube/export-es-events:3e8a684e11a189d5e7ba6b219954a654fb2b98c5
+    tty: true
+    init: true
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "find /opt/export-es-events/log -type f -mmin -5"]
+    depends_on:
+      msa-es:
+        condition: service_started
+    environment:
+      ELASTICSEARCH_URL: "msa_es:9200"
+      ELASTICSEARCH_HOSTS: "msa_es:9200"
+      
+      #for .125 MSA
+      UBI_ES_RTCE_REMOTEACCESS: "ubiqube@10.1.144.244"
+      UBI_ES_RTCE_REMOTE_PATH: "/data/logreplayUQ"
+      UBI_SSH_PRIVATE_KEY: "/opt/export-es-events/conf/id_rsa_msa.125"
+      
+      #For ubiqube lab .58
+      #UBI_ES_RTCE_REMOTEACCESS: "ses@10.31.1.145"
+      #UBI_ES_RTCE_REMOTE_PATH: "/home/ses"
+      #UBI_SSH_PRIVATE_KEY: "/opt/export-es-events/conf/id_rsa.58"
+      
+      UBI_ES_RTCE_REMOTE_PERIOD: "5"
+      UBI_ES_LOGINDEX_NAME: "ubilogs"
+      #for single MSA:
+      UBI_PROCESS_TASK_DEVISES: "0123 456 789"
+      HOST_HOSTNAME: "test"
+      
+      #For HA MSA, one msa_export per workers, but 
+      #HOST_HOSTNAME: "{{.Node.Hostname}}"
+      #UBI_PROCESS_TASK_DEVISES: "01 23 4"
+      #UBI_PROCESS_TASK_DEVISES: "56 78 9"
+      
+      <<: *es-configuration
+ 
+    volumes:
+      - "msa_export-es-events:/opt/export-es-events"
+    
+volumes:    
+  msa_export-es-events:
+  msa_broker:
