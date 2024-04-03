@@ -657,6 +657,7 @@ volumes:
   msa_monitbulkfiles_err:
   msa_alarmbulkfiles:
   msa_alarmbulkfiles_err:
+  msa2_es-ilm:
 
 networks:
   default:
