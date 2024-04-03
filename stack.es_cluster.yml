@@ -7,7 +7,7 @@ x-es-configuration: &es-configuration
 
 services:
   msa_front:
-    image: openmsa/openmsa:msa2-front-2.8.13-31b566e1195074b2bb150ce4c0d7be6361057315
+    image: openmsa/openmsa:msa2-front-2.8.13-890aadd5f7162ece0d99580f5d676525ce6f2918
     depends_on:
       - msa_api
       - msa_ui
@@ -59,7 +59,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.8.13-07b20845ffb032b653b3a0b49d8a26170b91e8b8
+    image: openmsa/openmsa:msa2-db-2.8.13-f459654fb2ffdd05e9f5ce2380348086f8d2dee6
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -88,7 +88,7 @@ services:
         condition: on-failure
 
   msa_api:
-    image: openmsa/openmsa:msa2-api-2.8.13-68d4ff65166fc355285255649c20019be7da0c35
+    image: openmsa/openmsa:msa2-api-2.8.13-d7f1ec751e34c77e776150a401a39dff951ea7d2
     depends_on:
       - db
     healthcheck:
