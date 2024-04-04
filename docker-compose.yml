@@ -20,7 +20,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:75e23ca5b107e495969b6fcb20ee2e2cf34df02d
+    image: ubiqube/msa2-api:d7f1ec751e34c77e776150a401a39dff951ea7d2
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
