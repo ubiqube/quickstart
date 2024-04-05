@@ -20,7 +20,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:ec3b3563a2e4b35937f59453bc4ebb6158b8f230
+    image: ubiqube/msa2-front:281c19723798563e8a3db2e66f3db544658e7942
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -65,7 +65,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: ubiqube/msa2-db:f459654fb2ffdd05e9f5ce2380348086f8d2dee6
+    image: ubiqube/msa2-db:b0c12101a8d1ee6f0c6d77ebbcc06a739ef7dc50
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -95,7 +95,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:d7f1ec751e34c77e776150a401a39dff951ea7d2
+    image: ubiqube/msa2-api:bfd3e8129d22e556aafe85d8700607a36a2aa298
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -525,11 +525,14 @@ services:
           - "msa_kibana"
 
   msa2-es-ilm:
-    image: ubiqube/msa2-es-ilm:83caffee1fba1706d9542d490758d9a6fe35f2f0
     container_name: msa2_es-ilm
+    restart: unless-stopped
+    image: ubiqube/msa2-es-ilm:83caffee1fba1706d9542d490758d9a6fe35f2f0
+    depends_on:
+      msa-es:
+        condition: service_started
     tty: true
     init: true
-    restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "find /opt/msa2-es-ilm/log/log_retention.log -type f -mmin -5"]
     depends_on:
