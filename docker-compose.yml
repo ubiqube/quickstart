@@ -591,43 +591,43 @@ services:
     logging:
       <<: *logging
 
+  msa2-es-ilm:
+    image: ubiqube/msa2-es-ilm:af3651a622158e4beb0dbb7272cb5374bceae907
+    container_name: msa2_es-ilm
+    tty: true
+    init: true
+    restart: unless-stopped
+    networks:
+      default:
+        aliases:
+          - "msa2_es-ilm"
+    healthcheck:
+      test: ["CMD-SHELL", "find /opt/msa2-es-ilm/log/log_retention.log -type f -mmin -10"]
+    depends_on:
+      msa-es:
+        condition: service_started
+    environment:
 
-  # msa2-es-ilm:
-    # image: ubiqube/msa2-es-ilm:83caffee1fba1706d9542d490758d9a6fe35f2f0
-    # container_name: msa2_es-ilm
-    # tty: true
-    # init: true
-    # restart: unless-stopped
-    # networks:
-      # default:
-        # aliases:
-          # - "msa2_es-ilm"
-    # healthcheck:
-      # test: ["CMD-SHELL", "find /opt/msa2-es-ilm/log/log_retention.log -type f -mmin -5"]
-    # depends_on:
-      # msa-es:
-        # condition: service_started
-    # environment:
+      ELASTICSEARCH_URL: "msa_es:9200"
+      #For elasticsearch scripts /opt/ubi-es-ilm/log_retention_management.php
+      #UBI_ES_INDEX_MULTIPLE_TTL:        "type:traffic|7d,type:event|30d,*|90d"
+      UBI_ES_INDEX_MULTIPLE_TTL:         "*|90d"
+      UBI_ES_AUDIT_INDEX_MULTIPLE_TTL:   "*|90d"
+      UBI_ES_LOG_SEARCH_INDEX_LIST:      "ubilogs"
+      UBI_ES_RETENTION_INDEX_NAME:       "ubilogs*"
+      UBI_ES_RETENTION_AUDIT_INDEX_NAME: "ubiaudit*"
+      UBI_ES_RETENTION_ALARM_INDEX_NAME: "ubialarm*"
+      UBI_ES_ALARM_INDEX_MULTIPLE_TTL:   "*|90d"
+      UBI_ES_CACHE_INDEX_DEFAULT_TTL:    "1w"
+      UBI_ES_DELETE_SCROLL_SIZE:         "4000"
+      UBI_ES_MAX_DOCS:                   ""
+      UBI_ES_LOG_DETENTION_DELETE:       "true"
+      UBI_ES_ILM_LOG_CRONTAB:            "# */2 * * * *  php /opt/ubi-es-ilm/log_retention_management.php --verbose=3 >/dev/null 2>&1"
 
-      # ELASTICSEARCH_URL: "msa_es:9200"
-      # #For elasticsearch scripts /opt/ubi-es-ilm/log_retention_management.php
-      # UBI_ES_INDEX_MULTIPLE_TTL:         "*|90d"
-      # UBI_ES_NETFLOW_INDEX_MULTIPLE_TTL: "*|90d"
-      # UBI_ES_LOG_SEARCH_INDEX_LIST:      "ubilogs"
-      # UBI_ES_RETENTION_INDEX_NAME:       "ubilogs*"
-      # UBI_ES_RETENTION_NETFLOW_INDEX_NAME: "ubiaudit*"
-      # UBI_ES_RETENTION_ALARM_INDEX_NAME: "ubialarm*"
-      # UBI_ES_ALARM_INDEX_MULTIPLE_TTL:   "*|90d"
-      # UBI_ES_CACHE_INDEX_DEFAULT_TTL:    "1w"
-      # UBI_ES_DELETE_SCROLL_SIZE:         "4000"
-      # UBI_ES_MAX_DOCS:                   ""
-      # UBI_ES_LOG_DETENTION_DELETE:       "true"
-      # UBI_ES_ILM_LOG_CRONTAB:            "*/2 * * * *  php /opt/ubi-es-ilm/log_retention_management.php --verbose=3 >/dev/null 2>&1"
+      <<: *es-configuration
 
-      # <<: *es-configuration
-
-    # volumes:
-      # - "msa2_es-ilm:/opt/msa2-es-ilm"
+    volumes:
+      - "msa2_es-ilm:/opt/msa2-es-ilm"
 
 volumes:
   kafka_data:
@@ -659,7 +659,7 @@ volumes:
   msa_monitbulkfiles_err:
   msa_alarmbulkfiles:
   msa_alarmbulkfiles_err:
-  # msa2_es-ilm:
+  msa2_es-ilm:
 
 networks:
   default:
