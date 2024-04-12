@@ -47,7 +47,7 @@ x-healthcheck: &healthcheck
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.13-2b857348261d58a845462e7f58e0e39021bc9813
+    image: openmsa/openmsa:msa2-front-2.8.13-b545b9bf586e9a37c4928160f8f3e80f15d9bc9c
     depends_on:
       - msa-api
       - msa-ui
@@ -327,7 +327,7 @@ services:
           - "msa_snmptrap"
 
   msa-bud:
-    image: openmsa/openmsa:msa2-bud-2.8.13-0fd4fdadf17a489fb3afa3682cf13484080d6e33
+    image: openmsa/openmsa:msa2-bud-2.8.13-e62a0723c91582e748a3a3d6cc4f011f2aae9d2b
     depends_on:
       - db
     healthcheck:
