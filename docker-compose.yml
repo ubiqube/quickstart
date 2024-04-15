@@ -592,7 +592,7 @@ services:
       <<: *logging
 
   msa2-es-ilm:
-    image: ubiqube/msa2-es-ilm:af3651a622158e4beb0dbb7272cb5374bceae907
+    image: openmsa/openmsa:msa2-es-ilm-2.8.13-af3651a622158e4beb0dbb7272cb5374bceae907
     container_name: msa2_es-ilm
     tty: true
     init: true
