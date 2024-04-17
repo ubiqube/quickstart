@@ -47,7 +47,7 @@ x-healthcheck: &healthcheck
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.13-16bff486cfef212c32b212c59f2d109edf344b49
+    image: openmsa/openmsa:msa2-front-2.8.13-80b0dc46d389d27b74f6c7174390cb2ab5b19d4e
     depends_on:
       - msa-api
       - msa-ui
@@ -138,7 +138,7 @@ services:
       <<: *logging
 
   msa-api:
-    image: openmsa/openmsa:msa2-api-2.8.13-5e67c3d83f1e2a0d55f1fc07e41bb32fd71e0721
+    image: openmsa/openmsa:msa2-api-2.8.13-fb6753d7cbad6c5cf354a38496c368517b2784f2
     depends_on:
       - db
     healthcheck:
@@ -164,7 +164,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.8.13-b125b4a1cc42dcd0c573c1096ca4052afed84fa4
+    image: openmsa/openmsa:msa2-ui-2.8.13-14637b894871299e35da87ca474c8316ffe788dd
     depends_on:
       - msa-api
     healthcheck:
