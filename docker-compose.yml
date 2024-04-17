@@ -527,7 +527,7 @@ services:
   msa2-es-ilm:
     container_name: msa2_es-ilm
     restart: unless-stopped
-    image: ubiqube/msa2-es-ilm:af3651a622158e4beb0dbb7272cb5374bceae907
+    image: ubiqube/msa2-es-ilm:ae7c78dad70be00360ffd7398606e5729a3b1761
     depends_on:
       msa-es:
         condition: service_started
