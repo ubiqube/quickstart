@@ -554,19 +554,21 @@ services:
           - "msa_dev"
 
   msa2-es-ilm:
-    image: openmsa/openmsa:msa2-es-ilm-2.8.13-ae7c78dad70be00360ffd7398606e5729a3b1761
+    image: openmsa/openmsa:msa2-es-ilm-2.8.13-553588218ef9f899ff1f545528de2aebbe77639e
     tty: true
     init: true
-    restart: unless-stopped
+    deploy:
+      replicas: 0
+      placement:
+        max_replicas_per_node: 1
     networks:
       default:
         aliases:
           - "msa2_es-ilm"
-    #healthcheck:
-    #  test: ["CMD-SHELL", "find /opt/msa2-es-ilm/log/log_retention.log -type f -mmin -10"]
+    healthcheck:
+      test: ["CMD-SHELL", "find /opt/msa2-es-ilm/log/log_retention.log -type f -mmin -10"]
     depends_on:
-      msa-es:
-        condition: service_started
+      - msa-es
     environment:
 
       ELASTICSEARCH_URL: "msa_es:9200"
@@ -583,12 +585,13 @@ services:
       UBI_ES_DELETE_SCROLL_SIZE:         "4000"
       UBI_ES_MAX_DOCS:                   ""
       UBI_ES_LOG_DETENTION_DELETE:       "true"
-      UBI_ES_ILM_LOG_CRONTAB:            "# */2 * * * *  php /opt/ubi-es-ilm/log_retention_management.php --verbose=3 > /proc/1/fd/1 2>&1"
+      UBI_ES_ILM_LOG_CRONTAB:            "*/2 * * * *  php /opt/ubi-es-ilm/log_retention_management.php --verbose=3 > /proc/1/fd/1 2>&1"
 
       <<: *es-configuration
 
     volumes:
       - "/mnt/NASVolume/msa2_es-ilm:/opt/msa2-es-ilm"
+      
 
 volumes:
   msa_sms_logs:
