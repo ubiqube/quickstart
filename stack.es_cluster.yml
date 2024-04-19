@@ -7,7 +7,7 @@ x-es-configuration: &es-configuration
 
 services:
   msa_front:
-    image: openmsa/openmsa:msa2-front-2.8.13-80b0dc46d389d27b74f6c7174390cb2ab5b19d4e
+    image: openmsa/openmsa:msa2-front-2.8.13-f6af57ebfa07c9d104332807bb212f7cdf4ab162
     depends_on:
       - msa_api
       - msa_ui
@@ -88,7 +88,7 @@ services:
         condition: on-failure
 
   msa_api:
-    image: openmsa/openmsa:msa2-api-2.8.13-fb6753d7cbad6c5cf354a38496c368517b2784f2
+    image: openmsa/openmsa:msa2-api-2.8.13-e0045b7c3c02fd2831e8a60b901919caa4574986
     depends_on:
       - db
     healthcheck:
@@ -242,7 +242,7 @@ services:
       - "/mnt/NASVolume/msa_es_certs:/usr/share/elasticsearch/config/certificates"
 
   msa_es:
-    image: openmsa/openmsa:msa2-es-2.8.13-43a54205fa489887aae1f1b331b3514c611f3b1f
+    image: openmsa/openmsa:msa2-es-2.8.13-7282adc53ff4163475b871e9bc472ee422e812ea
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
