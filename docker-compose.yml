@@ -20,7 +20,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.13-80b0dc46d389d27b74f6c7174390cb2ab5b19d4e
+    image: openmsa/openmsa:msa2-front-2.8.13-f6af57ebfa07c9d104332807bb212f7cdf4ab162
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -95,7 +95,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.8.13-fb6753d7cbad6c5cf354a38496c368517b2784f2
+    image: openmsa/openmsa:msa2-api-2.8.13-e0045b7c3c02fd2831e8a60b901919caa4574986
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -208,7 +208,7 @@ services:
   msa-parse:
     restart: unless-stopped
     container_name: msa_parse
-    image: openmsa/openmsa:msa2-parse-2.8.13-d3e7f9ac0b1ce05e83cf8936ff685bb567da6813
+    image: openmsa/openmsa:msa2-parse-2.8.13-27ea712a8e7dc92ecea66cf2ddbdb27576714481
     depends_on:
       db:
         condition: service_healthy
@@ -238,7 +238,7 @@ services:
   msa-snmptrap:
     restart: unless-stopped
     container_name: msa_snmptrap
-    image: openmsa/openmsa:msa2-snmptrap-2.8.13-d92118c5c98e9c34217cf21d3f8506b888422a90
+    image: openmsa/openmsa:msa2-snmptrap-2.8.13-633b2a27ed0c6bf55e39bbe8f959b6bb73c086bd
     depends_on:
       db:
         condition: service_healthy
@@ -449,7 +449,7 @@ services:
   msa-es:
     restart: unless-stopped
     container_name: msa_es
-    image: openmsa/openmsa:msa2-es-2.8.13-43a54205fa489887aae1f1b331b3514c611f3b1f
+    image: openmsa/openmsa:msa2-es-2.8.13-7282adc53ff4163475b871e9bc472ee422e812ea
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
