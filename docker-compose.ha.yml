@@ -47,7 +47,7 @@ x-healthcheck: &healthcheck
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.13-80b0dc46d389d27b74f6c7174390cb2ab5b19d4e
+    image: openmsa/openmsa:msa2-front-2.8.13-f6af57ebfa07c9d104332807bb212f7cdf4ab162
     depends_on:
       - msa-api
       - msa-ui
@@ -138,7 +138,7 @@ services:
       <<: *logging
 
   msa-api:
-    image: openmsa/openmsa:msa2-api-2.8.13-fb6753d7cbad6c5cf354a38496c368517b2784f2
+    image: openmsa/openmsa:msa2-api-2.8.13-e0045b7c3c02fd2831e8a60b901919caa4574986
     depends_on:
       - db
     healthcheck:
@@ -271,7 +271,7 @@ services:
           - "msa_sms"
 
   msa-parse:
-    image: openmsa/openmsa:msa2-parse-2.8.13-d3e7f9ac0b1ce05e83cf8936ff685bb567da6813
+    image: openmsa/openmsa:msa2-parse-2.8.13-27ea712a8e7dc92ecea66cf2ddbdb27576714481
     depends_on:
       - db
       - kafka
@@ -297,7 +297,7 @@ services:
           - "msa_parse"
 
   msa-snmptrap:
-    image: openmsa/openmsa:msa2-snmptrap-2.8.13-d92118c5c98e9c34217cf21d3f8506b888422a90
+    image: openmsa/openmsa:msa2-snmptrap-2.8.13-633b2a27ed0c6bf55e39bbe8f959b6bb73c086bd
     depends_on:
       - db
       - msa-es
@@ -485,7 +485,7 @@ services:
           - "msa_kibana"
 
   msa-es:
-    image: openmsa/openmsa:msa2-es-2.8.13-43a54205fa489887aae1f1b331b3514c611f3b1f
+    image: openmsa/openmsa:msa2-es-2.8.13-7282adc53ff4163475b871e9bc472ee422e812ea
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
