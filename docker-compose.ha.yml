@@ -47,7 +47,7 @@ x-healthcheck: &healthcheck
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.13-f6af57ebfa07c9d104332807bb212f7cdf4ab162
+    image: openmsa/openmsa:msa2-front-2.8.13-6db318c1e4918f5b48323942acff73f5218a897e
     depends_on:
       - msa-api
       - msa-ui
@@ -352,7 +352,7 @@ services:
       - msa-es
       - msa-api
       - msa-dev
-    image: openmsa/openmsa:msa2-alarm-2.8.13-74a9a6ea2b28b5f128f678f70406065b157e7c18
+    image: openmsa/openmsa:msa2-alarm-2.8.13-6e6cc95698f14495e14e2824950c1d23c9662a8d
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
@@ -378,7 +378,7 @@ services:
       - msa-es
       - msa-dev
       - msa-sms
-    image: openmsa/openmsa:msa2-monitoring-2.8.13-ab3b98a885289836a78037e74a695f0cd35c3497
+    image: openmsa/openmsa:msa2-monitoring-2.8.13-8c72c05594de41af14fc76ed96ea482f745fd00b
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
