@@ -7,7 +7,7 @@ x-es-configuration: &es-configuration
 
 services:
   msa_front:
-    image: openmsa/openmsa:msa2-front-2.8.13-c0ae8336c17f1eb4d799f4d91ce19c15869f9d43
+    image: openmsa/openmsa:msa2-front-2.8.13-9f03db8cbe68487e5a0d44929e3b7a34d175c29b
     depends_on:
       - msa_api
       - msa_ui
@@ -88,7 +88,7 @@ services:
         condition: on-failure
 
   msa_api:
-    image: openmsa/openmsa:msa2-api-2.8.13-4a625721fe03dcbf0f3f72c9189648425546fb4c
+    image: openmsa/openmsa:msa2-api-2.8.13-b4f9357ab7b3694917869ca65e06dc9d25044439
     depends_on:
       - db
     healthcheck:
@@ -114,7 +114,7 @@ services:
         aliases:
           - "msa-api"
   msa_ui:
-    image: openmsa/openmsa:msa2-ui-2.8.13-e13704d1a5fb92599053413350e028ab20c2584f
+    image: openmsa/openmsa:msa2-ui-2.8.13-640200dd94576a4336f2ee13e72e758c336c81b3
     depends_on:
       - msa_api
     healthcheck:
@@ -142,7 +142,7 @@ services:
     - FEATURE_REPOFOLDERLIST=[\"Datafiles\"]
 
   msa_sms:
-    image: openmsa/openmsa:msa2-sms-2.8.13-2d9b1a0650664030289df94625ed0fb9b67fd856
+    image: openmsa/openmsa:msa2-sms-2.8.13-afd10fc96bcd2882786061dca63cdcc8522c7290
     depends_on:
       - db
     healthcheck:
@@ -174,7 +174,7 @@ services:
     depends_on:
       - db
       - msa_api
-    image: openmsa/openmsa:msa2-alarm-2.8.13-6e6cc95698f14495e14e2824950c1d23c9662a8d
+    image: openmsa/openmsa:msa2-alarm-2.8.13-8dc4632e7097a4ca9138a7edaef268d932964a5d
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -187,7 +187,7 @@ services:
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
 
   msa_monitoring:
-    image: openmsa/openmsa:msa2-monitoring-2.8.13-8c72c05594de41af14fc76ed96ea482f745fd00b
+    image: openmsa/openmsa:msa2-monitoring-2.8.13-27feb5fa1bd40f309661a0d3787dfaa95a530b54
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -242,7 +242,7 @@ services:
       - "/mnt/NASVolume/msa_es_certs:/usr/share/elasticsearch/config/certificates"
 
   msa_es:
-    image: openmsa/openmsa:msa2-es-2.8.13-7282adc53ff4163475b871e9bc472ee422e812ea
+    image: openmsa/openmsa:msa2-es-2.8.13-2386b8e7a5c0e96ef298b78ce43a2858f9357675
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
