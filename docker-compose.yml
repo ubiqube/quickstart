@@ -592,7 +592,7 @@ services:
       <<: *logging
 
   msa2-es-ilm:
-    image: openmsa/openmsa:msa2-es-ilm-2.8.13-553588218ef9f899ff1f545528de2aebbe77639e
+    image: openmsa/openmsa:msa2-es-ilm-2.8.13-9931c196f7c08839feea13e1426fc92b953ef311
     container_name: msa2_es-ilm
     tty: true
     init: true
