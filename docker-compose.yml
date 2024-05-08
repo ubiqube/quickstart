@@ -20,7 +20,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.13-0d38cffce4d3cb749d00e2119b5193743ee79b1a
+    image: openmsa/openmsa:msa2-front-2.8.13-dda12ea05418f85f465206f87e0777bd2a6f9c2d
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -95,7 +95,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.8.13-a9e3434f7d6d18d49dce1ce96b2512d471ff0988
+    image: openmsa/openmsa:msa2-api-2.8.13-d358c69c0cbc49934f502ce3c1d6cd6f2ce2f070
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -128,7 +128,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.8.13-759588e21df01616a66b6be7c15d378930632f70
+    image: openmsa/openmsa:msa2-ui-2.8.13-fe7953457f237b02dfc6cfa85d9b944556506381
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -449,7 +449,7 @@ services:
   msa-es:
     restart: unless-stopped
     container_name: msa_es
-    image: openmsa/openmsa:msa2-es-2.8.13-2386b8e7a5c0e96ef298b78ce43a2858f9357675
+    image: openmsa/openmsa:msa2-es-2.8.13-3d4d3a0c893492caea400fcd829e82f06ab75a2d
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
@@ -545,7 +545,7 @@ services:
     restart: unless-stopped
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.8.13-e84bc462bf01d4956c4a1895b66507d4ba47a227
+    image: openmsa/openmsa:msa2-linuxme-2.8.13-21e09d27af8951349a7a3f8117d8042b6ff28304
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -570,7 +570,7 @@ services:
     restart: unless-stopped
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.8.13-e84bc462bf01d4956c4a1895b66507d4ba47a227
+    image: openmsa/openmsa:msa2-linuxme-2.8.13-21e09d27af8951349a7a3f8117d8042b6ff28304
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -593,7 +593,7 @@ services:
 
 
   # msa2-es-ilm:
-    # image: ubiqube/msa2-es-ilm:83caffee1fba1706d9542d490758d9a6fe35f2f0
+    # image: ubiqube/msa2-es-ilm:9931c196f7c08839feea13e1426fc92b953ef311
     # container_name: msa2_es-ilm
     # tty: true
     # init: true
