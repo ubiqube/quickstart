@@ -607,7 +607,7 @@ volumes:
   msa_es:
   msa_es_config:
   msa_api_logs: 
-  # msa2_es-ilm:
+  msa2_es-ilm:
 
 networks:
   default:
