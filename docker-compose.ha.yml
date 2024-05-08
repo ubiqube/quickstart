@@ -47,7 +47,7 @@ x-healthcheck: &healthcheck
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.13-0d38cffce4d3cb749d00e2119b5193743ee79b1a
+    image: openmsa/openmsa:msa2-front-2.8.13-dda12ea05418f85f465206f87e0777bd2a6f9c2d
     depends_on:
       - msa-api
       - msa-ui
@@ -138,7 +138,7 @@ services:
       <<: *logging
 
   msa-api:
-    image: openmsa/openmsa:msa2-api-2.8.13-a9e3434f7d6d18d49dce1ce96b2512d471ff0988
+    image: openmsa/openmsa:msa2-api-2.8.13-d358c69c0cbc49934f502ce3c1d6cd6f2ce2f070
     depends_on:
       - db
     healthcheck:
@@ -164,7 +164,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.8.13-759588e21df01616a66b6be7c15d378930632f70
+    image: openmsa/openmsa:msa2-ui-2.8.13-fe7953457f237b02dfc6cfa85d9b944556506381
     depends_on:
       - msa-api
     healthcheck:
@@ -485,7 +485,7 @@ services:
           - "msa_kibana"
 
   msa-es:
-    image: openmsa/openmsa:msa2-es-2.8.13-2386b8e7a5c0e96ef298b78ce43a2858f9357675
+    image: openmsa/openmsa:msa2-es-2.8.13-3d4d3a0c893492caea400fcd829e82f06ab75a2d
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
@@ -554,7 +554,7 @@ services:
           - "msa_dev"
 
   # msa2-es-ilm:
-    # image: ubiqube/msa2-es-ilm:83caffee1fba1706d9542d490758d9a6fe35f2f0
+    # image: ubiqube/msa2-es-ilm:9931c196f7c08839feea13e1426fc92b953ef311
     # container_name: msa2_es-ilm
     # tty: true
     # init: true
