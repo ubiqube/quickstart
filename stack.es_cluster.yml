@@ -7,7 +7,7 @@ x-es-configuration: &es-configuration
 
 services:
   msa_front:
-    image: openmsa/openmsa:msa2-front-2.8.13-7970cc21a8dd0e8545bee3545ac6afbe9a3ae4a6
+    image: openmsa/openmsa:msa2-front-2.8.13-ca0f74182673ece9bda9132fcb9cb67a4f500246
     depends_on:
       - msa_api
       - msa_ui
@@ -114,7 +114,7 @@ services:
         aliases:
           - "msa-api"
   msa_ui:
-    image: openmsa/openmsa:msa2-ui-2.8.13-fe7953457f237b02dfc6cfa85d9b944556506381
+    image: openmsa/openmsa:msa2-ui-2.8.13-c002b8f7d6cd375a3d0314906a830528103c1835
     depends_on:
       - msa_api
     healthcheck:
