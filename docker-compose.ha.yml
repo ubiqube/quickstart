@@ -534,7 +534,7 @@ services:
           - "msa_cerebro"
 
   msa-dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.8.13-37ed5e8c9bc13a31799885de233b575e2091a99f
+    image: openmsa/openmsa:msa2-linuxdev-2.8.13-f03103c0845b97ec88434fdb52744aef3c54c976
     healthcheck:
       <<: *healthcheck
     deploy:
