@@ -47,7 +47,7 @@ x-healthcheck: &healthcheck
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.13-481ea2a2a9479dc1a59fdfc13e5c11fa9ca25cc3
+    image: openmsa/openmsa:msa2-front-2.8.13-9615765d70772f156b32dcf87684af7825b27acb
     depends_on:
       - msa-api
       - msa-ui
@@ -271,7 +271,7 @@ services:
           - "msa_sms"
 
   msa-parse:
-    image: openmsa/openmsa:msa2-parse-2.8.13-3308b3a47e5772587f7afdacf9c518a8704af224
+    image: openmsa/openmsa:msa2-parse-2.8.13-0e01a8b8345edb25bbd5fc71e186b36e0f4748e1
     depends_on:
       - db
       - kafka
@@ -297,7 +297,7 @@ services:
           - "msa_parse"
 
   msa-snmptrap:
-    image: openmsa/openmsa:msa2-snmptrap-2.8.13-be04c01213e52c2f0226019dd28f7f7e2fe9df05
+    image: openmsa/openmsa:msa2-snmptrap-2.8.13-ee6be9161b017fc3985b8f9c21b211e23db28355
     depends_on:
       - db
       - msa-es
@@ -327,7 +327,7 @@ services:
           - "msa_snmptrap"
 
   msa-bud:
-    image: openmsa/openmsa:msa2-bud-2.8.13-e62a0723c91582e748a3a3d6cc4f011f2aae9d2b
+    image: openmsa/openmsa:msa2-bud-2.8.13-d09b3d3cd75c042355da8d637462a51cce558dd3
     depends_on:
       - db
     healthcheck:
@@ -352,7 +352,7 @@ services:
       - msa-es
       - msa-api
       - msa-dev
-    image: openmsa/openmsa:msa2-alarm-2.8.13-8dc4632e7097a4ca9138a7edaef268d932964a5d
+    image: openmsa/openmsa:msa2-alarm-2.8.13-855c7a682da3a4376bf0239eca7ee59776d84811
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
@@ -378,7 +378,7 @@ services:
       - msa-es
       - msa-dev
       - msa-sms
-    image: openmsa/openmsa:msa2-monitoring-2.8.13-27feb5fa1bd40f309661a0d3787dfaa95a530b54
+    image: openmsa/openmsa:msa2-monitoring-2.8.13-94882a50f4eb14d968485b6fd62ae37f799a32ca
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
@@ -485,7 +485,7 @@ services:
           - "msa_kibana"
 
   msa-es:
-    image: openmsa/openmsa:msa2-es-2.8.13-2386b8e7a5c0e96ef298b78ce43a2858f9357675
+    image: openmsa/openmsa:msa2-es-2.8.13-3d4d3a0c893492caea400fcd829e82f06ab75a2d
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
@@ -534,7 +534,7 @@ services:
           - "msa_cerebro"
 
   msa-dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.8.13-37ed5e8c9bc13a31799885de233b575e2091a99f
+    image: openmsa/openmsa:msa2-linuxdev-2.8.13-f03103c0845b97ec88434fdb52744aef3c54c976
     healthcheck:
       <<: *healthcheck
     deploy:
