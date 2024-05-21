@@ -20,7 +20,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.11-8681998c26370bec594aaa0983f1fe9676a3ade7
+    image: openmsa/openmsa:msa2-front-2.8.13-df02b100eeac062736e0852fc5f5778d26619610
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -31,10 +31,6 @@ services:
       msa-es:
         condition: service_started
       camunda:
-        condition: service_started
-      msa-rsyslog:
-        condition: service_started
-      msa-snmptrap:
         condition: service_started
     ports:
       - target: 80
@@ -69,7 +65,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.8.11-081eb0656d990cd231ba1c15c1d14501b7426eea
+    image: openmsa/openmsa:msa2-db-2.8.13-b0c12101a8d1ee6f0c6d77ebbcc06a739ef7dc50
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -99,7 +95,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.8.11-9dc29aa56c12f8c5cc3f88306312d0efa4a179a4
+    image: openmsa/openmsa:msa2-api-2.8.13-d358c69c0cbc49934f502ce3c1d6cd6f2ce2f070
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -117,7 +113,6 @@ services:
     logging:
       <<: *logging
     volumes:
-      - "msa_api:/opt/ubi-jentreprise/generated/conf"
       - "msa_entities:/opt/fmc_entities"
       - "msa_repository:/opt/fmc_repository"
       - "rrd_repository:/opt/rrd"
@@ -133,7 +128,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.8.11-a639770d54ab742d0bf8febc84e4377a463e9749
+    image: openmsa/openmsa:msa2-ui-2.8.13-e740a17cfabc6c71d10b286b35cc1dcde3d632e6
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -169,7 +164,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: openmsa/openmsa:msa2-sms-2.8.11-a0f7339b454f140b52fb20d0239ede154c78270a
+    image: openmsa/openmsa:msa2-sms-2.8.13-afd10fc96bcd2882786061dca63cdcc8522c7290
     healthcheck:
       timeout: 5s
       retries: 10
@@ -178,8 +173,6 @@ services:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
       <<: *es-configuration
-    cap_add:
-      - NET_ADMIN
     depends_on:
       db:
         condition: service_healthy
@@ -215,7 +208,7 @@ services:
   msa-parse:
     restart: unless-stopped
     container_name: msa_parse
-    image: openmsa/openmsa:msa2-parse-2.8.11-6ca6448762d68b5fd2276adb2489e357b9996493
+    image: openmsa/openmsa:msa2-parse-2.8.13-3308b3a47e5772587f7afdacf9c518a8704af224
     depends_on:
       db:
         condition: service_healthy
@@ -225,6 +218,8 @@ services:
         condition: service_started
       msa-sms:
         condition: service_healthy
+      kafka:
+        condition: service_started
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -243,7 +238,7 @@ services:
   msa-snmptrap:
     restart: unless-stopped
     container_name: msa_snmptrap
-    image: openmsa/openmsa:msa2-snmptrap-2.8.11-dee5c28ec7481c77cac4bbdf54ad94d36217072c
+    image: openmsa/openmsa:msa2-snmptrap-2.8.13-be04c01213e52c2f0226019dd28f7f7e2fe9df05
     depends_on:
       db:
         condition: service_healthy
@@ -274,7 +269,7 @@ services:
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: openmsa/openmsa:msa2-bud-2.8.11-0f1726a8f27d4f789e06fcbf5e3129486734f645
+    image: openmsa/openmsa:msa2-bud-2.8.13-e62a0723c91582e748a3a3d6cc4f011f2aae9d2b
     healthcheck:
       timeout: 5s
       retries: 10
@@ -296,7 +291,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: openmsa/openmsa:msa2-alarm-2.8.11-12dee3d8e5cd243409edf5a2b438e84e09483ef5
+    image: openmsa/openmsa:msa2-alarm-2.8.13-8dc4632e7097a4ca9138a7edaef268d932964a5d
     healthcheck:
       timeout: 5s
       retries: 10
@@ -308,6 +303,8 @@ services:
         condition: service_healthy
       msa-es:
         condition: service_started
+      msa-api:
+        condition: service_healthy
     environment:
       <<: *es-configuration
     logging:
@@ -324,7 +321,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: openmsa/openmsa:msa2-monitoring-2.8.11-c40880f906a707488ef54de7989cc55a6dd76755
+    image: openmsa/openmsa:msa2-monitoring-2.8.13-27feb5fa1bd40f309661a0d3787dfaa95a530b54
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -337,9 +334,10 @@ services:
       msa-sms:
         condition: service_started
     environment:
-    # "yes" : ES + RRD
-    # "only" : ES only (no RRD)
-    # any other values ("no" is recommanded!) RRD only (no ES)
+      # ES_MON
+      # "yes" : ES + RRD
+      # "only" : ES only (no RRD)
+      # any other values ("no" is recommended!) RRD only (no ES)
       ES_MON: "no"
       <<: *es-configuration
     logging:
@@ -363,12 +361,9 @@ services:
     depends_on:
       - msa-parse
       - kafka
-    image: openmsa/openmsa:msa2-rsyslog-2.8.11-ce35fbb9c7441f1c4041af6e431a0cfae2809785
+    image: openmsa/openmsa:msa2-rsyslog-2.8.13-ff52e9cdfb5452b114e94eb76bfb8679d380fa03
     environment:
-      # enable omfwd acxtion type for syslog Forwarding Output Module
-      # https://www.rsyslog.com/doc/v8-stable/configuration/modules/omfwd.html
-      # default
-      # ACTIONTYPE: "omfwd"
+      # ACTIONTYPE: omudpspoof or omkafka
       # configure a specific port for TLS. Default is 6514
       # TLS_SYSLOG_PORT: 6514
       ACTIONTYPE: "omkafka"
@@ -412,6 +407,7 @@ services:
       - KAFKA_CFG_LOG_RETENTION_BYTES=2000000000
       - KAFKA_CFG_LOG_RETENTION_MS=86400000
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+      - KAFKA_CFG_MESSAGE_MAX_BYTES=1048576
     logging:
       <<: *logging
     volumes:
@@ -420,7 +416,7 @@ services:
   msa-broker:
     restart: unless-stopped
     container_name: msa_broker
-    image: openmsa/openmsa:msa2-broker-2.8.11-4725a0b2c9a64ab0df2295ce5d76e928bed0255e
+    image: openmsa/openmsa:msa2-broker-2.8.13-a637ce7b1d31f9da37a22b0fdaad954dcdf0870e
     depends_on:
       - db
     environment:
@@ -437,7 +433,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    image: openmsa/openmsa:msa2-camunda-2.8.11-d95c1ded1750a35df6593fb5a8bcd376b4a76dd0
+    image: openmsa/openmsa:msa2-camunda-2.8.13-0f60a3c018c1b7dcde68259c9dadf71862373510
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
@@ -453,7 +449,7 @@ services:
   msa-es:
     restart: unless-stopped
     container_name: msa_es
-    image: openmsa/openmsa:msa2-es-2.8.11-ba6a2c71fcc016b507d6472c688b56ad1e14774e
+    image: openmsa/openmsa:msa2-es-2.8.13-3d4d3a0c893492caea400fcd829e82f06ab75a2d
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
@@ -488,7 +484,7 @@ services:
   msa-cerebro:
     restart: unless-stopped
     container_name: msa_cerebro
-    image: openmsa/openmsa:msa2-cerebro-2.8.11-8374160f95e2349711204189a3bf8a385f7252b5
+    image: openmsa/openmsa:msa2-cerebro-2.8.13-8374160f95e2349711204189a3bf8a385f7252b5
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -511,7 +507,7 @@ services:
   msa-kibana:
     restart: unless-stopped
     container_name: msa_kibana
-    image: openmsa/openmsa:msa2-kibana-2.8.11-54e81a717d1f9aa7acc372643c6966e23b8b66fe
+    image: openmsa/openmsa:msa2-kibana-2.8.13-54e81a717d1f9aa7acc372643c6966e23b8b66fe
     depends_on:
       msa-es:
         condition: service_started
@@ -531,8 +527,7 @@ services:
   msa-dev:
     restart: unless-stopped
     container_name: msa_dev
-    #build: ./lab/msa_dev
-    image: openmsa/openmsa:msa2-linuxdev-2.8.11-15401bf33e93e836e56d57e526b36d6983f2dabc
+    image: openmsa/openmsa:msa2-linuxdev-2.8.13-f03103c0845b97ec88434fdb52744aef3c54c976
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
@@ -550,7 +545,7 @@ services:
     restart: unless-stopped
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.8.11-e84bc462bf01d4956c4a1895b66507d4ba47a227
+    image: openmsa/openmsa:msa2-linuxme-2.8.13-21e09d27af8951349a7a3f8117d8042b6ff28304
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -575,7 +570,7 @@ services:
     restart: unless-stopped
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.8.11-e84bc462bf01d4956c4a1895b66507d4ba47a227
+    image: openmsa/openmsa:msa2-linuxme-2.8.13-21e09d27af8951349a7a3f8117d8042b6ff28304
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -596,9 +591,47 @@ services:
     logging:
       <<: *logging
 
+
+  msa2-es-ilm:
+    image: openmsa/openmsa:msa2-es-ilm-2.8.13-9931c196f7c08839feea13e1426fc92b953ef311
+    container_name: msa2_es-ilm
+    tty: true
+    init: true
+    restart: unless-stopped
+    networks:
+      default:
+        aliases:
+          - "msa2_es-ilm"
+    #healthcheck:
+    #  test: ["CMD-SHELL", "find /opt/msa2-es-ilm/log/log_retention.log -type f -mmin -10"]
+    depends_on:
+      msa-es:
+        condition: service_started
+    environment:
+
+      ELASTICSEARCH_URL: "msa_es:9200"
+      #For elasticsearch scripts /opt/ubi-es-ilm/log_retention_management.php
+      #UBI_ES_INDEX_MULTIPLE_TTL:        "type:traffic|7d,type:event|30d,*|90d"
+      UBI_ES_INDEX_MULTIPLE_TTL:         "*|90d"
+      UBI_ES_AUDIT_INDEX_MULTIPLE_TTL:   "*|90d"
+      UBI_ES_LOG_SEARCH_INDEX_LIST:      "ubilogs"
+      UBI_ES_RETENTION_INDEX_NAME:       "ubilogs*"
+      UBI_ES_RETENTION_AUDIT_INDEX_NAME: "ubiaudit*"
+      UBI_ES_RETENTION_ALARM_INDEX_NAME: "ubialarm*"
+      UBI_ES_ALARM_INDEX_MULTIPLE_TTL:   "*|90d"
+      UBI_ES_CACHE_INDEX_DEFAULT_TTL:    "1w"
+      UBI_ES_DELETE_SCROLL_SIZE:         "4000"
+      UBI_ES_MAX_DOCS:                   ""
+      UBI_ES_LOG_DETENTION_DELETE:       "true"
+      UBI_ES_ILM_LOG_CRONTAB:            "# */2 * * * *  php /opt/ubi-es-ilm/log_retention_management.php --verbose=3 > /proc/1/fd/1 2>&1"
+
+      <<: *es-configuration
+
+    volumes:
+      - "msa2_es-ilm:/opt/msa2-es-ilm"
+
 volumes:
   kafka_data:
-  msa_api:
   msa_broker:
   msa_db:
   msa_dev:
@@ -627,6 +660,7 @@ volumes:
   msa_monitbulkfiles_err:
   msa_alarmbulkfiles:
   msa_alarmbulkfiles_err:
+  msa2_es-ilm:
 
 networks:
   default:
