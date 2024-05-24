@@ -112,6 +112,8 @@ services:
       SPRING_DATASOURCE_USERNAME: mano_mon
       SPRING_DATASOURCE_PASSWORD: mano
       SPRING_DATASOURCE_URL: jdbc:postgresql://mano-db/mano_mon
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
       _JAVA_OPTIONS: -Xmx512m
     healthcheck:
       test: curl --fail http://localhost:8080/actuator/health
