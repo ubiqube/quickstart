@@ -16,26 +16,16 @@ x-es-config: &es-config
 services:
   db:
     restart: unless-stopped
-    environment:
-      MANO_USER: mano
-      MANO_PASSWORD: mano
-      MANOVNFM_USER: mano_vnfm
-      MANOVNFM_PASSWORD: mano
-      MANONFVO_USER: mano_nfvo
-      MANONFVO_PASSWORD: mano
-      MANOEM_USER: mano_em
-      MANOEM_PASSWORD: mano
-      KEYCLOAK_USER: keycloak
-      KEYCLOAK_PASSWORD: keycloak
-      KEYCLOAK_DB: keycloak
     networks:
       default:
         aliases:
           - "mano-db"
+    volumes:
+      - './lab/mano/config/msa-db/100-customer-mano.sql:/db_schemas/100-customer-mano.sql'
 
   mano-alarm:
     restart: unless-stopped
-    image: openmsa/mano-alarm-oci-ci:latest
+    image: nexus.ubiqube.com/openmsa/mano-alarm-oci-ci:latest
     depends_on:
       - db
     environment:
@@ -69,7 +59,7 @@ services:
 
   mano-auth:
     restart: unless-stopped
-    image: openmsa/mano-keycloak:3.2.0.1
+    image: docker.io/ubiqube/mano-keycloak:latest
     environment:
       # Unused?
       KEYCLOAK_USER: admin
@@ -114,18 +104,21 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - "./lab/mano/logstash/pipeline:/usr/share/logstash/pipeline"
-      - "./lab/mano/logstash/config:/usr/share/logstash/config"
+      - "./lab/mano/config/logstash/pipeline:/usr/share/logstash/pipeline"
+      - "./lab/mano/config/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml"
 
   mano-juju:
-    image: openmsa/mano-juju:1.0.0
+    image: nexus.ubiqube.com/openmsa/mano-juju-oci-ci:latest
 
   mano-mon:
-    image: openmsa/mano-mon:3.2.0.1
+    image: nexus.ubiqube.com/openmsa/mano-mon-oci-ci:latest
     depends_on:
       - db
     environment:
       <<: *es-config
+      SPRING_DATASOURCE_USERNAME: mano_mon
+      SPRING_DATASOURCE_PASSWORD: mano
+      SPRING_DATASOURCE_URL: jdbc:postgresql://mano-db/mano_mon
       _JAVA_OPTIONS: -Xmx512m
     healthcheck:
       test: curl --fail http://localhost:8080/actuator/health
@@ -136,7 +129,7 @@ services:
 
   mano-nfvo:
     restart: unless-stopped
-    image: openmsa/mano-nfvo:3.2.1
+    image: nexus.ubiqube.com/openmsa/mano-nfvo-oci-ci
     depends_on:
       - db
     environment:
@@ -164,7 +157,7 @@ services:
 
   mano-vnfm:
     restart: unless-stopped
-    image: openmsa/mano-vnfm:3.2.1
+    image: nexus.ubiqube.com/openmsa/mano-vnfm-oci-ci
     depends_on:
       - db
     environment:
