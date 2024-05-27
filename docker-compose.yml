@@ -20,7 +20,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.13.1-9837c04c4d527cd6dc66659542f8d6289802e477
+    image: openmsa/openmsa:msa2-front-2.8.13.1-ad45d55af12dfb6dbf04597c5a12e7e35d2f7e2a
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -128,7 +128,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.8.13.1-961bc927021802c682386e95bda8e5c37026981a
+    image: openmsa/openmsa:msa2-ui-2.8.13.1-4492e3a41caab049b05ffe495ef95ac93adc73da
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
