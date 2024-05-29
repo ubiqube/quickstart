@@ -47,7 +47,7 @@ x-healthcheck: &healthcheck
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.13.1-f294deb2df65143d9fe69b032feb8677d7d5a01f
+    image: openmsa/openmsa:msa2-front-2.8.13.1-da29e405c8aaab2b07c552c683648ac747192785
     depends_on:
       - msa-api
       - msa-ui
@@ -164,7 +164,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.8.13.1-ce08375b1908a6196371568d9add2c525a41ec18
+    image: openmsa/openmsa:msa2-ui-2.8.13.1-a4875dc791a3347170bfa635426bbd3aef473c80
     depends_on:
       - msa-api
     healthcheck:
@@ -485,7 +485,7 @@ services:
           - "msa_kibana"
 
   msa-es:
-    image: openmsa/openmsa:msa2-es-2.8.13.1-6814daff970be0a2144fb02afe9b22561e926d82
+    image: openmsa/openmsa:msa2-es-2.8.13.1-3f215b9ed52d522e16a1475344a3fcd26322a44b
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
