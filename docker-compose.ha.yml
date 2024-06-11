@@ -47,7 +47,7 @@ x-healthcheck: &healthcheck
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.13.1-543d9b7b88740f0a423ae30e4a4bee1d7fc0c666
+    image: openmsa/openmsa:msa2-front-2.8.13.1-3c485d8da27ce8ebaf442d6405629e37700a3dbf
     depends_on:
       - msa-api
       - msa-ui
@@ -85,7 +85,7 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: openmsa/openmsa:msa2-db-2.8.13.1-b0c12101a8d1ee6f0c6d77ebbcc06a739ef7dc50
+    image: openmsa/openmsa:msa2-db-2.8.13.1-6def3418f36133ab8a863613f6af6bdf0331f7ec
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
@@ -113,7 +113,7 @@ services:
       <<: *logging
 
   db-replica:
-    image: openmsa/openmsa:msa2-db-2.8.13.1-b0c12101a8d1ee6f0c6d77ebbcc06a739ef7dc50
+    image: openmsa/openmsa:msa2-db-2.8.13.1-6def3418f36133ab8a863613f6af6bdf0331f7ec
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
@@ -138,7 +138,7 @@ services:
       <<: *logging
 
   msa-api:
-    image: openmsa/openmsa:msa2-api-2.8.13.1-607112fb6dcdfe52be7a2cd010697fb7495675c7
+    image: openmsa/openmsa:msa2-api-2.8.13.1-d5ff27dc7908b947768ce39d42fff7422568f90d
     depends_on:
       - db
     healthcheck:
@@ -164,7 +164,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.8.13.1-9c35ea1178c1e4d4aa402325df9fd6bb91a84228
+    image: openmsa/openmsa:msa2-ui-2.8.13.1-504b528d0e1423a650824c9fa8841d567a361d66
     depends_on:
       - msa-api
     healthcheck:
@@ -233,7 +233,7 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: openmsa/openmsa:msa2-sms-2.8.13.1-afd10fc96bcd2882786061dca63cdcc8522c7290
+    image: openmsa/openmsa:msa2-sms-2.8.13.1-106dfbe0204ec874c36c7d66cb1b9af19b513cb2
     depends_on:
       - db
       - msa-dev
