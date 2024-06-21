@@ -20,7 +20,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.13.1-b2656626b68aca873fb84cbcc68bd4bab14e95f6
+    image: openmsa/openmsa:msa2-front-2.8.13.1-4da5fe77efb9db69ffbc4a3a6bbddfc251981e4f
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -449,7 +449,7 @@ services:
   msa-es:
     restart: unless-stopped
     container_name: msa_es
-    image: openmsa/openmsa:msa2-es-2.8.13.1-e487fb87ce6ba645986962dbbabc27717eb1220b
+    image: openmsa/openmsa:msa2-es-2.8.13.1-fd5720abb286c67f391172e2c781d8bb43b1554d
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
