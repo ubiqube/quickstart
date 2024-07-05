@@ -66,7 +66,7 @@ then
  	ssh $db_runner_node 'docker exec $(docker ps -qf name=db.1) bash -c  "cat /tmp/query_msa_vars  | psql -h /tmp/ -d POSTGRESQL"' |grep -v "Tuples only is on"
 else
 	echo -e "\pset tuples_only\nselect m.var_name, m.var_value from redone.msa_vars m inner join (select var_name, max(var_lastupdated) var_lastupdated from redone.msa_vars group by var_name) mv on m.var_name = mv.var_name and m.var_lastupdated = mv.var_lastupdated;" > query_msa_vars
-	docker cp query_msa_vars $(docker ps -qf name=db):/tmp/query_msa_vars
+	docker cp query_msa_vars $(docker ps -qf name=db):/tmp/query_msa_vars >/dev/nll 2>&1
 	docker exec $(docker ps -qf name=db) bash -c  "cat /tmp/query_msa_vars  | psql -h /tmp/ -d POSTGRESQL" |grep -v "Tuples only is on"
 fi
 echo
