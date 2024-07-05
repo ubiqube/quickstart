@@ -24,7 +24,7 @@ git_log()
         echo "git log --no-color --oneline -2"
 }
 
-if $swarm_mode;
+if [ "$swarm_mode" = true ] 
 then
 	msa_dev_runner_node=$(docker service ps msa_msa-dev --format '{{.Node}}'| head -n 1)
 	db_runner_node=$(docker service ps msa_db --format '{{.Node}}'| head -n 1)
