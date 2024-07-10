@@ -573,7 +573,7 @@ services:
       HOSTNAME: msa-smtp
 #      RELAYHOST: <MTA ip>:25
       MESSAGE_SIZE_LIMIT: 2097152
-      ALLOW_EMPTY_SENDER_DOMAINS: true
+      ALLOW_EMPTY_SENDER_DOMAINS: "true"
       ALLOWED_SENDER_DOMAINS: ''
 
   linux-me:
@@ -643,7 +643,6 @@ services:
       msa-es:
         condition: service_started
     environment:
-
       ELASTICSEARCH_URL: "msa_es:9200"
       #For elasticsearch scripts /opt/ubi-es-ilm/log_retention_management.php
       #UBI_ES_INDEX_MULTIPLE_TTL:        "type:traffic|7d,type:event|30d,*|90d"
