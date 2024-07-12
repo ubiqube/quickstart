@@ -25,7 +25,7 @@ x-amqp-syslog: &amqp-syslog
 
 services:
   msa-auth:
-      image: ubiqube/msa2-auth:bf005aceaf2e338e627ac6b71c28ff50d90063f7
+      image: ubiqube/msa2-auth:7addce27d9949a410517725331e2cf0697d46bd6
       environment: 
         KEYCLOAK_ADMIN: admin
         KEYCLOAK_ADMIN_PASSWORD: ubiqube
@@ -42,7 +42,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:528b12a266bc955575519b36cffa392fdb633e0d
+    image: ubiqube/msa2-front:147e6f28200a9f6a1260beb39711ce9a0b8b5412
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -87,7 +87,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: ubiqube/msa2-db:fe4ba86b86fd6e26c262c4ca86c199619f3ef3fb
+    image: ubiqube/msa2-db:a780dc7a63f2cd60a487f4cac38809a260ffe844
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
