@@ -136,7 +136,7 @@ services:
 
   mano-nfvo:
     restart: unless-stopped
-    image: openmsa/mano-nfvo:3.2.1
+    image: openmsa/mano-nfvo:3.2.2
     depends_on:
       - db
     environment:
@@ -164,7 +164,7 @@ services:
 
   mano-vnfm:
     restart: unless-stopped
-    image: openmsa/mano-vnfm:3.2.1
+    image: openmsa/mano-vnfm:3.2.2
     depends_on:
       - db
     environment:

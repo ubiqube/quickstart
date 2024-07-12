@@ -42,7 +42,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:e234a3e73ebd48303e2db0adc66003c89fc75180
+    image: ubiqube/msa2-front:528b12a266bc955575519b36cffa392fdb633e0d
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -117,7 +117,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:a4ea61fc38261b7deeaa25dd548ac583003551f5
+    image: ubiqube/msa2-api:4eed5f1f45cd0b8ea7ed8e1852372913c55476ee
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -150,7 +150,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:55340ae47f9e0ae63a39c273f7483088465c78d7
+    image: ubiqube/msa2-ui:a79a2827b878ad7433e95ead61801b01017e1977
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -475,7 +475,7 @@ services:
   msa-es:
     restart: unless-stopped
     container_name: msa_es
-    image: ubiqube/msa2-es:c15801bb06a543890c3e25ab33036d39e2c2b635
+    image: ubiqube/msa2-es:e6abf2a447bdc17224a2ef72b458241b37f70b1a
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
@@ -572,8 +572,8 @@ services:
     environment:
       HOSTNAME: msa-smtp
 #      RELAYHOST: <MTA ip>:25
-      MESSAGE_SIZE_LIMIT: 2097152
-      ALLOW_EMPTY_SENDER_DOMAINS: "true"
+      POSTFIX_message_size_limit: 2097152
+      ALLOW_EMPTY_SENDER_DOMAINS: true
       ALLOWED_SENDER_DOMAINS: ''
 
   linux-me:
