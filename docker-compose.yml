@@ -25,7 +25,7 @@ x-amqp-syslog: &amqp-syslog
 
 services:
   msa-auth:
-      image: ubiqube/msa2-auth:cca471aab0352ed2008ea6f043368b81cfbbe33a
+      image: ubiqube/msa2-auth:2ee258788db4b034965db6a371479c74fdffc24d
       environment: 
         KEYCLOAK_ADMIN: admin
         KEYCLOAK_ADMIN_PASSWORD: ubiqube
@@ -82,7 +82,7 @@ services:
     #    - "msa_front:/etc/nginx/ssl"
     # - Docker Swarm HA installation
     #volumes:
-    #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
+    #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl" 
 
   db:
     restart: unless-stopped
