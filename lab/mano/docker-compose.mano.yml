@@ -136,7 +136,7 @@ services:
 
   mano-nfvo:
     restart: unless-stopped
-    image: openmsa/mano-nfvo:3.2.2
+    image: openmsa/mano-nfvo:3.2.1
     depends_on:
       - db
     environment:
