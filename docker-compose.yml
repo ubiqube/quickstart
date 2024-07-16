@@ -25,7 +25,7 @@ x-amqp-syslog: &amqp-syslog
 
 services:
   msa-auth:
-      image: ubiqube/msa2-auth:bd5121ce3773db70cd798f7ad0be7fafbfd67a24
+      image: ubiqube/msa2-auth:d60e5931b9bc3656c67ab8017066e82a9f65567d
       environment: 
         KEYCLOAK_ADMIN: admin
         KEYCLOAK_ADMIN_PASSWORD: ubiqube
