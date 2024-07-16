@@ -262,7 +262,7 @@ services:
   msa-snmptrap:
     restart: unless-stopped
     container_name: msa_snmptrap
-    image: ubiqube/msa2-snmptrap:12121dbb604444b0e7ed719c4d1eb22d18e58e9d
+    image: ubiqube/msa2-snmptrap:7ef5353176f85f511d69e59cd5a5603ca41f80bf
     depends_on:
       db:
         condition: service_healthy
