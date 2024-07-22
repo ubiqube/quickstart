@@ -1,0 +1,130 @@
+<ObjectDefinition>
+  <variables frozen="0">
+    <variable displayName="Managed Device Name" name="params.managed_device_name" startIncrement="0" type="String" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="3" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" default="linux_me" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
+      <sections>
+        <sections>Set Parameters</sections>
+      </sections>
+    </variable>
+    <variable displayName="Device External Reference" name="params.device_external_reference" startIncrement="0" type="String" mandatoryArray="false" visible="false" description="" groupSeparator="" groupDisplayName="" displayOrder="4" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
+      <sections>
+        <sections>Set Parameters</sections>
+      </sections>
+    </variable>
+    <variable displayName="Manufacturer Id" name="params.manufacturer_id" startIncrement="0" type="Integer" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="5" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" default="14020601" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
+      <sections>
+        <sections>Set Parameters</sections>
+      </sections>
+    </variable>
+    <variable displayName="Model Id" name="params.model_id" startIncrement="0" type="Integer" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="6" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" default="14020601" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
+      <sections>
+        <sections>Set Parameters</sections>
+      </sections>
+    </variable>
+    <variable displayName="Device Ip Address" name="params.device_ip_address" startIncrement="0" type="IpAddress" mandatoryArray="false" visible="false" description="" groupSeparator="" groupDisplayName="" displayOrder="7" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" default="172.20.0.101" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
+      <sections>
+        <sections>Set Parameters</sections>
+      </sections>
+    </variable>
+    <variable displayName="Login" name="params.login" startIncrement="0" type="String" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="8" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" default="msa" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
+      <sections>
+        <sections>Set Parameters</sections>
+      </sections>
+    </variable>
+    <variable displayName="Password" name="params.password" startIncrement="0" type="String" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="9" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" displayNameHeader="" fullDisplayName="" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
+      <sections>
+        <sections>Set Parameters</sections>
+      </sections>
+    </variable>
+    <variable displayName="Password Admin" name="params.password_admin" startIncrement="0" type="String" mandatoryArray="false" visible="false" description="" groupSeparator="" groupDisplayName="" displayOrder="10" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" displayNameHeader="" fullDisplayName="" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
+      <sections>
+        <sections>Set Parameters</sections>
+      </sections>
+    </variable>
+    <variable displayName="Management Interface" name="params.managementInterface" startIncrement="0" type="String" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="39" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" default="eth0" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
+      <sections>
+        <sections>Set Parameters</sections>
+      </sections>
+    </variable>
+    <variable displayName="Snmp Community" name="params.snmpCommunity" startIncrement="0" type="String" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="40" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" default="ubiqube" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
+      <sections>
+        <sections>Set Parameters</sections>
+      </sections>
+    </variable>
+    <variable displayName="Device Id" name="params.device_id" startIncrement="0" type="Device" mandatoryArray="false" visible="true" description="" groupSeparator="" groupDisplayName="" displayOrder="61" increment="0" refServiceURI="" keepOnImport="false" editable="true" onlyDetailView="false" localVarNameMatch="" remoteVarNameMatch="" arrayCanAdd="true" arrayCanRemove="true" arrayCanMove="true" arrayCanEdit="true" isMandatory="false" isUserLocked="false" isGrouped="false" isSearchable="false" isUniqueGlobal="false">
+      <sections>
+        <sections>Set Parameters</sections>
+      </sections>
+    </variable>
+  </variables>
+  <example/>
+  <process name="Process/SelfDemoSetup/Process_Setup">
+    <displayName>Setup Linux ME</displayName>
+    <type>CREATE</type>
+    <visibility>0</visibility>
+    <allowSchedule/>
+    <task name="Task_Set_Parameters1.php">
+      <processPath>/opt/fmc_repository/Process/SelfDemoSetup/Process_Setup/Tasks/</processPath>
+      <displayName>Set Parameters</displayName>
+    </task>
+    <task name="Task_msa_device_create.php">
+      <processPath>/opt/fmc_repository/Process/SelfDemoSetup/Process_Setup/Tasks/</processPath>
+      <displayName>Create ME</displayName>
+    </task>
+    <task name="Setup_Linux_ME_Create_DS.php">
+      <processPath>/opt/fmc_repository/Process/SelfDemoSetup</processPath>
+      <displayName>Create DS</displayName>
+    </task>
+    <task name="Task_Activate_ME.php">
+      <processPath>/opt/fmc_repository/Process/SelfDemoSetup/Process_Setup/Tasks</processPath>
+      <displayName>Activate ME</displayName>
+    </task>
+  </process>
+  <process name="Process/SelfDemoSetup/Process_Setup_2">
+    <displayName>Setup MSA REST API</displayName>
+    <type>CREATE</type>
+    <visibility>0</visibility>
+    <allowSchedule/>
+    <task name="Task_Set_Parameters2.php">
+      <processPath>/opt/fmc_repository/Process/SelfDemoSetup/Process_Setup/Tasks/</processPath>
+      <displayName>Set Parameters</displayName>
+    </task>
+    <task name="Task_msa_device_create.php">
+      <processPath>/opt/fmc_repository/Process/SelfDemoSetup/Process_Setup/Tasks/</processPath>
+      <displayName>Create ME</displayName>
+    </task>
+    <task name="Setup_MSA_REST_API_Configure_REST_DA.php">
+      <processPath>/opt/fmc_repository/Process/SelfDemoSetup</processPath>
+      <displayName>Configure REST DA</displayName>
+    </task>
+  </process>
+  <process name="Process/SelfDemoSetup/Process_Delete">
+    <displayName>Delete</displayName>
+    <type>DELETE</type>
+    <visibility>0</visibility>
+    <allowSchedule/>
+    <task name="Delete_delete.php">
+      <processPath>/opt/fmc_repository/Process/SelfDemoSetup</processPath>
+      <displayName>delete</displayName>
+    </task>
+  </process>
+  <process name="Process/SelfDemoSetup/Create_ME">
+    <displayName>Create ME</displayName>
+    <type>CREATE</type>
+    <visibility>0</visibility>
+    <allowSchedule/>
+    <task name="Create_ME_Create_ME.php">
+      <processPath>/opt/fmc_repository/Process/SelfDemoSetup</processPath>
+      <displayName>Create ME</displayName>
+    </task>
+  </process>
+  <information>
+    <icon>/images/eclipseIcons/page_obj.gif</icon>
+    <description>Create the mini lab</description>
+    <displayField>service_id</displayField>
+    <serviceTaskType>php</serviceTaskType>
+    <order>10000</order>
+    <visibility>5</visibility>
+    <name>SelfDemoSetup</name>
+    <group>MINILAB</group>
+  </information>
+</ObjectDefinition>

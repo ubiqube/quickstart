@@ -1,0 +1,3 @@
+
+ncuser ALL= NOPASSWD: /sbin/sshd,/usr/bin/fix-perm.sh,/usr/bin/init_home.sh,/usr/bin/update-ca-trust
+
