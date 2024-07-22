@@ -213,7 +213,7 @@ main() {
     for arg
     do
         case "$arg" in
-        -m|--mini-lab)
+            -m|--mini-lab)
                 mini_lab=true
                 ;;
             -f|--force)
