@@ -4,6 +4,7 @@ USER="ncroot"
 PASSWORD="ubiqube"
 OPERATOR="BLR"
 function executeCurl(){
+        set +x
         token=$1
         method=$2
         apiPath=$3
@@ -12,8 +13,10 @@ function executeCurl(){
         echo "Method $method"
         echo "apiPath $apiPath"
         echo "body $body"
+        set -x
         res=`curl -s -H "Content-Type: application/json" -H "Authorization: Bearer "$token -X $method "http://msa-api:8480/ubi-api-rest$apiPath" -d "$body"`
         echo $res
+
 }
 /usr/bin/wait_for_api.sh
 if [ $? -ne 0 ]; then
@@ -110,6 +113,7 @@ at2=$(executeCurl $TOKEN 'PUT' "/profile/TyrellMonitoringPfl/attach?device=$ME2I
 echo "-----------------------------------------------------"
 echo "CREATE AND CONFIGURE DASHBOARD"
 echo "-----------------------------------------------------"
+set -x
 dashboardExist=$(executeCurl $TOKEN 'GET' "/orchestration/v1/summary/actor?customerId=$CUSTIDONLY")
 if [[ $dashboardExist == *"kibana_dashboard"* ]]; then
         echo "Dashboard already exists"
