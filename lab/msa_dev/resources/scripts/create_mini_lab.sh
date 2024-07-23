@@ -107,8 +107,6 @@ fi
 at1=$(executeCurl $TOKEN 'PUT' "/profile/TyrellMonitoringPfl/attach?device=$ME1ID")
 at2=$(executeCurl $TOKEN 'PUT' "/profile/TyrellMonitoringPfl/attach?device=$ME2ID")
 
-exit
-
 echo "-----------------------------------------------------"
 echo "CREATE AND CONFIGURE DASHBOARD"
 echo "-----------------------------------------------------"
