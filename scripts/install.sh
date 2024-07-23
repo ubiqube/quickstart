@@ -57,6 +57,7 @@ standaloneInstall(){
     if [ $ccla = true ] ; then
         echo "Installing CCLA libraries and Blueprints"
         docker compose exec msa-dev /usr/bin/install_libraries.sh ccla
+        docker compose exec msa-dev /usr/bin/install_libraries.sh all
     fi
 
     install_ccla_wf=$(docker compose exec -T msa-api curl -X POST http://localhost:8480/ubi-api-rest/ccla/libraries/install -s -o /dev/null -w "%{http_code}")
