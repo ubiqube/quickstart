@@ -554,7 +554,7 @@ services:
     restart: unless-stopped
     container_name: msa_dev
     #build: ./lab/msa_dev
-    image: ubiqube/msa2-linuxdev:27fb63ea85c9e33a843fd9aa5b6bfc9e44151892
+    image: ubiqube/msa2-linuxdev:70acaec85685eee6869c8ec37eeeb95662fd6f85
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
