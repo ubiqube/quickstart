@@ -4,7 +4,7 @@ services:
   cloudclapp:
     depends_on:
       - msa-api
-    image: ubiqube/cloudclapp:abe723008fdf1c2135ea1739652dbf43263952d6
+    image: ubiqube/cloudclapp:e066f41679f2f8cec870185f71e030edc2237e2c
     environment:
       - UBIQUBE_CAPTCHA_SITE_KEY=6Ld2zF4dAAAAAJlqZMIHpPeb3aYhcyy1K3NWPtqi
       - UBIQUBE_LICENSE_AGREEMENT_LINK=https:\/\/cloudclapp.com\/EndUserLicenceAgreement.html

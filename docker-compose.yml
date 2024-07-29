@@ -25,7 +25,7 @@ x-amqp-syslog: &amqp-syslog
 
 services:
   msa-auth:
-      image: ubiqube/msa2-auth:d60e5931b9bc3656c67ab8017066e82a9f65567d
+      image: ubiqube/msa2-auth:6efa1f3a8bb42847dd15a5c6fb567b7967460047
       environment: 
         KEYCLOAK_ADMIN: admin
         KEYCLOAK_ADMIN_PASSWORD: ubiqube
@@ -42,7 +42,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:cd0ca084d876d5d8b2d6988987cdb477edb8cc20
+    image: ubiqube/msa2-front:7e6468a5425c14b7aaf1bda06a49c63692683670
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -117,7 +117,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:fce9c033712a7cb60566e1b45cac57524e7cebbd
+    image: ubiqube/msa2-api:9d5a661b492fda36f68eeb35fa6b7de3c9a8ecb1
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -150,7 +150,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:abe723008fdf1c2135ea1739652dbf43263952d6
+    image: ubiqube/msa2-ui:e066f41679f2f8cec870185f71e030edc2237e2c
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -553,8 +553,8 @@ services:
   msa-dev:
     restart: unless-stopped
     container_name: msa_dev
-    build: ./lab/msa_dev
-    #image: ubiqube/msa2-linuxdev:70acaec85685eee6869c8ec37eeeb95662fd6f85
+    #build: ./lab/msa_dev
+    image: ubiqube/msa2-linuxdev:bfa635767a94dbdb1bc490d788e842b88cad456d
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
