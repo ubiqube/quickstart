@@ -2,8 +2,8 @@
 version: "3.8"
 
 x-es-configuration: &es-configuration
-    ES_CREDENTIALS: c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
-    ES_SERVERS: "msa-es"
+  ES_CREDENTIALS: c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+  ES_SERVERS: "msa-es"
 
 x-logging: &logging
   driver: "json-file"
@@ -14,8 +14,15 @@ x-logging: &logging
     max-file: "5"
 
 x-kafka-syslogs: &kafka-syslogs
-    KAFKA_SERVER: "kafka:9094"
-    KAFKA_TOPIC: "syslogs"
+  KAFKA_SERVER: "kafka:9094"
+  KAFKA_TOPIC: "syslogs"
+
+x-amqp-syslog: &amqp-syslog
+  AMQP_SERVER: "msa-broker"
+  AMQP_PORT: "5672"
+  AMQP_ADDRESS: "core-engine.syslog"
+  AMQP_USER: "artemis"
+  AMQP_PASSWORD: "simetraehcapa"
 
 x-placement_app: &placement_app
   replicas: 1
@@ -24,7 +31,15 @@ x-placement_app: &placement_app
     constraints:
       - "node.labels.worker==app"
 
-# rsyslog ports are in mode host so we have to configure one replica per worker
+# for containers that have to run with only one replica
+x-placement_app_one_replica: &placement_app_one_replica
+  replicas: 1
+  placement:
+    max_replicas_per_node: 1
+    constraints:
+      - "node.labels.worker==app"
+
+# snmptrap and rsyslog ports are in mode host so we have to configure one replica per worker
 x-placement_rsyslog: &placement_rsyslog
   replicas: 1
   placement:
@@ -46,8 +61,22 @@ x-healthcheck: &healthcheck
   start_period: 120s
 
 services:
+  msa-auth:
+    image: ubiqube/msa2-auth:6efa1f3a8bb42847dd15a5c6fb567b7967460047
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: ubiqube
+    depends_on:
+      - db
+    healthcheck:
+      test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8080'
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 1m
+
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.13.1-9b3c7afe5673bda9e117ebac711e2dae2f7cfbaf
+    image: ubiqube/msa2-front:f4a8fbfb16f1b2e82c479e5fbe5cc659af02d663
     depends_on:
       - msa-api
       - msa-ui
@@ -67,25 +96,20 @@ services:
         protocol: tcp
         mode: ingress
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
+      <<: *logging
     volumes:
-        - "/mnt/NASVolume/msa_front_conf:/etc/nginx/custom_conf.d"
-    #
-    # uncomment one of the 2 sections below when installing a custom certificate
-    # - Docker standard standalone installation
-    #volumes:
-    #    - "msa_front:/etc/nginx/ssl"
-    # - Docker Swarm HA installation
-    #volumes:
-    #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
+      - "/mnt/NASVolume/msa_front_conf:/etc/nginx/custom_conf.d"
+      #
+      # uncomment one of the 2 sections below when installing a custom certificate
+      # - Docker standard standalone installation
+      # volumes:
+      #    - "msa_front:/etc/nginx/ssl"
+      # - Docker Swarm HA installation
+      # volumes:
+      #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
-    image: openmsa/openmsa:msa2-db-2.8.13.1-90bf0f3d315cba4cdf9504bcffc0f87d21ca405c
+    image: ubiqube/msa2-db:a780dc7a63f2cd60a487f4cac38809a260ffe844
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
@@ -108,12 +132,15 @@ services:
       MAX_CONNECTIONS: 1600
     volumes:
       - "/mnt/NASVolume/msa_db:/pgsqldata/pgsql"
-    shm_size: 1g
+      - type: tmpfs
+        target: /dev/shm
+        tmpfs:
+          size: 2000000000
     logging:
       <<: *logging
 
   db-replica:
-    image: openmsa/openmsa:msa2-db-2.8.13.1-90bf0f3d315cba4cdf9504bcffc0f87d21ca405c
+    image: ubiqube/msa2-db:a780dc7a63f2cd60a487f4cac38809a260ffe844
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
@@ -138,16 +165,17 @@ services:
       <<: *logging
 
   msa-api:
-    image: openmsa/openmsa:msa2-api-2.8.13.1-f15fb8df944e1f51dc74223747b6fb53d08dee84
+    image: ubiqube/msa2-api:1f5afafbd113e1d23e84c997c3e74ba3c024823f
     depends_on:
       - db
     healthcheck:
-      <<: *healthcheck   
+      <<: *healthcheck
       test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
     deploy:
       <<: *placement_app
     environment:
       <<: *es-configuration
+      CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
       HOST_HOSTNAME: "{{.Node.Hostname}}"
     volumes:
       - "/mnt/NASVolume/msa_dev:/opt/devops/"
@@ -155,7 +183,7 @@ services:
       - "/mnt/NASVolume/msa_entities:/opt/fmc_entities"
       - "/mnt/NASVolume/msa_repository:/opt/fmc_repository"
       - "/mnt/NASVolume/msa_api_keystore:/etc/pki/jentreprise"
-      - "/mnt/NASVolume/msa_api_logs:/opt/wildfly/logs/processLog"
+      - "/mnt/NASVolume/msa_api_logs:/opt/wildfly/logs"
     logging:
       <<: *logging
     networks:
@@ -164,7 +192,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.8.13.1-6ddec40e9f71aa84407c3e8bbe5eb09b80ca0ac7
+    image: ubiqube/msa2-ui:e066f41679f2f8cec870185f71e030edc2237e2c
     depends_on:
       - msa-api
     healthcheck:
@@ -173,25 +201,25 @@ services:
     deploy:
       <<: *placement_app
     environment:
-    - FEATURE_ADMIN=true
-    - FEATURE_REPOSITORY=true
-    - FEATURE_CONNECTION_STATUS=true
-    - FEATURE_ALARMS=true
-    - FEATURE_LICENCE=true
-    - FEATURE_TOPOLOGY=true
-    - FEATURE_MONITORING_PROFILES=true
-    - FEATURE_PROFILE_AUDIT_LOGS=true
-    - FEATURE_PERMISSION_PROFILES=true
-    - FEATURE_AI_ML=false
-    - FEATURE_MICROSERVICE_BULK_OPERATION=false
-    - FEATURE_EDIT_VARIABLES_IN_MICROSERVICE_CONSOLE=true
-    - FEATURE_WORKFLOW_OWNER=false
-    - FEATURE_PERMISSION_PROFILE_LABELS=false
-    - FEATURE_BPM=true
-    - UBIQUBE_ES_SECURITY_DISABLED=true
-    - FEATURE_ALARMS_AUTO_CLEARANCE=false
-    - FEATURE_IMPORT_WITH_SAME_AND_UPPERRANK=true
-    - FEATURE_REPOFOLDERLIST=[\"Datafiles\"]
+      - FEATURE_ADMIN=true
+      - FEATURE_REPOSITORY=true
+      - FEATURE_CONNECTION_STATUS=true
+      - FEATURE_ALARMS=true
+      - FEATURE_LICENCE=true
+      - FEATURE_TOPOLOGY=true
+      - FEATURE_MONITORING_PROFILES=true
+      - FEATURE_PROFILE_AUDIT_LOGS=true
+      - FEATURE_PERMISSION_PROFILES=true
+      - FEATURE_AI_ML=false
+      - FEATURE_MICROSERVICE_BULK_OPERATION=false
+      - FEATURE_EDIT_VARIABLES_IN_MICROSERVICE_CONSOLE=true
+      - FEATURE_WORKFLOW_OWNER=false
+      - FEATURE_PERMISSION_PROFILE_LABELS=false
+      - FEATURE_BPM=true
+      - UBIQUBE_ES_SECURITY_DISABLED=true
+      - FEATURE_ALARMS_AUTO_CLEARANCE=false
+      - FEATURE_IMPORT_WITH_SAME_AND_UPPERRANK=true
+      - FEATURE_REPOFOLDERLIST=[\"Datafiles\"]
     logging:
       <<: *logging
     networks:
@@ -200,21 +228,19 @@ services:
           - "msa_ui"
 
   msa-rsyslog:
+    image: ubiqube/msa2-rsyslog:fcb0e77b5e27821fb5f733baf2d8681ccfb4306b
     depends_on:
-      - msa-parse
       - kafka
-    image: openmsa/openmsa:msa2-rsyslog-2.8.13.1-ff52e9cdfb5452b114e94eb76bfb8679d380fa03
+      - msa-broker
+      - msa-parse
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "ps -p 1 -h -o%cpu | awk '{if ($$1 > 99) exit 1; else exit 0;}'"]
     deploy:
       <<: *placement_rsyslog
     environment:
-      # ACTIONTYPE: omudpspoof or omkafka
-      # configure a specific port for TLS. Default is 6514
-      # TLS_SYSLOG_PORT: 6514
-      ACTIONTYPE: "omkafka"
-      <<: *kafka-syslogs  
+      ACTIONTYPE: "omamqp1"
+      <<: *amqp-syslog
     ports:
       # on docker swarm rsyslog port can support only one protocol (TCP or UDP) per port and MUST be in host mode
       - target: 514
@@ -233,13 +259,13 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
-    image: openmsa/openmsa:msa2-sms-2.8.13.1-106dfbe0204ec874c36c7d66cb1b9af19b513cb2
+    image: ubiqube/msa2-sms:9b91fab31010b1e309214758969e71f511058164
     depends_on:
       - db
       - msa-dev
     healthcheck:
       <<: *healthcheck
-      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
+      test: ["CMD-SHELL", "/opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1"]
     deploy:
       <<: *placement_app
     environment:
@@ -271,19 +297,20 @@ services:
           - "msa_sms"
 
   msa-parse:
-    image: openmsa/openmsa:msa2-parse-2.8.13.1-0e01a8b8345edb25bbd5fc71e186b36e0f4748e1
+    image: ubiqube/msa2-parse:100412daae7431d0930aca976158bc17e097b87d
     depends_on:
       - db
       - kafka
+      - msa-broker
       - msa-es
       - msa-dev
     healthcheck:
       <<: *healthcheck
-      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
+      test: ["CMD-SHELL", "/opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1"]
     deploy:
       <<: *placement_app
     environment:
-      <<: [*es-configuration, *kafka-syslogs]
+      <<: [*es-configuration, *amqp-syslog]
     logging:
       <<: *logging
     volumes:
@@ -297,16 +324,16 @@ services:
           - "msa_parse"
 
   msa-snmptrap:
-    image: openmsa/openmsa:msa2-snmptrap-2.8.13.1-ee6be9161b017fc3985b8f9c21b211e23db28355
+    image: ubiqube/msa2-snmptrap:ad82a271da1005b784bf69057f10534f73f558ac
     depends_on:
       - db
       - msa-es
       - msa-dev
     healthcheck:
       <<: *healthcheck
-      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
+      test: ["CMD-SHELL", "/opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1"]
     deploy:
-      <<: *placement_app
+      <<: *placement_rsyslog
     environment:
       <<: *es-configuration
     ports:
@@ -327,12 +354,12 @@ services:
           - "msa_snmptrap"
 
   msa-bud:
-    image: openmsa/openmsa:msa2-bud-2.8.13.1-d09b3d3cd75c042355da8d637462a51cce558dd3
+    image: ubiqube/msa2-bud:3fe82ad9d9afe09f0aa33540fe914e6b23a7d8b8
     depends_on:
       - db
     healthcheck:
       <<: *healthcheck
-      test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
+      test: ["CMD-SHELL", "/opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1"]
     environment:
       - CONTAINER_DOCKNAME={{.Task.Name}}.{{.Node.Hostname}}
     deploy:
@@ -347,15 +374,15 @@ services:
           - "msa_bud"
 
   msa-alarm:
+    image: ubiqube/msa2-alarm:6500c2f3ebedb71059728394c7328d483b393343
     depends_on:
       - db
       - msa-es
       - msa-api
       - msa-dev
-    image: openmsa/openmsa:msa2-alarm-2.8.13.1-855c7a682da3a4376bf0239eca7ee59776d84811
     healthcheck:
       <<: *healthcheck
-      test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
+      test: ["CMD-SHELL", "/opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1"]
     deploy:
       <<: *placement_app
     environment:
@@ -373,17 +400,17 @@ services:
           - "msa_alarm"
 
   msa-monitoring:
+    image: ubiqube/msa2-monitoring:917e4e6156d78335644c6612d15e92dfc57f9752
     depends_on:
       - db
       - msa-es
       - msa-dev
       - msa-sms
-    image: openmsa/openmsa:msa2-monitoring-2.8.13.1-94882a50f4eb14d968485b6fd62ae37f799a32ca
     healthcheck:
       <<: *healthcheck
-      test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
+      test: ["CMD-SHELL", "/opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1"]
     deploy:
-      <<: *placement_app
+      <<: *placement_app_one_replica
     environment:
       <<: *es-configuration
       CONTAINER_DOCKNAME: "{{.Task.Name}}.{{.Node.Hostname}}"
@@ -431,9 +458,7 @@ services:
       - "/mnt/NASVolume/kafka_data:/bitnami/kafka"
 
   msa-broker:
-    depends_on:
-      - db
-    image: openmsa/openmsa:msa2-broker-2.8.13.1-a637ce7b1d31f9da37a22b0fdaad954dcdf0870e
+    image: docker.io/ubiqube/msa2-broker:dd05a6145436397696dd81f90c78865bf2106a3b
     healthcheck:
       <<: *healthcheck
     deploy:
@@ -441,15 +466,16 @@ services:
     environment:
       ARTEMIS_PASSWORD: simetraehcapa
       ARTEMIS_USER: artemis
+      EXTRA_ARGS: --http-host 0.0.0.0 --relax-jolokia --clustered --addresses core-engine.syslog:anycast --queues core-engine.syslog:anycast
     logging:
       <<: *logging
     volumes:
       - "/mnt/NASVolume/mano_artemis:/var/lib/artemis-instance"
 
   camunda:
+    image: ubiqube/msa2-camunda:fa1f4b71690711aa632bfae48d1e13cd30c22f92
     depends_on:
       - db
-    image: openmsa/openmsa:msa2-camunda-2.8.13.1-0f60a3c018c1b7dcde68259c9dadf71862373510
     healthcheck:
       <<: *healthcheck
     deploy:
@@ -459,6 +485,7 @@ services:
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
       DB_USERNAME: camunda
       DB_PASSWORD: camunda
+      DB_VALIDATION_QUERY: 'SELECT 1'
       DB_VALIDATE_ON_BORROW: 'true'
       WAIT_FOR: 'db:5432'
       WAIT_FOR_TIMEOUT: 60
@@ -466,14 +493,14 @@ services:
       <<: *logging
 
   msa-kibana:
-    image: openmsa/openmsa:msa2-kibana-2.8.13.1-54e81a717d1f9aa7acc372643c6966e23b8b66fe
+    image: ubiqube/msa2-kibana:bfd1814eae8288e192c978400fcb0741e1d3bd26
     healthcheck:
       <<: *healthcheck
     deploy:
       <<: *placement_app
     environment:
-      ELASTICSEARCH_URL: "http://msa_es:9200"
-      ELASTICSEARCH_HOSTS: "http://msa_es:9200"
+      ELASTICSEARCH_URL: "http://msa-es:9200"
+      ELASTICSEARCH_HOSTS: "http://msa-es:9200"
       <<: *es-configuration
     ports:
       - "5601:5601"
@@ -485,7 +512,7 @@ services:
           - "msa_kibana"
 
   msa-es:
-    image: openmsa/openmsa:msa2-es-2.8.13.1-fd5720abb286c67f391172e2c781d8bb43b1554d
+    image: ubiqube/msa2-es:43922ecfc8d23a7b2040ec7bb1734254fb533a47
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
@@ -507,12 +534,12 @@ services:
         aliases:
           - "msa_es"
     volumes:
-     - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
+      - "/mnt/NASVolume/msa_es:/usr/share/elasticsearch/data"
     logging:
       <<: *logging
 
   msa-cerebro:
-    image: openmsa/openmsa:msa2-cerebro-2.8.13.1-8374160f95e2349711204189a3bf8a385f7252b5
+    image: ubiqube/msa2-cerebro:ce58c0937c408ee45ba008ca82d8c2f574b93430
     healthcheck:
       <<: *healthcheck
     deploy:
@@ -523,7 +550,7 @@ services:
       BASIC_AUTH_PWD: "N@X{M4tfw'5%)+35"
     entrypoint:
       - /opt/cerebro/bin/cerebro
-      - -Dhosts.0.host=http://msa_es:9200
+      - -Dhosts.0.host=http://msa-es:9200
     ports:
       - "9000:9000"
     logging:
@@ -534,7 +561,7 @@ services:
           - "msa_cerebro"
 
   msa-dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.8.13.1-f03103c0845b97ec88434fdb52744aef3c54c976
+    image: ubiqube/msa2-linuxdev:bfa635767a94dbdb1bc490d788e842b88cad456d
     healthcheck:
       <<: *healthcheck
     deploy:
@@ -570,7 +597,6 @@ services:
     depends_on:
       - msa-es
     environment:
-
       ELASTICSEARCH_URL: "msa_es:9200"
       #For elasticsearch scripts /opt/ubi-es-ilm/log_retention_management.php
       #UBI_ES_INDEX_MULTIPLE_TTL:        "type:traffic|7d,type:event|30d,*|90d"
@@ -586,12 +612,18 @@ services:
       UBI_ES_MAX_DOCS:                   ""
       UBI_ES_LOG_DETENTION_DELETE:       "true"
       UBI_ES_ILM_LOG_CRONTAB:            "*/2 * * * *  php /opt/ubi-es-ilm/log_retention_management.php --verbose=3 > /proc/1/fd/1 2>&1"
-
       <<: *es-configuration
-
     volumes:
       - "/mnt/NASVolume/msa2_es-ilm:/opt/msa2-es-ilm"
 
+  msa-smtp:
+    image: boky/postfix:4.2.1-alpine
+    environment:
+      HOSTNAME: msa-smtp
+      # RELAYHOST: <MTA ip>:25
+      POSTFIX_message_size_limit: 2097152
+      ALLOW_EMPTY_SENDER_DOMAINS: "true"
+      ALLOWED_SENDER_DOMAINS: ''
 
 volumes:
   msa_sms_logs:
@@ -612,5 +644,5 @@ volumes:
 
 networks:
   default:
-    #driver_opts:
-      #encrypted: "true"
+#    driver_opts:
+#      encrypted: "true"
