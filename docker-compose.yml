@@ -617,7 +617,7 @@ services:
 
 
   msa2-es-ilm:
-    image: openmsa/openmsa:msa2-es-ilm-2.8.13.1-9931c196f7c08839feea13e1426fc92b953ef311
+    image: openmsa/openmsa:msa2-es-ilm-2.9.0-dda9094825d80174afde4d18a9fafcadedb1f7d1
     container_name: msa2_es-ilm
     tty: true
     init: true
