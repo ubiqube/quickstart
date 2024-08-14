@@ -42,7 +42,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.9.0-9d1bd0cb73a9b7c7dbc86d3a1645168222b329e8
+    image: openmsa/openmsa:msa2-front-2.9.0-3c3232d9a57edb689e4706e6ab3bfb941c002d21
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -112,7 +112,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.9.0-8d7a9479a66ddb6e5876e32f0d6526a99950ef33
+    image: openmsa/openmsa:msa2-api-2.9.0-748badd52b099eccfb11afc7908143f0d4c3da50
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -143,7 +143,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.9.0-521fae0f4c916c774818a3f7e7c782d32f7272f2
+    image: openmsa/openmsa:msa2-ui-2.9.0-1baa642495e8a9fb2f63ee2fb17cde4683986e89
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
