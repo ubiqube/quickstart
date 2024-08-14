@@ -76,7 +76,7 @@ services:
       start_period: 1m
 
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.9.0-9d1bd0cb73a9b7c7dbc86d3a1645168222b329e8
+    image: openmsa/openmsa:msa2-front-2.9.0-3c3232d9a57edb689e4706e6ab3bfb941c002d21
     depends_on:
       - msa-api
       - msa-ui
@@ -165,7 +165,7 @@ services:
       <<: *logging
 
   msa-api:
-    image: openmsa/openmsa:msa2-api-2.9.0-8d7a9479a66ddb6e5876e32f0d6526a99950ef33
+    image: openmsa/openmsa:msa2-api-2.9.0-748badd52b099eccfb11afc7908143f0d4c3da50
     depends_on:
       - db
     healthcheck:
@@ -192,7 +192,7 @@ services:
           - "msa_api"
 
   msa-ui:
-    image: openmsa/openmsa:msa2-ui-2.9.0-521fae0f4c916c774818a3f7e7c782d32f7272f2
+    image: openmsa/openmsa:msa2-ui-2.9.0-1baa642495e8a9fb2f63ee2fb17cde4683986e89
     depends_on:
       - msa-api
     healthcheck:
