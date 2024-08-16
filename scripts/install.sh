@@ -343,7 +343,7 @@ function getHaContainerReference(){
 }
 
 function getLibOptions(){
-    lib_options="all"
+    lib_options="all -t v2.8.13"
     if [ $force_option = true ] || [ $fresh_setup = true ] ; then
         lib_options+=" -y"
     fi
