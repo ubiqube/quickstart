@@ -42,7 +42,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.9.1-d8a6e8508d7771ed73f209ae38dfecc72238079b
+    image: openmsa/openmsa:msa2-front-2.9.1-67c4ceeb63d5b64641ece5da9cd59613cc8ae4f5
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -82,7 +82,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.9.1-a780dc7a63f2cd60a487f4cac38809a260ffe844
+    image: openmsa/openmsa:msa2-db-2.9.1-79143368e7f42131221222ad855e43c6dd10f55e
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -112,7 +112,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.9.1-82f2a503bf599b5f56ab349c8435cd0c1a02c2bc
+    image: openmsa/openmsa:msa2-api-2.9.1-a05d5331fc37e4dd7de428c0ea3078603846bbc8
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -143,7 +143,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.9.1-521fae0f4c916c774818a3f7e7c782d32f7272f2
+    image: openmsa/openmsa:msa2-ui-2.9.1-cadd151898cbe65b91bf21a06008ab5596020213
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -179,7 +179,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: openmsa/openmsa:msa2-sms-2.9.1-973e129c9f5ee3d2b4a04970b937cfbe6d06ed6f
+    image: openmsa/openmsa:msa2-sms-2.9.1-8aec36cc431cb1b424e6f4539aff68a0b14507e8
     healthcheck:
       timeout: 5s
       retries: 10
@@ -308,7 +308,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: openmsa/openmsa:msa2-alarm-2.9.1-6500c2f3ebedb71059728394c7328d483b393343
+    image: openmsa/openmsa:msa2-alarm-2.9.1-dde9e346a821f27961fbc41fa5ce685f8a1cb50e
     healthcheck:
       timeout: 5s
       retries: 10
@@ -443,7 +443,7 @@ services:
   camunda:
     restart: unless-stopped
     container_name: msa_camunda
-    image: openmsa/openmsa:msa2-camunda-2.9.1-47d3fadcff491cb61b3cb204a481c17a4716f112
+    image: openmsa/openmsa:msa2-camunda-2.9.1-c6acd049f20fe32f3575b961453d8dfdb06b3bf3
     depends_on:
       db:
         condition: service_healthy
@@ -462,7 +462,7 @@ services:
   msa-es:
     restart: unless-stopped
     container_name: msa_es
-    image: openmsa/openmsa:msa2-es-2.9.1-43922ecfc8d23a7b2040ec7bb1734254fb533a47
+    image: openmsa/openmsa:msa2-es-2.9.1-be1b9eff5e3f427298d4d1d5a5cb9ba8d2dde3cd
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
@@ -497,7 +497,7 @@ services:
   msa-cerebro:
     restart: unless-stopped
     container_name: msa_cerebro
-    image: openmsa/openmsa:msa2-cerebro-2.9.1-ce58c0937c408ee45ba008ca82d8c2f574b93430
+    image: openmsa/openmsa:msa2-cerebro-2.9.1-a1d02c6e78123039941ec968a98a9db99fb7f1a6
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -520,7 +520,7 @@ services:
   msa-kibana:
     restart: unless-stopped
     container_name: msa_kibana
-    image: openmsa/openmsa:msa2-kibana-2.9.1-bfd1814eae8288e192c978400fcb0741e1d3bd26
+    image: openmsa/openmsa:msa2-kibana-2.9.1-fdc870f5d050b79f67eee37b79226fac78b1adca
     depends_on:
       msa-es:
         condition: service_started
@@ -540,7 +540,7 @@ services:
   msa-dev:
     restart: unless-stopped
     container_name: msa_dev
-    image: openmsa/openmsa:msa2-linuxdev-2.9.1-bfa635767a94dbdb1bc490d788e842b88cad456d
+    image: openmsa/openmsa:msa2-linuxdev-2.9.1-541f58c5bd1e07e0722b1c17ad6a8e2ba72f57c8
     healthcheck:
       test: ["CMD-SHELL", "test -f /usr/bin/install_libraries.sh || echo false"]
     volumes:
@@ -569,7 +569,7 @@ services:
     restart: unless-stopped
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.9.1-c2a2f071a16ceae8d93e9a641d023ea346119265
+    image: openmsa/openmsa:msa2-linuxme-2.9.1-cc4357bc05c6502c7d2ceb7d3c6b090e24a8411e
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -594,7 +594,7 @@ services:
     restart: unless-stopped
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.9.1-c2a2f071a16ceae8d93e9a641d023ea346119265
+    image: openmsa/openmsa:msa2-linuxme-2.9.1-cc4357bc05c6502c7d2ceb7d3c6b090e24a8411e
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
