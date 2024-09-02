@@ -25,7 +25,7 @@ x-amqp-syslog: &amqp-syslog
 
 services:
   msa-auth:
-    image: ubiqube/msa2-auth:6326bc35b4f46878c02db3257fcd38cb58b42ddb
+    image: ubiqube/msa2-auth:ca066b28d602eb27c0cbfd529a081d6048b951bf
     environment: 
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: ubiqube
@@ -42,7 +42,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:d85e849330d5bbd3a431b0671f47c14070f3ce66
+    image: ubiqube/msa2-front:10c7a601a3d97d3e17171fceb184f7b383171293
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
