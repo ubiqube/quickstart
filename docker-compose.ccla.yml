@@ -17,7 +17,7 @@ services:
       - UBIQUBE_ZAP_TOKEN=7da091fe-63a4-48c0-9bfa-7614c49feb7c
 
   ccla-scan-env:
-    image: owasp/zap2docker-stable:2.11.1
+    image: zaproxy/zap-stable:2.15.0
     entrypoint:
       - zap.sh
       - -daemon
