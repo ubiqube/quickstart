@@ -42,7 +42,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:a3b9d268d99dc537af32da6e655aeb3dd05bad1a
+    image: ubiqube/msa2-front:aae12eb8e1db80f63e788100c0fb6f57f4b87f58
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -117,7 +117,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:d85abe508d7d1e614c39ffc701cce2ec08b4a501
+    image: ubiqube/msa2-api:9dfcbf9659bf46b76e981545f22087b73fd12486
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -317,7 +317,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: ubiqube/msa2-alarm:dde9e346a821f27961fbc41fa5ce685f8a1cb50e
+    image: ubiqube/msa2-alarm:5f2a0acbaaf1de46259ef5fa4405902c34041dc3
     healthcheck:
       timeout: 5s
       retries: 10
@@ -460,7 +460,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    image: ubiqube/msa2-camunda:fa1f4b71690711aa632bfae48d1e13cd30c22f92
+    image: ubiqube/msa2-camunda:1b42ea1bb18756823daaec5da86de477883cdb0d
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_URL: 'jdbc:postgresql://db:5432/process-engine'
