@@ -57,7 +57,7 @@ services:
 
   mano-auth:
     restart: unless-stopped
-    image: openmsa/mano-keycloak:24.0.1
+    image: openmsa/mano-keycloak:25
     environment:
       # Unused?
       KEYCLOAK_USER: admin
@@ -89,7 +89,7 @@ services:
           - "mano-es"
 
   mano-helm3:
-    image: openmsa/mano-helm3:3.1.0
+    image: openmsa/mano-helm3:4.0.0
 
   mano-logstash:
     image: docker.elastic.co/logstash/logstash:7.17.9
@@ -105,11 +105,8 @@ services:
       - "./lab/mano/config/logstash/pipeline:/usr/share/logstash/pipeline"
       - "./lab/mano/config/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml"
 
-  mano-juju:
-    image: openmsa/mano-juju:latest
-
   mano-mon:
-    image: openmsa/mano-mon:3.2.0.1
+    image: openmsa/mano-mon:4.0.0
     depends_on:
       - db
     environment:
@@ -129,7 +126,7 @@ services:
 
   mano-nfvo:
     restart: unless-stopped
-    image: openmsa/mano-nfvo:3.2.1
+    image: openmsa/mano-nfvo:4.0.0
     depends_on:
       - db
     environment:
@@ -159,7 +156,7 @@ services:
 
   mano-vnfm:
     restart: unless-stopped
-    image: openmsa/mano-vnfm:3.2.2
+    image: openmsa/mano-vnfm:4.0.0
     depends_on:
       - db
     environment:
