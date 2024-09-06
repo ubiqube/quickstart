@@ -117,8 +117,8 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - "./lab/mano/logstash/pipeline:/usr/share/logstash/pipeline"
-      - "./lab/mano/logstash/config:/usr/share/logstash/config"
+      - "./lab/mano/config/logstash/pipeline:/usr/share/logstash/pipeline"
+      - "./lab/mano/config/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml"
 
   mano-mon:
     image: openmsa/mano-mon:4.0.0
