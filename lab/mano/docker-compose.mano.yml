@@ -94,7 +94,7 @@ services:
         protocol: tcp
         mode: ingress
     volumes:
-      - ./lab/mano/configkeycloak:/opt/keycloak/data/import
+      - ./lab/mano/config/keycloak:/opt/keycloak/data/import
     entrypoint: ["/opt/keycloak/bin/kc.sh", "start", "--import-realm", "--optimized", "--http-enabled=true", "--hostname-strict=false", "--hostname-strict-backchannel=true", "--log-console-color=true"]
 
   msa-es:
