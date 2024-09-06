@@ -32,6 +32,8 @@ services:
       default:
         aliases:
           - "mano-db"
+    volumes:
+      - './lab/mano/config/msa-db/100-customer-mano.sql:/db_schemas/100-customer-mano.sql'
 
   mano-alarm:
     restart: unless-stopped
