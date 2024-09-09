@@ -7,7 +7,6 @@ x-es-config: &es-config
   MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://mano-zipkin:9411/api/v2/spans
 
 services:
-services:
   db:
     restart: unless-stopped
     environment:
@@ -183,6 +182,7 @@ services:
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
       MANO_FRONTEND_URL: http://mano-vnfm:8080/vnfm-webapp/sol003
+#      KEYCLOAK_CREDENTIALS_SECRET: XXXX
     healthcheck:
       test: curl --fail http://localhost:8080/vnfm-webapp/actuator/health
       interval: 1m
