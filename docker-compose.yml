@@ -87,7 +87,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: ubiqube/msa2-db:0d8c5135eab9ac34edc54c9e689d8379a869920f
+    image: ubiqube/msa2-db:5d8892824c1e832ed59c5f0de564eb9d70242929
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
