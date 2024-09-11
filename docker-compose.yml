@@ -150,7 +150,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:6ccb68a9318174323341695ddd05fae57f4eb3c2
+    image: ubiqube/msa2-ui:69686ee9cfd6f37462af06cdb30729f725c1fb5b
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
