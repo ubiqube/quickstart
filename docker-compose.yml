@@ -667,20 +667,17 @@ services:
       - "msa2_es-ilm:/opt/msa2-es-ilm"
 
   msa-zipkin:
-    image: ghcr.io/openzipkin/zipkin-slim:latest
-    container_name: zipkin
-    # Environment settings are defined here https://github.com/openzipkin/zipkin/blob/master/zipkin-server/README.md#environment-variables
+    image: docker.io/openzipkin/zipkin
     environment:
-      - STORAGE_TYPE=mem
-      # Uncomment to enable self-tracing
-      # - SELF_TRACING_ENABLED=true
-      # Uncomment to increase heap size
-      # - JAVA_OPTS=-Xms128m -Xmx128m -XX:+ExitOnOutOfMemoryError
+      STORAGE_TYPE: elasticsearch
+      ES_HOSTS: http://msa-es:9200
+      ES_USERNAME: superuser
+      ES_PASSWORD: x^ZyuGM6~u=+fY2G
     ports:
       - target: 9411
-        published: 9412    
-    # Uncomment to enable debug logging
-    # command: --logging.level.zipkin2=DEBUG
+        published: 9411
+        protocol: tcp
+        mode: ingress
 
 volumes:
   kafka_data:
