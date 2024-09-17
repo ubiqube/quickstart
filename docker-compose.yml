@@ -677,8 +677,8 @@ services:
       # Uncomment to increase heap size
       # - JAVA_OPTS=-Xms128m -Xmx128m -XX:+ExitOnOutOfMemoryError
     ports:
-      # Port used for the Zipkin UI and HTTP Api
-      - 9411:9411
+      - target: 9411
+        published: 9412    
     # Uncomment to enable debug logging
     # command: --logging.level.zipkin2=DEBUG
 
