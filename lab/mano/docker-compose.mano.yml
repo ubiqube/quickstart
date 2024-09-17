@@ -30,7 +30,7 @@ services:
 
   mano-alarm:
     restart: unless-stopped
-    image: openmsa/mano-alarm-oci-ci:4.0.0
+    image: openmsa/mano-alarm-webapp-oci-ci:4.0.0
     depends_on:
       - db
     environment:
