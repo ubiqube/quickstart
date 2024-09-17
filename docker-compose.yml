@@ -666,6 +666,22 @@ services:
     volumes:
       - "msa2_es-ilm:/opt/msa2-es-ilm"
 
+  zipkin:
+    image: ghcr.io/openzipkin/zipkin-slim:latest
+    container_name: zipkin
+    # Environment settings are defined here https://github.com/openzipkin/zipkin/blob/master/zipkin-server/README.md#environment-variables
+    environment:
+      - STORAGE_TYPE=mem
+      # Uncomment to enable self-tracing
+      # - SELF_TRACING_ENABLED=true
+      # Uncomment to increase heap size
+      # - JAVA_OPTS=-Xms128m -Xmx128m -XX:+ExitOnOutOfMemoryError
+    ports:
+      # Port used for the Zipkin UI and HTTP Api
+      - 9411:9411
+    # Uncomment to enable debug logging
+    # command: --logging.level.zipkin2=DEBUG
+
 volumes:
   kafka_data:
   msa_broker:
