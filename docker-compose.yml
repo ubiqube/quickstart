@@ -666,7 +666,7 @@ services:
     volumes:
       - "msa2_es-ilm:/opt/msa2-es-ilm"
 
-  zipkin:
+  msa-zipkin:
     image: ghcr.io/openzipkin/zipkin-slim:latest
     container_name: zipkin
     # Environment settings are defined here https://github.com/openzipkin/zipkin/blob/master/zipkin-server/README.md#environment-variables
