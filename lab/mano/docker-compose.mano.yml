@@ -206,7 +206,7 @@ services:
       ES_PASSWORD: x^ZyuGM6~u=+fY2G
     ports:
       - target: 9411
-        published: 9411
+        published: 9412
         protocol: tcp
         mode: ingress
 
