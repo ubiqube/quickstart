@@ -132,6 +132,7 @@ services:
     environment:
       <<: *es-configuration
       UBIQUBE_CAPTCHA_SECRET_KEY: 6Ld2zF4dAAAAABWD9Q6QAhBql_CIynUeVKaTiBgT
+      MANAGEMENT_TRACING_ENABLED: 'true'
     logging:
       <<: *logging
     volumes:
@@ -470,6 +471,7 @@ services:
       DB_VALIDATE_ON_BORROW: 'true'
       WAIT_FOR: 'db:5432'
       WAIT_FOR_TIMEOUT: 60
+      MANAGEMENT_TRACING_ENABLED: 'true'
     logging:
       <<: *logging
 
