@@ -197,18 +197,13 @@ services:
         protocol: tcp
         mode: ingress
 
-  mano-zipkin:
-    image: docker.io/openzipkin/zipkin
-    environment:
-      STORAGE_TYPE: elasticsearch
-      ES_HOSTS: http://msa-es:9200
-      ES_USERNAME: superuser
-      ES_PASSWORD: x^ZyuGM6~u=+fY2G
-    ports:
-      - target: 9411
-        published: 9412
-        protocol: tcp
-        mode: ingress
+  msa-zipkin:
+    restart: unless-stopped
+    networks:
+      default:
+        aliases:
+          - "mano-zipkin"
+
 
 volumes:
   mano_nfvo:
