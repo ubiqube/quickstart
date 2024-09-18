@@ -12,10 +12,6 @@ x-logging: &logging
     max-size: "10m"
     max-file: "5"
 
-x-kafka-syslogs: &kafka-syslogs
-    KAFKA_SERVER: "kafka:9094"
-    KAFKA_TOPIC: "syslogs"
-
 x-amqp-syslog: &amqp-syslog
   AMQP_SERVER: "msa-broker"
   AMQP_PORT: "5672"
@@ -42,7 +38,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:17bd96d7214cb2d6e56e971502a253f4486b22ca
+    image: ubiqube/msa2-front:f8b7e359e30865d2cc3232adfd2b3a773522870b
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -87,7 +83,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: ubiqube/msa2-db:e71b856a61e6473a212bde5b03df61572a006fc0
+    image: ubiqube/msa2-db:72042805ec62153025202ff1000f649f5fee59fe
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -261,8 +257,6 @@ services:
         condition: service_healthy
       msa-broker:
         condition: service_started
-      kafka:
-        condition: service_started
     healthcheck:
       test: ["CMD-SHELL", "/opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1"]
     environment:
@@ -404,8 +398,7 @@ services:
     container_name: msa_rsyslog
     depends_on:
       - msa-parse
-      - kafka
-    image: ubiqube/msa2-rsyslog:fcb0e77b5e27821fb5f733baf2d8681ccfb4306b
+    image: ubiqube/msa2-rsyslog:43500ad9def533042983caa4fab55ff2efd1b896
     environment:
       # ACTIONTYPE: omudpspoof or omkafka
       # configure a specific port for TLS. Default is 6514
@@ -431,31 +424,6 @@ services:
           - "msa_rsyslog"
     logging:
       <<: *logging
-
-  kafka:
-    restart: unless-stopped
-    image: bitnami/kafka:3.5
-    ports:
-      - "9094:9094"
-    environment:
-      - KAFKA_CFG_NODE_ID=0
-      - KAFKA_CFG_PROCESS_ROLES=controller,broker
-      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092,EXTERNAL://kafka:9094
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
-      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
-      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
-      - KAFKA_CFG_LOG_CLEANER_ENABLE=true
-      - KAFKA_CFG_LOG_CLEANUP_POLICY=delete
-      - KAFKA_CFG_LOG_RETENTION_BYTES=2000000000
-      - KAFKA_CFG_LOG_RETENTION_MS=86400000
-      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
-      - KAFKA_CFG_MESSAGE_MAX_BYTES=1048576
-    logging:
-      <<: *logging
-    volumes:
-      - "kafka_data:/bitnami"
 
   msa-broker:
     restart: unless-stopped
@@ -698,7 +666,6 @@ services:
         mode: ingress
 
 volumes:
-  kafka_data:
   msa_broker:
   msa_db:
   msa_mongodb_data:
