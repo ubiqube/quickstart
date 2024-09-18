@@ -142,6 +142,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      msa-mongodb:
+        condition: service_healthy
       msa-es:
         condition: service_started
     environment:
