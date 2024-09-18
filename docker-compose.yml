@@ -42,7 +42,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:df06267c24567ebd3df86b63403407f33fd83ef7
+    image: ubiqube/msa2-front:9fea0f4bd22fceab947ab8580e4b195a75b66290
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -114,6 +114,23 @@ services:
     volumes:
       - "msa_db:/pgsqldata/pgsql"
 
+  msa-mongodb:
+    image: mongo:7.0
+    restart: unless-stopped
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh mongodb://${DB_USER:-msaUser}:${DB_PASSWORD:-ubiqube38}@localhost:${DB_PORT:-27017}/${DB_NAME:-msa} --quiet
+    #      ccla must match user created in mongo-init.js
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-my_db_password}
+    env_file:
+      - .env
+    ports:
+        - "27017:27017"
+    volumes:
+        - msa_mongodb_data:/data/db
+        - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+
   msa-api:
     restart: unless-stopped
     container_name: msa_api
@@ -151,8 +168,8 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    # image:     image: ubiqube/msa2-ui:1ee36c781e78c01ca14e988417227e0874b09afb
-    image: ubiqube/msa2-ui:test
+    image: ubiqube/msa2-ui:8dbb122d4a40b9c2b64db5d06b536b201af7e093
+    #image: ubiqube/msa2-ui:test
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -683,6 +700,7 @@ volumes:
   kafka_data:
   msa_broker:
   msa_db:
+  msa_mongodb_data:
   msa_dev:
   msa_entities:
   msa_repository:
