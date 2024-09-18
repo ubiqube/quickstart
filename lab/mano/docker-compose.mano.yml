@@ -9,18 +9,6 @@ x-es-config: &es-config
 services:
   db:
     restart: unless-stopped
-    environment:
-      MANO_USER: mano
-      MANO_PASSWORD: mano
-      MANOVNFM_USER: mano_vnfm
-      MANOVNFM_PASSWORD: mano
-      MANONFVO_USER: mano_nfvo
-      MANONFVO_PASSWORD: mano
-      MANOEM_USER: mano_em
-      MANOEM_PASSWORD: mano
-      KEYCLOAK_USER: keycloak
-      KEYCLOAK_PASSWORD: keycloak
-      KEYCLOAK_DB: keycloak
     networks:
       default:
         aliases:
