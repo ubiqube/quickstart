@@ -25,11 +25,11 @@ services:
       <<: *es-config
       SPRING_DATASOURCE_USERNAME: mano_alarm
       SPRING_DATASOURCE_PASSWORD: mano
-      SPRING_DATASOURCE_URL: jdbc:postgresql://mano-db/mano_alarm
+      SPRING_DATASOURCE_URL: jdbc:postgresql://mano-db/mano_alarm?ApplicationName=mano-alarm
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
     healthcheck:
-      test: curl --fail http://localhost:8080/actuator/health
+      test: curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$'
       interval: 1m
       timeout: 10s
       retries: 5
@@ -115,12 +115,12 @@ services:
       <<: *es-config
       SPRING_DATASOURCE_USERNAME: mano_mon
       SPRING_DATASOURCE_PASSWORD: mano
-      SPRING_DATASOURCE_URL: jdbc:postgresql://mano-db/mano_mon
+      SPRING_DATASOURCE_URL: jdbc:postgresql://mano-db/mano_mon?ApplicationName=mano-mon
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
       _JAVA_OPTIONS: -Xmx512m
     healthcheck:
-      test: curl --fail http://localhost:8080/actuator/health
+      test: curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$'
       interval: 1m
       timeout: 10s
       retries: 5
@@ -137,12 +137,12 @@ services:
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://mano-zipkin:9411/api/v2/spans
       SPRING_DATASOURCE_USERNAME: mano_nfvo
       SPRING_DATASOURCE_PASSWORD: mano
-      SPRING_DATASOURCE_URL: jdbc:postgresql://mano-db/mano_nfvo
+      SPRING_DATASOURCE_URL: jdbc:postgresql://mano-db/mano_nfvo?ApplicationName=mano-nfvo
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
       MANO_FRONTEND_URL: http://mano-nfvo:8080/nfvo-webapp/sol003
     healthcheck:
-      test: curl --fail http://localhost:8080/nfvo-webapp/actuator/health
+      test: curl -s --fail http://localhost:8080/nfvo-webapp/actuator/health |jq -r '.status' |grep '^UP$'
       interval: 1m
       timeout: 10s
       retries: 5
@@ -166,13 +166,13 @@ services:
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://mano-zipkin:9411/api/v2/spans
       SPRING_DATASOURCE_USERNAME: mano_vnfm
       SPRING_DATASOURCE_PASSWORD: mano
-      SPRING_DATASOURCE_URL: jdbc:postgresql://mano-db/mano_vnfm
+      SPRING_DATASOURCE_URL: jdbc:postgresql://mano-db/mano_vnfm?ApplicationName=mano-vnfm
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
       MANO_FRONTEND_URL: http://mano-vnfm:8080/vnfm-webapp/sol003
 #      KEYCLOAK_CREDENTIALS_SECRET: XXXX
     healthcheck:
-      test: curl --fail http://localhost:8080/vnfm-webapp/actuator/health
+      test: curl -s --fail http://localhost:8080/vnfm-webapp/actuator/health |jq -r '.status' |grep '^UP$'
       interval: 1m
       timeout: 10s
       retries: 5
