@@ -114,20 +114,20 @@ services:
     volumes:
       - "msa_db:/pgsqldata/pgsql"
 
-  # msa-mongodb:
-  #   image: mongo:7.0
-  #   restart: unless-stopped
-  #   healthcheck:
-  #     test: echo 'db.runCommand("ping").ok' | mongosh mongodb://${DB_USER:-msaUser}:${DB_PASSWORD:-ubiqube38}@localhost:${DB_PORT:-27017}/${DB_NAME:-msa} --quiet
-  #   #      ccla must match user created in mongo-init.js
-  #   environment:
-  #     MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
-  #     MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-my_db_password}
-  #   ports:
-  #       - "27017:27017"
-  #   volumes:
-  #       - msa_mongodb_data:/data/db
-  #       - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+  msa-mongodb:
+    image: mongo:7.0
+    restart: unless-stopped
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh mongodb://${DB_USER:-msaUser}:${DB_PASSWORD:-ubiqube38}@localhost:${DB_PORT:-27017}/${DB_NAME:-msa} --quiet
+    #      ccla must match user created in mongo-init.js
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-my_db_password}
+    ports:
+        - "27017:27017"
+    volumes:
+        - msa_mongodb_data:/data/db
+        - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 
   msa-api:
     restart: unless-stopped
