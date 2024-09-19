@@ -38,7 +38,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:f8b7e359e30865d2cc3232adfd2b3a773522870b
+    image: ubiqube/msa2-front:63905df20aeb6e71405fbd1ce25dcc8c02653df7
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -245,7 +245,7 @@ services:
   msa-parse:
     restart: unless-stopped
     container_name: msa_parse
-    image: ubiqube/msa2-parse:100412daae7431d0930aca976158bc17e097b87d
+    image: ubiqube/msa2-parse:ac18b71cf0d126d0e16ca3c2a82ddf22af5852cc
     depends_on:
       db:
         condition: service_healthy
@@ -397,7 +397,8 @@ services:
     restart: unless-stopped
     container_name: msa_rsyslog
     depends_on:
-      - msa-parse
+      msa-broker:
+        condition: service_started
     image: ubiqube/msa2-rsyslog:43500ad9def533042983caa4fab55ff2efd1b896
     environment:
       # ACTIONTYPE: omudpspoof or omkafka
@@ -446,7 +447,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    image: ubiqube/msa2-camunda:1b1ce13b8a4266f8b0a76164ec68917025bfd062
+    image: ubiqube/msa2-camunda:c44a586ac7224f83f8f7d45e0b1fcf2158ba2f05
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$'"]
       retries: 3
@@ -505,6 +506,8 @@ services:
     restart: unless-stopped
     container_name: msa_cerebro
     image: ubiqube/msa2-cerebro:bf816107bdb08afee0998117c5e90cc660683e6d
+    healthcheck:
+      test: curl --fail http://localhost:9000/
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -528,6 +531,8 @@ services:
     restart: unless-stopped
     container_name: msa_kibana
     image: ubiqube/msa2-kibana:e0567b106dae2b34839ae7dd5dcb436eb67beb98
+    healthcheck:
+      test: curl -k --fail http://localhost:5601/kibana/
     depends_on:
       msa-es:
         condition: service_started
