@@ -164,6 +164,23 @@ services:
     logging:
       <<: *logging
 
+  msa-mongodb:
+    image: mongo:7.0
+    restart: unless-stopped
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh mongodb://${DB_USER:-msaUser}:${DB_PASSWORD:-ubiqube38}@localhost:${DB_PORT:-27017}/${DB_NAME:-msa} --quiet
+    #      ccla must match user created in mongo-init.js
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-my_db_password}
+    env_file:
+      - .env
+    ports:
+      - "27017:27017"
+    volumes:
+      - "/mnt/NASVolume/msa_mongodb_data:/data/db"
+      - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      
   msa-api:
     image: openmsa/openmsa:msa2-api-2.9.1-36d631b79aaf4eead95598268710c18b1b2ea588
     depends_on:
