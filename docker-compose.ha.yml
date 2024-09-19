@@ -458,7 +458,7 @@ services:
       - "/mnt/NASVolume/kafka_data:/bitnami/kafka"
 
   msa-broker:
-    image: openmsa/openmsa:msa2-broker-2.9.1-dd05a6145436397696dd81f90c78865bf2106a3b
+    image: openmsa/openmsa:msa2-broker-2.9.1-bafeae07df27c0c2e0d381890b7a4743cbd961bd
     healthcheck:
       <<: *healthcheck
     deploy:
