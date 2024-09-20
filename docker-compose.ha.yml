@@ -13,9 +13,6 @@ x-healthcheck: &healthcheck
   retries: 10
   start_period: 120s
   timeout: 10s
-x-kafka-syslogs: &kafka-syslogs
-  KAFKA_SERVER: kafka:9094
-  KAFKA_TOPIC: syslogs
 x-logging: &logging
   driver: json-file
   options:
@@ -132,33 +129,6 @@ services:
     image: openmsa/openmsa:msa2-db-2.9.1-72042805ec62153025202ff1000f649f5fee59fe
     logging:
       <<: *logging
-  kafka:
-    deploy:
-      <<: *placement_app
-    environment:
-      - KAFKA_CFG_NODE_ID=0
-      - KAFKA_CFG_PROCESS_ROLES=controller,broker
-      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092,EXTERNAL://kafka:9094
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
-      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
-      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
-      - KAFKA_CFG_LOG_CLEANER_ENABLE=true
-      - KAFKA_CFG_LOG_CLEANUP_POLICY=delete
-      - KAFKA_CFG_LOG_RETENTION_BYTES=2000000000
-      - KAFKA_CFG_LOG_RETENTION_MS=86400000
-      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
-      - KAFKA_CFG_MESSAGE_MAX_BYTES=1048576
-    healthcheck:
-      <<: *healthcheck
-    image: bitnami/kafka:3.5
-    logging:
-      <<: *logging
-    ports:
-      - 9094:9094
-    volumes:
-      - /mnt/NASVolume/kafka_data:/bitnami/kafka
   msa-alarm:
     depends_on:
       - db
@@ -432,7 +402,6 @@ services:
   msa-parse:
     depends_on:
       - db
-      - kafka
       - msa-broker
       - msa-es
       - msa-dev
@@ -461,9 +430,7 @@ services:
       - msa_parsebulkfiles_err:/opt/sms/spool/parser-error
   msa-rsyslog:
     depends_on:
-      - kafka
       - msa-broker
-      - msa-parse
     deploy:
       <<: *placement_rsyslog
     environment:
@@ -621,8 +588,8 @@ services:
       UBI_ES_CACHE_INDEX_DEFAULT_TTL: 1w
       UBI_ES_DELETE_SCROLL_SIZE: "4000"
       UBI_ES_ILM_LOG_CRONTAB: '*/2 * * * *  php /opt/ubi-es-ilm/log_retention_management.php --verbose=3 > /proc/1/fd/1 2>&1'
-      #For elasticsearch scripts /opt/ubi-es-ilm/log_retention_management.php
-      #UBI_ES_INDEX_MULTIPLE_TTL:        "type:traffic|7d,type:event|30d,*|90d"
+      # For elasticsearch scripts /opt/ubi-es-ilm/log_retention_management.php
+      # UBI_ES_INDEX_MULTIPLE_TTL:        "type:traffic|7d,type:event|30d,*|90d"
       UBI_ES_INDEX_MULTIPLE_TTL: '*|90d'
       UBI_ES_LOG_DETENTION_DELETE: "true"
       UBI_ES_LOG_SEARCH_INDEX_LIST: ubilogs
@@ -649,8 +616,6 @@ volumes:
   msa_api_logs:
   msa_bulkfiles:
   msa_bulkfiles_err:
-  msa_es:
-  msa_es_config:
   msa_monitbulkfiles:
   msa_monitbulkfiles_err:
   msa_parsebulkfiles:
@@ -658,4 +623,3 @@ volumes:
   msa_sms_logs:
   msa_snmptrapbulkfiles:
   msa_snmptrapbulkfiles_err:
-
