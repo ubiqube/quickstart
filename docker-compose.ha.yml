@@ -143,7 +143,7 @@ services:
       - db
     healthcheck:
       <<: *healthcheck   
-      test: ["CMD-SHELL", "curl --fail http://localhost:8480"]
+      test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$'"]
     deploy:
       <<: *placement_app
     environment:
@@ -436,6 +436,7 @@ services:
     image: openmsa/openmsa:msa2-broker-2.8.13.3-a637ce7b1d31f9da37a22b0fdaad954dcdf0870e
     healthcheck:
       <<: *healthcheck
+      test: ./bin/artemis check node --user=$${ARTEMIS_USER} --password=$${ARTEMIS_PASSWORD} --silent &>/dev/null
     deploy:
       <<: *placement_app
     environment:
@@ -469,6 +470,7 @@ services:
     image: openmsa/openmsa:msa2-kibana-2.8.13.3-54e81a717d1f9aa7acc372643c6966e23b8b66fe
     healthcheck:
       <<: *healthcheck
+      test: curl -k --fail http://localhost:5601/kibana/
     deploy:
       <<: *placement_app
     environment:
@@ -515,6 +517,7 @@ services:
     image: openmsa/openmsa:msa2-cerebro-2.8.13.3-8374160f95e2349711204189a3bf8a385f7252b5
     healthcheck:
       <<: *healthcheck
+      test: curl --fail http://localhost:9000/
     deploy:
       <<: *placement_app
     environment:
