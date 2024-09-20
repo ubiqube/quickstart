@@ -169,7 +169,7 @@ services:
       <<: *healthcheck
       test:
         - CMD-SHELL
-        - curl --fail http://localhost:8480
+        - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$'
     image: openmsa/openmsa:msa2-api-2.9.1-36d631b79aaf4eead95598268710c18b1b2ea588
     logging:
       <<: *logging
@@ -206,6 +206,7 @@ services:
       EXTRA_ARGS: --http-host 0.0.0.0 --relax-jolokia --clustered --addresses core-engine.syslog:anycast --queues core-engine.syslog:anycast
     healthcheck:
       <<: *healthcheck
+      test: ./bin/artemis check node --user=artemis --password=simetraehcapa --silent &>/dev/null
     image: openmsa/openmsa:msa2-broker-2.9.1-bafeae07df27c0c2e0d381890b7a4743cbd961bd
     logging:
       <<: *logging
@@ -343,6 +344,7 @@ services:
       ELASTICSEARCH_URL: http://msa-es:9200
     healthcheck:
       <<: *healthcheck
+      test: curl -k --fail http://localhost:5601/kibana/
     image: openmsa/openmsa:msa2-kibana-2.9.1-e0567b106dae2b34839ae7dd5dcb436eb67beb98
     logging:
       <<: *logging

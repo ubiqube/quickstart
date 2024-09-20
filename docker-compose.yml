@@ -37,7 +37,15 @@ services:
       DB_VALIDATION_QUERY: SELECT 1
       WAIT_FOR: db:5432
       WAIT_FOR_TIMEOUT: 60
-    image: openmsa/openmsa:msa2-camunda-2.9.1-c44a586ac7224f83f8f7d45e0b1fcf2158ba2f05
+    healthcheck:
+      interval: 10s
+      retries: 3
+      start_period: 90s
+      test:
+        - CMD-SHELL
+        - curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$'
+      timeout: 5s
+    image: ubiqube/msa2-camunda:725fcd523eb7a202280c4ff77670c7dec5539a02
     logging:
       <<: *logging
     restart: unless-stopped
@@ -168,7 +176,7 @@ services:
       start_period: 90s
       test:
         - CMD-SHELL
-        - curl -s --fail http://localhost:8480/actuator/health | grep -q UP
+        - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$'
       timeout: 5s
     image: openmsa/openmsa:msa2-api-2.9.1-36d631b79aaf4eead95598268710c18b1b2ea588
     logging:
@@ -205,6 +213,8 @@ services:
       ARTEMIS_PASSWORD: simetraehcapa
       ARTEMIS_USER: artemis
       EXTRA_ARGS: --http-host 0.0.0.0 --relax-jolokia --clustered --addresses core-engine.syslog:anycast --queues core-engine.syslog:anycast
+    healthcheck:
+      test: ./bin/artemis check node --user=artemis --password=simetraehcapa --silent &>/dev/null
     image: openmsa/openmsa:msa2-broker-2.9.1-bafeae07df27c0c2e0d381890b7a4743cbd961bd
     logging:
       <<: *logging
@@ -246,6 +256,8 @@ services:
       AUTH_TYPE: basic
       BASIC_AUTH_PWD: N@X{M4tfw'5%)+35
       BASIC_AUTH_USER: cerebro
+    healthcheck:
+      test: curl --fail http://localhost:9000/
     image: openmsa/openmsa:msa2-cerebro-2.9.1-bf816107bdb08afee0998117c5e90cc660683e6d
     logging:
       <<: *logging
@@ -363,6 +375,8 @@ services:
       <<: *es-configuration
       ELASTICSEARCH_HOSTS: http://msa-es:9200
       ELASTICSEARCH_URL: http://msa-es:9200
+    healthcheck:
+      test: curl -k --fail http://localhost:5601/kibana/
     image: openmsa/openmsa:msa2-kibana-2.9.1-e0567b106dae2b34839ae7dd5dcb436eb67beb98
     logging:
       <<: *logging
@@ -463,10 +477,15 @@ services:
   msa-rsyslog:
     container_name: msa_rsyslog
     depends_on:
-      - kafka
+      msa-broker:
+        condition: service_started
     environment:
       <<: *amqp-syslog
       ACTIONTYPE: omamqp1
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - ps -p 1 -h -o%cpu | awk '{if ($$1 > 99) exit 1; else exit 0;}'
     image: openmsa/openmsa:msa2-rsyslog-2.9.1-43500ad9def533042983caa4fab55ff2efd1b896
     logging:
       <<: *logging
