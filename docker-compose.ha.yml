@@ -206,7 +206,7 @@ services:
       EXTRA_ARGS: --http-host 0.0.0.0 --relax-jolokia --clustered --addresses core-engine.syslog:anycast --queues core-engine.syslog:anycast
     healthcheck:
       <<: *healthcheck
-      test: ./bin/artemis check node --user=artemis --password=simetraehcapa --silent &>/dev/null
+      test: ./bin/artemis check node --user=$${ARTEMIS_USER} --password=$${ARTEMIS_PASSWORD} --silent &>/dev/null
     image: openmsa/openmsa:msa2-broker-2.9.1-bafeae07df27c0c2e0d381890b7a4743cbd961bd
     logging:
       <<: *logging
