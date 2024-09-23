@@ -36,50 +36,46 @@ services:
       start_period: 1m
 
   msa-front:
-    restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:8239db2a8ae78f7b5f68d73742724d5d7a668416
-    healthcheck:
-      test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
-      msa-ui:
-        condition: service_healthy
+      camunda:
+        condition: service_started
       msa-api:
         condition: service_started
       msa-es:
         condition: service_started
-      camunda:
-        condition: service_started
-    ports:
-      - target: 80
-        published: 80
-        protocol: tcp
-        mode: host
-      - target: 443
-        published: 443
-        protocol: tcp
-        mode: host
+      msa-ui:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -k --fail https://localhost
+    image: ubiqube/msa2-front:6c20fdb07bb0c5a4214e39f62001abd9b1f8625b
     logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
-    volumes:
-        - "msa_front_conf:/etc/nginx/custom_conf.d"
+      <<: *logging
     networks:
       default:
         aliases:
-          - "msa_front"   #
+          - msa_front
+    ports:
+      - mode: host
+        protocol: tcp
+        published: 80
+        target: 80
+      - mode: host
+        protocol: tcp
+        published: 443
+        target: 443
+    restart: unless-stopped
+    volumes:
+      - msa_front_conf:/etc/nginx/custom_conf.d
     # uncomment one of the 2 sections below when installing a custom certificate
     # - Docker standard standalone installation
-    #volumes:
+    # volumes:
     #    - "msa_front:/etc/nginx/ssl"
     # - Docker Swarm HA installation
-    #volumes:
-    #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl" 
-
+    # volumes:
+    #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
   db:
     restart: unless-stopped
     container_name: msa_db
@@ -126,40 +122,39 @@ services:
         - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 
   msa-api:
-    restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:886231219fa09965ccd9ed1e50f174a35b9ab3dc
-    healthcheck:
-      test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$'"]
-      retries: 3
-      timeout: 5s
-      interval: 10s
-      start_period: 90s
     depends_on:
       db:
         condition: service_healthy
-      msa-mongodb:
-        condition: service_healthy
       msa-es:
         condition: service_started
+      msa-mongodb:
+        condition: service_healthy
     environment:
       <<: *es-configuration
-      UBIQUBE_CAPTCHA_SECRET_KEY: 6Ld2zF4dAAAAABWD9Q6QAhBql_CIynUeVKaTiBgT
-      MANAGEMENT_TRACING_ENABLED: 'true'
+    healthcheck:
+      interval: 10s
+      retries: 3
+      start_period: 90s
+      test:
+        - CMD-SHELL
+        - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
+      timeout: 5s
+    image: ubiqube/msa2-api:886231219fa09965ccd9ed1e50f174a35b9ab3dc
     logging:
       <<: *logging
-    volumes:
-      - "msa_entities:/opt/fmc_entities"
-      - "msa_repository:/opt/fmc_repository"
-      - "rrd_repository:/opt/rrd"
-      - "msa_dev:/opt/devops/"
-      - "msa_api_logs:/opt/wildfly/logs/"
-      - "msa_api_logs:/opt/wildfly/logs/processLog"
-      - "msa_api_keystore:/etc/pki/jentreprise"
     networks:
       default:
         aliases:
-          - "msa_api"
+          - msa_api
+    restart: unless-stopped
+    volumes:
+      - msa_entities:/opt/fmc_entities
+      - msa_repository:/opt/fmc_repository
+      - rrd_repository:/opt/rrd
+      - msa_dev:/opt/devops/
+      - msa_api_logs:/opt/wildfly/logs
+      - msa_api_keystore:/etc/pki/jentreprise
 
   msa-ui:
     restart: unless-stopped
@@ -441,146 +436,144 @@ services:
       - msa_broker:/var/lib/artemis-instance
 
   camunda:
-    restart: unless-stopped
-    container_name: msa_camunda
     depends_on:
       db:
         condition: service_healthy
-    image: ubiqube/msa2-camunda:725fcd523eb7a202280c4ff77670c7dec5539a02
-    healthcheck:
-      test: ["CMD-SHELL", "curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$'"]
-      retries: 3
-      timeout: 5s
-      interval: 10s
-      start_period: 90s
     environment:
       DB_DRIVER: org.postgresql.Driver
-      DB_URL: 'jdbc:postgresql://db:5432/process-engine'
-      DB_USERNAME: camunda
       DB_PASSWORD: camunda
-      DB_VALIDATION_QUERY: 'SELECT 1'
-      DB_VALIDATE_ON_BORROW: 'true'
-      WAIT_FOR: 'db:5432'
+      DB_URL: jdbc:postgresql://db:5432/process-engine
+      DB_USERNAME: camunda
+      DB_VALIDATE_ON_BORROW: "true"
+      DB_VALIDATION_QUERY: SELECT 1
+      WAIT_FOR: db:5432
       WAIT_FOR_TIMEOUT: 60
-      MANAGEMENT_TRACING_ENABLED: 'true'
+    healthcheck:
+      interval: 10s
+      retries: 3
+      start_period: 90s
+      test:
+        - CMD-SHELL
+        - curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$$'
+      timeout: 5s
+    image: ubiqube/msa2-camunda:806a46c3b1f4266ac3b8bb37004d93258ba9896d
     logging:
       <<: *logging
+    restart: unless-stopped
 
   msa-es:
-    restart: unless-stopped
     container_name: msa_es
-    image: ubiqube/msa2-es:5fc4552ecb6c5c28ceb7ce9e3e49b2f7d8816482
-    healthcheck:
-      test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
-      timeout: 2s
-      retries: 10
-      interval: 10s
-      start_period: 30s
     environment:
-      discovery.type: "single-node"
-      script.painless.regex.enabled: "true"
-      bootstrap.memory_lock: "true"
-      ES_JAVA_OPTS: "-Xms512m -Xmx1024m"
       <<: *es-configuration
+      ES_JAVA_OPTS: -Xms512m -Xmx1024m
+      bootstrap.memory_lock: "true"
+      discovery.type: single-node
+      script.painless.regex.enabled: "true"
+    healthcheck:
+      interval: 10s
+      retries: 10
+      start_period: 30s
+      test:
+        - CMD-SHELL
+        - 'test -f /home/install/init-done && curl -s -XGET -H ''Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=''  ''http://localhost:9200/_cluster/health?pretty'' | grep -q ''status.*green'' || exit 1'
+      timeout: 2s
+    image: ubiqube/msa2-es:412883180231cbeae2d7745a948446cb4bf4f667
     logging:
       <<: *logging
-    volumes:
-      - "msa_es:/usr/share/elasticsearch/data"
-      - "msa_es_config:/usr/share/elasticsearch/config"
+    networks:
+      default:
+        aliases:
+          - msa_es
+    restart: unless-stopped
     ulimits:
       memlock:
-        soft: -1
         hard: -1
-    ports:
-      - "9300:9300"
-      - "9200:9200"
-      - "9300:9300/udp"
-      - "9200:9200/udp"
-    networks:
-      default:
-        aliases:
-          - "msa_es"
+        soft: -1
+    volumes:
+      - msa_es:/usr/share/elasticsearch/data
+      - msa_es_config:/usr/share/elasticsearch/config
 
   msa-cerebro:
-    restart: unless-stopped
     container_name: msa_cerebro
-    image: ubiqube/msa2-cerebro:bf816107bdb08afee0998117c5e90cc660683e6d
-    healthcheck:
-      test: curl --fail http://localhost:9000/
-    environment:
-      AUTH_TYPE: basic
-      BASIC_AUTH_USER: cerebro
-      BASIC_AUTH_PWD: "N@X{M4tfw'5%)+35"
+    depends_on:
+      msa-es:
+        condition: service_started
     entrypoint:
       - /opt/cerebro/bin/cerebro
-      - -Dhosts.0.host=http://msa_es:9200
-    depends_on:
-      msa-es:
-        condition: service_started
+      - -Dhosts.0.host=http://msa-es:9200
+    environment:
+      AUTH_TYPE: basic
+      BASIC_AUTH_PWD: N@X{M4tfw'5%)+35
+      BASIC_AUTH_USER: cerebro
+    healthcheck:
+      test: curl --fail http://localhost:9000/
+    image: ubiqube/msa2-cerebro:c1daaa4f09ca104dda46f6e12eabd3dc368ff07b
     logging:
       <<: *logging
-    ports:
-    - "9000:9000"
     networks:
       default:
         aliases:
-          - "msa_cerebro"
+          - msa_cerebro
+    ports:
+      - 9000:9000
+    restart: unless-stopped
 
   msa-kibana:
-    restart: unless-stopped
-    container_name: msa_kibana
-    image: ubiqube/msa2-kibana:e0567b106dae2b34839ae7dd5dcb436eb67beb98
-    healthcheck:
-      test: curl -k --fail http://localhost:5601/kibana/
     depends_on:
       msa-es:
         condition: service_started
-    ports:
-      - "5601:5601"
     environment:
-      ELASTICSEARCH_URL: "http://msa_es:9200"
-      ELASTICSEARCH_HOSTS: "http://msa_es:9200"
       <<: *es-configuration
+      ELASTICSEARCH_HOSTS: http://msa-es:9200
+      ELASTICSEARCH_URL: http://msa-es:9200
+    healthcheck:
+      test: curl -k --fail http://localhost:5601/kibana/
+    image: ubiqube/msa2-kibana:4f679b99957e9f7c1634dac7a6efce5587f2f748
     logging:
       <<: *logging
     networks:
       default:
         aliases:
-          - "msa_kibana"
+          - msa_kibana
+    ports:
+      - 5601:5601
+    restart: unless-stopped
 
   msa-dev:
-    restart: unless-stopped
-    container_name: msa_dev
-    #build: ./lab/msa_dev
-    image: ubiqube/msa2-linuxdev:63c0c3497005d6c046c9b174158c61775a1f2f18
-    volumes:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-      - "msa_entities:/opt/fmc_entities"
-      - "msa_repository:/opt/fmc_repository"
-      - "msa_dev:/opt/devops/"
-      - "msa_front_conf:/etc/nginx/custom_conf.d"
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - test -f /usr/bin/install_libraries.sh || echo false
+    image: ubiqube/msa2-linuxdev:7d71bf0b8226ed880fdbfbe38ba9bdba3d0b6bad
+    logging:
+      <<: *logging
     networks:
       default:
         aliases:
-          - "msa_dev"
-    logging:
-      <<: *logging
+          - msa_dev
+    restart: unless-stopped
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - msa_entities:/opt/fmc_entities
+      - msa_repository:/opt/fmc_repository
+      - msa_dev:/opt/devops/
 
   msa-smtp:
-    image: boky/postfix:4.2.1-alpine
     environment:
-      HOSTNAME: msa-smtp
-#      RELAYHOST: <MTA ip>:25
-      POSTFIX_message_size_limit: 2097152
+      ALLOWED_SENDER_DOMAINS: ""
       ALLOW_EMPTY_SENDER_DOMAINS: "true"
-      ALLOWED_SENDER_DOMAINS: ''
+      HOSTNAME: msa-smtp
+      # RELAYHOST: <MTA ip>:25
+      POSTFIX_message_size_limit: 2097152
+    image: boky/postfix:4.2.1-alpine
+    restart: unless-stopped
 
   linux-me:
     restart: unless-stopped
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
     #image: ubiqube/msa2-linuxme:cc4357bc05c6502c7d2ceb7d3c6b090e24a8411e
-    image: ubiqube/msa2-linuxme:dfba9fb377cbaec352d7f8eebff57b9b6c2e1b4e
+    image: ubiqube/msa2-linuxme:93212b8bce4e24053a5871fe791720ff96709659
     cap_add:
       - NET_ADMIN
       - NET_RAW
@@ -604,7 +597,7 @@ services:
     restart: unless-stopped
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: ubiqube/msa2-linuxme:dfba9fb377cbaec352d7f8eebff57b9b6c2e1b4e
+    image: ubiqube/msa2-linuxme:93212b8bce4e24053a5871fe791720ff96709659
     build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
