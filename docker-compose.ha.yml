@@ -68,6 +68,9 @@ services:
       WAIT_FOR_TIMEOUT: 60
     healthcheck:
       <<: *healthcheck
+      test:
+        - CMD-SHELL
+        - curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$$'
     image: openmsa/openmsa:msa2-camunda-2.9.1-c44a586ac7224f83f8f7d45e0b1fcf2158ba2f05
     logging:
       <<: *logging
@@ -169,7 +172,7 @@ services:
       <<: *healthcheck
       test:
         - CMD-SHELL
-        - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$'
+        - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
     image: openmsa/openmsa:msa2-api-2.9.1-36d631b79aaf4eead95598268710c18b1b2ea588
     logging:
       <<: *logging
