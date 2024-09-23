@@ -97,7 +97,7 @@ services:
     container_name: msa_api
     image: openmsa/openmsa:msa2-api-2.8.13.3-d1916228a6cad6fc1d44d396b6fe08964e3bd552
     healthcheck:
-      test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
+      test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'"]
       retries: 3
       timeout: 5s
       interval: 10s
@@ -368,6 +368,10 @@ services:
       # TLS_SYSLOG_PORT: 6514
       ACTIONTYPE: "omkafka"
       <<: *kafka-syslogs    
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - ps -p 1 -h -o%cpu | awk '{if ($$1 > 99) exit 1; else exit 0;}'
     ports:
       - target: 514
         published: 514
@@ -422,6 +426,8 @@ services:
     environment:
       ARTEMIS_PASSWORD: simetraehcapa
       ARTEMIS_USER: artemis
+    healthcheck:
+      test: ./bin/artemis check node --user=$${ARTEMIS_USER} --password=$${ARTEMIS_PASSWORD} --silent &>/dev/null
     logging:
       <<: *logging
     volumes:
@@ -443,6 +449,14 @@ services:
       DB_VALIDATE_ON_BORROW: 'true'
       WAIT_FOR: 'db:5432'
       WAIT_FOR_TIMEOUT: 60
+    healthcheck:
+      interval: 10s
+      retries: 3
+      start_period: 90s
+      test:
+        - CMD-SHELL
+        - curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$$'
+      timeout: 5s
     logging:
       <<: *logging
 
@@ -495,6 +509,8 @@ services:
     depends_on:
       msa-es:
         condition: service_started
+    healthcheck:
+      test: curl --fail http://localhost:9000/
     logging:
       <<: *logging
     ports:
@@ -517,6 +533,8 @@ services:
       ELASTICSEARCH_URL: "http://msa_es:9200"
       ELASTICSEARCH_HOSTS: "http://msa_es:9200"
       <<: *es-configuration
+    healthcheck:
+      test: curl -k --fail http://localhost:5601/kibana/
     logging:
       <<: *logging
     networks:
