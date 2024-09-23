@@ -38,7 +38,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-front:e54173a3beba09d2f3edfecabcb74ff867714b18
+    image: ubiqube/msa2-front:8239db2a8ae78f7b5f68d73742724d5d7a668416
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -128,7 +128,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:1d56ab374e9948c77df30e0ea08cd8c7a4580178
+    image: ubiqube/msa2-api:886231219fa09965ccd9ed1e50f174a35b9ab3dc
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$'"]
       retries: 3
@@ -428,18 +428,17 @@ services:
 
   msa-broker:
     restart: unless-stopped
-    container_name: msa_broker
-    image: docker.io/ubiqube/msa2-broker:bafeae07df27c0c2e0d381890b7a4743cbd961bd
-    depends_on:
-      - db
     environment:
       ARTEMIS_PASSWORD: simetraehcapa
       ARTEMIS_USER: artemis
       EXTRA_ARGS: --http-host 0.0.0.0 --relax-jolokia --clustered --addresses core-engine.syslog:anycast --queues core-engine.syslog:anycast
+    healthcheck:
+      test: ./bin/artemis check node --user=$${ARTEMIS_USER} --password=$${ARTEMIS_PASSWORD} --silent &>/dev/null
+    image: docker.io/ubiqube/msa2-broker:bafeae07df27c0c2e0d381890b7a4743cbd961bd
     logging:
       <<: *logging
     volumes:
-      - "msa_broker:/var/lib/artemis-instance"
+      - msa_broker:/var/lib/artemis-instance
 
   camunda:
     restart: unless-stopped
