@@ -43,7 +43,7 @@ services:
       start_period: 90s
       test:
         - CMD-SHELL
-        - curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$'
+        - curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
     image: ubiqube/msa2-camunda:725fcd523eb7a202280c4ff77670c7dec5539a02
     logging:
@@ -176,7 +176,7 @@ services:
       start_period: 90s
       test:
         - CMD-SHELL
-        - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$'
+        - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
     image: openmsa/openmsa:msa2-api-2.9.1-36d631b79aaf4eead95598268710c18b1b2ea588
     logging:
@@ -555,7 +555,7 @@ services:
   msa-smtp:
     environment:
       ALLOWED_SENDER_DOMAINS: ""
-      ALLOW_EMPTY_SENDER_DOMAINS: true
+      ALLOW_EMPTY_SENDER_DOMAINS: "true"
       HOSTNAME: msa-smtp
       # RELAYHOST: <MTA ip>:25
       POSTFIX_message_size_limit: 2097152
