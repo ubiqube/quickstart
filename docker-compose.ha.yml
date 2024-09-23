@@ -451,11 +451,6 @@ services:
     depends_on:
       - db
     image: openmsa/openmsa:msa2-camunda-2.8.13.3-0f60a3c018c1b7dcde68259c9dadf71862373510
-    healthcheck:
-      <<: *healthcheck
-      test:
-        - CMD-SHELL
-        - curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$$'
     deploy:
       <<: *placement_app
     environment:

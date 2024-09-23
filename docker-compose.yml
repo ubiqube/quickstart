@@ -449,14 +449,6 @@ services:
       DB_VALIDATE_ON_BORROW: 'true'
       WAIT_FOR: 'db:5432'
       WAIT_FOR_TIMEOUT: 60
-    healthcheck:
-      interval: 10s
-      retries: 3
-      start_period: 90s
-      test:
-        - CMD-SHELL
-        - curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$$'
-      timeout: 5s
     logging:
       <<: *logging
 
