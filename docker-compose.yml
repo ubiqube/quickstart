@@ -45,7 +45,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-camunda:725fcd523eb7a202280c4ff77670c7dec5539a02
+    image: openmsa/openmsa:msa2-camunda-2.9.1-c44a586ac7224f83f8f7d45e0b1fcf2158ba2f05
     logging:
       <<: *logging
     restart: unless-stopped
@@ -388,8 +388,6 @@ services:
       - 5601:5601
     restart: unless-stopped
   msa-mongodb:
-    env_file:
-      - .env
     #      ccla must match user created in mongo-init.js
     environment:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-my_db_password}
