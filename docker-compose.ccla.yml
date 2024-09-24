@@ -1,23 +1,9 @@
-version: "3.8"
-
 services:
-  cloudclapp:
-    depends_on:
-      - msa-api
-    image: ubiqube/cloudclapp:8dbb122d4a40b9c2b64db5d06b536b201af7e093
-    environment:
-      - UBIQUBE_CAPTCHA_SITE_KEY=6Ld2zF4dAAAAAJlqZMIHpPeb3aYhcyy1K3NWPtqi
-      - UBIQUBE_LICENSE_AGREEMENT_LINK=https:\/\/cloudclapp.com\/EndUserLicenceAgreement.html
-    healthcheck:
-      test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
-
   ccla-scan-app:
-    image: ubiqube/cloudclapp-scan:2b4a509e0f85df70d4b8ba738b0c1a11f44a8da7
     environment:
       - UBIQUBE_ZAP_TOKEN=7da091fe-63a4-48c0-9bfa-7614c49feb7c
-
+    image: ubiqube/cloudclapp-scan:2b4a509e0f85df70d4b8ba738b0c1a11f44a8da7
   ccla-scan-env:
-    image: zaproxy/zap-stable:2.15.0
     entrypoint:
       - zap.sh
       - -daemon
@@ -33,24 +19,35 @@ services:
       - network.localServers.mainProxy.alpn.enabled=false
       - -config
       - network.localServers.mainProxy.address=0.0.0.0
-
-  key-vault:
+    image: zaproxy/zap-stable:2.15.0
+  cloudclapp:
     depends_on:
-      - msa-db
-    image: hashicorp/vault:latest
-    ports:
-      - "8200:8200"
-    volumes:
-      - ./lab/key_vault/config.hcl:/vault/config/config.hcl
+      - msa-api
     environment:
-      VAULT_ADDR: "http://0.0.0.0:8200"
+      - UBIQUBE_CAPTCHA_SITE_KEY=6Ld2zF4dAAAAAJlqZMIHpPeb3aYhcyy1K3NWPtqi
+      - UBIQUBE_LICENSE_AGREEMENT_LINK=https:\/\/cloudclapp.com\/EndUserLicenceAgreement.html
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl --fail http://localhost:8080
+    image: ubiqube/cloudclapp:8047615ae12d6680f8346e9a2df8b78e19d22c0d
+  key-vault:
     cap_add:
       - IPC_LOCK
     command: server
-
+    depends_on:
+      - msa-db
+    environment:
+      VAULT_ADDR: http://0.0.0.0:8200
+    image: hashicorp/vault:latest
+    ports:
+      - 8200:8200
+    volumes:
+      - ./lab/key_vault/config.hcl:/vault/config/config.hcl
+  msa-dev:
+    command:
+      - /docker-entrypoint.sh
+      - --cloudclapp
   msa-sms:
     environment:
       - UBIQUBE_INSTALL_AWS_CLI=true
-
-  msa-dev:
-    command: [ "/docker-entrypoint.sh", "--cloudclapp" ]

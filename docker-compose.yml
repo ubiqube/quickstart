@@ -1,5 +1,3 @@
-version: "3.8"
-
 x-es-configuration: &es-configuration
     ES_CREDENTIALS: c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
     ES_SERVERS: "msa-es"
@@ -166,7 +164,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:26a289492290441ac99c27c6dd04d5e5f82fdd0e
+    image: ubiqube/msa2-ui:8047615ae12d6680f8346e9a2df8b78e19d22c0d
     #image: ubiqube/msa2-ui:test
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
@@ -630,41 +628,38 @@ services:
       <<: *logging
     restart: unless-stopped
 
-
   msa2-es-ilm:
-    image: ubiqube/msa2-es-ilm:dda9094825d80174afde4d18a9fafcadedb1f7d1
     container_name: msa2_es-ilm
-    tty: true
-    init: true
-    restart: unless-stopped
-    networks:
-      default:
-        aliases:
-          - "msa2_es-ilm"
-    #healthcheck:
+    # healthcheck:
     #  test: ["CMD-SHELL", "find /opt/msa2-es-ilm/log/log_retention.log -type f -mmin -10"]
     depends_on:
       msa-es:
         condition: service_started
     environment:
-      ELASTICSEARCH_URL: "msa_es:9200"
-      #For elasticsearch scripts /opt/ubi-es-ilm/log_retention_management.php
-      #UBI_ES_INDEX_MULTIPLE_TTL:        "type:traffic|7d,type:event|30d,*|90d"
-      UBI_ES_INDEX_MULTIPLE_TTL:         "*|90d"
-      UBI_ES_AUDIT_INDEX_MULTIPLE_TTL:   "*|90d"
-      UBI_ES_LOG_SEARCH_INDEX_LIST:      "ubilogs"
-      UBI_ES_RETENTION_INDEX_NAME:       "ubilogs*"
-      UBI_ES_RETENTION_AUDIT_INDEX_NAME: "ubiaudit*"
-      UBI_ES_RETENTION_ALARM_INDEX_NAME: "ubialarm*"
-      UBI_ES_ALARM_INDEX_MULTIPLE_TTL:   "*|90d"
-      UBI_ES_CACHE_INDEX_DEFAULT_TTL:    "1w"
-      UBI_ES_DELETE_SCROLL_SIZE:         "4000"
-      UBI_ES_MAX_DOCS:                   ""
-      UBI_ES_LOG_DETENTION_DELETE:       "true"
-      UBI_ES_ILM_LOG_CRONTAB:            "# */2 * * * *  php /opt/ubi-es-ilm/log_retention_management.php --verbose=3 > /proc/1/fd/1 2>&1"
       <<: *es-configuration
+      ELASTICSEARCH_URL: msa_es:9200
+      UBI_ES_ALARM_INDEX_MULTIPLE_TTL: '*|90d'
+      UBI_ES_AUDIT_INDEX_MULTIPLE_TTL: '*|90d'
+      UBI_ES_CACHE_INDEX_DEFAULT_TTL: 1w
+      UBI_ES_DELETE_SCROLL_SIZE: "4000"
+      UBI_ES_ILM_LOG_CRONTAB: '# */2 * * * * root php /opt/ubi-es-ilm/log_retention_management.php --verbose=3 > /proc/1/fd/1 2>&1'
+      # For elasticsearch scripts /opt/ubi-es-ilm/log_retention_management.php
+      # UBI_ES_INDEX_MULTIPLE_TTL:        "type:traffic|7d,type:event|30d,*|90d"
+      UBI_ES_INDEX_MULTIPLE_TTL: '*|90d'
+      UBI_ES_LOG_DETENTION_DELETE: "true"
+      UBI_ES_LOG_SEARCH_INDEX_LIST: ubilogs
+      UBI_ES_MAX_DOCS: ""
+      UBI_ES_RETENTION_ALARM_INDEX_NAME: ubialarm*
+      UBI_ES_RETENTION_AUDIT_INDEX_NAME: ubiaudit*
+      UBI_ES_RETENTION_INDEX_NAME: ubilogs*
+    image: ubiqube/msa2-es-ilm:d7b17500d723503a6754993f9aedfb3ba922be4b
+    networks:
+      default:
+        aliases:
+          - msa2_es-ilm
+    restart: unless-stopped
     volumes:
-      - "msa2_es-ilm:/opt/msa2-es-ilm"
+      - msa2_es-ilm:/opt/msa2-es-ilm
 
   msa-zipkin:
     image: docker.io/openzipkin/zipkin
