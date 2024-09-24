@@ -21,24 +21,25 @@ x-amqp-syslog: &amqp-syslog
 
 services:
   msa-auth:
-    image: ubiqube/msa2-auth:43c88efcb225fd1ba5dec33b466e2ea180d016c6
-    environment: 
+    depends_on:
+      msa-db:
+        condition: service_healthy
+    environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: ubiqube
-    depends_on:
-      db:
-        condition: service_healthy
     healthcheck:
-      test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8080'
       interval: 30s
-      timeout: 10s
       retries: 5
       start_period: 1m
+      test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8080'
+      timeout: 10s
+    image: ubiqube/msa2-auth:43c88efcb225fd1ba5dec33b466e2ea180d016c6
+    restart: unless-stopped
 
   msa-front:
     container_name: msa_front
     depends_on:
-      camunda:
+      msa-camunda:
         condition: service_started
       msa-api:
         condition: service_started
@@ -50,7 +51,7 @@ services:
       test:
         - CMD-SHELL
         - curl -k --fail https://localhost
-    image: ubiqube/msa2-front:6c20fdb07bb0c5a4214e39f62001abd9b1f8625b
+    image: ubiqube/msa2-front:5a81036afa71c66d78d9344752936e4d0796a3eb
     logging:
       <<: *logging
     networks:
@@ -76,35 +77,41 @@ services:
     # - Docker Swarm HA installation
     # volumes:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
-  db:
-    restart: unless-stopped
-    container_name: msa_db
-    image: ubiqube/msa2-db:72042805ec62153025202ff1000f649f5fee59fe
+
+  msa-db:
+    environment:
+      CAMUNDA_DB: process-engine
+      CAMUNDA_PASSWORD: camunda
+      CAMUNDA_USER: camunda
+      KEY_VAULT_DB: key_vault
+      KEY_VAULT_USER: key_vault
+      MAX_CONNECTIONS: 1600
+      PG_DATABASE: POSTGRESQL
+      PG_MODE: primary
+      PG_PASSWORD: my_db_password
+      PG_PRIMARY_PASSWORD: my_db_password
+      PG_PRIMARY_PORT: 5432
+      PG_PRIMARY_USER: postgres
+      PG_ROOT_PASSWORD: my_db_password
+      PG_USER: postgres
     healthcheck:
-      test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
-      timeout: 20s
       interval: 30s
       retries: 5
-    environment:
-      CAMUNDA_PASSWORD: camunda
-      CAMUNDA_DB: process-engine
-      CAMUNDA_USER: camunda
-      KEY_VAULT_USER: key_vault
-      KEY_VAULT_DB: key_vault
-      PG_MODE: primary
-      PG_PRIMARY_USER: postgres
-      PG_PRIMARY_PASSWORD: my_db_password
-      PG_USER: postgres
-      PG_PASSWORD: my_db_password
-      PG_DATABASE: POSTGRESQL
-      PG_ROOT_PASSWORD: my_db_password
-      PG_PRIMARY_PORT: 5432
-      MAX_CONNECTIONS: 1600
-    shm_size: 1g
+      test:
+        - CMD-SHELL
+        - /usr/pgsql-12/bin/pg_isready -h localhost
+      timeout: 20s
+    image: ubiqube/msa2-db:72042805ec62153025202ff1000f649f5fee59fe
     logging:
       <<: *logging
+    networks:
+      default:
+        aliases:
+          - db
+    restart: unless-stopped
+    shm_size: 1g
     volumes:
-      - "msa_db:/pgsqldata/pgsql"
+      - msa_db:/pgsqldata/pgsql
 
   msa-mongodb:
     image: mongo:7.0
@@ -124,7 +131,7 @@ services:
   msa-api:
     container_name: msa_api
     depends_on:
-      db:
+      msa-db:
         condition: service_healthy
       msa-es:
         condition: service_started
@@ -159,7 +166,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:dc795d9a4fecf6a06aa5ae072e1a678b54cfdf66
+    image: ubiqube/msa2-ui:26a289492290441ac99c27c6dd04d5e5f82fdd0e
     #image: ubiqube/msa2-ui:test
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
@@ -206,7 +213,7 @@ services:
     environment:
       <<: *es-configuration
     depends_on:
-      db:
+      msa-db:
         condition: service_healthy
       msa-es:
         condition: service_started
@@ -242,7 +249,7 @@ services:
     container_name: msa_parse
     image: ubiqube/msa2-parse:ac18b71cf0d126d0e16ca3c2a82ddf22af5852cc
     depends_on:
-      db:
+      msa-db:
         condition: service_healthy
       msa-es:
         condition: service_started
@@ -272,7 +279,7 @@ services:
     container_name: msa_snmptrap
     image: ubiqube/msa2-snmptrap:8e61913b77d0391f50f0e03db8297534e135c56f
     depends_on:
-      db:
+      msa-db:
         condition: service_healthy
       msa-es:
         condition: service_started
@@ -310,7 +317,7 @@ services:
       start_period: 30s
       test: ["CMD-SHELL", "/opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1"]
     depends_on:
-      db:
+      msa-db:
         condition: service_healthy
     logging:
       <<: *logging
@@ -323,33 +330,34 @@ services:
 
   msa-alarm:
     restart: unless-stopped
-    container_name: msa_alarm
-    image: ubiqube/msa2-alarm:357433368fa6d3a0b2a65b337aca97b1689bb7d9
-    healthcheck:
-      timeout: 5s
-      retries: 10
-      interval: 10s
-      start_period: 30s
-      test: ["CMD-SHELL", "/opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1"]
     depends_on:
-      db:
+      msa-db:
+        condition: service_healthy
+      msa-api:
         condition: service_healthy
       msa-es:
         condition: service_started
-      msa-api:
-        condition: service_healthy
     environment:
       <<: *es-configuration
+    healthcheck:
+      interval: 10s
+      retries: 10
+      start_period: 30s
+      test:
+        - CMD-SHELL
+        - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
+      timeout: 5s
+    image: ubiqube/msa2-alarm:357433368fa6d3a0b2a65b337aca97b1689bb7d9
     logging:
       <<: *logging
-    volumes:
-      - "msa_sms_logs:/opt/sms/logs"
-      - "msa_alarmbulkfiles:/opt/sms/spool/alarms"
-      - "msa_alarmbulkfiles_err:/opt/sms/spool/alarms-error"
     networks:
       default:
         aliases:
-          - "msa_alarm"
+          - msa_alarm
+    volumes:
+      - msa_sms_logs:/opt/sms/logs
+      - msa_alarmbulkfiles:/opt/sms/spool/alarms
+      - msa_alarmbulkfiles_err:/opt/sms/spool/alarms-error
 
   msa-monitoring:
     restart: unless-stopped
@@ -358,7 +366,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "/opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1"]
     depends_on:
-      db:
+      msa-db:
         condition: service_healthy
       msa-es:
         condition: service_started
@@ -429,24 +437,24 @@ services:
       EXTRA_ARGS: --http-host 0.0.0.0 --relax-jolokia --clustered --addresses core-engine.syslog:anycast --queues core-engine.syslog:anycast
     healthcheck:
       test: ./bin/artemis check node --user=$${ARTEMIS_USER} --password=$${ARTEMIS_PASSWORD} --silent &>/dev/null
-    image: docker.io/ubiqube/msa2-broker:bafeae07df27c0c2e0d381890b7a4743cbd961bd
+    image: docker.io/ubiqube/msa2-broker:3cb6bcba6f451db90e26fbe464aa4886e448cc62
     logging:
       <<: *logging
     volumes:
       - msa_broker:/var/lib/artemis-instance
 
-  camunda:
+  msa-camunda:
     depends_on:
-      db:
+      msa-db:
         condition: service_healthy
     environment:
       DB_DRIVER: org.postgresql.Driver
       DB_PASSWORD: camunda
-      DB_URL: jdbc:postgresql://db:5432/process-engine
+      DB_URL: jdbc:postgresql://msa-db:5432/process-engine
       DB_USERNAME: camunda
       DB_VALIDATE_ON_BORROW: "true"
       DB_VALIDATION_QUERY: SELECT 1
-      WAIT_FOR: db:5432
+      WAIT_FOR: msa-db:5432
       WAIT_FOR_TIMEOUT: 60
     healthcheck:
       interval: 10s
@@ -459,6 +467,10 @@ services:
     image: ubiqube/msa2-camunda:806a46c3b1f4266ac3b8bb37004d93258ba9896d
     logging:
       <<: *logging
+    networks:
+      default:
+        aliases:
+          - camunda
     restart: unless-stopped
 
   msa-es:
@@ -568,8 +580,7 @@ services:
     image: boky/postfix:4.2.1-alpine
     restart: unless-stopped
 
-  linux-me:
-    restart: unless-stopped
+  msa-linux-me:
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
     #image: ubiqube/msa2-linuxme:cc4357bc05c6502c7d2ceb7d3c6b090e24a8411e
@@ -592,9 +603,9 @@ services:
         ipv4_address: 172.20.0.101
     logging:
       <<: *logging
-
-  linux-me-2:
     restart: unless-stopped
+
+  msa-linux-me-2:
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
     image: ubiqube/msa2-linuxme:93212b8bce4e24053a5871fe791720ff96709659
@@ -617,6 +628,7 @@ services:
         ipv4_address: 172.20.0.102
     logging:
       <<: *logging
+    restart: unless-stopped
 
 
   msa2-es-ilm:

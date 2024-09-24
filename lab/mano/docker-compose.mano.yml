@@ -7,7 +7,7 @@ x-es-config: &es-config
   MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://mano-zipkin:9411/api/v2/spans
 
 services:
-  db:
+  msa-db:
     restart: unless-stopped
     networks:
       default:
@@ -20,7 +20,7 @@ services:
     restart: unless-stopped
     image: openmsa/mano-alarm-oci-ci:latest
     depends_on:
-      - db
+      - msa-db
     environment:
       <<: *es-config
       SPRING_DATASOURCE_USERNAME: mano_alarm
@@ -110,7 +110,7 @@ services:
   mano-mon:
     image: openmsa/mano-mon:4.0.0
     depends_on:
-      - db
+      - msa-db
     environment:
       <<: *es-config
       SPRING_DATASOURCE_USERNAME: mano_mon
@@ -130,7 +130,7 @@ services:
     restart: unless-stopped
     image: openmsa/mano-nfvo:4.0.0
     depends_on:
-      - db
+      - msa-db
     environment:
       <<: *es-config
       _JAVA_OPTIONS: -Xmx4g
@@ -159,7 +159,7 @@ services:
     restart: unless-stopped
     image: openmsa/mano-vnfm:4.0.0
     depends_on:
-      - db
+      - msa-db
     environment:
       <<: *es-config
       _JAVA_OPTIONS: -Xmx4g
