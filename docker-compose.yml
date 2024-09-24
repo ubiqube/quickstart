@@ -664,8 +664,8 @@ services:
   msa-zipkin:
     image: docker.io/openzipkin/zipkin
     environment:
-      STORAGE_TYPE: mem
-    #  STORAGE_TYPE: elasticsearch
+    #  STORAGE_TYPE: mem
+      STORAGE_TYPE: elasticsearch
       ES_HOSTS: http://msa-es:9200
       ES_USERNAME: superuser
       ES_PASSWORD: x^ZyuGM6~u=+fY2G
