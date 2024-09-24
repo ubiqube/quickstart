@@ -593,7 +593,7 @@ services:
       UBI_ES_AUDIT_INDEX_MULTIPLE_TTL: '*|90d'
       UBI_ES_CACHE_INDEX_DEFAULT_TTL: 1w
       UBI_ES_DELETE_SCROLL_SIZE: "4000"
-      UBI_ES_ILM_LOG_CRONTAB: '*/2 * * * *  php /opt/ubi-es-ilm/log_retention_management.php --verbose=3 > /proc/1/fd/1 2>&1'
+      UBI_ES_ILM_LOG_CRONTAB: '*/2 * * * * root php /opt/ubi-es-ilm/log_retention_management.php --verbose=3 > /proc/1/fd/1 2>&1'
       # For elasticsearch scripts /opt/ubi-es-ilm/log_retention_management.php
       # UBI_ES_INDEX_MULTIPLE_TTL:        "type:traffic|7d,type:event|30d,*|90d"
       UBI_ES_INDEX_MULTIPLE_TTL: '*|90d'
@@ -608,12 +608,10 @@ services:
         - CMD-SHELL
         - find /opt/msa2-es-ilm/log/log_retention.log -type f -mmin -10
     image: openmsa/openmsa:msa2-es-ilm-2.9.1-dda9094825d80174afde4d18a9fafcadedb1f7d1
-    init: true
     networks:
       default:
         aliases:
           - msa2_es-ilm
-    tty: true
     volumes:
       - /mnt/NASVolume/msa2_es-ilm:/opt/msa2-es-ilm
 volumes:
