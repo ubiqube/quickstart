@@ -49,7 +49,7 @@ services:
       test:
         - CMD-SHELL
         - curl -k --fail https://localhost
-    image: ubiqube/msa2-front:013363b5bffb1196b8baa7088e37c8625d0729f4
+    image: ubiqube/msa2-front:79dde9af3d95efa9c8858b22c0a497de41d74aba
     logging:
       <<: *logging
     networks:
@@ -145,7 +145,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:886231219fa09965ccd9ed1e50f174a35b9ab3dc
+    image: ubiqube/msa2-api:8e85bbf1e0b363c394132709032293671c1e67f1
     logging:
       <<: *logging
     networks:
@@ -191,6 +191,7 @@ services:
     - FEATURE_ALARMS_AUTO_CLEARANCE=true
     - FEATURE_IMPORT_WITH_SAME_AND_UPPERRANK=true
     - FEATURE_REPOFOLDERLIST=[\"Datafiles\"]
+    - FEATURE_ALARM_TROUBLE_TICKET=true
     logging:
       <<: *logging
     networks:
