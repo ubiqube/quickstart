@@ -665,11 +665,11 @@ services:
   msa-zipkin:
     image: docker.io/openzipkin/zipkin
     environment:
-    #  STORAGE_TYPE: mem
-      STORAGE_TYPE: elasticsearch
-      ES_HOSTS: http://msa-es:9200
-      ES_USERNAME: superuser
-      ES_PASSWORD: x^ZyuGM6~u=+fY2G
+      STORAGE_TYPE: mem
+      #STORAGE_TYPE: elasticsearch
+      #ES_HOSTS: http://msa-es:9200
+      #ES_USERNAME: superuser
+      #ES_PASSWORD: x^ZyuGM6~u=+fY2G
     ports:
       - target: 9411
         published: 9411
