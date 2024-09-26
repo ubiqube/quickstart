@@ -31,7 +31,7 @@ services:
       start_period: 1m
       test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8080'
       timeout: 10s
-    image: ubiqube/msa2-auth:43c88efcb225fd1ba5dec33b466e2ea180d016c6
+    image: ubiqube/msa2-auth:bf43b74c0b4bf03e09d1a8e65035ab71a2d776ff
     restart: unless-stopped
 
   msa-front:
@@ -49,7 +49,7 @@ services:
       test:
         - CMD-SHELL
         - curl -k --fail https://localhost
-    image: ubiqube/msa2-front:79dde9af3d95efa9c8858b22c0a497de41d74aba
+    image: ubiqube/msa2-front:80e4de8c1e66f46bfbfd5a0f311bb85380f6eac6
     logging:
       <<: *logging
     networks:
@@ -146,7 +146,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:8e85bbf1e0b363c394132709032293671c1e67f1
+    image: ubiqube/msa2-api:34954d96b13f25879cfe6a8bc210bb2df4960c01
     logging:
       <<: *logging
     networks:
@@ -165,7 +165,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:8047615ae12d6680f8346e9a2df8b78e19d22c0d
+    image: ubiqube/msa2-ui:ffa8ccccf64e31266dd3857b5a483423bc3b0796
     #image: ubiqube/msa2-ui:test
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
