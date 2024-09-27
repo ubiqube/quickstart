@@ -31,7 +31,7 @@ services:
       start_period: 1m
       test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8080'
       timeout: 10s
-    image: ubiqube/msa2-auth:bf43b74c0b4bf03e09d1a8e65035ab71a2d776ff
+    image: ubiqube/msa2-auth:sha-79e2867680cf8caacad28dcedf621ea8a97e1233
     restart: unless-stopped
 
   msa-front:
@@ -49,7 +49,7 @@ services:
       test:
         - CMD-SHELL
         - curl -k --fail https://localhost
-    image: ubiqube/msa2-front:36ca20802e7c637f3b38e37eacfdec5feefe7c3c
+    image: ubiqube/msa2-front:b93b40f44d60ecb0daccdbd3f3ad135600eebc3a
     logging:
       <<: *logging
     networks:
@@ -99,7 +99,7 @@ services:
         - CMD-SHELL
         - /usr/pgsql-12/bin/pg_isready -h localhost
       timeout: 20s
-    image: ubiqube/msa2-db:72042805ec62153025202ff1000f649f5fee59fe
+    image: ubiqube/msa2-db:sha-7ab342d37734581945c1e92fc4ec0e02e128b648
     logging:
       <<: *logging
     networks:
@@ -165,7 +165,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:52ea04c66e54cbd5eca70e367baf4caa3fb0e526
+    image: ubiqube/msa2-ui:5b50dc372347ebdc0650285b2b884ade0e99a5fc
     #image: ubiqube/msa2-ui:test
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
@@ -464,7 +464,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-camunda:806a46c3b1f4266ac3b8bb37004d93258ba9896d
+    image: ubiqube/msa2-camunda:sha-c25fcdbc2d15c14c37aa90c7cdc329c54a8dc241
     logging:
       <<: *logging
     networks:
@@ -489,7 +489,7 @@ services:
         - CMD-SHELL
         - 'test -f /home/install/init-done && curl -s -XGET -H ''Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=''  ''http://localhost:9200/_cluster/health?pretty'' | grep -q ''status.*green'' || exit 1'
       timeout: 2s
-    image: ubiqube/msa2-es:412883180231cbeae2d7745a948446cb4bf4f667
+    image: ubiqube/msa2-es:sha-c5210c1a3efd2ec5dd309305ce76fa2801f65524
     logging:
       <<: *logging
     networks:
@@ -519,7 +519,7 @@ services:
       BASIC_AUTH_USER: cerebro
     healthcheck:
       test: curl --fail http://localhost:9000/
-    image: ubiqube/msa2-cerebro:sha-a9e9094a360d0ca508f6388dbaf4911d2d029dea
+    image: ubiqube/msa2-cerebro:sha-e65137aa56027a2ae88cd2c6cfd87e67639b2c8d
     logging:
       <<: *logging
     networks:
@@ -540,7 +540,7 @@ services:
       ELASTICSEARCH_URL: http://msa-es:9200
     healthcheck:
       test: curl -k --fail http://localhost:5601/kibana/
-    image: ubiqube/msa2-kibana:sha-214fb847a74780a8931e7aaa86a3356c5ff6a4d6
+    image: ubiqube/msa2-kibana:sha-fbe20e11564c106b789983b24900186acfe81036
     logging:
       <<: *logging
     networks:
@@ -654,7 +654,7 @@ services:
       UBI_ES_RETENTION_ALARM_INDEX_NAME: ubialarm*
       UBI_ES_RETENTION_AUDIT_INDEX_NAME: ubiaudit*
       UBI_ES_RETENTION_INDEX_NAME: ubilogs*
-    image: ubiqube/msa2-es-ilm:d7b17500d723503a6754993f9aedfb3ba922be4b
+    image: ubiqube/msa2-es-ilm:sha-6071ae10ede7a06b1982210b7da962ac862586bb
     networks:
       default:
         aliases:
