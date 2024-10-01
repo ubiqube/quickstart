@@ -112,19 +112,22 @@ services:
       - msa_db:/pgsqldata/pgsql
 
   msa-mongodb:
-    image: ubiqube/msa2-mongodb:sha-90b2c29c1e13bc7b82cfadb00cba97ac856fd642
-    restart: unless-stopped
-    healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh mongodb://${DB_USER:-msaUser}:${DB_PASSWORD:-ubiqube38}@localhost:${DB_PORT:-27017}/${DB_NAME:-msa} --quiet
+    env_file:
+      - .env
     #      ccla must match user created in mongo-init.js
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-my_db_password}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh mongodb://${DB_USER:-msaUser}:${DB_PASSWORD:-ubiqube38}@localhost:${DB_PORT:-27017}/${DB_NAME:-msa} --quiet
+    image: ubiqube/msa2-mongodb:sha-90b2c29c1e13bc7b82cfadb00cba97ac856fd642
     ports:
-        - "27017:27017"
+      - 27017:27017
+    restart: unless-stopped
     volumes:
-        - msa_mongodb_data:/data/db
-        - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - msa_mongodb_data:/data/db
+      - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+
 
   msa-api:
     container_name: msa_api
