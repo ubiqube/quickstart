@@ -49,7 +49,7 @@ services:
       test:
         - CMD-SHELL
         - curl -k --fail https://localhost
-    image: ubiqube/msa2-front:e396f9e2101c021d773fde6fca93d963b25c42f7
+    image: ubiqube/msa2-front:sha-330b742f265f7aa6fcf96c16977c7687d2359f45
     logging:
       <<: *logging
     networks:
@@ -99,7 +99,7 @@ services:
         - CMD-SHELL
         - /usr/pgsql-12/bin/pg_isready -h localhost
       timeout: 20s
-    image: ubiqube/msa2-db:sha-7ab342d37734581945c1e92fc4ec0e02e128b648
+    image: ubiqube/msa2-db:sha-05c2d43fb3f8b7be0e735f3ecf16e8ceb4730163
     logging:
       <<: *logging
     networks:
@@ -112,7 +112,7 @@ services:
       - msa_db:/pgsqldata/pgsql
 
   msa-mongodb:
-    image: mongo:7.0
+    image: ubiqube/msa2-mongodb:sha-90b2c29c1e13bc7b82cfadb00cba97ac856fd642
     restart: unless-stopped
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh mongodb://${DB_USER:-msaUser}:${DB_PASSWORD:-ubiqube38}@localhost:${DB_PORT:-27017}/${DB_NAME:-msa} --quiet
@@ -146,7 +146,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:sha-9c185193a8381fe89dafca15bed762436861fe41
+    image: ubiqube/msa2-api:sha-7d1655d3f9dfd084aa5acea568924dc29dfdfa8b
     logging:
       <<: *logging
     networks:
@@ -436,7 +436,7 @@ services:
       EXTRA_ARGS: --http-host 0.0.0.0 --relax-jolokia --clustered --addresses core-engine.syslog:anycast --queues core-engine.syslog:anycast
     healthcheck:
       test: ./bin/artemis check node --user=$${ARTEMIS_USER} --password=$${ARTEMIS_PASSWORD} --silent &>/dev/null
-    image: docker.io/ubiqube/msa2-broker:02ca22edbd05c7624484cd5f35ce1664c9f8013b
+    image: docker.io/ubiqube/msa2-broker:sha-c7b473f778eb2cb1d5f5a6496e6064ed0bdec0a8
     logging:
       <<: *logging
     restart: unless-stopped
@@ -464,7 +464,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-camunda:sha-c25fcdbc2d15c14c37aa90c7cdc329c54a8dc241
+    image: ubiqube/msa2-camunda:sha-ca7010e65fcfcee816537c711df605ab336a4358
     logging:
       <<: *logging
     networks:
@@ -519,7 +519,7 @@ services:
       BASIC_AUTH_USER: cerebro
     healthcheck:
       test: curl --fail http://localhost:9000/
-    image: ubiqube/msa2-cerebro:sha-e65137aa56027a2ae88cd2c6cfd87e67639b2c8d
+    image: ubiqube/msa2-cerebro:sha-3438b6a723d22d15afbd877dead9820c6adac735
     logging:
       <<: *logging
     networks:
