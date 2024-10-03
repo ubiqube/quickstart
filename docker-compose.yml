@@ -132,10 +132,12 @@ services:
   msa-api:
     container_name: msa_api
     depends_on:
+      msa-auth:
+        condition: service_healthy
       msa-db:
         condition: service_healthy
       msa-es:
-        condition: service_started
+        condition: service_healthy
       msa-mongodb:
         condition: service_healthy
     environment:
