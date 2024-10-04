@@ -4,7 +4,7 @@ set -e
 PROG=$(basename $0)
 
 
-target_version="2.9.0"
+target_version="2.9.1"
 force_option=false
 clean_option=false
 remove_orphans=true
@@ -40,15 +40,18 @@ standaloneInstall(){
             docker compose down --remove-orphans
         fi
     fi
-
+    OVERRIDE=""
+    if [ -f "docker-compose.override.yml" ]; then
+        OVERRIDE=" -f docker-compose.override.yml"
+    fi
     if [ $mano = true ] && [ $ccla = true ] ; then
-        docker compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml -f docker-compose.ccla.yml up -d --build
+        docker compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml -f docker-compose.ccla.yml "${OVERRIDE}" up -d --build
     elif [ $mano = true ] ; then
-        docker compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml up -d --build
+        docker compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml "${OVERRIDE}" up -d --build
     elif [ $ccla = true ] ; then
-        docker compose -f docker-compose.yml -f docker-compose.ccla.yml up -d --build
+        docker compose -f docker-compose.yml -f docker-compose.ccla.yml "${OVERRIDE}" up -d --build
     else
-        docker compose up -d --build
+        docker compose -f docker-compose.yml "${OVERRIDE}" up -d --build
     fi
 
     docker compose exec -T msa-dev rm -rf /opt/fmc_repository/Process/Reference
