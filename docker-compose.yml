@@ -49,7 +49,7 @@ services:
       test:
         - CMD-SHELL
         - curl -k --fail https://localhost
-    image: ubiqube/msa2-front:sha-4ac449da4b3f8aef1f15f915dcf1eb498ad87fa5
+    image: ubiqube/msa2-front:sha-f3495f55a3d6ea71e40dc493a5cc6628038653c9
     logging:
       <<: *logging
     networks:
@@ -208,7 +208,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:sha-0ddf1dfcb09d413038def660ee383b7ad758bc62
+    image: ubiqube/msa2-sms:sha-2009538eb6badbd2aeffeadd79f60736f28aa06c
     healthcheck:
       timeout: 5s
       retries: 10
@@ -282,7 +282,7 @@ services:
   msa-snmptrap:
     restart: unless-stopped
     container_name: msa_snmptrap
-    image: ubiqube/msa2-snmptrap:sha-f339ab52ad37318254e102dcfe82a81c90d8bb89
+    image: ubiqube/msa2-snmptrap:sha-bdce4f77eae69289d8cd6f0cca43c2ff3eb8fc2d
     depends_on:
       msa-db:
         condition: service_healthy
@@ -314,7 +314,7 @@ services:
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: ubiqube/msa2-bud:sha-d6a9c283dcbdbf373fcb28ad7ef947f77ad83940
+    image: ubiqube/msa2-bud:sha-f5a4c6439edf1af8d61b8f50befddf1909415fc5
     healthcheck:
       timeout: 5s
       retries: 10
@@ -367,7 +367,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: ubiqube/msa2-monitoring:sha-ffd6b939a0d1768333ba711b3cbded34397cefce
+    image: ubiqube/msa2-monitoring:sha-169df1f29859be6561c431bdec125ea1e90e7ab7
     healthcheck:
       test: ["CMD-SHELL", "/opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1"]
     depends_on:
