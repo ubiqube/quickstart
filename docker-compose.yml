@@ -49,7 +49,7 @@ services:
       test:
         - CMD-SHELL
         - curl -k --fail https://localhost
-    image: ubiqube/msa2-front:sha-f3495f55a3d6ea71e40dc493a5cc6628038653c9
+    image: ubiqube/msa2-front:sha-ced4839ebfa6d83d88544ac7afdeb753d071d6c1
     logging:
       <<: *logging
     networks:
@@ -352,7 +352,7 @@ services:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
       timeout: 5s
-    image: ubiqube/msa2-alarm:sha-a6826b34031867c8f729cc71ea79bdc524d31dc7
+    image: ubiqube/msa2-alarm:sha-94ac5cf7d70b97ff5057878f29f16aeb553191c3
     logging:
       <<: *logging
     networks:
@@ -494,7 +494,7 @@ services:
         - CMD-SHELL
         - 'test -f /home/install/init-done && curl -s -XGET -H ''Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=''  ''http://localhost:9200/_cluster/health?pretty'' | grep -q ''status.*green'' || exit 1'
       timeout: 2s
-    image: ubiqube/msa2-es:sha-c5210c1a3efd2ec5dd309305ce76fa2801f65524
+    image: ubiqube/msa2-es:sha-42a01f9964fbb2db76daffac7debe3806a1199d0
     logging:
       <<: *logging
     networks:
