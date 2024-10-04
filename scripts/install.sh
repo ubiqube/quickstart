@@ -70,7 +70,7 @@ standaloneInstall(){
         exit 1
     fi
     TOKEN=$(echo $RESPONSE | jq -r '.access_token')
-
+    set -x
     install_ccla_wf=$(docker compose exec -T msa-api curl -H 'Authorization: Bearer $TOKEN' -XPOST http://localhost:8480/ubi-api-rest/ccla/libraries/install -s -o /dev/null -w "%{http_code}")
     echo $install_ccla_wf
     if [ $install_ccla_wf = '204' ] ; then
@@ -78,7 +78,7 @@ standaloneInstall(){
     else
         echo "CCLA-WF was not installed. Use the API /ccla/libraries/install to install CCLA-WF"
     fi
-
+    set +x
     docker compose restart msa-api
     docker compose restart msa-sms
     docker compose restart msa-alarm
