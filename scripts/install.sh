@@ -42,16 +42,16 @@ standaloneInstall(){
     fi
     OVERRIDE=""
     if [ -f "docker-compose.override.yml" ]; then
-        OVERRIDE=" -f docker-compose.override.yml"
+        OVERRIDE="-f docker-compose.override.yml"
     fi
     if [ $mano = true ] && [ $ccla = true ] ; then
-        docker compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml -f docker-compose.ccla.yml "${OVERRIDE}" up -d --build
+        docker compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml -f docker-compose.ccla.yml ${OVERRIDE} up -d --build
     elif [ $mano = true ] ; then
-        docker compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml "${OVERRIDE}" up -d --build
+        docker compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml ${OVERRIDE} up -d --build
     elif [ $ccla = true ] ; then
-        docker compose -f docker-compose.yml -f docker-compose.ccla.yml "${OVERRIDE}" up -d --build
+        docker compose -f docker-compose.yml -f docker-compose.ccla.yml ${OVERRIDE} up -d --build
     else
-        docker compose -f docker-compose.yml "${OVERRIDE}" up -d --build
+        docker compose -f docker-compose.yml ${OVERRIDE} up -d --build
     fi
 
     docker compose exec -T msa-dev rm -rf /opt/fmc_repository/Process/Reference
@@ -62,7 +62,16 @@ standaloneInstall(){
         docker compose exec msa-dev /usr/bin/install_libraries.sh ccla
     fi
 
-    install_ccla_wf=$(docker compose exec -T msa-api curl -X POST http://localhost:8480/ubi-api-rest/ccla/libraries/install -s -o /dev/null -w "%{http_code}")
+    RESPONSE=$(docker compose exec -T msa-api curl -k --location 'http://msa-auth:8080/auth/realms/msa/protocol/openid-connect/token' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'grant_type=password' --data-urlencode 'username=ncroot' --data-urlencode 'password=ubiqube' --data-urlencode 'client_id=msa-ui')
+
+    if [ -z "$RESPONSE" ]
+    then
+        echo "Authentication API error"
+        exit 1
+    fi
+    TOKEN=$(php -r 'echo json_decode($argv[1])->access_token;' "$RESPONSE")
+
+    install_ccla_wf=$(docker compose exec -T msa-api curl -H 'Authorization: Bearer $TOKEN' -XPOST http://localhost:8480/ubi-api-rest/ccla/libraries/install -s -o /dev/null -w "%{http_code}")
     echo $install_ccla_wf
     if [ $install_ccla_wf = '204' ] ; then
         echo "CCLA-WF is now installed.."
