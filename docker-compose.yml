@@ -135,7 +135,7 @@ services:
       msa-auth:
         condition: service_healthy
       msa-db:
-        condition: service_healthy
+        condition: service_started
       msa-es:
         condition: service_healthy
       msa-mongodb:
