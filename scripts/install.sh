@@ -69,7 +69,7 @@ standaloneInstall(){
         echo "Authentication API error"
         exit 1
     fi
-    TOKEN=$(php -r 'echo json_decode($argv[1])->access_token;' "$RESPONSE")
+    TOKEN=$(echo $RESPONSE | jq -r '.access_token')
 
     install_ccla_wf=$(docker compose exec -T msa-api curl -H 'Authorization: Bearer $TOKEN' -XPOST http://localhost:8480/ubi-api-rest/ccla/libraries/install -s -o /dev/null -w "%{http_code}")
     echo $install_ccla_wf
