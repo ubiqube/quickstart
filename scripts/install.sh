@@ -40,6 +40,7 @@ standaloneInstall(){
             docker compose down --remove-orphans
         fi
     fi
+    set -x
     OVERRIDE=""
     if [ -f "docker-compose.override.yml" ]; then
         OVERRIDE="-f docker-compose.override.yml"
@@ -53,6 +54,7 @@ standaloneInstall(){
     else
         docker compose -f docker-compose.yml ${OVERRIDE} up -d --build
     fi
+    set +x
 
     docker compose exec -T msa-dev rm -rf /opt/fmc_repository/Process/Reference
 
