@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/msa_version/index.html
-    image: ubiqube/msa2-front:sha-b2e4e0a35772d7d40db8d966ce01470cf06412a2
+    image: ubiqube/msa2-front:sha-60ed50410c37fe43ad7090dc5a756a1e5c6e58a6
     logging:
       <<: *logging
     networks:
@@ -392,7 +392,7 @@ services:
       test:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
-    image: ubiqube/msa2-monitoring:sha-cb78424d811f79d505c9ccd7d08bfcb118f39998
+    image: ubiqube/msa2-monitoring:sha-86d6ce068675a0ed2d751fba61082796908023cf
     logging:
       <<: *logging
     networks:
