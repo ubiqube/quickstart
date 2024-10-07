@@ -68,7 +68,10 @@ services:
       WAIT_FOR_TIMEOUT: 60
     healthcheck:
       <<: *healthcheck
-    image: openmsa/openmsa:msa2-camunda-2.9.1-c44a586ac7224f83f8f7d45e0b1fcf2158ba2f05
+      test:
+        - CMD-SHELL
+        - curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$$'
+    image: openmsa/openmsa:msa2-camunda-2.9.1-806a46c3b1f4266ac3b8bb37004d93258ba9896d
     logging:
       <<: *logging
   db:
@@ -169,8 +172,8 @@ services:
       <<: *healthcheck
       test:
         - CMD-SHELL
-        - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$'
-    image: openmsa/openmsa:msa2-api-2.9.1-36d631b79aaf4eead95598268710c18b1b2ea588
+        - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
+    image: openmsa/openmsa:msa2-api-2.9.1-42142fe3e0ac723c907c24ce3887f564d15b7d90
     logging:
       <<: *logging
     networks:
@@ -196,7 +199,7 @@ services:
       start_period: 1m
       test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8080'
       timeout: 10s
-    image: openmsa/openmsa:msa2-auth-2.9.1-43c88efcb225fd1ba5dec33b466e2ea180d016c6
+    image: openmsa/openmsa:msa2-auth-2.9.1-efbc69c42dafa964669bde21dbe44d8834360312
   msa-broker:
     deploy:
       <<: *placement_app
@@ -207,7 +210,7 @@ services:
     healthcheck:
       <<: *healthcheck
       test: ./bin/artemis check node --user=$${ARTEMIS_USER} --password=$${ARTEMIS_PASSWORD} --silent &>/dev/null
-    image: openmsa/openmsa:msa2-broker-2.9.1-bafeae07df27c0c2e0d381890b7a4743cbd961bd
+    image: openmsa/openmsa:msa2-broker-2.9.1-3cb6bcba6f451db90e26fbe464aa4886e448cc62
     logging:
       <<: *logging
     volumes:
@@ -246,7 +249,7 @@ services:
     healthcheck:
       <<: *healthcheck
       test: curl --fail http://localhost:9000/
-    image: openmsa/openmsa:msa2-cerebro-2.9.1-bf816107bdb08afee0998117c5e90cc660683e6d
+    image: openmsa/openmsa:msa2-cerebro-2.9.1-c1daaa4f09ca104dda46f6e12eabd3dc368ff07b
     logging:
       <<: *logging
     networks:
@@ -260,7 +263,7 @@ services:
       <<: *placement_app
     healthcheck:
       <<: *healthcheck
-    image: openmsa/openmsa:msa2-linuxdev-2.9.1-63c0c3497005d6c046c9b174158c61775a1f2f18
+    image: openmsa/openmsa:msa2-linuxdev-2.9.1-7d71bf0b8226ed880fdbfbe38ba9bdba3d0b6bad
     logging:
       <<: *logging
     networks:
@@ -289,7 +292,7 @@ services:
       test:
         - CMD-SHELL
         - 'test -f /home/install/init-done && curl -s -XGET -H ''Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=''  ''http://localhost:9200/_cluster/health?pretty'' | grep -q ''status.*green'' || exit 1'
-    image: openmsa/openmsa:msa2-es-2.9.1-5fc4552ecb6c5c28ceb7ce9e3e49b2f7d8816482
+    image: openmsa/openmsa:msa2-es-2.9.1-412883180231cbeae2d7745a948446cb4bf4f667
     logging:
       <<: *logging
     networks:
@@ -314,7 +317,7 @@ services:
       test:
         - CMD-SHELL
         - curl -k --fail https://localhost
-    image: openmsa/openmsa:msa2-front-2.9.1-63905df20aeb6e71405fbd1ce25dcc8c02653df7
+    image: openmsa/openmsa:msa2-front-2.9.1-6cfb598870fba7428170c625aaa3c79bafbe2c31
     logging:
       <<: *logging
     ports:
@@ -346,7 +349,7 @@ services:
     healthcheck:
       <<: *healthcheck
       test: curl -k --fail http://localhost:5601/kibana/
-    image: openmsa/openmsa:msa2-kibana-2.9.1-e0567b106dae2b34839ae7dd5dcb436eb67beb98
+    image: openmsa/openmsa:msa2-kibana-2.9.1-4f679b99957e9f7c1634dac7a6efce5587f2f748
     logging:
       <<: *logging
     networks:
@@ -569,7 +572,7 @@ services:
       test:
         - CMD-SHELL
         - curl --fail http://localhost:8080
-    image: openmsa/openmsa:msa2-ui-2.9.1-8dbb122d4a40b9c2b64db5d06b536b201af7e093
+    image: openmsa/openmsa:msa2-ui-2.9.1-46f9e985a8337e4804d2c5fce46705b81910e4b7
     logging:
       <<: *logging
     networks:
@@ -590,7 +593,7 @@ services:
       UBI_ES_AUDIT_INDEX_MULTIPLE_TTL: '*|90d'
       UBI_ES_CACHE_INDEX_DEFAULT_TTL: 1w
       UBI_ES_DELETE_SCROLL_SIZE: "4000"
-      UBI_ES_ILM_LOG_CRONTAB: '*/2 * * * *  php /opt/ubi-es-ilm/log_retention_management.php --verbose=3 > /proc/1/fd/1 2>&1'
+      UBI_ES_ILM_LOG_CRONTAB: '*/2 * * * * root php /opt/ubi-es-ilm/log_retention_management.php --verbose=3 > /proc/1/fd/1 2>&1'
       # For elasticsearch scripts /opt/ubi-es-ilm/log_retention_management.php
       # UBI_ES_INDEX_MULTIPLE_TTL:        "type:traffic|7d,type:event|30d,*|90d"
       UBI_ES_INDEX_MULTIPLE_TTL: '*|90d'
@@ -604,13 +607,11 @@ services:
       test:
         - CMD-SHELL
         - find /opt/msa2-es-ilm/log/log_retention.log -type f -mmin -10
-    image: openmsa/openmsa:msa2-es-ilm-2.9.1-dda9094825d80174afde4d18a9fafcadedb1f7d1
-    init: true
+    image: openmsa/openmsa:msa2-es-ilm-2.9.1-d7b17500d723503a6754993f9aedfb3ba922be4b
     networks:
       default:
         aliases:
           - msa2_es-ilm
-    tty: true
     volumes:
       - /mnt/NASVolume/msa2_es-ilm:/opt/msa2-es-ilm
 volumes:
