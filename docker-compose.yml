@@ -368,7 +368,7 @@ services:
       - msa_alarmbulkfiles:/opt/sms/spool/alarms
       - msa_alarmbulkfiles_err:/opt/sms/spool/alarms-error
 
-msa-monitoring:
+  msa-monitoring:
     depends_on:
       msa-broker:
         condition: service_started
@@ -405,7 +405,6 @@ msa-monitoring:
       - msa_sms_logs:/opt/sms/logs
       - msa_monitbulkfiles:/opt/sms/spool/parser
       - msa_monitbulkfiles_err:/opt/sms/spool/parser-error
-
 
   msa-rsyslog:
     restart: unless-stopped
