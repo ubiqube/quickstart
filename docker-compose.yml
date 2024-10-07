@@ -144,7 +144,9 @@ services:
         condition: service_healthy
       msa-mongodb:
         condition: service_healthy
-    environment:
+      env_file:
+      - .env
+      environment:
       <<: *es-configuration
       MANAGEMENT_TRACING_ENABLED: true
     healthcheck:
