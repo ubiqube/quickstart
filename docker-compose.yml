@@ -144,10 +144,10 @@ services:
         condition: service_healthy
       msa-mongodb:
         condition: service_healthy
-      env_file:
-        - .env
-      environment:
-        <<: *es-configuration
+    env_file:
+      - .env
+    environment:
+      <<: *es-configuration
       MANAGEMENT_TRACING_ENABLED: true
     healthcheck:
       interval: 10s
