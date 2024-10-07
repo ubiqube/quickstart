@@ -52,92 +52,11 @@ networks:
 #      encrypted: "true"
 
 services:
-  camunda:
-    depends_on:
-      - db
-    deploy:
-      <<: *placement_app
-    environment:
-      DB_DRIVER: org.postgresql.Driver
-      DB_PASSWORD: camunda
-      DB_URL: jdbc:postgresql://db:5432/process-engine
-      DB_USERNAME: camunda
-      DB_VALIDATE_ON_BORROW: "true"
-      DB_VALIDATION_QUERY: SELECT 1
-      WAIT_FOR: db:5432
-      WAIT_FOR_TIMEOUT: 60
-    healthcheck:
-      <<: *healthcheck
-      test:
-        - CMD-SHELL
-        - curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$$'
-    image: openmsa/openmsa:msa2-camunda-2.9.1-806a46c3b1f4266ac3b8bb37004d93258ba9896d
-    logging:
-      <<: *logging
-  db:
-    deploy:
-      <<: *placement_db
-    environment:
-      CAMUNDA_DB: process-engine
-      CAMUNDA_PASSWORD: camunda
-      CAMUNDA_USER: camunda
-      KEY_VAULT_DB: key_vault
-      KEY_VAULT_USER: key_vault
-      MAX_CONNECTIONS: 1600
-      PG_DATABASE: POSTGRESQL
-      PG_MODE: primary
-      PG_PASSWORD: my_db_password
-      PG_PRIMARY_PASSWORD: my_db_password
-      PG_PRIMARY_PORT: 5432
-      PG_PRIMARY_USER: postgres
-      PG_ROOT_PASSWORD: my_db_password
-      PG_USER: postgres
-    healthcheck:
-      <<: *healthcheck
-      test:
-        - CMD-SHELL
-        - /usr/pgsql-12/bin/pg_isready -h localhost
-    image: openmsa/openmsa:msa2-db-2.9.1-72042805ec62153025202ff1000f649f5fee59fe
-    logging:
-      <<: *logging
-    volumes:
-      - /mnt/NASVolume/msa_db:/pgsqldata/pgsql
-      - target: /dev/shm
-        tmpfs:
-          size: 2000000000
-        type: tmpfs
-  db-replica:
-    deploy:
-      <<: *placement_db
-    environment:
-      CAMUNDA_DB: process-engine
-      CAMUNDA_PASSWORD: camunda
-      CAMUNDA_USER: camunda
-      KEY_VAULT_DB: key_vault
-      KEY_VAULT_USER: key_vault
-      PG_DATABASE: POSTGRESQL
-      PG_MODE: replica
-      PG_PASSWORD: my_db_password
-      PG_PRIMARY_HOST: db
-      PG_PRIMARY_PASSWORD: my_db_password
-      PG_PRIMARY_PORT: 5432
-      PG_PRIMARY_USER: postgres
-      PG_ROOT_PASSWORD: my_db_password
-      PG_USER: postgres
-    healthcheck:
-      <<: *healthcheck
-      test:
-        - CMD-SHELL
-        - /usr/pgsql-12/bin/pg_isready -h localhost
-    image: openmsa/openmsa:msa2-db-2.9.1-72042805ec62153025202ff1000f649f5fee59fe
-    logging:
-      <<: *logging
   msa-alarm:
     depends_on:
-      - db
+      - msa-db
       - msa-es
       - msa-api
-      - msa-dev
     deploy:
       <<: *placement_app
     environment:
@@ -161,7 +80,7 @@ services:
       - msa_alarmbulkfiles_err:/opt/sms/spool/alarms-error
   msa-api:
     depends_on:
-      - db
+      - msa-db
     deploy:
       <<: *placement_app
     environment:
@@ -189,7 +108,7 @@ services:
       - /mnt/NASVolume/msa_api_logs:/opt/wildfly/logs
   msa-auth:
     depends_on:
-      - db
+      - msa-db
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: ubiqube
@@ -217,7 +136,7 @@ services:
       - /mnt/NASVolume/mano_artemis:/var/lib/artemis-instance
   msa-bud:
     depends_on:
-      - db
+      - msa-db
     deploy:
       <<: *placement_app
     environment:
@@ -236,6 +155,32 @@ services:
           - msa_bud
     volumes:
       - msa_sms_logs:/opt/sms/logs
+  msa-camunda:
+    depends_on:
+      - msa-db
+    deploy:
+      <<: *placement_app
+    environment:
+      DB_DRIVER: org.postgresql.Driver
+      DB_PASSWORD: camunda
+      DB_URL: jdbc:postgresql://msa-db:5432/process-engine
+      DB_USERNAME: camunda
+      DB_VALIDATE_ON_BORROW: "true"
+      DB_VALIDATION_QUERY: SELECT 1
+      WAIT_FOR: msa-db:5432
+      WAIT_FOR_TIMEOUT: 60
+    healthcheck:
+      <<: *healthcheck
+      test:
+        - CMD-SHELL
+        - curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$$'
+    image: openmsa/openmsa:msa2-camunda-2.9.1-806a46c3b1f4266ac3b8bb37004d93258ba9896d
+    logging:
+      <<: *logging
+    networks:
+      default:
+        aliases:
+          - camunda
   msa-cerebro:
     deploy:
       <<: *placement_app
@@ -258,6 +203,72 @@ services:
           - msa_cerebro
     ports:
       - 9000:9000
+  msa-db:
+    deploy:
+      <<: *placement_db
+    environment:
+      CAMUNDA_DB: process-engine
+      CAMUNDA_PASSWORD: camunda
+      CAMUNDA_USER: camunda
+      KEY_VAULT_DB: key_vault
+      KEY_VAULT_USER: key_vault
+      MAX_CONNECTIONS: 1600
+      PG_DATABASE: POSTGRESQL
+      PG_MODE: primary
+      PG_PASSWORD: my_db_password
+      PG_PRIMARY_PASSWORD: my_db_password
+      PG_PRIMARY_PORT: 5432
+      PG_PRIMARY_USER: postgres
+      PG_ROOT_PASSWORD: my_db_password
+      PG_USER: postgres
+    healthcheck:
+      <<: *healthcheck
+      test:
+        - CMD-SHELL
+        - /usr/pgsql-12/bin/pg_isready -h localhost
+    image: openmsa/openmsa:msa2-db-2.9.1-72042805ec62153025202ff1000f649f5fee59fe
+    logging:
+      <<: *logging
+    networks:
+      default:
+        aliases:
+          - db
+    volumes:
+      - /mnt/NASVolume/msa_db:/pgsqldata/pgsql
+      - target: /dev/shm
+        tmpfs:
+          size: 2000000000
+        type: tmpfs
+  msa-db-replica:
+    deploy:
+      <<: *placement_db
+    environment:
+      CAMUNDA_DB: process-engine
+      CAMUNDA_PASSWORD: camunda
+      CAMUNDA_USER: camunda
+      KEY_VAULT_DB: key_vault
+      KEY_VAULT_USER: key_vault
+      PG_DATABASE: POSTGRESQL
+      PG_MODE: replica
+      PG_PASSWORD: my_db_password
+      PG_PRIMARY_HOST: msa-db
+      PG_PRIMARY_PASSWORD: my_db_password
+      PG_PRIMARY_PORT: 5432
+      PG_PRIMARY_USER: postgres
+      PG_ROOT_PASSWORD: my_db_password
+      PG_USER: postgres
+    healthcheck:
+      <<: *healthcheck
+      test:
+        - CMD-SHELL
+        - /usr/pgsql-12/bin/pg_isready -h localhost
+    image: openmsa/openmsa:msa2-db-2.9.1-72042805ec62153025202ff1000f649f5fee59fe
+    logging:
+      <<: *logging
+    networks:
+      default:
+        aliases:
+          - db-replica
   msa-dev:
     deploy:
       <<: *placement_app
@@ -309,7 +320,7 @@ services:
     depends_on:
       - msa-api
       - msa-ui
-      - camunda
+      - msa-camunda
     deploy:
       <<: *placement_app
     healthcheck:
@@ -376,7 +387,7 @@ services:
       - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
   msa-monitoring:
     depends_on:
-      - db
+      - msa-db
       - msa-es
       - msa-dev
       - msa-sms
@@ -407,7 +418,7 @@ services:
       - msa_monitbulkfiles_err:/opt/sms/spool/parser-error
   msa-parse:
     depends_on:
-      - db
+      - msa-db
       - msa-broker
       - msa-es
       - msa-dev
@@ -466,7 +477,7 @@ services:
         target: 6514
   msa-sms:
     depends_on:
-      - db
+      - msa-db
       - msa-dev
     deploy:
       <<: *placement_app
@@ -513,7 +524,7 @@ services:
     image: boky/postfix:4.2.1-alpine
   msa-snmptrap:
     depends_on:
-      - db
+      - msa-db
       - msa-es
       - msa-dev
     deploy:
