@@ -2,5 +2,5 @@ services:
   msa-api:
     environment:
       GITHUB_USERNAME: ${GITHUB_USERNAME}
-      GITHUB_USERNAME: ${GITHUB_USERNAME}
+      GITHUB_PASSWORD: ${GITHUB_PASSWORD}
 
