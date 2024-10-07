@@ -40,15 +40,18 @@ standaloneInstall(){
             docker compose down --remove-orphans
         fi
     fi
-
+    OVERRIDE=""
+    if [ -f "docker-compose.override.yml" ]; then
+        OVERRIDE="-f docker-compose.override.yml"
+    fi
     if [ $mano = true ] && [ $ccla = true ] ; then
-        docker compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml -f docker-compose.ccla.yml up -d --build
+        docker compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml -f docker-compose.ccla.yml ${OVERRIDE} up -d --build
     elif [ $mano = true ] ; then
-        docker compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml up -d --build
+        docker compose -f docker-compose.yml -f lab/mano/docker-compose.mano.yml ${OVERRIDE} up -d --build
     elif [ $ccla = true ] ; then
-        docker compose -f docker-compose.yml -f docker-compose.ccla.yml up -d --build
+        docker compose -f docker-compose.yml -f docker-compose.ccla.yml ${OVERRIDE} up -d --build
     else
-        docker compose up -d --build
+        docker compose -f docker-compose.yml ${OVERRIDE} up -d --build
     fi
 
     docker compose exec -T msa-dev rm -rf /opt/fmc_repository/Process/Reference
@@ -59,14 +62,21 @@ standaloneInstall(){
         docker compose exec msa-dev /usr/bin/install_libraries.sh ccla
     fi
 
-    install_ccla_wf=$(docker compose exec -T msa-api curl -X POST http://localhost:8480/ubi-api-rest/ccla/libraries/install -s -o /dev/null -w "%{http_code}")
+    RESPONSE=$(docker compose exec -T msa-api curl -k --location 'http://msa-auth:8080/auth/realms/msa/protocol/openid-connect/token' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'grant_type=password' --data-urlencode 'username=ncroot' --data-urlencode 'password=ubiqube' --data-urlencode 'client_id=msa-ui')
+
+    if [ -z "$RESPONSE" ]
+    then
+        echo "Authentication API error"
+        exit 1
+    fi
+    TOKEN=$(echo $RESPONSE | jq -r '.access_token')
+    install_ccla_wf=`docker compose exec -T msa-api curl -H "Authorization: Bearer "$TOKEN -XPOST http://localhost:8480/ubi-api-rest/ccla/libraries/install -s -o /dev/null -w "%{http_code}"`
     echo $install_ccla_wf
     if [ $install_ccla_wf = '204' ] ; then
         echo "CCLA-WF is now installed.."
     else
         echo "CCLA-WF was not installed. Use the API /ccla/libraries/install to install CCLA-WF"
     fi
-
     docker compose restart msa-api
     docker compose restart msa-sms
     docker compose restart msa-alarm
@@ -102,15 +112,18 @@ haInstall(){
         ha_stack="msa"
         echo "No stack found. Fresh HA installation"
     fi
-
+    OVERRIDE=""
+    if [ -f "docker-compose.override.yml" ]; then
+        OVERRIDE="-c docker-compose.override.yml"
+    fi
     if [ $mano = true ] && [ $ccla = true ] ; then
-        docker stack deploy --with-registry-auth -c docker-compose.ha.yml -c lab/mano/docker-compose.mano.ha.yml -c docker-compose.ccla.ha.yml $ha_stack
+        docker stack deploy --with-registry-auth -c docker-compose.ha.yml -c lab/mano/docker-compose.mano.ha.yml -c docker-compose.ccla.ha.yml ${OVERRIDE} $ha_stack
     elif [ $mano = true ] ; then
-        docker stack deploy --with-registry-auth -c docker-compose.ha.yml -c lab/mano/docker-compose.mano.ha.yml $ha_stack
+        docker stack deploy --with-registry-auth -c docker-compose.ha.yml -c lab/mano/docker-compose.mano.ha.yml ${OVERRIDE} $ha_stack
     elif [ $ccla = true ] ; then
-        docker stack deploy --with-registry-auth -c docker-compose.ha.yml -c docker-compose.ccla.ha.yml $ha_stack
+        docker stack deploy --with-registry-auth -c docker-compose.ha.yml -c docker-compose.ccla.ha.yml ${OVERRIDE} $ha_stack
     else
-        docker stack deploy --with-registry-auth -c docker-compose.ha.yml $ha_stack
+        docker stack deploy --with-registry-auth -c docker-compose.ha.yml ${OVERRIDE} $ha_stack
     fi
 
     echo "############## Install OpenMSA Libraries ##############################"
@@ -213,7 +226,7 @@ main() {
     for arg
     do
         case "$arg" in
-        -m|--mini-lab)
+            -m|--mini-lab)
                 mini_lab=true
                 ;;
             -f|--force)
