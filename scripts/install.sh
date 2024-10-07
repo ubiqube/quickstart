@@ -71,7 +71,7 @@ standaloneInstall(){
     fi
     TOKEN=$(echo $RESPONSE | jq -r '.access_token')
     set -x
-    install_ccla_wf=$(docker compose exec -T msa-api curl -H 'Authorization: Bearer $TOKEN' -XPOST http://localhost:8480/ubi-api-rest/ccla/libraries/install -s -o /dev/null -w "%{http_code}")
+    install_ccla_wf=`docker compose exec -T msa-api curl -H "Authorization: Bearer "$TOKEN -XPOST http://localhost:8480/ubi-api-rest/ccla/libraries/install -s -o /dev/null -w "%{http_code}"`
     echo $install_ccla_wf
     if [ $install_ccla_wf = '204' ] ; then
         echo "CCLA-WF is now installed.."
