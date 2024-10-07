@@ -1,4 +1,10 @@
 # This docker-compose file is provided as an example to create a Docker Swarm based MSActivator setup
+x-amqp-monitoring: &amqp-monitoring
+  AMQP_ADDRESS: core-engine.monitoring
+  AMQP_PASSWORD: simetraehcapa
+  AMQP_PORT: "5672"
+  AMQP_SERVER: msa-broker
+  AMQP_USER: artemis
 x-amqp-syslog: &amqp-syslog
   AMQP_ADDRESS: core-engine.syslog
   AMQP_PASSWORD: simetraehcapa
@@ -394,8 +400,12 @@ services:
     deploy:
       <<: *placement_app_one_replica
     environment:
-      <<: *es-configuration
+      <<:
+        - *es-configuration
+        - *amqp-monitoring
       CONTAINER_DOCKNAME: '{{.Task.Name}}.{{.Node.Hostname}}'
+      TARGET_MON: RRD
+      #   possible values RRD, ES, AMQP
     healthcheck:
       <<: *healthcheck
       test:

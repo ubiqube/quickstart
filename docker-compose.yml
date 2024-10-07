@@ -1,3 +1,9 @@
+x-amqp-monitoring: &amqp-monitoring
+  AMQP_ADDRESS: core-engine.monitoring
+  AMQP_PASSWORD: simetraehcapa
+  AMQP_PORT: "5672"
+  AMQP_SERVER: msa-broker
+  AMQP_USER: artemis
 x-amqp-syslog: &amqp-syslog
   AMQP_ADDRESS: core-engine.syslog
   AMQP_PASSWORD: simetraehcapa
@@ -412,6 +418,8 @@ services:
   msa-monitoring:
     container_name: msa_monitoring
     depends_on:
+      msa-broker:
+        condition: service_started
       msa-db:
         condition: service_healthy
       msa-dev:
@@ -421,12 +429,11 @@ services:
       msa-sms:
         condition: service_started
     environment:
-      <<: *es-configuration
-      # ES_MON
-      # "yes" : ES + RRD
-      # "only" : ES only (no RRD)
-      # any other values ("no" is recommended!) RRD only (no ES)
-      ES_MON: "no"
+      <<:
+        - *es-configuration
+        - *amqp-monitoring
+      TARGET_MON: RRD
+      #   possible values RRD, ES, AMQP
     healthcheck:
       test:
         - CMD-SHELL
