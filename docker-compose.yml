@@ -1,3 +1,9 @@
+x-amqp-monitoring: &amqp-monitoring
+  AMQP_ADDRESS: core-engine.monitoring
+  AMQP_PASSWORD: simetraehcapa
+  AMQP_PORT: "5672"
+  AMQP_SERVER: msa-broker
+  AMQP_USER: artemis
 x-amqp-syslog: &amqp-syslog
   AMQP_ADDRESS: core-engine.syslog
   AMQP_PASSWORD: simetraehcapa
@@ -23,63 +29,6 @@ networks:
         - subnet: 172.20.0.0/24
     name: quickstart_default
 services:
-  camunda:
-    container_name: msa_camunda
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      DB_DRIVER: org.postgresql.Driver
-      DB_PASSWORD: camunda
-      DB_URL: jdbc:postgresql://db:5432/process-engine
-      DB_USERNAME: camunda
-      DB_VALIDATE_ON_BORROW: "true"
-      DB_VALIDATION_QUERY: SELECT 1
-      WAIT_FOR: db:5432
-      WAIT_FOR_TIMEOUT: 60
-    healthcheck:
-      interval: 10s
-      retries: 3
-      start_period: 90s
-      test:
-        - CMD-SHELL
-        - curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$$'
-      timeout: 5s
-    image: openmsa/openmsa:msa2-camunda-2.9.1-806a46c3b1f4266ac3b8bb37004d93258ba9896d
-    logging:
-      <<: *logging
-    restart: unless-stopped
-  db:
-    container_name: msa_db
-    environment:
-      CAMUNDA_DB: process-engine
-      CAMUNDA_PASSWORD: camunda
-      CAMUNDA_USER: camunda
-      KEY_VAULT_DB: key_vault
-      KEY_VAULT_USER: key_vault
-      MAX_CONNECTIONS: 1600
-      PG_DATABASE: POSTGRESQL
-      PG_MODE: primary
-      PG_PASSWORD: my_db_password
-      PG_PRIMARY_PASSWORD: my_db_password
-      PG_PRIMARY_PORT: 5432
-      PG_PRIMARY_USER: postgres
-      PG_ROOT_PASSWORD: my_db_password
-      PG_USER: postgres
-    healthcheck:
-      interval: 30s
-      retries: 5
-      test:
-        - CMD-SHELL
-        - /usr/pgsql-12/bin/pg_isready -h localhost
-      timeout: 20s
-    image: openmsa/openmsa:msa2-db-2.9.1-72042805ec62153025202ff1000f649f5fee59fe
-    logging:
-      <<: *logging
-    restart: unless-stopped
-    shm_size: 1g
-    volumes:
-      - msa_db:/pgsqldata/pgsql
   linux-me:
     #build: ./lab/linux.me
     cap_add:
@@ -131,9 +80,9 @@ services:
   msa-alarm:
     container_name: msa_alarm
     depends_on:
-      db:
-        condition: service_healthy
       msa-api:
+        condition: service_healthy
+      msa-db:
         condition: service_healthy
       msa-es:
         condition: service_started
@@ -162,7 +111,7 @@ services:
   msa-api:
     container_name: msa_api
     depends_on:
-      db:
+      msa-db:
         condition: service_healthy
       msa-es:
         condition: service_started
@@ -195,7 +144,7 @@ services:
       - msa_api_keystore:/etc/pki/jentreprise
   msa-auth:
     depends_on:
-      db:
+      msa-db:
         condition: service_healthy
     environment:
       KEYCLOAK_ADMIN: admin
@@ -224,7 +173,7 @@ services:
   msa-bud:
     container_name: msa_bud
     depends_on:
-      db:
+      msa-db:
         condition: service_healthy
     healthcheck:
       interval: 10s
@@ -244,6 +193,36 @@ services:
     restart: unless-stopped
     volumes:
       - msa_bud_logs:/opt/bud/logs/
+  msa-camunda:
+    container_name: msa_camunda
+    depends_on:
+      msa-db:
+        condition: service_healthy
+    environment:
+      DB_DRIVER: org.postgresql.Driver
+      DB_PASSWORD: camunda
+      DB_URL: jdbc:postgresql://db:5432/process-engine
+      DB_USERNAME: camunda
+      DB_VALIDATE_ON_BORROW: "true"
+      DB_VALIDATION_QUERY: SELECT 1
+      WAIT_FOR: db:5432
+      WAIT_FOR_TIMEOUT: 60
+    healthcheck:
+      interval: 10s
+      retries: 3
+      start_period: 90s
+      test:
+        - CMD-SHELL
+        - curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$$'
+      timeout: 5s
+    image: openmsa/openmsa:msa2-camunda-2.9.1-806a46c3b1f4266ac3b8bb37004d93258ba9896d
+    logging:
+      <<: *logging
+    networks:
+      default:
+        aliases:
+          - camunda
+    restart: unless-stopped
   msa-cerebro:
     container_name: msa_cerebro
     depends_on:
@@ -268,6 +247,41 @@ services:
     ports:
       - 9000:9000
     restart: unless-stopped
+  msa-db:
+    container_name: msa_db
+    environment:
+      CAMUNDA_DB: process-engine
+      CAMUNDA_PASSWORD: camunda
+      CAMUNDA_USER: camunda
+      KEY_VAULT_DB: key_vault
+      KEY_VAULT_USER: key_vault
+      MAX_CONNECTIONS: 1600
+      PG_DATABASE: POSTGRESQL
+      PG_MODE: primary
+      PG_PASSWORD: my_db_password
+      PG_PRIMARY_PASSWORD: my_db_password
+      PG_PRIMARY_PORT: 5432
+      PG_PRIMARY_USER: postgres
+      PG_ROOT_PASSWORD: my_db_password
+      PG_USER: postgres
+    healthcheck:
+      interval: 30s
+      retries: 5
+      test:
+        - CMD-SHELL
+        - /usr/pgsql-12/bin/pg_isready -h localhost
+      timeout: 20s
+    image: openmsa/openmsa:msa2-db-2.9.1-72042805ec62153025202ff1000f649f5fee59fe
+    logging:
+      <<: *logging
+    networks:
+      default:
+        aliases:
+          - db
+    restart: unless-stopped
+    shm_size: 1g
+    volumes:
+      - msa_db:/pgsqldata/pgsql
   msa-dev:
     container_name: msa_dev
     healthcheck:
@@ -327,9 +341,9 @@ services:
   msa-front:
     container_name: msa_front
     depends_on:
-      camunda:
-        condition: service_started
       msa-api:
+        condition: service_started
+      msa-camunda:
         condition: service_started
       msa-es:
         condition: service_started
@@ -404,7 +418,9 @@ services:
   msa-monitoring:
     container_name: msa_monitoring
     depends_on:
-      db:
+      msa-broker:
+        condition: service_started
+      msa-db:
         condition: service_healthy
       msa-dev:
         condition: service_started
@@ -413,12 +429,11 @@ services:
       msa-sms:
         condition: service_started
     environment:
-      <<: *es-configuration
-      # ES_MON
-      # "yes" : ES + RRD
-      # "only" : ES only (no RRD)
-      # any other values ("no" is recommended!) RRD only (no ES)
-      ES_MON: "no"
+      <<:
+        - *es-configuration
+        - *amqp-monitoring
+      TARGET_MON: RRD
+      #   possible values RRD, ES, AMQP
     healthcheck:
       test:
         - CMD-SHELL
@@ -442,10 +457,10 @@ services:
   msa-parse:
     container_name: msa_parse
     depends_on:
-      db:
-        condition: service_healthy
       msa-broker:
         condition: service_started
+      msa-db:
+        condition: service_healthy
       msa-dev:
         condition: service_started
       msa-es:
@@ -508,7 +523,7 @@ services:
   msa-sms:
     container_name: msa_sms
     depends_on:
-      db:
+      msa-db:
         condition: service_healthy
       msa-dev:
         condition: service_started
@@ -561,7 +576,7 @@ services:
   msa-snmptrap:
     container_name: msa_snmptrap
     depends_on:
-      db:
+      msa-db:
         condition: service_healthy
       msa-dev:
         condition: service_started
