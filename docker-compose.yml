@@ -53,8 +53,8 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/msa_version/index.html
-        image: ubiqube/msa2-front:sha-c8bdbec11d302c876cfc75dcd9b823771d5754bf
-        logging:
+    image: ubiqube/msa2-front:sha-c8bdbec11d302c876cfc75dcd9b823771d5754bf
+    logging:
       <<: *logging
     networks:
       default:
