@@ -30,7 +30,7 @@ services:
       test:
         - CMD-SHELL
         - curl --fail http://localhost:8080
-    image: ubiqube/cloudclapp:382beb5610ceadef8388f6a80241938b35bebfd0
+    image: ubiqube/cloudclapp:1cc331ed7adda8a53cde9d0f99a9aae14e920c59
   key-vault:
     cap_add:
       - IPC_LOCK
