@@ -73,7 +73,7 @@ services:
       test:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
-    image: openmsa/openmsa:msa2-alarm-2.9.1-357433368fa6d3a0b2a65b337aca97b1689bb7d9
+    image: openmsa/openmsa:msa2-alarm-2.9.1-sha-11d5b5fe807c876674f8f82e877f365d3abd7536
     logging:
       <<: *logging
     networks:
@@ -98,7 +98,7 @@ services:
       test:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
-    image: openmsa/openmsa:msa2-api-2.9.1-42142fe3e0ac723c907c24ce3887f564d15b7d90
+    image: openmsa/openmsa:msa2-api-2.9.1-sha-96115553f35736ac5a4c83b9e801a9bdbfd1035e
     logging:
       <<: *logging
     networks:
@@ -124,7 +124,7 @@ services:
       start_period: 1m
       test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8080'
       timeout: 10s
-    image: openmsa/openmsa:msa2-auth-2.9.1-efbc69c42dafa964669bde21dbe44d8834360312
+    image: openmsa/openmsa:msa2-auth-2.9.1-sha-682c8fa153a2452c2ad56114d4281b692456921b
   msa-broker:
     deploy:
       <<: *placement_app
@@ -135,7 +135,7 @@ services:
     healthcheck:
       <<: *healthcheck
       test: ./bin/artemis check node --user=$${ARTEMIS_USER} --password=$${ARTEMIS_PASSWORD} --silent &>/dev/null
-    image: openmsa/openmsa:msa2-broker-2.9.1-3cb6bcba6f451db90e26fbe464aa4886e448cc62
+    image: openmsa/openmsa:msa2-broker-2.9.1-sha-c7b473f778eb2cb1d5f5a6496e6064ed0bdec0a8
     logging:
       <<: *logging
     volumes:
@@ -152,7 +152,7 @@ services:
       test:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
-    image: openmsa/openmsa:msa2-bud-2.9.1-3fe82ad9d9afe09f0aa33540fe914e6b23a7d8b8
+    image: openmsa/openmsa:msa2-bud-2.9.1-sha-11db7f0c031120d0909aea35b8803e622ce7d89b
     logging:
       <<: *logging
     networks:
@@ -180,7 +180,7 @@ services:
       test:
         - CMD-SHELL
         - curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$$'
-    image: openmsa/openmsa:msa2-camunda-2.9.1-806a46c3b1f4266ac3b8bb37004d93258ba9896d
+    image: openmsa/openmsa:msa2-camunda-2.9.1-sha-87395dda76e592016374c93b0cb65940f3e5d803
     logging:
       <<: *logging
     networks:
@@ -200,7 +200,7 @@ services:
     healthcheck:
       <<: *healthcheck
       test: curl --fail http://localhost:9000/
-    image: openmsa/openmsa:msa2-cerebro-2.9.1-c1daaa4f09ca104dda46f6e12eabd3dc368ff07b
+    image: openmsa/openmsa:msa2-cerebro-2.9.1-sha-3438b6a723d22d15afbd877dead9820c6adac735
     logging:
       <<: *logging
     networks:
@@ -232,7 +232,7 @@ services:
       test:
         - CMD-SHELL
         - /usr/pgsql-12/bin/pg_isready -h localhost
-    image: openmsa/openmsa:msa2-db-2.9.1-72042805ec62153025202ff1000f649f5fee59fe
+    image: openmsa/openmsa:msa2-db-2.9.1-sha-464da33fdab006c857b2c953f75ec6a12c9cb3fc
     logging:
       <<: *logging
     networks:
@@ -268,7 +268,7 @@ services:
       test:
         - CMD-SHELL
         - /usr/pgsql-12/bin/pg_isready -h localhost
-    image: openmsa/openmsa:msa2-db-2.9.1-72042805ec62153025202ff1000f649f5fee59fe
+    image: openmsa/openmsa:msa2-db-2.9.1-sha-464da33fdab006c857b2c953f75ec6a12c9cb3fc
     logging:
       <<: *logging
     networks:
@@ -280,7 +280,7 @@ services:
       <<: *placement_app
     healthcheck:
       <<: *healthcheck
-    image: openmsa/openmsa:msa2-linuxdev-2.9.1-7d71bf0b8226ed880fdbfbe38ba9bdba3d0b6bad
+    image: openmsa/openmsa:msa2-linuxdev-2.9.1-sha-793fddbbba933bb8b9cd5327581d75e201d976cb
     logging:
       <<: *logging
     networks:
@@ -309,7 +309,7 @@ services:
       test:
         - CMD-SHELL
         - 'test -f /home/install/init-done && curl -s -XGET -H ''Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=''  ''http://localhost:9200/_cluster/health?pretty'' | grep -q ''status.*green'' || exit 1'
-    image: openmsa/openmsa:msa2-es-2.9.1-412883180231cbeae2d7745a948446cb4bf4f667
+    image: openmsa/openmsa:msa2-es-2.9.1-sha-a8b546208942b3c3057e60494575538678a4968d
     logging:
       <<: *logging
     networks:
@@ -334,7 +334,7 @@ services:
       test:
         - CMD-SHELL
         - curl -k --fail https://localhost
-    image: openmsa/openmsa:msa2-front-2.9.1-6cfb598870fba7428170c625aaa3c79bafbe2c31
+    image: openmsa/openmsa:msa2-front-2.9.1-sha-76cc3d9c356b0364ab8a093b10ec3292edf78895
     logging:
       <<: *logging
     ports:
@@ -366,7 +366,7 @@ services:
     healthcheck:
       <<: *healthcheck
       test: curl -k --fail http://localhost:5601/kibana/
-    image: openmsa/openmsa:msa2-kibana-2.9.1-4f679b99957e9f7c1634dac7a6efce5587f2f748
+    image: openmsa/openmsa:msa2-kibana-2.9.1-sha-fbe20e11564c106b789983b24900186acfe81036
     logging:
       <<: *logging
     networks:
@@ -384,7 +384,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh mongodb://${DB_USER:-msaUser}:${DB_PASSWORD:-ubiqube38}@localhost:${DB_PORT:-27017}/${DB_NAME:-msa} --quiet
-    image: mongo:7.0
+    image: openmsa/openmsa:msa2-mongodb-2.9.1-sha-90b2c29c1e13bc7b82cfadb00cba97ac856fd642
     ports:
       - 27017:27017
     restart: unless-stopped
@@ -411,7 +411,7 @@ services:
       test:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
-    image: openmsa/openmsa:msa2-monitoring-2.9.1-917e4e6156d78335644c6612d15e92dfc57f9752
+    image: openmsa/openmsa:msa2-monitoring-2.9.1-sha-0dbdc8cab78e19ef477c4048b03f2f860930845b
     logging:
       <<: *logging
     networks:
@@ -443,7 +443,7 @@ services:
       test:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
-    image: openmsa/openmsa:msa2-parse-2.9.1-ac18b71cf0d126d0e16ca3c2a82ddf22af5852cc
+    image: openmsa/openmsa:msa2-parse-2.9.1-sha-73fd7b6efac37c778dfe5dbc070059127cb4abe0
     logging:
       <<: *logging
     networks:
@@ -468,7 +468,7 @@ services:
       test:
         - CMD-SHELL
         - ps -p 1 -h -o%cpu | awk '{if ($$1 > 99) exit 1; else exit 0;}'
-    image: openmsa/openmsa:msa2-rsyslog-2.9.1-43500ad9def533042983caa4fab55ff2efd1b896
+    image: openmsa/openmsa:msa2-rsyslog-2.9.1-sha-a197212ba58e60726fc5ca2f493c1045acd0c47e
     logging:
       <<: *logging
     networks:
@@ -500,7 +500,7 @@ services:
       test:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
-    image: openmsa/openmsa:msa2-sms-2.9.1-14d129d1cb6812b05985529c6ead389943361961
+    image: openmsa/openmsa:msa2-sms-2.9.1-sha-3d4fa2877dd6f1d926b038ca06c6149ffd4d319c
     logging:
       <<: *logging
     networks:
@@ -546,7 +546,7 @@ services:
       test:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
-    image: openmsa/openmsa:msa2-snmptrap-2.9.1-8e61913b77d0391f50f0e03db8297534e135c56f
+    image: openmsa/openmsa:msa2-snmptrap-2.9.1-sha-00e14efd02a712128eeaaf69baba9f0393761961
     logging:
       <<: *logging
     networks:
@@ -593,7 +593,7 @@ services:
       test:
         - CMD-SHELL
         - curl --fail http://localhost:8080
-    image: openmsa/openmsa:msa2-ui-2.9.1-46f9e985a8337e4804d2c5fce46705b81910e4b7
+    image: openmsa/openmsa:msa2-ui-2.9.1-1cc331ed7adda8a53cde9d0f99a9aae14e920c59
     logging:
       <<: *logging
     networks:
@@ -628,7 +628,7 @@ services:
       test:
         - CMD-SHELL
         - find /opt/msa2-es-ilm/log/log_retention.log -type f -mmin -10
-    image: openmsa/openmsa:msa2-es-ilm-2.9.1-d7b17500d723503a6754993f9aedfb3ba922be4b
+    image: openmsa/openmsa:msa2-es-ilm-2.9.1-sha-6071ae10ede7a06b1982210b7da962ac862586bb
     networks:
       default:
         aliases:
