@@ -494,8 +494,8 @@ services:
       script.painless.regex.enabled: "true"
     healthcheck:
       interval: 10s
-      retries: 10
-      start_period: 30s
+      retries: 30
+      start_period: 45s
       test:
         - CMD-SHELL
         - 'test -f /home/install/init-done && curl -s -XGET -H ''Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=''  ''http://localhost:9200/_cluster/health?pretty'' | grep -q ''status.*green'' || exit 1'
