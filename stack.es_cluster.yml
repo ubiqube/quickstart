@@ -7,7 +7,7 @@ x-es-configuration: &es-configuration
 
 services:
   msa_front:
-    image: openmsa/openmsa:msa2-front-2.9.1-6cfb598870fba7428170c625aaa3c79bafbe2c31
+    image: openmsa/openmsa:msa2-front-2.9.1-sha-76cc3d9c356b0364ab8a093b10ec3292edf78895
     depends_on:
       - msa_api
       - msa_ui
@@ -59,7 +59,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.9.1-72042805ec62153025202ff1000f649f5fee59fe
+    image: openmsa/openmsa:msa2-db-2.9.1-sha-464da33fdab006c857b2c953f75ec6a12c9cb3fc
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -88,7 +88,7 @@ services:
         condition: on-failure
 
   msa_api:
-    image: openmsa/openmsa:msa2-api-2.9.1-42142fe3e0ac723c907c24ce3887f564d15b7d90
+    image: openmsa/openmsa:msa2-api-2.9.1-sha-96115553f35736ac5a4c83b9e801a9bdbfd1035e
     depends_on:
       - db
     healthcheck:
@@ -114,7 +114,7 @@ services:
         aliases:
           - "msa-api"
   msa_ui:
-    image: openmsa/openmsa:msa2-ui-2.9.1-46f9e985a8337e4804d2c5fce46705b81910e4b7
+    image: openmsa/openmsa:msa2-ui-2.9.1-1cc331ed7adda8a53cde9d0f99a9aae14e920c59
     depends_on:
       - msa_api
     healthcheck:
@@ -142,7 +142,7 @@ services:
     - FEATURE_REPOFOLDERLIST=[\"Datafiles\"]
 
   msa_sms:
-    image: openmsa/openmsa:msa2-sms-2.9.1-14d129d1cb6812b05985529c6ead389943361961
+    image: openmsa/openmsa:msa2-sms-2.9.1-sha-3d4fa2877dd6f1d926b038ca06c6149ffd4d319c
     depends_on:
       - db
     healthcheck:
@@ -162,7 +162,7 @@ services:
         max_replicas_per_node: 1
 
   msa_bud:
-    image: openmsa/openmsa:msa2-bud-2.9.1-3fe82ad9d9afe09f0aa33540fe914e6b23a7d8b8
+    image: openmsa/openmsa:msa2-bud-2.9.1-sha-11db7f0c031120d0909aea35b8803e622ce7d89b
     depends_on:
       - db
     deploy:
@@ -174,7 +174,7 @@ services:
     depends_on:
       - db
       - msa_api
-    image: openmsa/openmsa:msa2-alarm-2.9.1-357433368fa6d3a0b2a65b337aca97b1689bb7d9
+    image: openmsa/openmsa:msa2-alarm-2.9.1-sha-11d5b5fe807c876674f8f82e877f365d3abd7536
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
     environment:
@@ -187,7 +187,7 @@ services:
       - "/mnt/NASVolume/msa_sms_logs:/opt/sms/logs"
 
   msa_monitoring:
-    image: openmsa/openmsa:msa2-monitoring-2.9.1-917e4e6156d78335644c6612d15e92dfc57f9752
+    image: openmsa/openmsa:msa2-monitoring-2.9.1-sha-0dbdc8cab78e19ef477c4048b03f2f860930845b
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -211,7 +211,7 @@ services:
   camunda:
     depends_on:
       - db
-    image: openmsa/openmsa:msa2-camunda-2.9.1-806a46c3b1f4266ac3b8bb37004d93258ba9896d
+    image: openmsa/openmsa:msa2-camunda-2.9.1-sha-87395dda76e592016374c93b0cb65940f3e5d803
     deploy:
       replicas: 1
       placement:
@@ -242,7 +242,7 @@ services:
       - "/mnt/NASVolume/msa_es_certs:/usr/share/elasticsearch/config/certificates"
 
   msa_es:
-    image: openmsa/openmsa:msa2-es-2.9.1-412883180231cbeae2d7745a948446cb4bf4f667
+    image: openmsa/openmsa:msa2-es-2.9.1-sha-a8b546208942b3c3057e60494575538678a4968d
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
@@ -283,7 +283,7 @@ services:
 
 
   msa_kibana:
-    image: openmsa/openmsa:msa2-kibana-2.9.1-4f679b99957e9f7c1634dac7a6efce5587f2f748
+    image: openmsa/openmsa:msa2-kibana-2.9.1-sha-fbe20e11564c106b789983b24900186acfe81036
     depends_on:
       - msa_es
     ports:
@@ -302,7 +302,7 @@ services:
         max_replicas_per_node: 1
 
   msa_cerebro:
-    image: openmsa/openmsa:msa2-cerebro-2.9.1-c1daaa4f09ca104dda46f6e12eabd3dc368ff07b
+    image: openmsa/openmsa:msa2-cerebro-2.9.1-sha-3438b6a723d22d15afbd877dead9820c6adac735
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -320,7 +320,7 @@ services:
         max_replicas_per_node: 1
 
   msa_dev:
-    image: openmsa/openmsa:msa2-linuxdev-2.9.1-7d71bf0b8226ed880fdbfbe38ba9bdba3d0b6bad
+    image: openmsa/openmsa:msa2-linuxdev-2.9.1-sha-793fddbbba933bb8b9cd5327581d75e201d976cb
     depends_on:
       - msa_es
     deploy:
