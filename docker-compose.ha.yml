@@ -98,7 +98,7 @@ services:
       test:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
-    image: openmsa/openmsa:msa2-api-2.9.1-sha-96115553f35736ac5a4c83b9e801a9bdbfd1035e
+    image: openmsa/openmsa:msa2-api-2.9.1-sha-2378fa24d11123868fc5a5eeea33fa7ff0aa2123
     logging:
       <<: *logging
     networks:
@@ -334,7 +334,7 @@ services:
       test:
         - CMD-SHELL
         - curl -k --fail https://localhost
-    image: openmsa/openmsa:msa2-front-2.9.1-sha-76cc3d9c356b0364ab8a093b10ec3292edf78895
+    image: openmsa/openmsa:msa2-front-2.9.1-sha-ea4393dfd75f0220ed5347d8d6839a109bf48dc0
     logging:
       <<: *logging
     ports:
