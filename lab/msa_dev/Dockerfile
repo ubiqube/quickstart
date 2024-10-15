@@ -30,14 +30,14 @@ COPY resources/sudoers/ncuser /etc/sudoers.d/
 COPY docker-entrypoint.sh /
 EXPOSE 22
 
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.9 20 && \
-    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 20 && \
-    update-alternatives --install /usr/bin/pip pip /usr/bin/pip3.9 20 && \
-    update-alternatives --install /usr/bin/pip3 pip3 /usr/bin/pip3.9 20 && \
-    update-alternatives --set python /usr/bin/python3.9 && \
-    update-alternatives --set python3 /usr/bin/python3.9 && \
-    update-alternatives --set pip /usr/bin/pip3.9 && \
-    update-alternatives --set pip3 /usr/bin/pip3.9
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.12 20 && \
+    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 20 && \
+    update-alternatives --install /usr/bin/pip pip /usr/bin/pip3.12 20 && \
+    update-alternatives --install /usr/bin/pip3 pip3 /usr/bin/pip3.12 20 && \
+    update-alternatives --set python /usr/bin/python3.12 && \
+    update-alternatives --set python3 /usr/bin/python3.12 && \
+    update-alternatives --set pip /usr/bin/pip3.12 && \
+    update-alternatives --set pip3 /usr/bin/pip3.12
 
 USER ncuser
 ENV PYTHONPATH /opt/fmc_repository/Process/PythonReference/
