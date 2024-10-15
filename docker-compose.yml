@@ -566,8 +566,8 @@ services:
       test:
         - CMD-SHELL
         - test -f /usr/bin/install_libraries.sh || echo false
-    #image: ubiqube/msa2-linuxdev:sha-793fddbbba933bb8b9cd5327581d75e201d976cb
-    build: ./lab/msa_dev
+    image: ubiqube/msa2-linuxdev:sha-793fddbbba933bb8b9cd5327581d75e201d976cb
+    #build: ./lab/msa_dev
     logging:
       <<: *logging
     networks:
