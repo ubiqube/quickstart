@@ -21,16 +21,15 @@ if [ $? -ne 0 ]; then
     echo "\nERROR: API unavailable"
     exit 1
 fi
-#RESPONSE=`curl -s -H 'Content-Type: application/json' -XPOST http://msa-api:8480/ubi-api-rest/auth/token -d '{"username":"ncroot", "password":"ubiqube" }'`
 
-RESPONSE=`curl -k --location 'http://msa-auth:8080/auth/realms/main/protocol/openid-connect/token' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'grant_type=password' --data-urlencode 'username=ncroot' --data-urlencode 'password=ubiqube' --data-urlencode 'client_id=utilisateurs'`
+RESPONSE=`curl -k --location 'http://msa-auth:8080/auth/realms/msa/protocol/openid-connect/token' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'grant_type=password' --data-urlencode 'username=ncroot' --data-urlencode 'password=ubiqube' --data-urlencode 'client_id=msa-ui'`
 
 if [ -z "$RESPONSE" ]
 then
       echo "Authentication API error"
       exit 1
 fi
-TOKEN=$(php -r 'echo json_decode($argv[1])->access_token;' "$RESPONSE")
+TOKEN=$(echo $RESPONSE | jq -r '.access_token')
 echo "-------------------------------------------------------"
 echo "CREATE $OPERATOR TENANT AND CUSTOMER Tyrell Corporation"
 echo "-------------------------------------------------------"

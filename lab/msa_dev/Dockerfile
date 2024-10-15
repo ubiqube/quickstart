@@ -10,6 +10,7 @@ RUN groupadd -r ncuser -g 1000 && useradd -r -u 1000 -g ncuser -m -c "ncuser" nc
 RUN yum -y install \
     php-cli openssh-server git sudo iproute nano wget unzip coreutils-common \
     python3.12 python3.12-pip python3.12-setuptools bash-completion php-json && \
+    python3.9 python3.9-pip python3.9-setuptools && \
     yum -y upgrade git && \
     yum update -y && \
     yum clean all && \
@@ -29,14 +30,14 @@ COPY resources/sudoers/ncuser /etc/sudoers.d/
 COPY docker-entrypoint.sh /
 EXPOSE 22
 
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.12 20 && \
-    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 20 && \
-    update-alternatives --install /usr/bin/pip pip /usr/bin/pip3.12 20 && \
-    update-alternatives --install /usr/bin/pip3 pip3 /usr/bin/pip3.12 20 && \
-    update-alternatives --set python /usr/bin/python3.12 && \
-    update-alternatives --set python3 /usr/bin/python3.12 && \
-    update-alternatives --set pip /usr/bin/pip3.12 && \
-    update-alternatives --set pip3 /usr/bin/pip3.12
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.9 20 && \
+    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 20 && \
+    update-alternatives --install /usr/bin/pip pip /usr/bin/pip3.9 20 && \
+    update-alternatives --install /usr/bin/pip3 pip3 /usr/bin/pip3.9 20 && \
+    update-alternatives --set python /usr/bin/python3.9 && \
+    update-alternatives --set python3 /usr/bin/python3.9 && \
+    update-alternatives --set pip /usr/bin/pip3.9 && \
+    update-alternatives --set pip3 /usr/bin/pip3.9
 
 USER ncuser
 ENV PYTHONPATH /opt/fmc_repository/Process/PythonReference/
