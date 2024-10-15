@@ -10,7 +10,6 @@ RUN groupadd -r ncuser -g 1000 && useradd -r -u 1000 -g ncuser -m -c "ncuser" nc
 RUN yum -y install \
     php-cli openssh-server git sudo iproute nano wget unzip coreutils-common \
     python3.12 python3.12-pip python3.12-setuptools bash-completion php-json && \
-    python3.9 python3.9-pip python3.9-setuptools && \
     yum -y upgrade git && \
     yum update -y && \
     yum clean all && \
