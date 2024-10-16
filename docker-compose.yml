@@ -96,7 +96,7 @@ services:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
       timeout: 5s
-    image: openmsa/openmsa:msa2-alarm-2.9.1-sha-11d5b5fe807c876674f8f82e877f365d3abd7536
+    image: openmsa/openmsa:msa2-alarm-2.9.1-sha-029276dc72def6b1ea65904e602641da69e2f546
     logging:
       <<: *logging
     networks:
@@ -183,7 +183,7 @@ services:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
       timeout: 5s
-    image: openmsa/openmsa:msa2-bud-2.9.1-sha-11db7f0c031120d0909aea35b8803e622ce7d89b
+    image: openmsa/openmsa:msa2-bud-2.9.1-sha-8e5656b8c8968e6f6bc8d499a66082cbfb1fea59
     logging:
       <<: *logging
     networks:
@@ -353,7 +353,7 @@ services:
       test:
         - CMD-SHELL
         - curl -k --fail https://localhost
-    image: openmsa/openmsa:msa2-front-2.9.1-sha-ea4393dfd75f0220ed5347d8d6839a109bf48dc0
+    image: openmsa/openmsa:msa2-front-2.9.1-sha-0d8b8a61ebb5c83d1b9b87fe4e380c0bda2062fc
     logging:
       <<: *logging
     networks:
@@ -438,7 +438,7 @@ services:
       test:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
-    image: openmsa/openmsa:msa2-monitoring-2.9.1-sha-0dbdc8cab78e19ef477c4048b03f2f860930845b
+    image: openmsa/openmsa:msa2-monitoring-2.9.1-sha-b5054bf89e55f3e065db4a0b66784da3a827924d
     logging:
       <<: *logging
     networks:
@@ -475,7 +475,7 @@ services:
       test:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
-    image: openmsa/openmsa:msa2-parse-2.9.1-sha-73fd7b6efac37c778dfe5dbc070059127cb4abe0
+    image: openmsa/openmsa:msa2-parse-2.9.1-sha-9beb01d1f84dd085e347cb9714dbcaddad791974
     logging:
       <<: *logging
     networks:
@@ -539,7 +539,7 @@ services:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
       timeout: 5s
-    image: openmsa/openmsa:msa2-sms-2.9.1-sha-3d4fa2877dd6f1d926b038ca06c6149ffd4d319c
+    image: openmsa/openmsa:msa2-sms-2.9.1-sha-eaf48e66d7a86cfc4a26079033bccce09a90e362
     logging:
       <<: *logging
     networks:
@@ -588,7 +588,7 @@ services:
       test:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
-    image: openmsa/openmsa:msa2-snmptrap-2.9.1-sha-00e14efd02a712128eeaaf69baba9f0393761961
+    image: openmsa/openmsa:msa2-snmptrap-2.9.1-sha-942e1c4b7a65648ee8d28b4424fd3e3fdee6f8d5
     logging:
       <<: *logging
     networks:
@@ -635,7 +635,7 @@ services:
       test:
         - CMD-SHELL
         - curl --fail http://localhost:8080
-    image: openmsa/openmsa:msa2-ui-2.9.1-1cc331ed7adda8a53cde9d0f99a9aae14e920c59
+    image: openmsa/openmsa:msa2-ui-2.9.1-73236bfbb2c39debed56ed1a55045b48f9373bde
     logging:
       <<: *logging
     networks:
