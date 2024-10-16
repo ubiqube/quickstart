@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/msa_version/index.html
-    image: ubiqube/msa2-front:sha-28f268618e027eddbe53118bcdf49220ab6c0edf
+    image: ubiqube/msa2-front:sha-30d1bfe2ed977e05382275cb815ba17a0b8cabda
     logging:
       <<: *logging
     networks:
@@ -176,7 +176,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:82d00ddbb1f3360ca1c6ebb10e871e19d75e231c
+    image: ubiqube/msa2-ui:73236bfbb2c39debed56ed1a55045b48f9373bde
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -212,7 +212,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:sha-3d4fa2877dd6f1d926b038ca06c6149ffd4d319c
+    image: ubiqube/msa2-sms:sha-eaf48e66d7a86cfc4a26079033bccce09a90e362
     healthcheck:
       timeout: 5s
       retries: 10
@@ -256,7 +256,7 @@ services:
   msa-parse:
     restart: unless-stopped
     container_name: msa_parse
-    image: ubiqube/msa2-parse:sha-73fd7b6efac37c778dfe5dbc070059127cb4abe0
+    image: ubiqube/msa2-parse:sha-9beb01d1f84dd085e347cb9714dbcaddad791974
     depends_on:
       msa-db:
         condition: service_healthy
@@ -318,7 +318,7 @@ services:
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: ubiqube/msa2-bud:sha-f5a4c6439edf1af8d61b8f50befddf1909415fc5
+    image: ubiqube/msa2-bud:sha-8e5656b8c8968e6f6bc8d499a66082cbfb1fea59
     healthcheck:
       timeout: 5s
       retries: 10
@@ -356,7 +356,7 @@ services:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
       timeout: 5s
-    image: ubiqube/msa2-alarm:sha-94ac5cf7d70b97ff5057878f29f16aeb553191c3
+    image: ubiqube/msa2-alarm:sha-029276dc72def6b1ea65904e602641da69e2f546
     logging:
       <<: *logging
     networks:
@@ -390,7 +390,7 @@ services:
       test:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
-    image: ubiqube/msa2-monitoring:sha-0dbdc8cab78e19ef477c4048b03f2f860930845b
+    image: ubiqube/msa2-monitoring:sha-b5054bf89e55f3e065db4a0b66784da3a827924d
     logging:
       <<: *logging
     networks:
