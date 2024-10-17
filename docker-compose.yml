@@ -127,7 +127,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: openmsa/openmsa:msa2-api-2.9.1-sha-2378fa24d11123868fc5a5eeea33fa7ff0aa2123
+    image: openmsa/openmsa:msa2-api-2.9.1-sha-d7a88abcba3e23dabda07bc3e9384e72fd0a870a
     logging:
       <<: *logging
     networks:
@@ -155,7 +155,7 @@ services:
       start_period: 1m
       test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8080'
       timeout: 10s
-    image: openmsa/openmsa:msa2-auth-2.9.1-sha-682c8fa153a2452c2ad56114d4281b692456921b
+    image: openmsa/openmsa:msa2-auth-2.9.1-sha-9357e54100f8cd8513a2623f9cd76ff5bd31ef0d
   msa-broker:
     container_name: msa_broker
     environment:
@@ -271,7 +271,7 @@ services:
         - CMD-SHELL
         - /usr/pgsql-12/bin/pg_isready -h localhost
       timeout: 20s
-    image: openmsa/openmsa:msa2-db-2.9.1-sha-464da33fdab006c857b2c953f75ec6a12c9cb3fc
+    image: openmsa/openmsa:msa2-db-2.9.1-sha-a48707039d0725f5ebb8590d550223418ca68a31
     logging:
       <<: *logging
     networks:
@@ -353,7 +353,7 @@ services:
       test:
         - CMD-SHELL
         - curl -k --fail https://localhost
-    image: openmsa/openmsa:msa2-front-2.9.1-sha-0d8b8a61ebb5c83d1b9b87fe4e380c0bda2062fc
+    image: openmsa/openmsa:msa2-front-2.9.1-sha-7832b330e50caccdb99604635121f1fa74c20e95
     logging:
       <<: *logging
     networks:
@@ -391,7 +391,7 @@ services:
       ELASTICSEARCH_URL: http://msa-es:9200
     healthcheck:
       test: curl -k --fail http://localhost:5601/kibana/
-    image: openmsa/openmsa:msa2-kibana-2.9.1-sha-fbe20e11564c106b789983b24900186acfe81036
+    image: openmsa/openmsa:msa2-kibana-2.9.1-sha-0a6732f70ec5fc952481763f3762616a64524c80
     logging:
       <<: *logging
     networks:
@@ -635,7 +635,7 @@ services:
       test:
         - CMD-SHELL
         - curl --fail http://localhost:8080
-    image: openmsa/openmsa:msa2-ui-2.9.1-73236bfbb2c39debed56ed1a55045b48f9373bde
+    image: openmsa/openmsa:msa2-ui-2.9.1-c8f02ccdf10dbaa83646ed9494bab96e7b1ddab2
     logging:
       <<: *logging
     networks:
