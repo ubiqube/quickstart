@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/msa_version/index.html
-    image: ubiqube/msa2-front:sha-ab5322d38e66213c8b43b7b1f78736f131903e8a
+    image: ubiqube/msa2-front:sha-9b473f5d7ca5aa9ea59bd98aab9ba0fd90026ee8
     logging:
       <<: *logging
     networks:
@@ -157,7 +157,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:sha-0290d86fbc8e28766a86a08902585f499b043a9f
+    image: ubiqube/msa2-api:sha-7c5ba6311d01adfbf962a45378ea5aeac753ff31
     logging:
       <<: *logging
     networks:
@@ -176,7 +176,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:c8f02ccdf10dbaa83646ed9494bab96e7b1ddab2
+    image: ubiqube/msa2-ui:a8cf4dda76c27c08d43febdf5bc63ccec5517d56
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -412,7 +412,7 @@ services:
     depends_on:
       msa-broker:
         condition: service_started
-    image: ubiqube/msa2-rsyslog:sha-a197212ba58e60726fc5ca2f493c1045acd0c47e
+    image: ubiqube/msa2-rsyslog:sha-4df2a98238333312b88cf4ad96167e64f1937d00
     environment:
       # ACTIONTYPE: omudpspoof or omkafka
       # configure a specific port for TLS. Default is 6514
