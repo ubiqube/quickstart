@@ -51,3 +51,19 @@ services:
   msa-sms:
     environment:
       - UBIQUBE_INSTALL_AWS_CLI=true
+  cloudclapp-wf:
+    depends_on:
+      - msa-dev
+    image: ubiqube/msa2-ccla-wf-installer:sha-59ec9856a041fe7f9c1c6e9e5437f85191968094
+    logging:
+      <<: *logging
+    networks:
+      default:
+        aliases:
+          - msa_dev
+    restart: unless-stopped
+    volumes:
+      - msa_repository:/opt/fmc_repository
+      - msa_dev:/opt/devops/
+
+  
