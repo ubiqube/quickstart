@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/msa_version/index.html
-    image: ubiqube/msa2-front:sha-9b473f5d7ca5aa9ea59bd98aab9ba0fd90026ee8
+    image: ubiqube/msa2-front:sha-672da8a32e510c018b690f6545ffa3162335d39d
     logging:
       <<: *logging
     networks:
@@ -529,8 +529,8 @@ services:
       BASIC_AUTH_USER: cerebro
     healthcheck:
       test: curl --fail http://localhost:9000/
-    image: ubiqube/msa2-cerebro:sha-3438b6a723d22d15afbd877dead9820c6adac735
-    logging:
+      image: ubiqube/msa2-cerebro:sha-1c7e161ebd49a002fbbf819ec68c9ec55b1f9075
+      logging:
       <<: *logging
     networks:
       default:
