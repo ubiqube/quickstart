@@ -529,8 +529,8 @@ services:
       BASIC_AUTH_USER: cerebro
     healthcheck:
       test: curl --fail http://localhost:9000/
-      image: ubiqube/msa2-cerebro:sha-1c7e161ebd49a002fbbf819ec68c9ec55b1f9075
-      logging:
+    image: ubiqube/msa2-cerebro:sha-1c7e161ebd49a002fbbf819ec68c9ec55b1f9075
+    logging:
       <<: *logging
     networks:
       default:
