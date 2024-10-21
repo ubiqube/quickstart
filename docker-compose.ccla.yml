@@ -1,3 +1,11 @@
+x-logging: &logging
+  driver: json-file
+  options:
+    max-buffer-size: 4m
+    max-file: "5"
+    max-size: 10m
+    mode: non-blocking
+
 services:
   ccla-scan-app:
     environment:
