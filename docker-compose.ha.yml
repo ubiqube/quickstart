@@ -47,7 +47,7 @@ x-healthcheck: &healthcheck
 
 services:
   msa-front:
-    image: openmsa/openmsa:msa2-front-2.8.13.1-9b3c7afe5673bda9e117ebac711e2dae2f7cfbaf
+    image: ubiqube/msa2-front:sha-6c40513a0f93e23d1d03247fb59f2a56a7229222
     depends_on:
       - msa-api
       - msa-ui
@@ -433,7 +433,7 @@ services:
   msa-broker:
     depends_on:
       - db
-    image: openmsa/openmsa:msa2-broker-2.8.13.1-a637ce7b1d31f9da37a22b0fdaad954dcdf0870e
+    image: docker.io/ubiqube/msa2-broker:sha-c7b473f778eb2cb1d5f5a6496e6064ed0bdec0a8
     healthcheck:
       <<: *healthcheck
     deploy:
@@ -441,6 +441,7 @@ services:
     environment:
       ARTEMIS_PASSWORD: simetraehcapa
       ARTEMIS_USER: artemis
+      EXTRA_ARGS: --http-host 0.0.0.0 --relax-jolokia --clustered --addresses core-engine.syslog:anycast,core-engine.monitoring:anycast --queues core-engine.syslog:anycast,core-engine.monitoring:anycast
     logging:
       <<: *logging
     volumes:
