@@ -103,7 +103,7 @@ services:
         - CMD-SHELL
         - /usr/pgsql-12/bin/pg_isready -h localhost
       timeout: 20s
-    image: ubiqube/msa2-db:sha-a48707039d0725f5ebb8590d550223418ca68a31
+    image: ubiqube/msa2-db:sha-702330b1fdba4cc2e5cb61fffd123d7c9d2f4095
     logging:
       <<: *logging
     networks:
@@ -157,7 +157,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:sha-e7b2a18d668a60077f48e0d6753d02a7488a4d02
+    image: ubiqube/msa2-api:sha-8ac8fe67fcd16a680d62ddfeb50aa5d06930b46f
     logging:
       <<: *logging
     networks:
