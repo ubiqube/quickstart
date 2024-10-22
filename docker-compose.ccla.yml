@@ -38,7 +38,7 @@ services:
       test:
         - CMD-SHELL
         - curl --fail http://localhost:8080
-    image: ubiqube/cloudclapp:a8cf4dda76c27c08d43febdf5bc63ccec5517d56
+    image: ubiqube/cloudclapp:bc4995cc16cdad2be3b5dc2473fed0bb170b422d
   key-vault:
     cap_add:
       - IPC_LOCK
@@ -62,14 +62,13 @@ services:
   cloudclapp-wf:
     depends_on:
       - msa-dev
-    image: ubiqube/msa2-ccla-wf-installer:sha-59ec9856a041fe7f9c1c6e9e5437f85191968094
+    image: ubiqube/msa2-ccla-wf-installer:sha-2adaf72fc5f95dc9d346fb651850a99f24ed9b0c
     logging:
       <<: *logging
     networks:
       default:
         aliases:
           - msa_dev
-    restart: unless-stopped
     volumes:
       - msa_repository:/opt/fmc_repository
       - msa_dev:/opt/devops/
