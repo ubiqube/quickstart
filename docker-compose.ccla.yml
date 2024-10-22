@@ -5,7 +5,6 @@ x-logging: &logging
     max-file: "5"
     max-size: 10m
     mode: non-blocking
-
 services:
   ccla-scan-app:
     environment:
@@ -39,6 +38,19 @@ services:
         - CMD-SHELL
         - curl --fail http://localhost:8080
     image: ubiqube/cloudclapp:bc4995cc16cdad2be3b5dc2473fed0bb170b422d
+  cloudclapp-wf:
+    depends_on:
+      - msa-dev
+    image: ubiqube/msa2-ccla-wf-installer:sha-dfe09c65e0bcd19e3e45a9c4f440edb71ff56d24
+    logging:
+      <<: *logging
+    networks:
+      default:
+        aliases:
+          - msa_dev
+    volumes:
+      - msa_repository:/opt/fmc_repository
+      - msa_dev:/opt/devops/
   key-vault:
     cap_add:
       - IPC_LOCK
@@ -59,18 +71,3 @@ services:
   msa-sms:
     environment:
       - UBIQUBE_INSTALL_AWS_CLI=true
-  cloudclapp-wf:
-    depends_on:
-      - msa-dev
-    image: ubiqube/msa2-ccla-wf-installer:sha-2adaf72fc5f95dc9d346fb651850a99f24ed9b0c
-    logging:
-      <<: *logging
-    networks:
-      default:
-        aliases:
-          - msa_dev
-    volumes:
-      - msa_repository:/opt/fmc_repository
-      - msa_dev:/opt/devops/
-
-  
