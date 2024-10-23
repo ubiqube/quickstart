@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/msa_version/index.html
-    image: ubiqube/msa2-front:sha-6c40513a0f93e23d1d03247fb59f2a56a7229222
+    image: ubiqube/msa2-front:sha-0a8347369e86260ec803b9bb66692e8cd022e8b2
     logging:
       <<: *logging
     networks:
@@ -157,7 +157,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:sha-8ac8fe67fcd16a680d62ddfeb50aa5d06930b46f
+    image: ubiqube/msa2-api:sha-c9cabebf9512a216d21cd5467156ab5adcf9521b
     logging:
       <<: *logging
     networks:
@@ -176,7 +176,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:bc4995cc16cdad2be3b5dc2473fed0bb170b422d
+    image: ubiqube/msa2-ui:251f3bf3b3416ddbb1a130ffbb061b728125fc25
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
