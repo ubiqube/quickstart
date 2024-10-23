@@ -103,7 +103,7 @@ services:
         - CMD-SHELL
         - /usr/pgsql-12/bin/pg_isready -h localhost
       timeout: 20s
-    image: ubiqube/msa2-db:sha-702330b1fdba4cc2e5cb61fffd123d7c9d2f4095
+    image: ubiqube/msa2-db:sha-b42eaee5e66739502bb9f3800d651bb28b3ee3f1
     logging:
       <<: *logging
     networks:
