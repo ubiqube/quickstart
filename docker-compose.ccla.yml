@@ -37,11 +37,11 @@ services:
       test:
         - CMD-SHELL
         - curl --fail http://localhost:8080
-    image: ubiqube/cloudclapp:251f3bf3b3416ddbb1a130ffbb061b728125fc25
+    image: ubiqube/cloudclapp:a92315e3cbb619657795341441ac0c7e4de9bc6d
   cloudclapp-wf:
     depends_on:
       - msa-dev
-    image: ubiqube/msa2-ccla-wf-installer:sha-47cfaf8c3d0d5105f6298599442d5badee2028e4
+    image: ubiqube/msa2-ccla-wf-installer:sha-fe7d3485014c985d0bff5dc4c5f28609085c8964
     logging:
       <<: *logging
     networks:
