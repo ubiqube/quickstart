@@ -474,7 +474,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-camunda:sha-87395dda76e592016374c93b0cb65940f3e5d803
+    image: ubiqube/msa2-camunda:sha-cd2632afdb3be3a38f68cf717347532a61e434e5
     logging:
       <<: *logging
     networks:
