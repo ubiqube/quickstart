@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/msa_version/index.html
-    image: ubiqube/msa2-front:sha-42b820fc20e2b308c192d25bb5e804f9fb1fd3c2
+    image: ubiqube/msa2-front:sha-cc5a4d0fbae3a59ad4e6277709f8727fbd2791b8
     logging:
       <<: *logging
     networks:
@@ -529,7 +529,7 @@ services:
       BASIC_AUTH_USER: cerebro
     healthcheck:
       test: curl --fail http://localhost:9000/
-    image: ubiqube/msa2-cerebro:sha-1c7e161ebd49a002fbbf819ec68c9ec55b1f9075
+    image: ubiqube/msa2-cerebro:sha-a32df159e4cbf22a5fb862239157d0238f496a40
     logging:
       <<: *logging
     networks:
@@ -595,7 +595,7 @@ services:
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
     #image: ubiqube/msa2-linuxme:cc4357bc05c6502c7d2ceb7d3c6b090e24a8411e
-    image: ubiqube/msa2-linuxme:sha-afc771d7314571a6fca8a2cbab9c2cfb3179f84c
+    image: ubiqube/msa2-linuxme:sha-abebaa1367d8186067268acb6e4355e107e77e8d
     cap_add:
       - NET_ADMIN
       - NET_RAW
@@ -619,7 +619,7 @@ services:
   msa-linux-me-2:
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: ubiqube/msa2-linuxme:sha-afc771d7314571a6fca8a2cbab9c2cfb3179f84c
+    image: ubiqube/msa2-linuxme:sha-abebaa1367d8186067268acb6e4355e107e77e8d
     build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
