@@ -390,7 +390,7 @@ services:
       test:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
-    image: ubiqube/msa2-monitoring:sha-b5054bf89e55f3e065db4a0b66784da3a827924d
+    image: ubiqube/msa2-monitoring:sha-8cc42aa491c598a75d81bf7fbadee07f478dc2ad
     logging:
       <<: *logging
     networks:
