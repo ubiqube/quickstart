@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/msa_version/index.html
-    image: ubiqube/msa2-front:sha-a495d3fb054ee192634bb5cc59ffabf740424578
+    image: ubiqube/msa2-front:sha-2044e541de53522a5c14bc7c91b5380a837d3537
     logging:
       <<: *logging
     networks:
@@ -176,7 +176,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:ae9e2f267844c2462bda2d3a126e218ab854e9d3
+    image: ubiqube/msa2-ui:661f5eda4a6826073021a4b217d2d9ae835478c3
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
