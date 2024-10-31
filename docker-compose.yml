@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/msa_version/index.html
-    image: ubiqube/msa2-front:sha-f246f8a10eeb24e956fcb0316376fb5815277377
+    image: ubiqube/msa2-front:sha-3b634395bc641df36feb841dd644522c908d93e6
     logging:
       <<: *logging
     networks:
@@ -103,7 +103,7 @@ services:
         - CMD-SHELL
         - /usr/pgsql-12/bin/pg_isready -h localhost
       timeout: 20s
-    image: ubiqube/msa2-db:sha-27a36ef2413a498cd4aff8a482e0ee22eb59f6da
+    image: ubiqube/msa2-db:sha-0d05a8d3fcdf5fddc7436ab040bfc01409398e58
     logging:
       <<: *logging
     networks:
@@ -157,7 +157,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:sha-7933017909e80449979bcecaca68dfae47fa0247
+    image: ubiqube/msa2-api:sha-7523f2feb107d1c30dbf04e17c8e1396a24fd950
     logging:
       <<: *logging
     networks:
@@ -499,7 +499,7 @@ services:
         - CMD-SHELL
         - 'test -f /home/install/init-done && curl -s -XGET -H ''Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=''  ''http://localhost:9200/_cluster/health?pretty'' | grep -q ''status.*green'' || exit 1'
       timeout: 2s
-    image: ubiqube/msa2-es:sha-a8b546208942b3c3057e60494575538678a4968d
+    image: ubiqube/msa2-es:sha-d75d18f7eab3650683ed9223f988d6aa61bbb13c
     logging:
       <<: *logging
     networks:
