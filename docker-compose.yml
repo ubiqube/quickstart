@@ -35,7 +35,7 @@ services:
       start_period: 1m
       test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8080'
       timeout: 10s
-    image: ubiqube/msa2-auth:sha-05d573b53dbb765dd69e0089849c117a43283478
+    image: ubiqube/msa2-auth:sha-40f042324f706446f8c404e0ff3a24f61a71a697
     restart: unless-stopped
 
   msa-front:
@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/msa_version/index.html
-    image: ubiqube/msa2-front:sha-3b634395bc641df36feb841dd644522c908d93e6
+    image: ubiqube/msa2-front:sha-cb9749880abd54538c0ff0a8eb9a1d57108c85d0
     logging:
       <<: *logging
     networks:
@@ -124,7 +124,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh mongodb://${DB_USER:-msaUser}:${DB_PASSWORD:-ubiqube38}@localhost:${DB_PORT:-27017}/${DB_NAME:-msa} --quiet
-    image: ubiqube/msa2-mongodb:sha-90b2c29c1e13bc7b82cfadb00cba97ac856fd642
+    image: ubiqube/msa2-mongodb:sha-f33851aaabb6ceb4aee434849fbdbebd78ec5383
     ports:
       - 27017:27017
     restart: unless-stopped
@@ -157,7 +157,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:sha-7523f2feb107d1c30dbf04e17c8e1396a24fd950
+    image: ubiqube/msa2-api:sha-06dd4c997233af90eabf411d317d5ffdc23b27ce
     logging:
       <<: *logging
     networks:
@@ -175,39 +175,30 @@ services:
 
   msa-ui:
     restart: unless-stopped
-    container_name: msa_ui
-    image: ubiqube/msa2-ui:661f5eda4a6826073021a4b217d2d9ae835478c3
-    healthcheck:
-      test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
       msa-api:
         condition: service_started
     environment:
-    - FEATURE_ADMIN=true
-    - FEATURE_REPOSITORY=true
-    - FEATURE_CONNECTION_STATUS=true
-    - FEATURE_ALARMS=true
-    - FEATURE_LICENCE=true
-    - FEATURE_TOPOLOGY=true
-    - FEATURE_MONITORING_PROFILES=true
-    - FEATURE_PROFILE_AUDIT_LOGS=true
-    - FEATURE_PERMISSION_PROFILES=true
-    - FEATURE_AI_ML=false
-    - FEATURE_MICROSERVICE_BULK_OPERATION=false
-    - FEATURE_EDIT_VARIABLES_IN_MICROSERVICE_CONSOLE=true
-    - FEATURE_WORKFLOW_OWNER=false
-    - FEATURE_PERMISSION_PROFILE_LABELS=false
-    - FEATURE_BPM=true
-    - UBIQUBE_ES_SECURITY_DISABLED=true
-    - FEATURE_IMPORT_WITH_SAME_AND_UPPERRANK=true
-    - FEATURE_REPOFOLDERLIST=[\"Datafiles\"]
-    - FEATURE_ALARM_TROUBLE_TICKET=true
+      - FEATURE_AI_ML=false
+      - FEATURE_MICROSERVICE_BULK_OPERATION=false
+      - FEATURE_EDIT_VARIABLES_IN_MICROSERVICE_CONSOLE=true
+      - FEATURE_WORKFLOW_OWNER=false
+      - FEATURE_PERMISSION_PROFILE_LABELS=false
+      - FEATURE_BPM=true
+      - UBIQUBE_ES_SECURITY_DISABLED=true
+      - FEATURE_IMPORT_WITH_SAME_AND_UPPERRANK=true
+      - FEATURE_REPOFOLDERLIST=[\"Datafiles\", \"Shared\"]
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl --fail http://localhost:8080
+    image: ubiqube/msa2-ui:1e690cf90d5401af70b8ec710e307845c7e3cbb7
     logging:
       <<: *logging
     networks:
       default:
         aliases:
-          - "msa_ui"
+          - msa_ui
 
   msa-sms:
     restart: unless-stopped
@@ -474,7 +465,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-camunda:sha-e248557d142d55fff0686d1f2261ecb48de1c543
+    image: ubiqube/msa2-camunda:sha-5a0eaa8b0e7ee7e3326ed5489cb8ee6c7122913a
     logging:
       <<: *logging
     networks:
@@ -495,11 +486,10 @@ services:
       interval: 10s
       retries: 30
       start_period: 45s
-      test:
-        - CMD-SHELL
-        - 'test -f /home/install/init-done && curl -s -XGET -H ''Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=''  ''http://localhost:9200/_cluster/health?pretty'' | grep -q ''status.*green'' || exit 1'
+      test: >
+        curl -s -H "Authorization: Basic $${ES_CREDENTIALS}" 'http://localhost:9200/_cluster/health?pretty' |jq -e '.status == "green"'
       timeout: 2s
-    image: ubiqube/msa2-es:sha-d75d18f7eab3650683ed9223f988d6aa61bbb13c
+    image: ubiqube/msa2-es:sha-66b0ea792d9b15beb54b5d8db30a3b5b7fb92305
     logging:
       <<: *logging
     networks:
@@ -550,7 +540,7 @@ services:
       ELASTICSEARCH_URL: http://msa-es:9200
     healthcheck:
       test: curl -k --fail http://localhost:5601/kibana/
-    image: ubiqube/msa2-kibana:sha-0a6732f70ec5fc952481763f3762616a64524c80
+    image: ubiqube/msa2-kibana:sha-be16c1f499c31f9323642a4c8e3367b8ceeb3913
     logging:
       <<: *logging
     networks:
