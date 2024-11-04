@@ -180,6 +180,7 @@ services:
         condition: service_started
     environment:
       - FEATURE_LICENCE=true
+      - FEATURE_ALARMS=true
       - FEATURE_AI_ML=false
       - FEATURE_MICROSERVICE_BULK_OPERATION=false
       - FEATURE_EDIT_VARIABLES_IN_MICROSERVICE_CONSOLE=true
