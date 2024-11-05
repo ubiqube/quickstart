@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/msa_version/index.html
-    image: ubiqube/msa2-front:sha-780b457372c8b46cbf5d2abcb14b77419099280a
+    image: ubiqube/msa2-front:sha-d50065937c0cd4c6b53901a83e59f9a3461ea9cd
     logging:
       <<: *logging
     networks:
@@ -195,7 +195,7 @@ services:
       test:
         - CMD-SHELL
         - curl --fail http://localhost:8080
-    image: ubiqube/msa2-ui:1e690cf90d5401af70b8ec710e307845c7e3cbb7
+    image: ubiqube/msa2-ui:872aca86af3fd7adcca8c97da4b5ea1ffd62b3b3
     logging:
       <<: *logging
     networks:
@@ -440,7 +440,7 @@ services:
       EXTRA_ARGS: --http-host 0.0.0.0 --relax-jolokia --clustered --addresses core-engine.syslog:anycast,core-engine.monitoring:anycast --queues core-engine.syslog:anycast,core-engine.monitoring:anycast
     healthcheck:
       test: ./bin/artemis check node --user=$${ARTEMIS_USER} --password=$${ARTEMIS_PASSWORD} --silent &>/dev/null
-    image: docker.io/ubiqube/msa2-broker:sha-c7b473f778eb2cb1d5f5a6496e6064ed0bdec0a8
+    image: docker.io/ubiqube/msa2-broker:sha-edd81898c2926c50bad33fbb148a0a4fe27fbf82
     logging:
       <<: *logging
     restart: unless-stopped
