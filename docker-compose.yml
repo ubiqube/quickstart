@@ -179,6 +179,7 @@ services:
       msa-api:
         condition: service_started
     environment:
+      - FEATURE_ADMIN=true
       - FEATURE_LICENCE=true
       - FEATURE_ALARMS=true
       - FEATURE_AI_ML=false
