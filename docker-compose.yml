@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/msa_version/index.html
-    image: ubiqube/msa2-front:sha-68f0188a5af9a05a5327a859800ae656aa91282b
+    image: ubiqube/msa2-front:sha-6f3bd40ca690decf451723f00e93668bf3058c68
     logging:
       <<: *logging
     networks:
@@ -157,7 +157,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:sha-c720e5ff5a5139abfecbc2c1f2ba8756b814fffb
+    image: ubiqube/msa2-api:sha-5babf3723a2815b65349a0b4b1ef598f3a0e4a81
     logging:
       <<: *logging
     networks:
@@ -196,7 +196,7 @@ services:
       test:
         - CMD-SHELL
         - curl --fail http://localhost:8080
-    image: ubiqube/msa2-ui:601b262065cd9db3ed30543321098b42cd9f2af9
+    image: ubiqube/msa2-ui:003b9af4fd5b08c35170e085947bc148fab880df
     logging:
       <<: *logging
     networks:
@@ -544,7 +544,7 @@ services:
       ELASTICSEARCH_URL: http://msa-es:9200
     healthcheck:
       test: curl -k --fail http://localhost:5601/kibana/
-    image: ubiqube/msa2-kibana:sha-be16c1f499c31f9323642a4c8e3367b8ceeb3913
+    image: ubiqube/msa2-kibana:sha-5022af1139b9a627f25c5380a5fdc7d0903efed0
     logging:
       <<: *logging
     networks:
