@@ -157,7 +157,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:sha-5babf3723a2815b65349a0b4b1ef598f3a0e4a81
+    image: ubiqube/msa2-api:sha-be79e4589bc277ea2e147708e0983ce143d377d6
     logging:
       <<: *logging
     networks:
@@ -441,7 +441,7 @@ services:
       EXTRA_ARGS: --http-host 0.0.0.0 --relax-jolokia --clustered --addresses core-engine.syslog:anycast,core-engine.monitoring:anycast --queues core-engine.syslog:anycast,core-engine.monitoring:anycast
     healthcheck:
       test: ./bin/artemis check node --user=$${ARTEMIS_USER} --password=$${ARTEMIS_PASSWORD} --silent &>/dev/null
-    image: docker.io/ubiqube/msa2-broker:sha-1aa1a6cb5a8751d63439cda1233a3a85d29f383e
+    image: docker.io/ubiqube/msa2-broker:sha-30d46955539d8c8352f4478f7abce8dc9c3563e3
     logging:
       <<: *logging
     restart: unless-stopped
