@@ -54,7 +54,7 @@ services:
 
   mano-auth:
     restart: unless-stopped
-    image: openmsa/mano-keycloak:25
+    image: openmsa/mano-keycloak:26
     environment:
       # Unused?
       KEYCLOAK_USER: admin
