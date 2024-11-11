@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/msa_version/index.html
-    image: ubiqube/msa2-front:sha-57f05cb84309f6e6b8b0908e490157dd526debbe
+    image: ubiqube/msa2-front:sha-bb5ce59531975a780f307365775eb4911679dfcf
     logging:
       <<: *logging
     networks:
@@ -157,7 +157,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:sha-be79e4589bc277ea2e147708e0983ce143d377d6
+    image: ubiqube/msa2-api:sha-f347a38dede5d2ac9faa663cbfe8f632e20e1540
     logging:
       <<: *logging
     networks:
@@ -207,7 +207,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:sha-eaf48e66d7a86cfc4a26079033bccce09a90e362
+    image: ubiqube/msa2-sms:sha-9643019e4c25bea2bf29bc1e9dfaca4f6ec07865
     healthcheck:
       timeout: 5s
       retries: 10
@@ -251,7 +251,7 @@ services:
   msa-parse:
     restart: unless-stopped
     container_name: msa_parse
-    image: ubiqube/msa2-parse:sha-9beb01d1f84dd085e347cb9714dbcaddad791974
+    image: ubiqube/msa2-parse:sha-9d92d343e6799d5faf3d6661431739dbb9c77ac4
     depends_on:
       msa-db:
         condition: service_healthy
@@ -281,7 +281,7 @@ services:
   msa-snmptrap:
     restart: unless-stopped
     container_name: msa_snmptrap
-    image: ubiqube/msa2-snmptrap:sha-00e14efd02a712128eeaaf69baba9f0393761961
+    image: ubiqube/msa2-snmptrap:sha-26a87d757dd5eac99c05434d788e3db040412b11
     depends_on:
       msa-db:
         condition: service_healthy
@@ -313,7 +313,7 @@ services:
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: ubiqube/msa2-bud:sha-8e5656b8c8968e6f6bc8d499a66082cbfb1fea59
+    image: ubiqube/msa2-bud:sha-e6cb0443a53df2857402f25820caa25c23d703af
     healthcheck:
       timeout: 5s
       retries: 10
@@ -351,8 +351,8 @@ services:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
       timeout: 5s
-    image: ubiqube/msa2-alarm:sha-029276dc72def6b1ea65904e602641da69e2f546
-    logging:
+      image: ubiqube/msa2-alarm:sha-26b159c37c7f3f3d838175777dd581c9445a4465
+      logging:
       <<: *logging
     networks:
       default:
@@ -385,7 +385,7 @@ services:
       test:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
-    image: ubiqube/msa2-monitoring:sha-8cc42aa491c598a75d81bf7fbadee07f478dc2ad
+    image: ubiqube/msa2-monitoring:sha-8a21f1a3cf9d24494b7e0a325391a943b8b56b97
     logging:
       <<: *logging
     networks:
@@ -407,7 +407,7 @@ services:
     depends_on:
       msa-broker:
         condition: service_started
-    image: ubiqube/msa2-rsyslog:sha-4df2a98238333312b88cf4ad96167e64f1937d00
+    image: ubiqube/msa2-rsyslog:sha-759b07723dd547c4a417e4ff307506e20fe6c0c5
     environment:
       # ACTIONTYPE: omudpspoof or omkafka
       # configure a specific port for TLS. Default is 6514
@@ -658,7 +658,7 @@ services:
       UBI_ES_RETENTION_ALARM_INDEX_NAME: ubialarm*
       UBI_ES_RETENTION_AUDIT_INDEX_NAME: ubiaudit*
       UBI_ES_RETENTION_INDEX_NAME: ubilogs*
-    image: ubiqube/msa2-es-ilm:sha-6071ae10ede7a06b1982210b7da962ac862586bb
+    image: ubiqube/msa2-es-ilm:sha-2777d1a9344556b550d3d011c2735b88eb36b744
     networks:
       default:
         aliases:
