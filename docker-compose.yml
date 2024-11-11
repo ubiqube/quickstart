@@ -351,8 +351,8 @@ services:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
       timeout: 5s
-      image: ubiqube/msa2-alarm:sha-26b159c37c7f3f3d838175777dd581c9445a4465
-      logging:
+    image: ubiqube/msa2-alarm:sha-26b159c37c7f3f3d838175777dd581c9445a4465
+    logging:
       <<: *logging
     networks:
       default:
