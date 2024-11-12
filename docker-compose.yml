@@ -644,7 +644,7 @@ services:
     environment:
       <<: *es-configuration
       ELASTICSEARCH_URL: msa_es:9200
-      UBI_ES_ALARM_INDEX_MULTIPLE_TTL: '*|30d'
+      UBI_ES_ALARM_INDEX_MULTIPLE_TTL: '*|90d'
       UBI_ES_AUDIT_INDEX_MULTIPLE_TTL: '*|30d'
       UBI_ES_CACHE_INDEX_DEFAULT_TTL: 1w
       UBI_ES_DELETE_SCROLL_SIZE: "4000"
