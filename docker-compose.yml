@@ -644,14 +644,14 @@ services:
     environment:
       <<: *es-configuration
       ELASTICSEARCH_URL: msa_es:9200
-      UBI_ES_ALARM_INDEX_MULTIPLE_TTL: '*|90d'
-      UBI_ES_AUDIT_INDEX_MULTIPLE_TTL: '*|90d'
+      UBI_ES_ALARM_INDEX_MULTIPLE_TTL: '*|30d'
+      UBI_ES_AUDIT_INDEX_MULTIPLE_TTL: '*|30d'
       UBI_ES_CACHE_INDEX_DEFAULT_TTL: 1w
       UBI_ES_DELETE_SCROLL_SIZE: "4000"
       UBI_ES_ILM_LOG_CRONTAB: '# */2 * * * * root php /opt/ubi-es-ilm/log_retention_management.php --verbose=3 > /proc/1/fd/1 2>&1'
       # For elasticsearch scripts /opt/ubi-es-ilm/log_retention_management.php
       # UBI_ES_INDEX_MULTIPLE_TTL:        "type:traffic|7d,type:event|30d,*|90d"
-      UBI_ES_INDEX_MULTIPLE_TTL: '*|90d'
+      UBI_ES_INDEX_MULTIPLE_TTL: '*|30d'
       UBI_ES_LOG_DETENTION_DELETE: "true"
       UBI_ES_LOG_SEARCH_INDEX_LIST: ubilogs
       UBI_ES_MAX_DOCS: ""
