@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/msa_version/index.html
-    image: ubiqube/msa2-front:sha-c06e6755840fe5b9f12b4706a5209a13b6619f1c
+    image: ubiqube/msa2-front:sha-c00564d4264ecd0815f82403ad06b997f60ea014
     logging:
       <<: *logging
     networks:
@@ -131,6 +131,17 @@ services:
     volumes:
       - msa_mongodb_data:/data/db
       - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+  msa-monitor-writer:
+    depends_on:
+      msa-broker:
+        condition: service_started
+      msa-mongodb:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -s --fail http://localhost:9099/mon-writer/actuator/health |jq -r '.status' |grep '^UP$$'
+    image: ubiqube/msa-monitor-writer:sha-4586fd9ed58cc0e894e24c86df733fea36342f81
 
 
   msa-api:
@@ -157,7 +168,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:sha-f347a38dede5d2ac9faa663cbfe8f632e20e1540
+    image: ubiqube/msa2-api:sha-1e31f4b1e279e60938291e7c7be5a498bd2751ed
     logging:
       <<: *logging
     networks:
@@ -182,21 +193,22 @@ services:
       - FEATURE_ADMIN=true
       - FEATURE_LICENCE=true
       - FEATURE_ALARMS=true
-      - FEATURE_AI_ML=false
+      - FEATURE_AI_ML=true
       - FEATURE_TOPOLOGY=true
+      - FEATURE_PROFILE_AUDIT_LOGS=true
       - FEATURE_MICROSERVICE_BULK_OPERATION=false
       - FEATURE_EDIT_VARIABLES_IN_MICROSERVICE_CONSOLE=true
       - FEATURE_WORKFLOW_OWNER=false
       - FEATURE_PERMISSION_PROFILE_LABELS=false
       - FEATURE_BPM=true
-      - UBIQUBE_ES_SECURITY_DISABLED=true
+      - UBIQUBE_ES_SECURITY_DISABLED=false
       - FEATURE_IMPORT_WITH_SAME_AND_UPPERRANK=true
       - FEATURE_REPOFOLDERLIST=[\"Datafiles\", \"Shared\"]
     healthcheck:
       test:
         - CMD-SHELL
         - curl --fail http://localhost:8080
-    image: ubiqube/msa2-ui:e095d2da6fbde5b3b2d296d61d9ae1f236d7a500
+    image: ubiqube/msa2-ui:a6b19b57bf8fbdc995611ee08ae108c59e2a7fd9
     logging:
       <<: *logging
     networks:
@@ -544,7 +556,7 @@ services:
       ELASTICSEARCH_URL: http://msa-es:9200
     healthcheck:
       test: curl -k --fail http://localhost:5601/kibana/
-    image: ubiqube/msa2-kibana:sha-5022af1139b9a627f25c5380a5fdc7d0903efed0
+    image: ubiqube/msa2-kibana:sha-a9ad85b6d82f4be1a46ce55a868c75e64715a273
     logging:
       <<: *logging
     networks:
@@ -588,7 +600,7 @@ services:
   msa-linux-me:
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: ubiqube/msa2-linuxme:sha-ef81ea45d7b6aa3c44c74fd3d2e68477fd449510
+    image: ubiqube/msa2-linuxme:sha-bf978a66bfcd1daa1a405cfb138cfabf0dd0c2cc
     cap_add:
       - NET_ADMIN
       - NET_RAW
