@@ -353,7 +353,7 @@ services:
       test:
         - CMD-SHELL
         - curl -k --fail https://localhost
-    image: openmsa/openmsa:msa2-front-3.0.0-sha-5850d1d26bf33fb49e81b28f033d8337ae1fa930
+    image: openmsa/openmsa:msa2-front-3.0.0-sha-3f366444ae519b57b4ec07a3f575a4a62a964e7a
     logging:
       <<: *logging
     networks:
@@ -425,7 +425,7 @@ services:
       test:
         - CMD-SHELL
         - curl -s --fail http://localhost:9099/mon-writer/actuator/health |jq -r '.status' |grep '^UP$$'
-    image: openmsa/openmsa:msa-monitor-writer-3.0.0-sha-4586fd9ed58cc0e894e24c86df733fea36342f81
+    image: openmsa/openmsa:msa2-monitor-writer-3.0.0-sha-4b185f99faf7dce91c9406b6025ee672fe3d97e1
   msa-monitoring:
     container_name: msa_monitoring
     depends_on:
