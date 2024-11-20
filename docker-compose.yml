@@ -97,11 +97,13 @@ services:
     container_name: msa_api
     image: openmsa/openmsa:msa2-api-2.8.13.5-545cf2204f807096b76d8e84bf9297498d08f066
     healthcheck:
-      test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
-      retries: 3
-      timeout: 5s
       interval: 10s
+      retries: 3
       start_period: 90s
+      test:
+        - CMD-SHELL
+        - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
+      timeout: 5s
     depends_on:
       db:
         condition: service_healthy
