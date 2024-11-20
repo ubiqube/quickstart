@@ -47,7 +47,11 @@ x-healthcheck: &healthcheck
 
 services:
   msa-front:
+<<<<<<< HEAD
     image: ubiqube/msa2-front:65786f3a0fa02d2df1d2c87335d7e8610a5063e2
+=======
+    image: openmsa/openmsa:msa2-front-2.8.13.5-83bea4c3771ceccfbb63afdd45b4133c9d36f03d
+>>>>>>> a461b0b7eecbcc665874927b4f16d68394bedd84
     depends_on:
       - msa-api
       - msa-ui
@@ -85,7 +89,11 @@ services:
     #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
   db:
+<<<<<<< HEAD
     image: ubiqube/msa2-db:53aa94d07a20cf7506eddfd476accbc0b4964353
+=======
+    image: openmsa/openmsa:msa2-db-2.8.13.5-a71200a187678981acd238c25ee003bace48f421
+>>>>>>> a461b0b7eecbcc665874927b4f16d68394bedd84
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
@@ -113,7 +121,11 @@ services:
       <<: *logging
 
   db-replica:
+<<<<<<< HEAD
     image: ubiqube/msa2-db:53aa94d07a20cf7506eddfd476accbc0b4964353
+=======
+    image: openmsa/openmsa:msa2-db-2.8.13.5-a71200a187678981acd238c25ee003bace48f421
+>>>>>>> a461b0b7eecbcc665874927b4f16d68394bedd84
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
@@ -139,7 +151,11 @@ services:
       <<: *logging
 
   msa-api:
+<<<<<<< HEAD
     image: ubiqube/msa2-api:69a609df1f82fda8fca1ccc95306a1870acf24ee
+=======
+    image: openmsa/openmsa:msa2-api-2.8.13.5-545cf2204f807096b76d8e84bf9297498d08f066
+>>>>>>> a461b0b7eecbcc665874927b4f16d68394bedd84
     depends_on:
       - db
     healthcheck:
@@ -165,7 +181,11 @@ services:
           - "msa_api"
 
   msa-ui:
+<<<<<<< HEAD
     image: ubiqube/msa2-ui:1bf150e98a91a5d1effc785c84e4466cd77b9606
+=======
+    image: openmsa/openmsa:msa2-ui-2.8.13.5-e15a986a49038c5be30fd2403e1b0cd19704c46d
+>>>>>>> a461b0b7eecbcc665874927b4f16d68394bedd84
     depends_on:
       - msa-api
     healthcheck:
@@ -204,7 +224,11 @@ services:
     depends_on:
       - msa-parse
       - kafka
+<<<<<<< HEAD
     image: openmsa/openmsa:msa2-rsyslog-2.8.12-ff52e9cdfb5452b114e94eb76bfb8679d380fa03
+=======
+    image: openmsa/openmsa:msa2-rsyslog-2.8.13.5-ff52e9cdfb5452b114e94eb76bfb8679d380fa03
+>>>>>>> a461b0b7eecbcc665874927b4f16d68394bedd84
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "ps -p 1 -h -o%cpu | awk '{if ($$1 > 99) exit 1; else exit 0;}'"]
@@ -234,7 +258,11 @@ services:
           - "msa_rsyslog"
 
   msa-sms:
+<<<<<<< HEAD
     image: ubiqube/msa2-sms:921ec6ca15fa0063659dbbd306c9af49fdd9bd62
+=======
+    image: openmsa/openmsa:msa2-sms-2.8.13.5-00df99c67210e54ec223e1a5fcccf1826d3d47dc
+>>>>>>> a461b0b7eecbcc665874927b4f16d68394bedd84
     depends_on:
       - db
       - msa-dev
@@ -272,7 +300,7 @@ services:
           - "msa_sms"
 
   msa-parse:
-    image: openmsa/openmsa:msa2-parse-2.8.12-a127ef8fdb97b3212b7e2d69b3e8328c5c69f589
+    image: openmsa/openmsa:msa2-parse-2.8.13.5-c7297ccaba708f23b46fee7286397853cae19bef
     depends_on:
       - db
       - kafka
@@ -298,7 +326,7 @@ services:
           - "msa_parse"
 
   msa-snmptrap:
-    image: openmsa/openmsa:msa2-snmptrap-2.8.12-426d1aaeeadaf239db554577f5f7666b206b51e9
+    image: openmsa/openmsa:msa2-snmptrap-2.8.13.5-c2ce8e8d8b1f89c0522dacdac5f381d4519c2f49
     depends_on:
       - db
       - msa-es
@@ -328,7 +356,7 @@ services:
           - "msa_snmptrap"
 
   msa-bud:
-    image: openmsa/openmsa:msa2-bud-2.8.12-1e9de820086e9182c60b7d19799daec485fc6900
+    image: openmsa/openmsa:msa2-bud-2.8.13.5-3f4510e00d30d4695007f09dddcbb38a8af2fac2
     depends_on:
       - db
     healthcheck:
@@ -353,7 +381,7 @@ services:
       - msa-es
       - msa-api
       - msa-dev
-    image: openmsa/openmsa:msa2-alarm-2.8.12-99843b2b7c2cd4c224eb9bdacc6801fefed60496
+    image: openmsa/openmsa:msa2-alarm-2.8.13.5-3d4a8540f86987c78ad4617cce12077d62f85cd0
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
@@ -379,7 +407,11 @@ services:
       - msa-es
       - msa-dev
       - msa-sms
+<<<<<<< HEAD
     image: openmsa/openmsa:msa2-monitoring-2.8.12-795304247ccead366eabb830bf6feaf70d44608f
+=======
+    image: openmsa/openmsa:msa2-monitoring-2.8.13.5-4a53269fe0fffc572809b964230bb6084de6d49a
+>>>>>>> a461b0b7eecbcc665874927b4f16d68394bedd84
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
@@ -425,6 +457,7 @@ services:
       - KAFKA_CFG_LOG_RETENTION_BYTES=2000000000
       - KAFKA_CFG_LOG_RETENTION_MS=86400000
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+      - KAFKA_CFG_MESSAGE_MAX_BYTES=1048576
     logging:
       <<: *logging
     volumes:
@@ -433,7 +466,7 @@ services:
   msa-broker:
     depends_on:
       - db
-    image: openmsa/openmsa:msa2-broker-2.8.12-4725a0b2c9a64ab0df2295ce5d76e928bed0255e
+    image: openmsa/openmsa:msa2-broker-2.8.13.5-a637ce7b1d31f9da37a22b0fdaad954dcdf0870e
     healthcheck:
       <<: *healthcheck
     deploy:
@@ -449,7 +482,7 @@ services:
   camunda:
     depends_on:
       - db
-    image: openmsa/openmsa:msa2-camunda-2.8.12-d95c1ded1750a35df6593fb5a8bcd376b4a76dd0
+    image: openmsa/openmsa:msa2-camunda-2.8.13.5-0f60a3c018c1b7dcde68259c9dadf71862373510
     healthcheck:
       <<: *healthcheck
     deploy:
@@ -466,7 +499,7 @@ services:
       <<: *logging
 
   msa-kibana:
-    image: openmsa/openmsa:msa2-kibana-2.8.12-54e81a717d1f9aa7acc372643c6966e23b8b66fe
+    image: openmsa/openmsa:msa2-kibana-2.8.13.5-54e81a717d1f9aa7acc372643c6966e23b8b66fe
     healthcheck:
       <<: *healthcheck
     deploy:
@@ -485,7 +518,7 @@ services:
           - "msa_kibana"
 
   msa-es:
-    image: openmsa/openmsa:msa2-es-2.8.12-ba6a2c71fcc016b507d6472c688b56ad1e14774e
+    image: openmsa/openmsa:msa2-es-2.8.13.5-50ac3642b0dec278fb7855f3ee092ecd59362bf6
     healthcheck:
       <<: *healthcheck
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
@@ -512,7 +545,7 @@ services:
       <<: *logging
 
   msa-cerebro:
-    image: openmsa/openmsa:msa2-cerebro-2.8.12-8374160f95e2349711204189a3bf8a385f7252b5
+    image: openmsa/openmsa:msa2-cerebro-2.8.13.5-8374160f95e2349711204189a3bf8a385f7252b5
     healthcheck:
       <<: *healthcheck
     deploy:
@@ -534,7 +567,11 @@ services:
           - "msa_cerebro"
 
   msa-dev:
+<<<<<<< HEAD
     image: ubiqube/msa2-linuxdev:19e1a777d7a454586d21218cfe26e1bbe44974cc
+=======
+    image: openmsa/openmsa:msa2-linuxdev-2.8.13.5-f03103c0845b97ec88434fdb52744aef3c54c976
+>>>>>>> a461b0b7eecbcc665874927b4f16d68394bedd84
     healthcheck:
       <<: *healthcheck
     deploy:
@@ -553,6 +590,46 @@ services:
         aliases:
           - "msa_dev"
 
+  msa2-es-ilm:
+    image: openmsa/openmsa:msa2-es-ilm-2.8.13.5-9931c196f7c08839feea13e1426fc92b953ef311
+    tty: true
+    init: true
+    deploy:
+      replicas: 0
+      placement:
+        max_replicas_per_node: 1
+    networks:
+      default:
+        aliases:
+          - "msa2_es-ilm"
+    healthcheck:
+      test: ["CMD-SHELL", "find /opt/msa2-es-ilm/log/log_retention.log -type f -mmin -10"]
+    depends_on:
+      - msa-es
+    environment:
+
+      ELASTICSEARCH_URL: "msa_es:9200"
+      #For elasticsearch scripts /opt/ubi-es-ilm/log_retention_management.php
+      #UBI_ES_INDEX_MULTIPLE_TTL:        "type:traffic|7d,type:event|30d,*|90d"
+      UBI_ES_INDEX_MULTIPLE_TTL:         "*|90d"
+      UBI_ES_AUDIT_INDEX_MULTIPLE_TTL:   "*|90d"
+      UBI_ES_LOG_SEARCH_INDEX_LIST:      "ubilogs"
+      UBI_ES_RETENTION_INDEX_NAME:       "ubilogs*"
+      UBI_ES_RETENTION_AUDIT_INDEX_NAME: "ubiaudit*"
+      UBI_ES_RETENTION_ALARM_INDEX_NAME: "ubialarm*"
+      UBI_ES_ALARM_INDEX_MULTIPLE_TTL:   "*|90d"
+      UBI_ES_CACHE_INDEX_DEFAULT_TTL:    "1w"
+      UBI_ES_DELETE_SCROLL_SIZE:         "4000"
+      UBI_ES_MAX_DOCS:                   ""
+      UBI_ES_LOG_DETENTION_DELETE:       "true"
+      UBI_ES_ILM_LOG_CRONTAB:            "*/2 * * * *  php /opt/ubi-es-ilm/log_retention_management.php --verbose=3 > /proc/1/fd/1 2>&1"
+
+      <<: *es-configuration
+
+    volumes:
+      - "/mnt/NASVolume/msa2_es-ilm:/opt/msa2-es-ilm"
+
+
 volumes:
   msa_sms_logs:
   msa_monitbulkfiles:
@@ -568,6 +645,7 @@ volumes:
   msa_es:
   msa_es_config:
   msa_api_logs: 
+  msa2_es-ilm:
 
 networks:
   default:

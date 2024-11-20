@@ -1,8 +1,8 @@
 = Quickstart
 
-This quickstart guide will help you to get started with the MSActivator(TM), which is a next generation Integrated Automation Platform. 
+This quickstart guide will help you to get started with the MSactivator(TM), which is a next generation Integrated Automation Platform. 
 
-By following this quickstart you will be able to test out the full capabilities of the MSActivator with a limited license.
+By following this quickstart you will be able to test out the full capabilities of the MSactivator with a limited license.
 
 This project is part of the link:https://ubiqube.com/wp-content/docs/latest/user-guide/quickstart.html[Quickstart] guide.
 
