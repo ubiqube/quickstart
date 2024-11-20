@@ -415,6 +415,17 @@ services:
     volumes:
       - msa_mongodb_data:/data/db
       - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+  msa-monitor-writer:
+    depends_on:
+      msa-broker:
+        condition: service_started
+      msa-mongodb:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -s --fail http://localhost:9099/mon-writer/actuator/health |jq -r '.status' |grep '^UP$$'
+    image: ubiqube/msa-monitor-writer:sha-4586fd9ed58cc0e894e24c86df733fea36342f81
   msa-monitoring:
     container_name: msa_monitoring
     depends_on:
