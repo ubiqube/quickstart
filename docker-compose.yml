@@ -35,7 +35,7 @@ services:
       start_period: 1m
       test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8080'
       timeout: 10s
-    image: ubiqube/msa2-auth:sha-cf4303a9e6b37fce9ead90c0fa66abee0337052f
+    image: ubiqube/msa2-auth:sha-1363769d5a6994e21ef96dbd2701425227afc427
     restart: unless-stopped
 
   msa-front:
@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/msa_version/index.html
-    image: ubiqube/msa2-front:sha-2911777bc3b0444d90d40e6779f4cff2bcc18046
+    image: ubiqube/msa2-front:sha-04a5e2f067cad414b7c07dc8d93d7f30af9428b3
     logging:
       <<: *logging
     networks:
@@ -103,7 +103,7 @@ services:
         - CMD-SHELL
         - /usr/pgsql-12/bin/pg_isready -h localhost
       timeout: 20s
-    image: ubiqube/msa2-db:sha-f08eeff0d7e5feb6624911776dbd8d9bc6a7152e
+    image: ubiqube/msa2-db:sha-484e170f466c5943b42a749dca0a6c5991d910e1
     logging:
       <<: *logging
     networks:
@@ -114,35 +114,6 @@ services:
     shm_size: 1g
     volumes:
       - msa_db:/pgsqldata/pgsql
-
-  msa-mongodb:
-    env_file:
-      - .env
-    #      ccla must match user created in mongo-init.js
-    environment:
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-my_db_password}
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
-    healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh mongodb://${DB_USER:-msaUser}:${DB_PASSWORD:-ubiqube38}@localhost:${DB_PORT:-27017}/${DB_NAME:-msa} --quiet
-    image: ubiqube/msa2-mongodb:sha-f33851aaabb6ceb4aee434849fbdbebd78ec5383
-    ports:
-      - 27017:27017
-    restart: unless-stopped
-    volumes:
-      - msa_mongodb_data:/data/db
-      - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-  msa-monitor-writer:
-    depends_on:
-      msa-broker:
-        condition: service_started
-      msa-mongodb:
-        condition: service_healthy
-    healthcheck:
-      test:
-        - CMD-SHELL
-        - curl -s --fail http://localhost:9099/mon-writer/actuator/health |jq -r '.status' |grep '^UP$$'
-    image: ubiqube/msa-monitor-writer:sha-4586fd9ed58cc0e894e24c86df733fea36342f81
-
 
   msa-api:
     container_name: msa_api
@@ -168,7 +139,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:sha-38f63b3a3e59b9c033d4bd6c7c0a2c2f7c84d377
+    image: ubiqube/msa2-api:sha-3769753b186db8c7081f98b96c746db9b2f7594b
     logging:
       <<: *logging
     networks:
@@ -325,7 +296,7 @@ services:
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: ubiqube/msa2-bud:sha-e6cb0443a53df2857402f25820caa25c23d703af
+    image: ubiqube/msa2-bud:sha-e2c901951bc110a0120f68e3a5300b982d06f2d8
     healthcheck:
       timeout: 5s
       retries: 10
@@ -363,7 +334,7 @@ services:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
       timeout: 5s
-    image: ubiqube/msa2-alarm:sha-c7be20cead799cb80d4b646a01ad9fa461ffd8f6
+    image: ubiqube/msa2-alarm:sha-d36463b43fafad52246dee13a0686c0371dbdf97
     logging:
       <<: *logging
     networks:
@@ -374,6 +345,36 @@ services:
       - msa_sms_logs:/opt/sms/logs
       - msa_alarmbulkfiles:/opt/sms/spool/alarms
       - msa_alarmbulkfiles_err:/opt/sms/spool/alarms-error
+
+  msa-mongodb:
+    env_file:
+      - .env
+    #      ccla must match user created in mongo-init.js
+    environment:
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-my_db_password}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh mongodb://${DB_USER:-msaUser}:${DB_PASSWORD:-ubiqube38}@localhost:${DB_PORT:-27017}/${DB_NAME:-msa} --quiet
+    image: ubiqube/msa2-mongodb:sha-fe6b341dc6ecd86bdb8646c9e00355e7df4fbe16
+    ports:
+      - 27017:27017
+    restart: unless-stopped
+    volumes:
+      - msa_mongodb_data:/data/db
+      - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+
+  msa-monitor-writer:
+    depends_on:
+      msa-broker:
+        condition: service_started
+      msa-mongodb:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -s --fail http://localhost:9099/mon-writer/actuator/health |jq -r '.status' |grep '^UP$$'
+    image: ubiqube/msa2-monitor-writer:sha-4b185f99faf7dce91c9406b6025ee672fe3d97e1
+    restart: unless-stopped
 
   msa-monitoring:
     depends_on:
@@ -397,13 +398,14 @@ services:
       test:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
-    image: ubiqube/msa2-monitoring:sha-8a21f1a3cf9d24494b7e0a325391a943b8b56b97
+    image: ubiqube/msa2-monitoring:sha-1eb176e5b4a2e09ba82f60a8b4dcce47b1034e6c
     logging:
       <<: *logging
     networks:
       default:
         aliases:
           - msa_monitoring
+    restart: unless-stopped
     volumes:
       - msa_dev:/opt/devops/
       - msa_entities:/opt/fmc_entities
@@ -453,7 +455,7 @@ services:
       EXTRA_ARGS: --http-host 0.0.0.0 --relax-jolokia --clustered --addresses core-engine.syslog:anycast,core-engine.monitoring:anycast --queues core-engine.syslog:anycast,core-engine.monitoring:anycast
     healthcheck:
       test: ./bin/artemis check node --user=$${ARTEMIS_USER} --password=$${ARTEMIS_PASSWORD} --silent &>/dev/null
-    image: docker.io/ubiqube/msa2-broker:sha-30d46955539d8c8352f4478f7abce8dc9c3563e3
+    image: docker.io/ubiqube/msa2-broker:sha-dd14023e1fc3e914947cca35b8801be882a8c5be
     logging:
       <<: *logging
     restart: unless-stopped
@@ -481,7 +483,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-camunda:sha-5a0eaa8b0e7ee7e3326ed5489cb8ee6c7122913a
+    image: ubiqube/msa2-camunda:sha-32384fb582e55efd11a519eef791e212a1589f66
     logging:
       <<: *logging
     networks:
@@ -535,7 +537,7 @@ services:
       BASIC_AUTH_USER: cerebro
     healthcheck:
       test: curl --fail http://localhost:9000/
-    image: ubiqube/msa2-cerebro:sha-213205ec44c0a271d4fbfb4ee68ae89687c917b6
+    image: ubiqube/msa2-cerebro:sha-3ad010cc07d5f829d75af785e360fcc58968856c
     logging:
       <<: *logging
     networks:
