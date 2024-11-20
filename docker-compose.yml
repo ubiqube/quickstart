@@ -20,7 +20,7 @@ services:
   msa-front:
     restart: unless-stopped
     container_name: msa_front
-    image: ubiqube/msa2-api:d7f1ec751e34c77e776150a401a39dff951ea7d2
+    image: ubiqube/msa2-front:52da88baee65a5f7b094b23c0b8322f654c5f871
     healthcheck:
       test: ["CMD-SHELL", "curl -k --fail https://localhost"]
     depends_on:
@@ -65,7 +65,7 @@ services:
   db:
     restart: unless-stopped
     container_name: msa_db
-    image: ubiqube/msa2-db:f459654fb2ffdd05e9f5ce2380348086f8d2dee6
+    image: ubiqube/msa2-db:a71200a187678981acd238c25ee003bace48f421
     healthcheck:
       test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
       timeout: 20s
@@ -95,7 +95,7 @@ services:
   msa-api:
     restart: unless-stopped
     container_name: msa_api
-    image: ubiqube/msa2-api:d7f1ec751e34c77e776150a401a39dff951ea7d2
+    image: ubiqube/msa2-api:d1916228a6cad6fc1d44d396b6fe08964e3bd552
     healthcheck:
       test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
       retries: 3
@@ -128,7 +128,7 @@ services:
   msa-ui:
     restart: unless-stopped
     container_name: msa_ui
-    image: ubiqube/msa2-ui:9f003302273d279c93c2302803e98d76fc1ac356
+    image: ubiqube/msa2-ui:02d54c81b465d3d15071dce2785fd39341be9784
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
     depends_on:
@@ -164,7 +164,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:2d9b1a0650664030289df94625ed0fb9b67fd856
+    image: ubiqube/msa2-sms:00df99c67210e54ec223e1a5fcccf1826d3d47dc
     healthcheck:
       timeout: 5s
       retries: 10
@@ -208,7 +208,7 @@ services:
   msa-parse:
     restart: unless-stopped
     container_name: msa_parse
-    image: ubiqube/msa2-parse:d3e7f9ac0b1ce05e83cf8936ff685bb567da6813
+    image: ubiqube/msa2-parse:c7297ccaba708f23b46fee7286397853cae19bef
     depends_on:
       db:
         condition: service_healthy
@@ -238,7 +238,7 @@ services:
   msa-snmptrap:
     restart: unless-stopped
     container_name: msa_snmptrap
-    image: ubiqube/msa2-snmptrap:d92118c5c98e9c34217cf21d3f8506b888422a90
+    image: ubiqube/msa2-snmptrap:c2ce8e8d8b1f89c0522dacdac5f381d4519c2f49
     depends_on:
       db:
         condition: service_healthy
@@ -291,7 +291,7 @@ services:
   msa-alarm:
     restart: unless-stopped
     container_name: msa_alarm
-    image: ubiqube/msa2-alarm:74a9a6ea2b28b5f128f678f70406065b157e7c18
+    image: ubiqube/msa2-alarm:3d4a8540f86987c78ad4617cce12077d62f85cd0
     healthcheck:
       timeout: 5s
       retries: 10
@@ -321,7 +321,7 @@ services:
   msa-monitoring:
     restart: unless-stopped
     container_name: msa_monitoring
-    image: ubiqube/msa2-monitoring:ab3b98a885289836a78037e74a695f0cd35c3497
+    image: ubiqube/msa2-monitoring:4a53269fe0fffc572809b964230bb6084de6d49a
     healthcheck:
       test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
     depends_on:
@@ -449,7 +449,7 @@ services:
   msa-es:
     restart: unless-stopped
     container_name: msa_es
-    image: ubiqube/msa2-es:43a54205fa489887aae1f1b331b3514c611f3b1f
+    image: ubiqube/msa2-es:50ac3642b0dec278fb7855f3ee092ecd59362bf6
     healthcheck:
       test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
       timeout: 2s
@@ -484,7 +484,7 @@ services:
   msa-cerebro:
     restart: unless-stopped
     container_name: msa_cerebro
-    image: openmsa/openmsa:msa2-cerebro-2.8.12-8374160f95e2349711204189a3bf8a385f7252b5
+    image: ubiqube/msa2-cerebro:8374160f95e2349711204189a3bf8a385f7252b5
     environment:
       AUTH_TYPE: basic
       BASIC_AUTH_USER: cerebro
@@ -507,7 +507,7 @@ services:
   msa-kibana:
     restart: unless-stopped
     container_name: msa_kibana
-    image: openmsa/openmsa:msa2-kibana-2.8.12-54e81a717d1f9aa7acc372643c6966e23b8b66fe
+    image: ubiqube/msa2-kibana:54e81a717d1f9aa7acc372643c6966e23b8b66fe
     depends_on:
       msa-es:
         condition: service_started
@@ -525,31 +525,31 @@ services:
           - "msa_kibana"
 
   msa2-es-ilm:
-    image: ubiqube/msa2-es-ilm:83caffee1fba1706d9542d490758d9a6fe35f2f0
     container_name: msa2_es-ilm
-    tty: true
-    init: true
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "find /opt/msa2-es-ilm/log/log_retention.log -type f -mmin -5"]
+    image: ubiqube/msa2-es-ilm:9931c196f7c08839feea13e1426fc92b953ef311
     depends_on:
       msa-es:
         condition: service_started
+    tty: true
+    init: true
+    healthcheck:
+      test: ["CMD-SHELL", "find /opt/msa2-es-ilm/log/log_retention.log -type f -mmin -5"]
     environment:
       ELASTICSEARCH_URL: "msa_es:9200"
       #For elasticsearch scripts /opt/ubi-es-ilm/log_retention_management.php
-      UBI_ES_INDEX_MULTIPLE_TTL:         "*|90d"
-      UBI_ES_NETFLOW_INDEX_MULTIPLE_TTL: "*|90d"
-      UBI_ES_LOG_SEARCH_INDEX_LIST:      "ubilogs"
-      UBI_ES_RETENTION_INDEX_NAME:       "ubilogs*"
-      UBI_ES_RETENTION_NETFLOW_INDEX_NAME: "ubiaudit*"
-      UBI_ES_RETENTION_ALARM_INDEX_NAME: "ubialarm*"
+      UBI_ES_INDEX_MULTIPLE_TTL:         "*|30d"
+      UBI_ES_AUDIT_INDEX_MULTIPLE_TTL:   "*|10d"
       UBI_ES_ALARM_INDEX_MULTIPLE_TTL:   "*|90d"
+      UBI_ES_RETENTION_INDEX_NAME:       "ubilogs*"
+      UBI_ES_RETENTION_AUDIT_INDEX_NAME: "ubiaudit*"
+      UBI_ES_RETENTION_ALARM_INDEX_NAME: "ubialarm*"
+      UBI_ES_LOG_SEARCH_INDEX_LIST:      "ubilogs"
       UBI_ES_CACHE_INDEX_DEFAULT_TTL:    "1w"
       UBI_ES_DELETE_SCROLL_SIZE:         "4000"
       UBI_ES_MAX_DOCS:                   ""
       UBI_ES_LOG_DETENTION_DELETE:       "true"
-      UBI_ES_ILM_LOG_CRONTAB:            "*/2 * * * *  php /opt/ubi-es-ilm/log_retention_management.php --deletion=false --verbose=3 >/dev/null 2>&1"
+      UBI_ES_ILM_LOG_CRONTAB:            "*/2 * * * *  php /opt/ubi-es-ilm/log_retention_management.php --verbose=3 >/dev/null 2>&1"
       <<: *es-configuration
     logging:
       <<: *logging
@@ -563,7 +563,7 @@ services:
   msa-dev:
     restart: unless-stopped
     container_name: msa_dev
-    image: ubiqube/msa2-linuxdev:37ed5e8c9bc13a31799885de233b575e2091a99f
+    image: ubiqube/msa2-linuxdev:f03103c0845b97ec88434fdb52744aef3c54c976
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       - "msa_entities:/opt/fmc_entities"
@@ -581,7 +581,7 @@ services:
     restart: unless-stopped
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.8.12-e84bc462bf01d4956c4a1895b66507d4ba47a227
+    image: ubiqube/msa2-linuxme:21e09d27af8951349a7a3f8117d8042b6ff28304
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -606,7 +606,7 @@ services:
     restart: unless-stopped
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.8.12-e84bc462bf01d4956c4a1895b66507d4ba47a227
+    image: ubiqube/msa2-linuxme:21e09d27af8951349a7a3f8117d8042b6ff28304
     #build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
