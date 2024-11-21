@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/msa_version/index.html
-    image: ubiqube/msa2-front:sha-04a5e2f067cad414b7c07dc8d93d7f30af9428b3
+    image: ubiqube/msa2-front:sha-de3c53c931aa4da417c509c1f9a49ee72e994e35
     logging:
       <<: *logging
     networks:
@@ -139,7 +139,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:sha-3769753b186db8c7081f98b96c746db9b2f7594b
+    image: ubiqube/msa2-api:sha-e1726012d30447432d1de17d3cf78f2d20964cd7
     logging:
       <<: *logging
     networks:
@@ -190,7 +190,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:sha-0aa7684a6ccbfd8d6827dfc704a8c261a3759e22
+    image: ubiqube/msa2-sms:sha-0b7fa9e2b0a733caa360822a9fbf7a7731975b28
     healthcheck:
       timeout: 5s
       retries: 10
@@ -234,7 +234,7 @@ services:
   msa-parse:
     restart: unless-stopped
     container_name: msa_parse
-    image: ubiqube/msa2-parse:sha-9d92d343e6799d5faf3d6661431739dbb9c77ac4
+    image: ubiqube/msa2-parse:sha-d84cc76959b6b00b44e88c5832bb701ff503e005
     depends_on:
       msa-db:
         condition: service_healthy
@@ -264,7 +264,7 @@ services:
   msa-snmptrap:
     restart: unless-stopped
     container_name: msa_snmptrap
-    image: ubiqube/msa2-snmptrap:sha-26a87d757dd5eac99c05434d788e3db040412b11
+    image: ubiqube/msa2-snmptrap:sha-5d1a555660fd130652ff3048f2d39d878a00813d
     depends_on:
       msa-db:
         condition: service_healthy
@@ -355,7 +355,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh mongodb://${DB_USER:-msaUser}:${DB_PASSWORD:-ubiqube38}@localhost:${DB_PORT:-27017}/${DB_NAME:-msa} --quiet
-    image: ubiqube/msa2-mongodb:sha-fe6b341dc6ecd86bdb8646c9e00355e7df4fbe16
+    image: ubiqube/msa2-mongodb:sha-7c9043147481f979373c6bc65c9e6e812b0a5e53
     ports:
       - 27017:27017
     restart: unless-stopped
@@ -398,7 +398,7 @@ services:
       test:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
-    image: ubiqube/msa2-monitoring:sha-1eb176e5b4a2e09ba82f60a8b4dcce47b1034e6c
+    image: ubiqube/msa2-monitoring:sha-c268c9c9612888016e6610729951fa9e475e0427
     logging:
       <<: *logging
     networks:
@@ -421,7 +421,7 @@ services:
     depends_on:
       msa-broker:
         condition: service_started
-    image: ubiqube/msa2-rsyslog:sha-759b07723dd547c4a417e4ff307506e20fe6c0c5
+    image: ubiqube/msa2-rsyslog:sha-80145f5115e4ed1a07d3a7532a6d6d92997b5e13
     environment:
       # ACTIONTYPE: omudpspoof or omkafka
       # configure a specific port for TLS. Default is 6514
@@ -458,7 +458,6 @@ services:
     image: docker.io/ubiqube/msa2-broker:sha-dd14023e1fc3e914947cca35b8801be882a8c5be
     logging:
       <<: *logging
-    restart: unless-stopped
     volumes:
       - msa_broker:/var/lib/artemis-instance
 
@@ -507,7 +506,7 @@ services:
       test: >
         curl -s -H "Authorization: Basic $${ES_CREDENTIALS}" 'http://localhost:9200/_cluster/health?pretty' |jq -e '.status == "green"'
       timeout: 2s
-    image: ubiqube/msa2-es:sha-57c9475ed512d31c35c52a769719e36b7b02e56e
+    image: ubiqube/msa2-es:sha-9cde6c402e4a109e0db66ee5c8dab77ce373fe17
     logging:
       <<: *logging
     networks:
@@ -558,7 +557,7 @@ services:
       ELASTICSEARCH_URL: http://msa-es:9200
     healthcheck:
       test: curl -k --fail http://localhost:5601/kibana/
-    image: ubiqube/msa2-kibana:sha-a9ad85b6d82f4be1a46ce55a868c75e64715a273
+    image: ubiqube/msa2-kibana:sha-1bef1c0c70f779bb545ecb5837d7df3b8c75e0dd
     logging:
       <<: *logging
     networks:
@@ -574,7 +573,7 @@ services:
       test:
         - CMD-SHELL
         - test -f /usr/bin/install_libraries.sh || echo false
-    image: ubiqube/msa2-linuxdev:sha-727739575ebe82d08823c3eea8059150050065ce
+    image: ubiqube/msa2-linuxdev:sha-df0bc001589d9ff90f6b2f92c4541c733fe3eed1
     #build: ./lab/msa_dev
     logging:
       <<: *logging
@@ -602,7 +601,7 @@ services:
   msa-linux-me:
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: ubiqube/msa2-linuxme:sha-bf978a66bfcd1daa1a405cfb138cfabf0dd0c2cc
+    image: ubiqube/msa2-linuxme:sha-c6d032519e4b9ed8dc706cccd3b6d4aac3b8dc94
     cap_add:
       - NET_ADMIN
       - NET_RAW
@@ -672,7 +671,7 @@ services:
       UBI_ES_RETENTION_ALARM_INDEX_NAME: ubialarm*
       UBI_ES_RETENTION_AUDIT_INDEX_NAME: ubiaudit*
       UBI_ES_RETENTION_INDEX_NAME: ubilogs*
-    image: ubiqube/msa2-es-ilm:sha-2777d1a9344556b550d3d011c2735b88eb36b744
+    image: ubiqube/msa2-es-ilm:sha-c64943ece208ed4c96b641735358540bc0c2cd3a
     networks:
       default:
         aliases:
