@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/msa_version/index.html
-    image: ubiqube/msa2-front:sha-de3c53c931aa4da417c509c1f9a49ee72e994e35
+    image: ubiqube/msa2-front:sha-c6927418a53c511a4e502684c902fc9c6f93f6f6
     logging:
       <<: *logging
     networks:
@@ -103,7 +103,7 @@ services:
         - CMD-SHELL
         - /usr/pgsql-12/bin/pg_isready -h localhost
       timeout: 20s
-    image: ubiqube/msa2-db:sha-484e170f466c5943b42a749dca0a6c5991d910e1
+    image: ubiqube/msa2-db:sha-41310951ea4dbdf832e1c1e93140476aa9c7f4f8
     logging:
       <<: *logging
     networks:
@@ -139,7 +139,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:sha-e1726012d30447432d1de17d3cf78f2d20964cd7
+    image: ubiqube/msa2-api:sha-82533c6dbe9246fea1f07e40b6f0748b219fc481
     logging:
       <<: *logging
     networks:
