@@ -140,7 +140,7 @@ services:
 
   mano-nfvo:
     restart: unless-stopped
-    image: openmsa/mano-nfvo:4.0.0
+    image: docker.io/openmsa/mano-nfvo:nightly
     depends_on:
       - db
     environment:
