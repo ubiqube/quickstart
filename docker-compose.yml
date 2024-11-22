@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/msa_version/index.html
-    image: ubiqube/msa2-front:sha-50f5ec1552f7b2776818072ba8af56146e29cde3
+    image: ubiqube/msa2-front:sha-a042de69ff90e8fcaa04e7f938746b0a6a1274ae
     logging:
       <<: *logging
     networks:
@@ -139,7 +139,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:sha-a9d5434c90c255adb368383c3038bd4cc9379341
+    image: ubiqube/msa2-api:sha-12931dcb558fd8d464f1e305e61bb1cebe6531ff
     logging:
       <<: *logging
     networks:
@@ -355,7 +355,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh mongodb://${DB_USER:-msaUser}:${DB_PASSWORD:-ubiqube38}@localhost:${DB_PORT:-27017}/${DB_NAME:-msa} --quiet
-    image: ubiqube/msa2-mongodb:sha-7c9043147481f979373c6bc65c9e6e812b0a5e53
+    image: ubiqube/msa2-mongodb:sha-9ccfad540f768c798eb02b80678ed429594245f0
     ports:
       - 27017:27017
     restart: unless-stopped
@@ -626,7 +626,7 @@ services:
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
     image: ubiqube/msa2-linuxme:sha-abebaa1367d8186067268acb6e4355e107e77e8d
-    build: ./lab/linux.me
+   # build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
       - NET_RAW
