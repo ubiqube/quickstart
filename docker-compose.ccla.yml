@@ -1,4 +1,4 @@
-x-logging: &logging
+ x-logging: &logging
   driver: json-file
   options:
     max-buffer-size: 4m
@@ -41,7 +41,7 @@ services:
   cloudclapp-wf:
     depends_on:
       - msa-dev
-    image: ubiqube/msa2-ccla-wf-installer:sha-e2e077cc0772e3a6a4106267726d535df2e07348
+    image: ubiqube/msa2-ccla-wf-installer:sha-7c0e3956c0be259a7517018989cf742c8560cd84
     logging:
       <<: *logging
     networks:
