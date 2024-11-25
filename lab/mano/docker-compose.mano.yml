@@ -140,22 +140,23 @@ services:
 
   mano-nfvo:
     restart: unless-stopped
-   # image: docker.io/openmsa/mano-nfvo:nightly
-    image: docker.io/openmsa/mano-nfvo:4.0.0
+    image: docker.io/openmsa/mano-nfvo:nightly
+   # image: docker.io/openmsa/mano-nfvo:4.0.0
     depends_on:
-      - db
+      - msa-db
     environment:
       <<: *es-config
       _JAVA_OPTIONS: -Xmx4g
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://mano-zipkin:9411/api/v2/spans
       SPRING_DATASOURCE_USERNAME: mano_nfvo
       SPRING_DATASOURCE_PASSWORD: mano
-      SPRING_DATASOURCE_URL: jdbc:postgresql://mano-db/mano_nfvo
+      SPRING_DATASOURCE_URL: jdbc:postgresql://mano-db/mano_nfvo?ApplicationName=mano-nfvo
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
-      MANO_FRONTEND_URL: http://mano-nfvo:8080/nfvo-webapp/sol003
+      MANO_FRONTEND_URL: http://mano-nfvo:8100/nfvo-webapp/sol003
+      # KEYCLOAK_CREDENTIALS_SECRET=YYYY
     healthcheck:
-      test: curl --fail http://localhost:8080/nfvo-webapp/actuator/health
+      test: curl -s --fail http://localhost:8100/nfvo-webapp/actuator/health |jq -r '.status' |grep '^UP$'
       interval: 1m
       timeout: 10s
       retries: 5
@@ -163,29 +164,30 @@ services:
     volumes:
       - "mano_nfvo:/opt/etsi-mano-data"
     ports:
-      - target: 8080
+      - target: 8100
         published: 8100
         protocol: tcp
         mode: ingress
 
+
   mano-vnfm:
     restart: unless-stopped
-    image: openmsa/mano-vnfm:4.0.0
+    image: docker.io/openmsa/mano-vnfm:nightly
     depends_on:
-      - db
+      - msa-db
     environment:
       <<: *es-config
       _JAVA_OPTIONS: -Xmx4g
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://mano-zipkin:9411/api/v2/spans
       SPRING_DATASOURCE_USERNAME: mano_vnfm
       SPRING_DATASOURCE_PASSWORD: mano
-      SPRING_DATASOURCE_URL: jdbc:postgresql://mano-db/mano_vnfm
+      SPRING_DATASOURCE_URL: jdbc:postgresql://mano-db/mano_vnfm?ApplicationName=mano-vnfm
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
-      MANO_FRONTEND_URL: http://mano-vnfm:8080/vnfm-webapp/sol003
-#      KEYCLOAK_CREDENTIALS_SECRET: XXXX
+      MANO_FRONTEND_URL: http://mano-vnfm:8090/vnfm-webapp/sol003
+      # KEYCLOAK_CREDENTIALS_SECRET: XXXX
     healthcheck:
-      test: curl --fail http://localhost:8080/vnfm-webapp/actuator/health
+      test: curl -s --fail http://localhost:8090/vnfm-webapp/actuator/health |jq -r '.status' |grep '^UP$'
       interval: 1m
       timeout: 10s
       retries: 5
@@ -193,7 +195,7 @@ services:
     volumes:
       - "mano_vnfm:/opt/etsi-mano-data"
     ports:
-      - target: 8080
+      - target: 8090
         published: 8090
         protocol: tcp
         mode: ingress
