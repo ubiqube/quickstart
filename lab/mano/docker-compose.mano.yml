@@ -154,9 +154,8 @@ services:
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
       MANO_FRONTEND_URL: http://mano-nfvo:8100/nfvo-webapp/sol003
-      # KEYCLOAK_CREDENTIALS_SECRET=YYYY
     healthcheck:
-      test: curl -s --fail http://localhost:8100/nfvo-webapp/actuator/health |jq -r '.status' |grep '^UP$'
+      test: curl -s --fail http://localhost:8100/nfvo-webapp/actuator/health |jq -r '.status' |grep '^UP$$'
       interval: 1m
       timeout: 10s
       retries: 5
@@ -185,9 +184,8 @@ services:
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
       MANO_FRONTEND_URL: http://mano-vnfm:8090/vnfm-webapp/sol003
-      # KEYCLOAK_CREDENTIALS_SECRET: XXXX
     healthcheck:
-      test: curl -s --fail http://localhost:8090/vnfm-webapp/actuator/health |jq -r '.status' |grep '^UP$'
+      test: curl -s --fail http://localhost:8090/vnfm-webapp/actuator/health |jq -r '.status' |grep '^UP$$'
       interval: 1m
       timeout: 10s
       retries: 5
