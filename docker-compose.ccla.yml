@@ -1,4 +1,4 @@
- x-logging: &logging
+x-logging: &logging
   driver: json-file
   options:
     max-buffer-size: 4m
