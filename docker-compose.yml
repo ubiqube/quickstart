@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/msa_version/index.html
-    image: ubiqube/msa2-front:sha-e3afb635d77be33e5871a1cfa54bd8387dabee66
+    image: ubiqube/msa2-front:sha-3b2c32c294d977e95acd38a6fdf0d6eabe570f30
     logging:
       <<: *logging
     networks:
@@ -139,7 +139,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:sha-c16216b34c61e1a6154df98f26e626683087f530
+    image: ubiqube/msa2-api:sha-aef5b54af7c4da695674faf8f706e5fd37a8a607
     logging:
       <<: *logging
     networks:
@@ -179,7 +179,7 @@ services:
       test:
         - CMD-SHELL
         - curl --fail http://localhost:8080
-    image: ubiqube/msa2-ui:37664bc8da7c6e0209e8a428e7771a4ee7373a97
+    image: ubiqube/msa2-ui:dfdc45be10f07f48ea9092fbc4f517e1fa6873e1
     logging:
       <<: *logging
     networks:
@@ -190,7 +190,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:sha-6aa679e87db5e599c3779ce04283ecb2afaf4004
+    image: ubiqube/msa2-sms:sha-7ebb676360248c0add52be932e25ad0d66447c87
     healthcheck:
       timeout: 5s
       retries: 10
@@ -234,7 +234,7 @@ services:
   msa-parse:
     restart: unless-stopped
     container_name: msa_parse
-    image: ubiqube/msa2-parse:sha-159a727b350c14c957ff981378c2acb9652cdc4e
+    image: ubiqube/msa2-parse:sha-80f8ca83a9cdf3b46e45ce596a6aa27e07d5bed9
     depends_on:
       msa-db:
         condition: service_healthy
@@ -264,7 +264,7 @@ services:
   msa-snmptrap:
     restart: unless-stopped
     container_name: msa_snmptrap
-    image: ubiqube/msa2-snmptrap:sha-792b57eaa53362cf4f27ee45d4043b4c884aff46
+    image: ubiqube/msa2-snmptrap:sha-37d00c8cfbbc29ec990a6fab1c2d9d395f6047ae
     depends_on:
       msa-db:
         condition: service_healthy
@@ -398,7 +398,7 @@ services:
       test:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
-    image: ubiqube/msa2-monitoring:sha-5b7b233ce7ac521e6b788ad6c193aeb8535003dc
+    image: ubiqube/msa2-monitoring:sha-153828212fb712a47248ab4fdeace780fe12eb92
     logging:
       <<: *logging
     networks:
