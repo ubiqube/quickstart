@@ -8,26 +8,12 @@ GITHUB_DEFAULT_BRANCH=master
 INSTALL_LICENSE=false
 ASSUME_YES=false
 
-#
-# versioning of the libraries that are installed by the script
-#
-TAG_WF_KIBANA_DASHBOARD=v2.8.13     # https://github.com/openmsa/workflow_kibana
-TAG_WF_TOPOLOGY=v2.8.13             # https://github.com/openmsa/workflow_topology
-TAG_PHP_SDK=v2.8.13                 # https://github.com/openmsa/php-sdk
-TAG_WF_MINILAB=v2.6.0               # https://github.com/ubiqube/workflow_quickstart_minilab
-TAG_WF_ETSI_MANO=v3.1.0             # https://github.com/openmsa/etsi-mano-workflows
-TAG_BLUEPRINTS=CCLA-2.3.0           # https://github.com/openmsa/Blueprints
-TAG_PYTHON_SDK=v2.8.13               # https://github.com/openmsa/python-sdk
-TAG_ADAPTER=v2.8.13                 # https://github.com/openmsa/Adapters
-TAG_MICROSERVICES=v2.8.13           # https://github.com/openmsa/Microservices
-TAG_WORKFLOWS=v2.8.13               # https://github.com/openmsa/Workflows
-
 install_license() {
     if [ $INSTALL_LICENSE == true  ]
     then
         emit_header "INSTALL EVAL LICENSE"
-        /usr/bin/install_license.sh
-        if [ $? -ne 0 ]; then
+        if ! /usr/bin/install_license.sh
+        then
             exit 1
         fi
     fi
@@ -35,18 +21,7 @@ install_license() {
 
 init_intall() {
     emit_header "Init."
-    emit_step "Creating default directories."
-    color mkdir -p /opt/fmc_entities;
-    color mkdir -p /opt/fmc_repository/CommandDefinition/microservices;
-    color mkdir -p /opt/fmc_repository/Configuration;
-    color mkdir -p /opt/fmc_repository/Datafiles/Environments;
-    color mkdir -p /opt/fmc_repository/Documentation;
-    color mkdir -p /opt/fmc_repository/Firmware;
-    color mkdir -p /opt/fmc_repository/License;
-    color mkdir -p /opt/fmc_repository/Process;
-    color mkdir -p /opt/fmc_repository/Blueprints/local;
-    color mkdir -p /opt/fmc_repository/Pki;
-    color mkdir -p /opt/fmc_repository/Shared;
+    install-default-dirs.sh
     emit_step "Initialize metadata."
     color cp -n /usr/share/install-libraries/meta/.meta* /opt/fmc_repository/
     color chown -R ncuser.ncuser /opt/fmc_repository /opt/fmc_entities
@@ -75,7 +50,7 @@ show_tags() {
 
 is_remote_branch() {
     branch="$1"
-    res="$(git ls-remote --heads origin $branch)"
+    res=$(git ls-remote --heads origin "$branch")
     if [[ -z "$res" ]]
     then
         return 1
@@ -84,7 +59,7 @@ is_remote_branch() {
 }
 is_local_branch() {
     branch="$1"
-    res="$(git branch --list $branch)"
+    res=$(git branch --list "$branch")
     if [[ -z "$res" ]]
     then
         return 1
@@ -174,7 +149,7 @@ ask_for_shell() {
         read -p "[S] / [A]: " as
         case $as in
         [sS]* )
-            bash --rcfile <(cat ~/.bashrc; echo 'PS1="[\u@\h \W]\ \e[39;1m(CTRL+D to leave)\e[0m $ "')
+            bash --rcfile <(cat ~/.bashrc; echo 'PS1="[\u@\h \W] \e[39;1m(CTRL+D to leave)\e[0m $ "')
             break
         ;;
         [aA]* )
@@ -254,9 +229,13 @@ update_git_repo () {
         git clone "$REPO_URL" "$REPO_DIR"
         cd "$REPO_DIR" || exit
         git checkout "$DEFAULT_BRANCH"
-        if [ ! -z "$TAG" ]
+        if [ -n "$TAG" ]
         then
-            create_branch "$tag"
+            create_branch "$TAG"
+        fi
+        if [ -n "$GBRANCH" ]
+        then
+            git checkout "$GBRANCH"
         fi
     fi
     install_repo_deps.sh "$REPO_BASE_DIR/$REPO_DIR"
@@ -286,23 +265,17 @@ install_workflows() {
     emit_header "Install Workflows from OpenMSA github github repository"
     pushd /opt/fmc_repository/Process || exit
     emit_step "Checkout repositories."
-    if [ -z "$GTAG" ]
-    then
-        unset TAG_WF_TOPOLOGY
-        unset TAG_PHP_SDK
-        unset TAG_WF_MINILAB
-    fi
     emit_step " - workflow_kibana"
-    update_git_repo "https://github.com/openmsa/workflow_kibana.git" "/opt/fmc_repository" "OpenMSA_Workflow_Kibana" "$TAG_WF_KIBANA_DASHBOARD" false
+    update_git_repo "https://github.com/openmsa/workflow_kibana.git" "/opt/fmc_repository" "OpenMSA_Workflow_Kibana" "$GTAG" false
     emit_step " - workflow_topology"
-    update_git_repo "https://github.com/openmsa/workflow_topology_py.git" "/opt/fmc_repository" "OpenMSA_Workflow_Topology" "$TAG_WF_TOPOLOGY" false
+    update_git_repo "https://github.com/openmsa/workflow_topology_py.git" "/opt/fmc_repository" "OpenMSA_Workflow_Topology" "$GTAG" false
     emit_step " - Workflows"
     update_git_repo "https://github.com/openmsa/Workflows.git" "/opt/fmc_repository" "OpenMSA_WF" "$GTAG" false
     emit_step " - workflow_minilab"
-    update_git_repo "https://github.com/ubiqube/workflow_quickstart_minilab.git" "/opt/fmc_repository" "workflow_quickstart_minilab" "$TAG_WF_MINILAB" true
+    update_git_repo "https://github.com/ubiqube/workflow_quickstart_minilab.git" "/opt/fmc_repository" "workflow_quickstart_minilab" "$GTAG" true
     emit_step "WF references and libs"
     emit_step " - php-sdk"
-    update_git_repo "https://github.com/openmsa/php-sdk.git" "/opt/fmc_repository" "php_sdk" "$TAG_PHP_SDK" false
+    update_git_repo "https://github.com/openmsa/php-sdk.git" "/opt/fmc_repository" "php_sdk" "$GTAG" false
     popd || exit
     emit_done
 }
@@ -310,25 +283,22 @@ install_workflows() {
 install_mano_workflows() {
     emit_header "Install ETSI MANO Workflows."
     pushd /opt/fmc_repository/Process || exit
-    if [ -z "$GTAG" ]
-    then
-        unset TAG_WF_ETSI_MANO
-    fi
     emit_step "Checkout mano repository."
-    update_git_repo "https://github.com/openmsa/etsi-mano-workflows.git" "/opt/fmc_repository" "etsi-mano-workflows" "$TAG_WF_ETSI_MANO" false
+    update_git_repo "https://github.com/openmsa/etsi-mano-workflows.git" "/opt/fmc_repository" "etsi-mano-workflows" "$GTAG" false
     popd || exit
     emit_done
 }
 
 install_ccla_lib() {
-    emit_header "Install Cloudclapp library from OpenMSA github repository"
+    emit_header "Install Cloudclapp libraries from OpenMSA github repository"
     pushd /opt/fmc_repository/Blueprints || exit
-    if [ -z "$GTAG" ]
-    then
-        unset TAG_BLUEPRINTS
-    fi
     emit_step "Checkout Blueprint repository."
-    update_git_repo "https://github.com/openmsa/Blueprints" "/opt/fmc_repository" "OpenMSA_Blueprints" "$TAG_BLUEPRINTS" false
+    update_git_repo "https://github.com/openmsa/Blueprints" "/opt/fmc_repository" "OpenMSA_Blueprints" "$GTAG" false
+    popd || exit
+    pushd /opt/fmc_repository/Automation || exit
+    emit_step "Checkout Automation catalog."
+    update_git_repo "https://github.com/openmsa/Automation" "/opt/fmc_repository" "OpenMSA_Automation" "$GTAG" false
+    popd || exit
     emit_done
 }
 
@@ -365,7 +335,7 @@ usage() {
     print_arg "py" "Install/update the python-sdk from https://github.com/openmsa/python-sdk"
     print_arg "php" "Install/update the python-sdk from https://github.com/openmsa/php-sdk"
     print_arg "mano" "Install/update the mano WF from https://github.com/openmsa/etsi-mano-workflows and install the python sdk ETSI"
-    print_arg "ccla" "Install/update the cloudclapp libraries, like blueprints from https://github.com/openmsa/Blueprints"
+    print_arg "ccla" "Install/update the cloudclapp libraries (Blueprints, Automations)"
     echo
     echo "Options:"
     print_arg "--lic" "Force license installation"
@@ -415,6 +385,16 @@ main() {
     if [[ -z "$TAG" && -z "$BRANCH" ]]
     then
         BRANCH="$GITHUB_DEFAULT_BRANCH"
+    fi
+    if [[ "$STICKY_BRANCH" ]]
+    then
+        GBRANCH=$STICKY_BRANCH
+        unset GTAG
+    fi
+    if [[ "$STICKY_TAG" ]]
+    then
+        GTAG=$STICKY_TAG
+        unset GBRANCH
     fi
     init_intall
     install_license  "$option"
