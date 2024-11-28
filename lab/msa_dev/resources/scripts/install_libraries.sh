@@ -21,7 +21,7 @@ install_license() {
 
 init_intall() {
     emit_header "Init."
-    install-default-dirs.sh
+    /usr/bin/install-default-dirs.sh
     emit_step "Initialize metadata."
     color cp -n /usr/share/install-libraries/meta/.meta* /opt/fmc_repository/
     color chown -R ncuser.ncuser /opt/fmc_repository /opt/fmc_entities
