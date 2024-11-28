@@ -24,6 +24,7 @@ RUN mkdir /opt/ubiqube /opt/fmc_repository /opt/fmc_entities && \
 
 COPY resources/opt/fmc_repository/ /usr/share/install-libraries/meta/
 COPY resources/il-lib.sh /usr/share/install-libraries/
+COPY resources/install-default-dirs.sh /usr/share/install-libraries/
 COPY --chmod=0600 resources/sshd/* /etc/ssh/
 COPY resources/sudoers/ncuser /etc/sudoers.d/
 COPY docker-entrypoint.sh /
