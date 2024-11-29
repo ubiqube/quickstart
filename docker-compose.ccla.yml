@@ -71,6 +71,3 @@ services:
   msa-sms:
     environment:
       - UBIQUBE_INSTALL_AWS_CLI=true
-  msa-front:
-    volumes:
-      - ./front/nginx_ccla.conf:/etc/nginx/custom_conf.d/https/nginx_ccla.conf
