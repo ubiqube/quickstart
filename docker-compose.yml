@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/msa_version/index.html
-    image: ubiqube/msa2-front:sha-fcb075a14f3989fd2963cccc1c69a34425ca881b
+    image: ubiqube/msa2-front:sha-7422c46e494706abaa0d78d6925f45c1cb9487d5
     logging:
       <<: *logging
     networks:
@@ -179,7 +179,7 @@ services:
       test:
         - CMD-SHELL
         - curl --fail http://localhost:8080
-    image: ubiqube/msa2-ui:8b6eec459a8ba3dd024e298773890ef0b62c2794
+    image: ubiqube/msa2-ui:dbe6dbe83b73bde0413b242fd3123335d06e8bfe
     logging:
       <<: *logging
     networks:
@@ -573,8 +573,8 @@ services:
       test:
         - CMD-SHELL
         - test -f /usr/bin/install_libraries.sh || echo false
-    #image: ubiqube/msa2-linuxdev:sha-df0bc001589d9ff90f6b2f92c4541c733fe3eed1
-    build: ./lab/msa_dev
+    image: ubiqube/msa2-linuxdev:sha-51af2dfd785f01e0d8a35071738919b561e5224f
+    #build: ./lab/msa_dev
     logging:
       <<: *logging
     networks:
