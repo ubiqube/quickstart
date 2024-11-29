@@ -1,6 +1,5 @@
 FROM docker.io/ubiqube/ubi-almalinux9:latest
 ARG SSH_USER_PATH=/home/ncuser
-ARG SSH_USER_TOTO=/home/toto
 
 COPY resources/.gitconfig /etc/skel/
 RUN install -c -o root -g wheel -D -m 600 /dev/null /etc/skel/.ssh/authorized_keys

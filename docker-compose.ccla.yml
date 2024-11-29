@@ -37,11 +37,11 @@ services:
       test:
         - CMD-SHELL
         - curl --fail http://localhost:8080
-    image: ubiqube/cloudclapp:033e27327dc25b7980398ba71d8bf78f7013e8a8
+    image: ubiqube/cloudclapp:8b6eec459a8ba3dd024e298773890ef0b62c2794
   cloudclapp-wf:
     depends_on:
       - msa-dev
-    image: ubiqube/msa2-ccla-wf-installer:sha-1a0958eb1af413c30ea0b7d0d23123183184b59e
+    image: ubiqube/msa2-ccla-wf-installer:sha-98d0dcf1515266e61ef47723955aeb56992e89a7
     logging:
       <<: *logging
     networks:
@@ -71,3 +71,6 @@ services:
   msa-sms:
     environment:
       - UBIQUBE_INSTALL_AWS_CLI=true
+  msa-front:
+    volumes:
+      - ./front/nginx_ccla.conf:/etc/nginx/custom_conf.d/https/nginx_ccla.conf
