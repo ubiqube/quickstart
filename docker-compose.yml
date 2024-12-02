@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/msa_version/index.html
-    image: ubiqube/msa2-front:sha-7422c46e494706abaa0d78d6925f45c1cb9487d5
+    image: ubiqube/msa2-front:sha-dd15f72df760d52509b42d3fc0d651665e4a5c0a
     logging:
       <<: *logging
     networks:
@@ -103,7 +103,7 @@ services:
         - CMD-SHELL
         - /usr/pgsql-12/bin/pg_isready -h localhost
       timeout: 20s
-    image: ubiqube/msa2-db:sha-5c38cee59460c46a23be25f861818d07c94ace68
+    image: ubiqube/msa2-db:sha-b06760885554a4212e87999a0d291ae607fbe687
     logging:
       <<: *logging
     networks:
@@ -179,7 +179,7 @@ services:
       test:
         - CMD-SHELL
         - curl --fail http://localhost:8080
-    image: ubiqube/msa2-ui:dbe6dbe83b73bde0413b242fd3123335d06e8bfe
+    image: ubiqube/msa2-ui:d1cd84fdc18fd126754fd41621a47bf73272b4b2
     logging:
       <<: *logging
     networks:
@@ -296,7 +296,7 @@ services:
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: ubiqube/msa2-bud:sha-00f8411e9d0f9ed6a350c793f6258b1aca637b48
+    image: ubiqube/msa2-bud:sha-e1dfe579387797a302fc07a44de70d602757c4b3
     healthcheck:
       timeout: 5s
       retries: 10
