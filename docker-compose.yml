@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/msa_version/index.html
-    image: ubiqube/msa2-front:sha-037b1c74ed54e5c6be5ca562af44f4bb84a8c06a
+    image: ubiqube/msa2-front:sha-7da7cf5fb53ce77f1c77e88d9b58d0f88ddd41c5
     logging:
       <<: *logging
     networks:
@@ -179,7 +179,7 @@ services:
       test:
         - CMD-SHELL
         - curl --fail http://localhost:8080
-    image: ubiqube/msa2-ui:b1aca6750a6d009c1f5c1013f18771131ad0c834
+    image: ubiqube/msa2-ui:b42bf6a4de5ea806b5eb018df82b09afcffdf65d
     logging:
       <<: *logging
     networks:
