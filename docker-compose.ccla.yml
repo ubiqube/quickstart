@@ -41,7 +41,7 @@ services:
   cloudclapp-wf:
     depends_on:
       - msa-dev
-    image: ubiqube/msa2-ccla-wf-installer:sha-d6a09a9354010b5d33d136272e671714e47f5f59
+    image: ubiqube/msa2-ccla-wf-installer:sha-a7458550914f93b952c697925ac96210f8f1b671
     logging:
       <<: *logging
     networks:
@@ -68,6 +68,10 @@ services:
     command:
       - /docker-entrypoint.sh
       - --cloudclapp
+  msa-front:
+    volumes:
+      - ./front/nginx_ccla.conf:/etc/nginx/custom_conf.d/https/nginx_ccla.conf
   msa-sms:
     environment:
       - UBIQUBE_INSTALL_AWS_CLI=true
+
