@@ -35,7 +35,7 @@ services:
       start_period: 1m
       test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8080'
       timeout: 10s
-    image: ubiqube/msa2-auth:sha-2408e68af581a8f73779ccfc9f887e4ac767c59a
+    image: ubiqube/msa2-auth:sha-c459690dbd25975efb70804908851802c4858030
     restart: unless-stopped
 
   msa-front:
