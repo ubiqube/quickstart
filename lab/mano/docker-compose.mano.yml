@@ -47,10 +47,10 @@ services:
         published: 8161
         protocol: tcp
         mode: ingress
-      - target: 61616
-        published: 61616
-        protocol: tcp
-        mode: ingress
+      # - target: 61616
+      #   published: 61616
+      #   protocol: tcp
+      #   mode: ingress
 
   mano-auth:
     restart: unless-stopped
