@@ -455,7 +455,7 @@ services:
       EXTRA_ARGS: --http-host 0.0.0.0 --relax-jolokia --clustered --addresses core-engine.syslog:anycast,core-engine.monitoring:anycast --queues core-engine.syslog:anycast,core-engine.monitoring:anycast
     healthcheck:
       test: ./bin/artemis check node --user=$${ARTEMIS_USER} --password=$${ARTEMIS_PASSWORD} --silent &>/dev/null
-    image: docker.io/ubiqube/msa2-broker:sha-416f94725b1a8f8965f1317faa0facfa739cb1d1
+    image: docker.io/ubiqube/msa2-broker:sha-24b74a84d419794f11719752de2a3e1198d9b9e5
     logging:
       <<: *logging
     volumes:
