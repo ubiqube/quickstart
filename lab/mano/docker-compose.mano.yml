@@ -140,7 +140,7 @@ services:
     image: docker.io/openmsa/mano-nfvo:nightly
    # image: docker.io/openmsa/mano-nfvo:4.0.0
     depends_on:
-      - msa-db
+      - db
     environment:
       <<: *es-config
       _JAVA_OPTIONS: -Xmx4g
@@ -170,7 +170,7 @@ services:
     restart: unless-stopped
     image: docker.io/openmsa/mano-vnfm:nightly
     depends_on:
-      - msa-db
+      - db
     environment:
       <<: *es-config
       _JAVA_OPTIONS: -Xmx4g
