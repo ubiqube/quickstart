@@ -1,0 +1,73 @@
+{
+  "realm" : "mano-realm",
+  "users" : [ {
+    "id" : "f4118444-0896-454f-8108-dc01a646f005",
+    "createdTimestamp" : 1700669465798,
+    "username" : "ncroot",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : true,
+    "email" : "ubiqube@ubiqube.com",
+    "credentials" : [ {
+      "id" : "63950a79-fd71-4988-a1c6-b29b9fa27a1b",
+      "type" : "password",
+      "userLabel" : "My password",
+      "createdDate" : 1700669479426,
+      "secretData" : "{\"value\":\"Vk1vEWosG2gAI326vP78CUpWLep3JWxOmBAlCJXAPIY=\",\"salt\":\"K414qq8rjPYi8TbafF9SKA==\",\"additionalParameters\":{}}",
+      "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\",\"additionalParameters\":{}}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-mano-realm" ],
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "7a2a5bee-8d75-4f24-b9ba-dd147f34863c",
+    "createdTimestamp" : 1667032544132,
+    "username" : "service-account-mano-helm",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "serviceAccountClientId" : "mano-helm",
+    "credentials" : [ ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-mano-realm" ],
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "d6da60f3-fa2e-4adb-aaa2-72d46e323d23",
+    "createdTimestamp" : 1633799264237,
+    "username" : "service-account-mano-nfvo",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "serviceAccountClientId" : "mano-nfvo",
+    "credentials" : [ ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-mano-realm", "NFVO" ],
+    "clientRoles" : {
+      "mano-nfvo" : [ "uma_protection" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "3d039b71-51e5-49d1-8955-1d9c899ca724",
+    "createdTimestamp" : 1633774039350,
+    "username" : "service-account-mano-vnfm",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "serviceAccountClientId" : "mano-vnfm",
+    "credentials" : [ ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-mano-realm", "VNFM" ],
+    "clientRoles" : {
+      "mano-vnfm" : [ "uma_protection" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  } ]
+}
