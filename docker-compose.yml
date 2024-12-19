@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/msa_version/index.html
-    image: ubiqube/msa2-front:sha-62bffdbcbb86258fc4f5ad62db366fdc04ace5e4
+    image: ubiqube/msa2-front:sha-77900710e5f4aae10eeb9f7dbb714e73138cb6c7
     logging:
       <<: *logging
     networks:
@@ -373,7 +373,7 @@ services:
       test:
         - CMD-SHELL
         - curl -s --fail http://localhost:9099/mon-writer/actuator/health |jq -r '.status' |grep '^UP$$'
-    image: ubiqube/msa2-monitor-writer:sha-4b185f99faf7dce91c9406b6025ee672fe3d97e1
+    image: ubiqube/msa2-monitor-writer:sha-7197b7b28211902f27925d90cbd618790403be78
     restart: unless-stopped
 
   msa-monitoring:
@@ -506,7 +506,7 @@ services:
       test: >
         curl -s -H "Authorization: Basic $${ES_CREDENTIALS}" 'http://localhost:9200/_cluster/health?pretty' |jq -e '.status == "green"'
       timeout: 2s
-    image: ubiqube/msa2-es:sha-9cde6c402e4a109e0db66ee5c8dab77ce373fe17
+    image: ubiqube/msa2-es:sha-4b546b5eab328d62e7c34e4352c879cee9087d5f
     logging:
       <<: *logging
     networks:
