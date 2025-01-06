@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/msa_version/index.html
-    image: ubiqube/msa2-front:sha-8f5706ef0870059ef64df09b9a4f0aa5c778eae6
+    image: ubiqube/msa2-front:sha-6b16be6d00a9bcd401f5ffb6c69541957795b762
     logging:
       <<: *logging
     networks:
@@ -455,7 +455,7 @@ services:
       EXTRA_ARGS: --http-host 0.0.0.0 --relax-jolokia --clustered --addresses core-engine.syslog:anycast,core-engine.monitoring:anycast --queues core-engine.syslog:anycast,core-engine.monitoring:anycast
     healthcheck:
       test: ./bin/artemis check node --user=$${ARTEMIS_USER} --password=$${ARTEMIS_PASSWORD} --silent &>/dev/null
-    image: docker.io/ubiqube/msa2-broker:sha-24b74a84d419794f11719752de2a3e1198d9b9e5
+    image: docker.io/ubiqube/msa2-broker:sha-da926b26796c433b678554edb31b9a2a20680ff5
     logging:
       <<: *logging
     volumes:
@@ -506,7 +506,7 @@ services:
       test: >
         curl -s -H "Authorization: Basic $${ES_CREDENTIALS}" 'http://localhost:9200/_cluster/health?pretty' |jq -e '.status == "green"'
       timeout: 2s
-    image: ubiqube/msa2-es:sha-4b546b5eab328d62e7c34e4352c879cee9087d5f
+    image: ubiqube/msa2-es:sha-b154fb27e0610830b983cda38c64386342a517fd
     logging:
       <<: *logging
     networks:
@@ -557,7 +557,7 @@ services:
       ELASTICSEARCH_URL: http://msa-es:9200
     healthcheck:
       test: curl -k --fail http://localhost:5601/kibana/
-    image: ubiqube/msa2-kibana:sha-1bef1c0c70f779bb545ecb5837d7df3b8c75e0dd
+    image: ubiqube/msa2-kibana:sha-851a1ce988c060e7e4d96381fb35e3980020a3f7
     logging:
       <<: *logging
     networks:
@@ -601,7 +601,7 @@ services:
   msa-linux-me:
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: ubiqube/msa2-linuxme:sha-c6d032519e4b9ed8dc706cccd3b6d4aac3b8dc94
+    image: ubiqube/msa2-linuxme:sha-9536f0e3d580bf8e4b27e78831a05b3235c5a8cb
     cap_add:
       - NET_ADMIN
       - NET_RAW
