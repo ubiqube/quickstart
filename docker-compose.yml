@@ -139,7 +139,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:sha-607da1ccbc9bfd29379366abe801c711924e2081
+    image: ubiqube/msa2-api:sha-958327dc5a758a218fe86e311e31855d27d30fef
     logging:
       <<: *logging
     networks:
