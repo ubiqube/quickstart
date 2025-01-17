@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/version/ | grep -E '^\{"jira_version":"\d\.\d\.\d","msa_version":"\d\.\d\.\d","ccla_version":"\d\.\d\.\d","build":"\d+"\}$'
-    image: ubiqube/msa2-front:sha-51d2cd9fbc124da3bae87ac3bc35a964e18c4526
+    image: ubiqube/msa2-front:sha-8545479aec350de16e8ad275001d431137e165ea
     logging:
       <<: *logging
     networks:
