@@ -373,7 +373,7 @@ services:
       test:
         - CMD-SHELL
         - curl -s --fail http://localhost:9099/mon-writer/actuator/health |jq -r '.status' |grep '^UP$$'
-    image: ubiqube/msa2-monitor-writer:sha-7197b7b28211902f27925d90cbd618790403be78
+    image: ubiqube/msa2-monitor-writer:sha-d912d84505203566ac3f17e41b32827c59bc75fd
     restart: unless-stopped
 
   msa-monitoring:
@@ -398,7 +398,7 @@ services:
       test:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
-    image: ubiqube/msa2-monitoring:sha-b04d39fdc383d61479e54810eaa646f7e0793781
+    image: ubiqube/msa2-monitoring:sha-88c8131537ff706e0cbf7ec10328ebc55503a4ea
     logging:
       <<: *logging
     networks:
