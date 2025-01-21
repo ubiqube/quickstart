@@ -105,7 +105,7 @@ services:
       - "./lab/mano/config/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml"
 
   mano-mon:
-    image: openmsa/mano-mon:4.0.0
+    image: openmsa/mano-mon:latest
     depends_on:
       - msa-db
     environment:
@@ -125,7 +125,7 @@ services:
 
   mano-nfvo:
     restart: unless-stopped
-    image: openmsa/mano-nfvo:4.0.0
+    image: openmsa/mano-nfvo:latest
     depends_on:
       - msa-db
     environment:
@@ -154,7 +154,7 @@ services:
 
   mano-vnfm:
     restart: unless-stopped
-    image: openmsa/mano-vnfm:4.0.0
+    image: openmsa/mano-vnfm:latest
     depends_on:
       - msa-db
     environment:
