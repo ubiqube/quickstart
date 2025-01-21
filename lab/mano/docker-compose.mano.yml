@@ -125,7 +125,7 @@ services:
 
   mano-nfvo:
     restart: unless-stopped
-    image: openmsa/mano-nfvo:latest
+    image: openmsa/mano-nfvo:nightly
     depends_on:
       - msa-db
     environment:
@@ -154,7 +154,7 @@ services:
 
   mano-vnfm:
     restart: unless-stopped
-    image: openmsa/mano-vnfm:latest
+    image: openmsa/mano-vnfm:nightly
     depends_on:
       - msa-db
     environment:
