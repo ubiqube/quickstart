@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/version/ | grep -E '^\{"jira_version":"\d\.\d\.\d","msa_version":"\d\.\d\.\d","ccla_version":"\d\.\d\.\d","build":"\d+"\}$'
-    image: ubiqube/msa2-front:sha-a24517b6fc7d3519eebf70eb8987e996c07df4f2
+    image: ubiqube/msa2-front:sha-700c37aa659e2476152d924eff5e906e53be4137
     logging:
       <<: *logging
     networks:
@@ -103,7 +103,7 @@ services:
         - CMD-SHELL
         - /usr/pgsql-12/bin/pg_isready -h localhost
       timeout: 20s
-    image: ubiqube/msa2-db:sha-860829e723e2e8f2593684c3ca4f35c366e6f177
+    image: ubiqube/msa2-db:sha-93569141f43fa18df3db6618aa424fa246bc8cfd
     logging:
       <<: *logging
     networks:
@@ -139,7 +139,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:sha-62df800db5d8240268afc08862e4f2c44dc206c8
+    image: ubiqube/msa2-api:sha-dac475cffcbe53fc54e1d9f641807a8d00aa5a08
     logging:
       <<: *logging
     networks:
@@ -373,7 +373,7 @@ services:
       test:
         - CMD-SHELL
         - curl -s --fail http://localhost:9099/mon-writer/actuator/health |jq -r '.status' |grep '^UP$$'
-    image: ubiqube/msa2-monitor-writer:sha-d912d84505203566ac3f17e41b32827c59bc75fd
+    image: ubiqube/msa2-monitor-writer:sha-2b15d758c8329b41b4bfb694cfa870673aaf0f5a
     restart: unless-stopped
 
   msa-monitoring:
