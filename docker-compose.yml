@@ -179,7 +179,7 @@ services:
       test:
         - CMD-SHELL
         - curl --fail http://localhost:8080
-    image: ubiqube/msa2-ui:d5535d89edd63e45bf08e1b2de2f10ad0a9f0c15
+    image: ubiqube/msa2-ui:d87b14a6608148bac0ae6721e2cd746718127b0c
     logging:
       <<: *logging
     networks:
