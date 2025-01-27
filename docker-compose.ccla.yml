@@ -37,7 +37,7 @@ services:
       test:
         - CMD-SHELL
         - curl --fail http://localhost:8080
-    image: ubiqube/cloudclapp:61236e94819b1b4f12826600ba6b4bbc030f3142
+    image: ubiqube/cloudclapp:34fefdc24da73bb9382bd964b4c516e395729d8d
   cloudclapp-wf:
     depends_on:
       - msa-dev
@@ -74,3 +74,4 @@ services:
   msa-sms:
     environment:
       - UBIQUBE_INSTALL_AWS_CLI=true
+
