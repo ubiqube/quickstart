@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/version/ | grep -E '^\{"jira_version":"\d\.\d\.\d","msa_version":"\d\.\d\.\d","ccla_version":"\d\.\d\.\d","build":"\d+"\}$'
-    image: ubiqube/msa2-front:sha-994f787f668f3c907242b3c38b8d7133e49ec529
+    image: ubiqube/msa2-front:sha-bcf925c0f5059dabc4d2800f59015ed346c4ff6b
     logging:
       <<: *logging
     networks:
@@ -139,7 +139,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:sha-4d7857918c726e91bbc9fb1b5a444e64ba30ef70
+    image: ubiqube/msa2-api:sha-478570e6b383cf7840fbaf4797b55f89be35216e
     logging:
       <<: *logging
     networks:
@@ -179,7 +179,7 @@ services:
       test:
         - CMD-SHELL
         - curl --fail http://localhost:8080
-    image: ubiqube/msa2-ui:34fefdc24da73bb9382bd964b4c516e395729d8d
+    image: ubiqube/msa2-ui:dee76adae7ccb2ac414b5cbe7f7bc787a0e26cfa
     logging:
       <<: *logging
     networks:
@@ -190,7 +190,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:sha-f6ab2777ec2ee06eeffee668aca74d404a57608f
+    image: ubiqube/msa2-sms:sha-a1463455280a890d1228d8dbca708f48c1845a08
     healthcheck:
       timeout: 5s
       retries: 10
@@ -234,7 +234,7 @@ services:
   msa-parse:
     restart: unless-stopped
     container_name: msa_parse
-    image: ubiqube/msa2-parse:sha-299a86891fed44da7a2b13ccca68c78fdeba364a
+    image: ubiqube/msa2-parse:sha-1927b111c0388f11b901aecd93f1c990d1cb4bcd
     depends_on:
       msa-db:
         condition: service_healthy
@@ -264,7 +264,7 @@ services:
   msa-snmptrap:
     restart: unless-stopped
     container_name: msa_snmptrap
-    image: ubiqube/msa2-snmptrap:sha-22dee8b1e2328310bc92e237c76b38cb25b210cc
+    image: ubiqube/msa2-snmptrap:sha-5c545f65b66a364b8c799d616c21012f6e73012a
     depends_on:
       msa-db:
         condition: service_healthy
@@ -296,7 +296,7 @@ services:
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: ubiqube/msa2-bud:sha-9c7ed59d8ae2175f9d12565500be7977bc22f385
+    image: ubiqube/msa2-bud:sha-20af71e4f69c68a8c0716cffabaffd0cfe36a329
     healthcheck:
       timeout: 5s
       retries: 10
@@ -334,7 +334,7 @@ services:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
       timeout: 5s
-    image: ubiqube/msa2-alarm:sha-727b80b8ae397457f3c1664388c5a347d418c1e0
+    image: ubiqube/msa2-alarm:sha-696356f6f9fe3fe1702e6232730435198b81f675
     logging:
       <<: *logging
     networks:
@@ -398,7 +398,7 @@ services:
       test:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
-    image: ubiqube/msa2-monitoring:sha-88c8131537ff706e0cbf7ec10328ebc55503a4ea
+    image: ubiqube/msa2-monitoring:sha-4bfba1a67c4159bf8ce81dcc391cddcd1f96e9e4
     logging:
       <<: *logging
     networks:
