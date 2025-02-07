@@ -37,7 +37,7 @@ services:
       test:
         - CMD-SHELL
         - curl --fail http://localhost:8080
-    image: ubiqube/cloudclapp:fe5ea07631d688d018279543b5cb2489ce0fb79f
+    image: ubiqube/cloudclapp:c552e80302b4fced402ce6dc0139dee59fce1485
   cloudclapp-wf:
     depends_on:
       - msa-dev
