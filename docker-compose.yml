@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/version/ | grep -E '^\{"jira_version":"\d\.\d\.\d","msa_version":"\d\.\d\.\d","ccla_version":"\d\.\d\.\d","build":"\d+"\}$'
-    image: ubiqube/msa2-front:sha-3125d919869c8ff65c04114c9cc7d8f30ebeb902
+    image: ubiqube/msa2-front:sha-32382fafd4568100ce0f8b84bd2f6d78537e797b
     logging:
       <<: *logging
     networks:
@@ -373,7 +373,7 @@ services:
       test:
         - CMD-SHELL
         - curl -s --fail http://localhost:9099/mon-writer/actuator/health |jq -r '.status' |grep '^UP$$'
-    image: ubiqube/msa2-monitor-writer:sha-656d159e58d6c35913797bd065c268ca2906d71a
+    image: ubiqube/msa2-monitor-writer:sha-b87be499130042167bc54bad3f18b5ef8242a544
     restart: unless-stopped
 
   msa-monitoring:
