@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/version/ | grep -E '^\{"jira_version":"\d\.\d\.\d","msa_version":"\d\.\d\.\d","ccla_version":"\d\.\d\.\d","build":"\d+"\}$'
-    image: ubiqube/msa2-front:sha-32382fafd4568100ce0f8b84bd2f6d78537e797b
+    image: ubiqube/msa2-front:sha-ff1403044801df5e53b466f76d8e7b1e2a88365b
     logging:
       <<: *logging
     networks:
@@ -179,7 +179,7 @@ services:
       test:
         - CMD-SHELL
         - curl --fail http://localhost:8080
-    image: ubiqube/msa2-ui:2a0ae8e92b8398145fbd10ece04aed61e56c23b2
+    image: ubiqube/msa2-ui:14977ab1e51f73e377f36643760a7357fd3b0ea4
     logging:
       <<: *logging
     networks:
