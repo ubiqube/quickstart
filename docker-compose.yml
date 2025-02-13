@@ -499,6 +499,7 @@ services:
       bootstrap.memory_lock: "true"
       discovery.type: single-node
       script.painless.regex.enabled: "true"
+      ingest.geoip.downloader.enabled: "false"
     healthcheck:
       interval: 10s
       retries: 30
