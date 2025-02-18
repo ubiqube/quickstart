@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/version/ | grep -E '^\{"jira_version":"\d\.\d\.\d","msa_version":"\d\.\d\.\d","ccla_version":"\d\.\d\.\d","build":"\d+"\}$'
-    image: ubiqube/msa2-front:sha-371795563f57d66fa5c59634fdcc57b79a535930
+    image: ubiqube/msa2-front:sha-dcba4416ab3d89f21b4133ea17509acd7c6964d6
     logging:
       <<: *logging
     networks:
@@ -139,7 +139,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:sha-13cfdab138260701db69b749ed9c3ecc1bd4d4b7
+    image: ubiqube/msa2-api:sha-9e9022c76d5b868668e2b89bad04707de478870c
     logging:
       <<: *logging
     networks:
@@ -455,7 +455,7 @@ services:
       EXTRA_ARGS: --http-host 0.0.0.0 --relax-jolokia --clustered --addresses core-engine.syslog:anycast,core-engine.monitoring:anycast --queues core-engine.syslog:anycast,core-engine.monitoring:anycast
     healthcheck:
       test: ./bin/artemis check node --user=$${ARTEMIS_USER} --password=$${ARTEMIS_PASSWORD} --silent &>/dev/null
-    image: docker.io/ubiqube/msa2-broker:sha-da926b26796c433b678554edb31b9a2a20680ff5
+    image: docker.io/ubiqube/msa2-broker:sha-cb13ee375087476ab11924616c87ac795f3e9e8e
     logging:
       <<: *logging
     volumes:
@@ -507,7 +507,7 @@ services:
       test: >
         curl -s -H "Authorization: Basic $${ES_CREDENTIALS}" 'http://localhost:9200/_cluster/health?pretty' |jq -e '.status == "green"'
       timeout: 2s
-    image: ubiqube/msa2-es:sha-868dd824615bf0e791c7892a3b04408f72b5711d
+    image: ubiqube/msa2-es:sha-5543c4b638f3a57b1f340388b4c7df78dd46c1ad
     logging:
       <<: *logging
     networks:
@@ -537,7 +537,7 @@ services:
       BASIC_AUTH_USER: cerebro
     healthcheck:
       test: curl --fail http://localhost:9000/
-    image: ubiqube/msa2-cerebro:sha-5d4fddc42705e3361d489b1cc1d0835fb07779a4
+    image: ubiqube/msa2-cerebro:sha-c052de396b0696318583807687ff228fb64d91de
     logging:
       <<: *logging
     networks:
@@ -558,7 +558,7 @@ services:
       ELASTICSEARCH_URL: http://msa-es:9200
     healthcheck:
       test: curl -k --fail http://localhost:5601/kibana/
-    image: ubiqube/msa2-kibana:sha-851a1ce988c060e7e4d96381fb35e3980020a3f7
+    image: ubiqube/msa2-kibana:sha-d90dea6133885876911f979efd4ac010dc235fa2
     logging:
       <<: *logging
     networks:
@@ -574,7 +574,7 @@ services:
       test:
         - CMD-SHELL
         - test -f /usr/bin/install_libraries.sh || echo false
-    image: ubiqube/msa2-linuxdev:sha-51af2dfd785f01e0d8a35071738919b561e5224f
+    image: ubiqube/msa2-linuxdev:sha-7295915212e931f6dfa2a06f035656019b0e2acc
     #build: ./lab/msa_dev
     logging:
       <<: *logging
@@ -602,7 +602,7 @@ services:
   msa-linux-me:
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: ubiqube/msa2-linuxme:sha-9536f0e3d580bf8e4b27e78831a05b3235c5a8cb
+    image: ubiqube/msa2-linuxme:sha-58304473cdf406abb91cbcaedab730c4a440c2fd
     cap_add:
       - NET_ADMIN
       - NET_RAW

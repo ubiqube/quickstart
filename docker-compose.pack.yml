@@ -1,0 +1,14 @@
+services:
+  msa2-dcim-installer:
+    depends_on:
+      - msa-dev
+    image: ubiqube/msa2-dcim-installer:sha-de75c11882d1aa5a74687fd4b85db2fa62c1319d
+    logging:
+      <<: *logging
+    networks:
+      default:
+        aliases:
+          - msa_dev
+    volumes:
+      - msa_repository:/opt/fmc_repository
+      - msa_dev:/opt/devops/
