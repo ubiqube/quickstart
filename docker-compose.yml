@@ -139,7 +139,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:sha-cd06850ce97389008386681a0fb832ca2eb0dbe8
+    image: ubiqube/msa2-api:sha-9de6284d759e4ed8a787d55fcf1521e9fa2bf3a9
     logging:
       <<: *logging
     networks:
@@ -190,7 +190,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:sha-a1463455280a890d1228d8dbca708f48c1845a08
+    image: ubiqube/msa2-sms:sha-a463f735b762265e141cac15bc85b8cf4eea1d45
     healthcheck:
       timeout: 5s
       retries: 10
@@ -218,14 +218,14 @@ services:
     logging:
       <<: *logging
     volumes:
-      - "msa_dev:/opt/devops/"
-      - "msa_entities:/opt/fmc_entities"
-      - "msa_repository:/opt/fmc_repository"
-      - "msa_sms_logs:/opt/sms/logs"
-      - "msa_svn:/opt/svnroot"
-      - "msa_svn_ws:/opt/sms/spool/routerconfigs"
-      - "msa_bulkfiles:/opt/sms/spool/parser"
-      - "msa_bulkfiles_err:/opt/sms/spool/parser-error"
+      - msa_dev:/opt/devops/
+      - msa_entities:/opt/fmc_entities
+      - msa_repository:/opt/fmc_repository
+      - msa_sms_logs:/opt/sms/logs
+      - msa_svn_ws:/opt/sms/spool/routerconfigs
+      - msa_bulkfiles:/opt/sms/spool/parser
+      - msa_bulkfiles_err:/opt/sms/spool/parser-error
+      - ./sms/etc/ssh/ssh_config.d/90-ubiqube.conf:/etc/ssh/ssh_config.d/90-ubiqube.conf
     networks:
       default:
         aliases:
@@ -292,7 +292,19 @@ services:
       default:
         aliases:
           - "msa_snmptrap"
-
+  msa-svn:
+    environment:
+      - SVN_USERNAME=ubisvn
+      - SVN_PASSWORD=UB1s5n
+    healthcheck:
+      interval: 30s
+      retries: 5
+      start_period: 1m
+      test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/3690'
+      timeout: 10s
+    image: ubiqube/msa2-svn:latest
+    volumes:
+      - msa_svn:/var/svn
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
@@ -574,7 +586,7 @@ services:
       test:
         - CMD-SHELL
         - test -f /usr/bin/install_libraries.sh || echo false
-    image: ubiqube/msa2-linuxdev:sha-7295915212e931f6dfa2a06f035656019b0e2acc
+    image: ubiqube/msa2-linuxdev:sha-63561bd4b702d101ea715687ed43fc6d642d652e
     #build: ./lab/msa_dev
     logging:
       <<: *logging
