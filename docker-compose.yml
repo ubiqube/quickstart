@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/version/ | grep -E '^\{"jira_version":"\d\.\d\.\d","msa_version":"\d\.\d\.\d","ccla_version":"\d\.\d\.\d","build":"\d+"\}$'
-    image: ubiqube/msa2-front:sha-3bf24f2e6a2c2257d5ac295210473bebc7c7aaa9
+    image: ubiqube/msa2-front:sha-84161babad4b18e9e394fec2ff2561fe60bec0ae
     logging:
       <<: *logging
     networks:
@@ -410,7 +410,7 @@ services:
       test:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
-    image: ubiqube/msa2-monitoring:sha-4bfba1a67c4159bf8ce81dcc391cddcd1f96e9e4
+    image: ubiqube/msa2-monitoring:sha-a2fed5cfe06ee30bf300fd6ae929e8bf9414a338
     logging:
       <<: *logging
     networks:
