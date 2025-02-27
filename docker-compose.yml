@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/version/ | grep -E '^\{"jira_version":"\d\.\d\.\d","msa_version":"\d\.\d\.\d","ccla_version":"\d\.\d\.\d","build":"\d+"\}$'
-    image: ubiqube/msa2-front:sha-7bef7325f4612909ff02611ab4eafd71ce087bef
+    image: ubiqube/msa2-front:sha-360d84c42371e78c69d84d41f796908c9a940586
     logging:
       <<: *logging
     networks:
@@ -302,7 +302,7 @@ services:
       start_period: 1m
       test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/3690'
       timeout: 10s
-    image: ubiqube/msa2-svn:latest
+    image: ubiqube/msa2-svn:sha-178dbdd2050d147bdfa5f6e12f5dbc86de8e32ce
     volumes:
       - msa_svn:/var/svn
   msa-bud:
