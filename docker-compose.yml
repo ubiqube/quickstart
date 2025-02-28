@@ -53,7 +53,7 @@ services:
       test:
         - CMD-SHELL
         - curl -sk --fail https://localhost/version/ | grep -E '^\{"jira_version":"\d\.\d\.\d","msa_version":"\d\.\d\.\d","ccla_version":"\d\.\d\.\d","build":"\d+"\}$'
-    image: ubiqube/msa2-front:sha-44939d906ea1dea8cae2695d4f29107f633415f7
+    image: ubiqube/msa2-front:sha-d2bbcc40e371d946db5f7ad0a82486220bba4eac
     logging:
       <<: *logging
     networks:
@@ -139,7 +139,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:sha-3e5c5e1f3784edd88c1ba749a619e5d3790ca67a
+    image: ubiqube/msa2-api:sha-4555687543899d6be379264aa640f5d65d73049d
     logging:
       <<: *logging
     networks:
@@ -179,7 +179,7 @@ services:
       test:
         - CMD-SHELL
         - curl --fail http://localhost:8080
-    image: ubiqube/msa2-ui:68c69a92a9bd71cc64bedc67b9b1826955063cdc
+    image: ubiqube/msa2-ui:e40f6b05c84c646325693523087e09419ed5739e
     logging:
       <<: *logging
     networks:
