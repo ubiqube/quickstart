@@ -72,6 +72,7 @@ services:
     restart: unless-stopped
     volumes:
       - msa_front_conf:/etc/nginx/custom_conf.d
+      - ./front/version.html:/app/version/index.html
     # uncomment one of the 2 sections below when installing a custom certificate
     # - Docker standard standalone installation
     # volumes:
@@ -139,7 +140,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:sha-87555dab871627bfd53678c4f001aed3ee87293c
+    image: ubiqube/msa2-api:sha-061d263c80f828049ac34b6d43b6feafdc831973
     logging:
       <<: *logging
     networks:
