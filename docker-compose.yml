@@ -191,7 +191,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:sha-a463f735b762265e141cac15bc85b8cf4eea1d45
+    image: ubiqube/msa2-sms:sha-2658820ec8792a54349e3c91954d29d28daf8134
     healthcheck:
       timeout: 5s
       retries: 10
