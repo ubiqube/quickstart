@@ -140,7 +140,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:sha-2b21c456fc50ee620106f251f42a1f77623ae95a
+    image: ubiqube/msa2-api:sha-079c83071000b0ad7f41a5be830fec1e589b74ba
     logging:
       <<: *logging
     networks:
@@ -550,7 +550,7 @@ services:
       BASIC_AUTH_USER: cerebro
     healthcheck:
       test: curl --fail http://localhost:9000/
-    image: ubiqube/msa2-cerebro:sha-481236a19fdea304a2f26351941dfcf596fbd1f7
+    image: ubiqube/msa2-cerebro:sha-9e30d71d9982c7d6c8acc8a0249469acd9915422
     logging:
       <<: *logging
     networks:
