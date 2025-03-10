@@ -140,7 +140,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-api:sha-2d4109c5bbc550b23788f2e9455b5d2019b0a296
+    image: ubiqube/msa2-api:sha-2b21c456fc50ee620106f251f42a1f77623ae95a
     logging:
       <<: *logging
     networks:
@@ -180,7 +180,7 @@ services:
       test:
         - CMD-SHELL
         - curl --fail http://localhost:8080
-    image: ubiqube/msa2-ui:f5a260253f9035b4a5966c63249bff39c0c1773a
+    image: ubiqube/msa2-ui:de66eeec8fe037062997347ef80677e146825bd0
     logging:
       <<: *logging
     networks:
@@ -468,7 +468,7 @@ services:
       EXTRA_ARGS: --http-host 0.0.0.0 --relax-jolokia --clustered --addresses core-engine.syslog:anycast,core-engine.monitoring:anycast --queues core-engine.syslog:anycast,core-engine.monitoring:anycast
     healthcheck:
       test: ./bin/artemis check node --user=$${ARTEMIS_USER} --password=$${ARTEMIS_PASSWORD} --silent &>/dev/null
-    image: docker.io/ubiqube/msa2-broker:sha-cb13ee375087476ab11924616c87ac795f3e9e8e
+    image: docker.io/ubiqube/msa2-broker:sha-c2a7640bd8e53770b430e626a436a9490d00cfa1
     logging:
       <<: *logging
     volumes:
@@ -495,7 +495,7 @@ services:
         - CMD-SHELL
         - curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$$'
       timeout: 5s
-    image: ubiqube/msa2-camunda:sha-3199b918785dffee69caad90140f564f71640c8b
+    image: ubiqube/msa2-camunda:sha-0cb92ac88c0f06d846afd9a173d33add8da3d302
     logging:
       <<: *logging
     networks:
@@ -517,10 +517,10 @@ services:
       interval: 10s
       retries: 30
       start_period: 45s
-      test: >
+      test: |
         curl -s -H "Authorization: Basic $${ES_CREDENTIALS}" 'http://localhost:9200/_cluster/health?pretty' |jq -e '.status == "green"'
       timeout: 2s
-    image: ubiqube/msa2-es:sha-5543c4b638f3a57b1f340388b4c7df78dd46c1ad
+    image: ubiqube/msa2-es:sha-89df98dab2b0c5a271b3c98b648ad2e77d28102e
     logging:
       <<: *logging
     networks:
@@ -550,7 +550,7 @@ services:
       BASIC_AUTH_USER: cerebro
     healthcheck:
       test: curl --fail http://localhost:9000/
-    image: ubiqube/msa2-cerebro:sha-c052de396b0696318583807687ff228fb64d91de
+    image: ubiqube/msa2-cerebro:sha-481236a19fdea304a2f26351941dfcf596fbd1f7
     logging:
       <<: *logging
     networks:
@@ -571,7 +571,7 @@ services:
       ELASTICSEARCH_URL: http://msa-es:9200
     healthcheck:
       test: curl -k --fail http://localhost:5601/kibana/
-    image: ubiqube/msa2-kibana:sha-d90dea6133885876911f979efd4ac010dc235fa2
+    image: ubiqube/msa2-kibana:sha-61d1a4cebad940cc9e1b0c284565d77a5d97c386
     logging:
       <<: *logging
     networks:
@@ -587,7 +587,7 @@ services:
       test:
         - CMD-SHELL
         - test -f /usr/bin/install_libraries.sh || echo false
-    image: ubiqube/msa2-linuxdev:sha-63561bd4b702d101ea715687ed43fc6d642d652e
+    image: ubiqube/msa2-linuxdev:sha-86eaab8fe900c1ac86ad9c55abee0b7143948e97
     #build: ./lab/msa_dev
     logging:
       <<: *logging
@@ -615,7 +615,7 @@ services:
   msa-linux-me:
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: ubiqube/msa2-linuxme:sha-58304473cdf406abb91cbcaedab730c4a440c2fd
+    image: ubiqube/msa2-linuxme:sha-81054e3df8e4cbdfd4c00b16cb33afd06fe6b46a
     cap_add:
       - NET_ADMIN
       - NET_RAW
@@ -639,7 +639,7 @@ services:
   msa-linux-me-2:
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: ubiqube/msa2-linuxme:sha-abebaa1367d8186067268acb6e4355e107e77e8d
+    image: ubiqube/msa2-linuxme:sha-81054e3df8e4cbdfd4c00b16cb33afd06fe6b46a
    # build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -709,36 +709,36 @@ services:
         mode: ingress
 
 volumes:
-  msa_broker:
-  msa_db:
-  msa_mongodb_data:
-  msa_dev:
-  msa_entities:
-  msa_repository:
-  msa_es:
-  msa_es_config:
-  rrd_repository:
-  msa_api_logs:
-  msa_api_keystore:
-  msa_sms_logs:
-  msa_bud_logs:
-  msa_front:
-  msa_front_conf:
-  msa_svn:
-  msa_svn_ws:
+  msa2_es-ilm:
   msa_ai_ml_db:
-  rsyslog_conf:
-  msa_bulkfiles:
-  msa_bulkfiles_err:
-  msa_parsebulkfiles:
-  msa_parsebulkfiles_err:
-  msa_snmptrapbulkfiles:
-  msa_snmptrapbulkfiles_err:
-  msa_monitbulkfiles:
-  msa_monitbulkfiles_err:
   msa_alarmbulkfiles:
   msa_alarmbulkfiles_err:
-  msa2_es-ilm:
+  msa_api_keystore:
+  msa_api_logs:
+  msa_broker:
+  msa_bud_logs:
+  msa_bulkfiles:
+  msa_bulkfiles_err:
+  msa_db:
+  msa_dev:
+  msa_entities:
+  msa_es:
+  msa_es_config:
+  msa_front:
+  msa_front_conf:
+  msa_mongodb_data:
+  msa_monitbulkfiles:
+  msa_monitbulkfiles_err:
+  msa_parsebulkfiles:
+  msa_parsebulkfiles_err:
+  msa_repository:
+  msa_sms_logs:
+  msa_snmptrapbulkfiles:
+  msa_snmptrapbulkfiles_err:
+  msa_svn:
+  msa_svn_ws:
+  rrd_repository:
+  rsyslog_conf:
 
 networks:
   default:
