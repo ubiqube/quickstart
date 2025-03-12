@@ -44,10 +44,6 @@ services:
     image: ubiqube/msa2-ccla-wf-installer:sha-132e010a6017fff483cbbcf6dc04c49a008fb55a
     logging:
       <<: *logging
-    networks:
-      default:
-        aliases:
-          - msa_dev
     volumes:
       - msa_repository:/opt/fmc_repository
       - msa_dev:/opt/devops/
