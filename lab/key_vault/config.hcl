@@ -6,7 +6,7 @@ listener "tcp" {
 }
 
 storage "postgresql" {
-  connection_url = "postgres://key_vault:ErNK_5WnilVsObP@db:5432/key_vault?sslmode=disable"
+  connection_url = "postgres://key_vault:ErNK_5WnilVsObP@msa-db:5432/key_vault?sslmode=disable"
 }
 
 api_addr = "http://127.0.0.1:8200"
