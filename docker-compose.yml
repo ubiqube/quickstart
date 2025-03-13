@@ -35,7 +35,7 @@ services:
       start_period: 1m
       test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8080'
       timeout: 10s
-    image: ubiqube/msa2-auth:sha-723debb0624d729ce34b585b649e25489932c67f
+    image: ubiqube/msa2-auth:sha-0bdcd98091622b47c437efc007fee10ebe7644f1
     restart: unless-stopped
 
   msa-front:
@@ -100,7 +100,7 @@ services:
         - CMD-SHELL
         - /usr/pgsql-12/bin/pg_isready -h localhost
       timeout: 20s
-    image: ubiqube/msa2-db:sha-5de344dbbbb7085fc637385b383d378c268ad5ff
+    image: ubiqube/msa2-db:sha-c950ae1d5165eeaf0ab056f1cd11545d7f096c28
     logging:
       <<: *logging
     restart: unless-stopped
@@ -175,7 +175,7 @@ services:
   msa-sms:
     restart: unless-stopped
     container_name: msa_sms
-    image: ubiqube/msa2-sms:sha-b2bc82575eac18f6e7c9beb4568e8336d9af76d1
+    image: ubiqube/msa2-sms:sha-1d4c7c477650c2b99063b8a2a60b4ca5ae0f31e5
     healthcheck:
       timeout: 5s
       retries: 10
@@ -241,7 +241,7 @@ services:
   msa-snmptrap:
     restart: unless-stopped
     container_name: msa_snmptrap
-    image: ubiqube/msa2-snmptrap:sha-7fbf58ec13581f37a8c9523e35d8e73f73049456
+    image: ubiqube/msa2-snmptrap:sha-e12015d312a6d15f8e4d94a38d8eab9a734997ad
     depends_on:
       msa-db:
         condition: service_healthy
@@ -276,13 +276,13 @@ services:
       start_period: 1m
       test: timeout 10s bash -c 'pgrep svnserve'
       timeout: 10s
-    image: ubiqube/msa2-svn:sha-ad66f0e219562bde7024107423a0a25bdb0315a4
+    image: ubiqube/msa2-svn:sha-6c4c7e6d6ff92846c2c96814676ce4b1e4edc976
     volumes:
       - msa_svn:/var/svn
   msa-bud:
     restart: unless-stopped
     container_name: msa_bud
-    image: ubiqube/msa2-bud:sha-5014ee5aca6ae16f3202e70c526ddc2af9d28d95
+    image: ubiqube/msa2-bud:sha-3d86187c6e6abe788365538f8cc290cf4448f3b0
     healthcheck:
       timeout: 5s
       retries: 10
@@ -333,7 +333,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh mongodb://${DB_USER:-msaUser}:${DB_PASSWORD:-ubiqube38}@localhost:${DB_PORT:-27017}/${DB_NAME:-msa} --quiet
-    image: ubiqube/msa2-mongodb:sha-924d5606f57364918ed14c9810d0e43b880bb90a
+    image: ubiqube/msa2-mongodb:sha-f59a889eeb8f5e3395aa4de232b910c46dee5fb9
     ports:
       - 27017:27017
     restart: unless-stopped
@@ -351,7 +351,7 @@ services:
       test:
         - CMD-SHELL
         - curl -s --fail http://localhost:9099/mon-writer/actuator/health |jq -r '.status' |grep '^UP$$'
-    image: ubiqube/msa2-monitor-writer:sha-4eb3dd6373dd2df965aeca8d3146f89627a40e9b
+    image: ubiqube/msa2-monitor-writer:sha-193b7a35dbde2227b17fb12ab9710aae08a42d4a
     restart: unless-stopped
 
   msa-monitoring:
@@ -376,7 +376,7 @@ services:
       test:
         - CMD-SHELL
         - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
-    image: ubiqube/msa2-monitoring:sha-d0084df2f656c78609701637266bee1821c8676e
+    image: ubiqube/msa2-monitoring:sha-326b099db62c222fd48ca9f15a3894f69ee532cd
     logging:
       <<: *logging
     restart: unless-stopped
@@ -395,7 +395,7 @@ services:
     depends_on:
       msa-broker:
         condition: service_started
-    image: ubiqube/msa2-rsyslog:sha-e11fa7964fcb98181241ec7bd28709fe570142c2
+    image: ubiqube/msa2-rsyslog:sha-7e05f47c4b7c1620c6bb787fd833769c0986d371
     environment:
       # ACTIONTYPE: omudpspoof or omkafka
       # configure a specific port for TLS. Default is 6514
@@ -425,7 +425,7 @@ services:
       EXTRA_ARGS: --http-host 0.0.0.0 --relax-jolokia --clustered --addresses core-engine.syslog:anycast,core-engine.monitoring:anycast --queues core-engine.syslog:anycast,core-engine.monitoring:anycast
     healthcheck:
       test: ./bin/artemis check node --user=$${ARTEMIS_USER} --password=$${ARTEMIS_PASSWORD} --silent &>/dev/null
-    image: docker.io/ubiqube/msa2-broker:sha-4736bedde8b4ab508f6f4efd26537a7b19beb956
+    image: docker.io/ubiqube/msa2-broker:sha-0fe5a32f5bc655bb5130be598b3686efca99ebf7
     logging:
       <<: *logging
     volumes:
@@ -473,7 +473,7 @@ services:
       test: |
         curl -s -H "Authorization: Basic $${ES_CREDENTIALS}" 'http://localhost:9200/_cluster/health?pretty' |jq -e '.status == "green"'
       timeout: 2s
-    image: ubiqube/msa2-es:sha-589156fb258a4ff4080853b77b5bdc74cae04b9c
+    image: ubiqube/msa2-es:sha-d27cb82323cde7d2346f7ce1879f222d9c031cc5
     logging:
       <<: *logging
     restart: unless-stopped
@@ -499,7 +499,7 @@ services:
       BASIC_AUTH_USER: cerebro
     healthcheck:
       test: curl --fail http://localhost:9000/
-    image: ubiqube/msa2-cerebro:sha-96543f8572e5ff100650967fa2fda2af5dc41d58
+    image: ubiqube/msa2-cerebro:sha-a44ceecaea18f41487f331c50e995ee5d9a4c7a7
     logging:
       <<: *logging
     ports:
@@ -516,7 +516,7 @@ services:
       ELASTICSEARCH_URL: http://msa-es:9200
     healthcheck:
       test: curl -k --fail http://localhost:5601/kibana/
-    image: ubiqube/msa2-kibana:sha-bd9289fbf2190aeace32555da429164a029435d0
+    image: ubiqube/msa2-kibana:sha-9be38ebc2012c3768affb73279fa5d78d78930bc
     logging:
       <<: *logging
     networks:
@@ -532,7 +532,7 @@ services:
       test:
         - CMD-SHELL
         - test -f /usr/bin/install_libraries.sh || echo false
-    image: ubiqube/msa2-linuxdev:sha-b319e9c9791d1659a31128a964a5ad7c7f958296
+    image: ubiqube/msa2-linuxdev:sha-1b060f47f9b42e122ba20afab0cb2c4d7a435a72
     #build: ./lab/msa_dev
     logging:
       <<: *logging
@@ -556,7 +556,7 @@ services:
   msa-linux-me:
     container_name: linux_me
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: ubiqube/msa2-linuxme:sha-6e0f726ef379de675437ebb3f9ed8f7ca3e26177
+    image: ubiqube/msa2-linuxme:sha-a1a6d3a8cad1d731cdc136c9a1ff2ae458d224b9
     cap_add:
       - NET_ADMIN
       - NET_RAW
@@ -580,7 +580,7 @@ services:
   msa-linux-me-2:
     container_name: linux_me_2
     # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: ubiqube/msa2-linuxme:sha-6e0f726ef379de675437ebb3f9ed8f7ca3e26177
+    image: ubiqube/msa2-linuxme:sha-a1a6d3a8cad1d731cdc136c9a1ff2ae458d224b9
    # build: ./lab/linux.me
     cap_add:
       - NET_ADMIN
@@ -626,7 +626,7 @@ services:
       UBI_ES_RETENTION_ALARM_INDEX_NAME: ubialarm*
       UBI_ES_RETENTION_AUDIT_INDEX_NAME: ubiaudit*
       UBI_ES_RETENTION_INDEX_NAME: ubilogs*
-    image: ubiqube/msa2-es-ilm:sha-e503133a1ced46b84d0044b92dfe7b2edad312df
+    image: ubiqube/msa2-es-ilm:sha-892f159577edf57329d4bf843cdc3d6a5c8199db
     restart: unless-stopped
     volumes:
       - msa2_es-ilm:/opt/msa2-es-ilm

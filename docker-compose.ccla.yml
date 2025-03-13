@@ -41,7 +41,7 @@ services:
   cloudclapp-wf:
     depends_on:
       - msa-dev
-    image: ubiqube/msa2-ccla-wf-installer:sha-132e010a6017fff483cbbcf6dc04c49a008fb55a
+    image: ubiqube/msa2-ccla-wf-installer:sha-8db208f9bbf1a890849ee83faa651210e693487d
     logging:
       <<: *logging
     volumes:
