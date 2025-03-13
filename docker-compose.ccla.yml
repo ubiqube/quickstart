@@ -1,23 +1,16 @@
-version: "3.8"
-
+x-logging: &logging
+  driver: json-file
+  options:
+    max-buffer-size: 4m
+    max-file: "5"
+    max-size: 10m
+    mode: non-blocking
 services:
-  cloudclapp:
-    depends_on:
-      - msa-api
-    image: openmsa/openmsa:cloudclapp-2.8.9-c1c1271bdd53a75dda4261624c04b02251a9d696
-    environment:
-      - UBIQUBE_CAPTCHA_SITE_KEY=6Ld2zF4dAAAAAJlqZMIHpPeb3aYhcyy1K3NWPtqi
-      - UBIQUBE_LICENSE_AGREEMENT_LINK=https:\/\/cloudclapp.com\/EndUserLicenceAgreement.html
-    healthcheck:
-      test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
-
   ccla-scan-app:
-    image: openmsa/openmsa:cloudclapp-scan-2.8.9-5fd210877816b5c00f7fda2440210c8ada8575cf
     environment:
       - UBIQUBE_ZAP_TOKEN=7da091fe-63a4-48c0-9bfa-7614c49feb7c
-
+    image: ubiqube/cloudclapp-scan:2b4a509e0f85df70d4b8ba738b0c1a11f44a8da7
   ccla-scan-env:
-    image: zaproxy/zap-stable:2.15.0
     entrypoint:
       - zap.sh
       - -daemon
@@ -33,24 +26,47 @@ services:
       - network.localServers.mainProxy.alpn.enabled=false
       - -config
       - network.localServers.mainProxy.address=0.0.0.0
-
-  key-vault:
+    image: zaproxy/zap-stable:2.15.0
+  cloudclapp:
     depends_on:
-      - db
-    image: hashicorp/vault:latest
-    ports:
-      - "8200:8200"
-    volumes:
-      - ./lab/key_vault/config.hcl:/vault/config/config.hcl
+      - msa-api
     environment:
-      VAULT_ADDR: "http://0.0.0.0:8200"
+      - UBIQUBE_CAPTCHA_SITE_KEY=6Ld2zF4dAAAAAJlqZMIHpPeb3aYhcyy1K3NWPtqi
+      - UBIQUBE_LICENSE_AGREEMENT_LINK=https:\/\/cloudclapp.com\/EndUserLicenceAgreement.html
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl --fail http://localhost:8080
+    image: ubiqube/cloudclapp:de66eeec8fe037062997347ef80677e146825bd0
+  cloudclapp-wf:
+    depends_on:
+      - msa-dev
+    image: ubiqube/msa2-ccla-wf-installer:sha-132e010a6017fff483cbbcf6dc04c49a008fb55a
+    logging:
+      <<: *logging
+    volumes:
+      - msa_repository:/opt/fmc_repository
+      - msa_dev:/opt/devops/
+  key-vault:
     cap_add:
       - IPC_LOCK
     command: server
-
+    depends_on:
+      - msa-db
+    environment:
+      VAULT_ADDR: http://0.0.0.0:8200
+    image: hashicorp/vault:latest
+    ports:
+      - 8200:8200
+    volumes:
+      - ./lab/key_vault/config.hcl:/vault/config/config.hcl
+  msa-dev:
+    command:
+      - /docker-entrypoint.sh
+      - --cloudclapp
+  msa-front:
+    volumes:
+      - ./front/nginx_ccla.conf:/etc/nginx/custom_conf.d/https/nginx_ccla.conf
   msa-sms:
     environment:
       - UBIQUBE_INSTALL_AWS_CLI=true
-
-  msa-dev:
-    command: [ "/docker-entrypoint.sh", "--cloudclapp" ]

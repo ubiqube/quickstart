@@ -1,672 +1,589 @@
-version: "3.8"
-
+x-amqp-monitoring: &amqp-monitoring
+  AMQP_ADDRESS: core-engine.monitoring
+  AMQP_PASSWORD: simetraehcapa
+  AMQP_PORT: "5672"
+  AMQP_SERVER: msa-broker
+  AMQP_USER: artemis
+x-amqp-syslog: &amqp-syslog
+  AMQP_ADDRESS: core-engine.syslog
+  AMQP_PASSWORD: simetraehcapa
+  AMQP_PORT: "5672"
+  AMQP_SERVER: msa-broker
+  AMQP_USER: artemis
 x-es-configuration: &es-configuration
-    ES_CREDENTIALS: c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
-    ES_SERVERS: "msa-es"
-
+  ES_CREDENTIALS: c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc=
+  ES_SERVERS: msa-es
 x-logging: &logging
-  driver: "json-file"
+  driver: json-file
   options:
-    mode: non-blocking
-    max-buffer-size: "4m"
-    max-size: "10m"
+    max-buffer-size: 4m
     max-file: "5"
-
-x-kafka-syslogs: &kafka-syslogs
-    KAFKA_SERVER: "kafka:9094"
-    KAFKA_TOPIC: "syslogs"
-
+    max-size: 10m
+    mode: non-blocking
+networks:
+  default:
+    driver_opts:
+      encrypted: "true"
 services:
-  msa-front:
-    restart: unless-stopped
-    container_name: msa_front
-    image: openmsa/openmsa:msa2-front-2.8.13.3-52da88baee65a5f7b094b23c0b8322f654c5f871
-    healthcheck:
-      test: ["CMD-SHELL", "curl -k --fail https://localhost"]
+  msa-alarm:
     depends_on:
-      msa-ui:
-        condition: service_healthy
       msa-api:
-        condition: service_started
+        condition: service_healthy
+      msa-db:
+        condition: service_healthy
       msa-es:
         condition: service_started
-      camunda:
-        condition: service_started
-    ports:
-      - target: 80
-        published: 80
-        protocol: tcp
-        mode: host
-      - target: 443
-        published: 443
-        protocol: tcp
-        mode: host
-    logging:
-      driver: "json-file"
-      options:
-        mode: non-blocking
-        max-buffer-size: "4m"
-        max-size: "10m"
-        max-file: "5"
-    volumes:
-        - "msa_front_conf:/etc/nginx/custom_conf.d"
-    networks:
-      default:
-        aliases:
-          - "msa_front"   #
-    # uncomment one of the 2 sections below when installing a custom certificate
-    # - Docker standard standalone installation
-    #volumes:
-    #    - "msa_front:/etc/nginx/ssl"
-    # - Docker Swarm HA installation
-    #volumes:
-    #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
-
-  db:
-    restart: unless-stopped
-    container_name: msa_db
-    image: openmsa/openmsa:msa2-db-2.8.13.3-a71200a187678981acd238c25ee003bace48f421
+    environment:
+      <<: *es-configuration
     healthcheck:
-      test: ["CMD-SHELL", "/usr/pgsql-12/bin/pg_isready -h localhost"]
-      timeout: 20s
+      interval: 10s
+      retries: 10
+      start_period: 30s
+      test:
+        - CMD-SHELL
+        - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
+      timeout: 5s
+    image: ubiqube/msa2-alarm:sha-3b59c21d6962771bc5a047640b5093c54f8451e5
+    logging:
+      <<: *logging
+    volumes:
+      - msa_sms_logs:/opt/sms/logs
+      - msa_alarmbulkfiles:/opt/sms/spool/alarms
+      - msa_alarmbulkfiles_err:/opt/sms/spool/alarms-error
+  msa-api:
+    depends_on:
+      msa-db:
+        condition: service_healthy
+      msa-es:
+        condition: service_started
+      msa-mongodb:
+        condition: service_healthy
+    environment:
+      <<: *es-configuration
+    healthcheck:
+      interval: 10s
+      retries: 3
+      start_period: 90s
+      test:
+        - CMD-SHELL
+        - curl -s --fail http://localhost:8480/actuator/health |jq -r '.status' |grep '^UP$$'
+      timeout: 5s
+    image: ubiqube/msa2-api:sha-aaa8b33e18436d3ccb502884c7a248fb3b7b83aa
+    logging:
+      <<: *logging
+    volumes:
+      - msa_entities:/opt/fmc_entities
+      - msa_repository:/opt/fmc_repository
+      - rrd_repository:/opt/rrd
+      - msa_dev:/opt/devops/
+      - msa_api_logs:/opt/wildfly/logs
+      - msa_api_keystore:/etc/pki/jentreprise
+  msa-auth:
+    depends_on:
+      msa-db:
+        condition: service_healthy
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: ubiqube
+    healthcheck:
       interval: 30s
       retries: 5
-    environment:
-      CAMUNDA_PASSWORD: camunda
-      CAMUNDA_DB: process-engine
-      CAMUNDA_USER: camunda
-      KEY_VAULT_USER: key_vault
-      KEY_VAULT_DB: key_vault
-      PG_MODE: primary
-      PG_PRIMARY_USER: postgres
-      PG_PRIMARY_PASSWORD: my_db_password
-      PG_USER: postgres
-      PG_PASSWORD: my_db_password
-      PG_DATABASE: POSTGRESQL
-      PG_ROOT_PASSWORD: my_db_password
-      PG_PRIMARY_PORT: 5432
-      MAX_CONNECTIONS: 1600
-    shm_size: 1g
-    logging:
-      <<: *logging
-    volumes:
-      - "msa_db:/pgsqldata/pgsql"
-
-  msa-api:
-    restart: unless-stopped
-    container_name: msa_api
-    image: openmsa/openmsa:msa2-api-2.8.13.3-d1916228a6cad6fc1d44d396b6fe08964e3bd552
-    healthcheck:
-      test: ["CMD-SHELL", "curl -s --fail http://localhost:8480/actuator/health | grep -q UP"]
-      retries: 3
-      timeout: 5s
-      interval: 10s
-      start_period: 90s
-    depends_on:
-      db:
-        condition: service_healthy
-      msa-es:
-        condition: service_started
-    environment:
-      <<: *es-configuration
-      UBIQUBE_CAPTCHA_SECRET_KEY: 6Ld2zF4dAAAAABWD9Q6QAhBql_CIynUeVKaTiBgT
-    logging:
-      <<: *logging
-    volumes:
-      - "msa_entities:/opt/fmc_entities"
-      - "msa_repository:/opt/fmc_repository"
-      - "rrd_repository:/opt/rrd"
-      - "msa_dev:/opt/devops/"
-      - "msa_api_logs:/opt/wildfly/logs/"
-      - "msa_api_logs:/opt/wildfly/logs/processLog"
-      - "msa_api_keystore:/etc/pki/jentreprise"
-    networks:
-      default:
-        aliases:
-          - "msa_api"
-
-  msa-ui:
-    restart: unless-stopped
-    container_name: msa_ui
-    image: openmsa/openmsa:msa2-ui-2.8.13.3-02d54c81b465d3d15071dce2785fd39341be9784
-    healthcheck:
-      test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
-    depends_on:
-      msa-api:
-        condition: service_started
-    environment:
-    - FEATURE_ADMIN=true
-    - FEATURE_REPOSITORY=true
-    - FEATURE_CONNECTION_STATUS=true
-    - FEATURE_ALARMS=true
-    - FEATURE_LICENCE=true
-    - FEATURE_TOPOLOGY=true
-    - FEATURE_MONITORING_PROFILES=true
-    - FEATURE_PROFILE_AUDIT_LOGS=true
-    - FEATURE_PERMISSION_PROFILES=true
-    - FEATURE_AI_ML=false
-    - FEATURE_MICROSERVICE_BULK_OPERATION=false
-    - FEATURE_EDIT_VARIABLES_IN_MICROSERVICE_CONSOLE=true
-    - FEATURE_WORKFLOW_OWNER=false
-    - FEATURE_PERMISSION_PROFILE_LABELS=false
-    - FEATURE_BPM=true
-    - UBIQUBE_ES_SECURITY_DISABLED=true
-    - FEATURE_ALARMS_AUTO_CLEARANCE=false
-    - FEATURE_IMPORT_WITH_SAME_AND_UPPERRANK=true
-    - FEATURE_REPOFOLDERLIST=[\"Datafiles\"]
-    logging:
-      <<: *logging
-    networks:
-      default:
-        aliases:
-          - "msa_ui"
-
-  msa-sms:
-    restart: unless-stopped
-    container_name: msa_sms
-    image: openmsa/openmsa:msa2-sms-2.8.13.3-00df99c67210e54ec223e1a5fcccf1826d3d47dc
-    healthcheck:
-      timeout: 5s
-      retries: 10
-      interval: 10s
-      start_period: 30s
-      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-    environment:
-      <<: *es-configuration
-    depends_on:
-      db:
-        condition: service_healthy
-      msa-es:
-        condition: service_started
-      msa-dev:
-        condition: service_started
-    ports:
-      - target: 69
-        published: 69
-        protocol: udp
-        mode: host
-      - target: 5200
-        published: 5200
-        protocol: udp
-        mode: host
-    logging:
-      <<: *logging
-    volumes:
-      - "msa_dev:/opt/devops/"
-      - "msa_entities:/opt/fmc_entities"
-      - "msa_repository:/opt/fmc_repository"
-      - "msa_sms_logs:/opt/sms/logs"
-      - "msa_svn:/opt/svnroot"
-      - "msa_svn_ws:/opt/sms/spool/routerconfigs"
-      - "msa_bulkfiles:/opt/sms/spool/parser"
-      - "msa_bulkfiles_err:/opt/sms/spool/parser-error"
-    networks:
-      default:
-        aliases:
-          - "msa_sms"
-
-  msa-parse:
-    restart: unless-stopped
-    container_name: msa_parse
-    image: openmsa/openmsa:msa2-parse-2.8.13.3-c7297ccaba708f23b46fee7286397853cae19bef
-    depends_on:
-      db:
-        condition: service_healthy
-      msa-es:
-        condition: service_started
-      msa-dev:
-        condition: service_started
-      msa-sms:
-        condition: service_healthy
-      kafka:
-        condition: service_started
-    healthcheck:
-      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-    environment:
-      <<: [*es-configuration, *kafka-syslogs]
-    logging:
-      <<: *logging
-    volumes:
-      - "msa_dev:/opt/devops/"
-      - "msa_parsebulkfiles:/opt/sms/spool/parser"
-      - "msa_parsebulkfiles_err:/opt/sms/spool/parser-error"
-    networks:
-      default:
-        aliases:
-          - "msa_parse"
-
-  msa-snmptrap:
-    restart: unless-stopped
-    container_name: msa_snmptrap
-    image: openmsa/openmsa:msa2-snmptrap-2.8.13.3-c2ce8e8d8b1f89c0522dacdac5f381d4519c2f49
-    depends_on:
-      db:
-        condition: service_healthy
-      msa-es:
-        condition: service_started
-      msa-dev:
-        condition: service_started
-    healthcheck:
-      test: ["CMD-SHELL", "/etc/init.d/ubi-sms status | grep -q 'service seems UP' || exit 1"]
-    environment:
-      <<: *es-configuration
-    ports:
-      - target: 162
-        published: 162
-        protocol: udp
-        mode: host
-    logging:
-      <<: *logging
-    volumes:
-      - "msa_dev:/opt/devops/"
-      - "msa_snmptrapbulkfiles:/opt/sms/spool/parser"
-      - "msa_snmptrapbulkfiles_err:/opt/sms/spool/parser-error"
-    networks:
-      default:
-        aliases:
-          - "msa_snmptrap"
-
-  msa-bud:
-    restart: unless-stopped
-    container_name: msa_bud
-    image: openmsa/openmsa:msa2-bud-2.8.13.3-3f4510e00d30d4695007f09dddcbb38a8af2fac2
-    healthcheck:
-      timeout: 5s
-      retries: 10
-      interval: 10s
-      start_period: 30s
-      test: ["CMD-SHELL", "/etc/init.d/ubi-bud status | grep -q 'service seems UP' || exit 1"]
-    depends_on:
-      db:
-        condition: service_healthy
-    logging:
-      <<: *logging
-    volumes:
-      - "msa_bud_logs:/opt/bud/logs/"
-    networks:
-      default:
-        aliases:
-          - "msa_bud"
-
-  msa-alarm:
-    restart: unless-stopped
-    container_name: msa_alarm
-    image: openmsa/openmsa:msa2-alarm-2.8.13.3-3d4a8540f86987c78ad4617cce12077d62f85cd0
-    healthcheck:
-      timeout: 5s
-      retries: 10
-      interval: 10s
-      start_period: 30s
-      test: ["CMD-SHELL", "/etc/init.d/ubi-alarm status | grep -q 'service seems UP' || exit 1"]
-    depends_on:
-      db:
-        condition: service_healthy
-      msa-es:
-        condition: service_started
-      msa-api:
-        condition: service_healthy
-    environment:
-      <<: *es-configuration
-    logging:
-      <<: *logging
-    volumes:
-      - "msa_sms_logs:/opt/sms/logs"
-      - "msa_alarmbulkfiles:/opt/sms/spool/alarms"
-      - "msa_alarmbulkfiles_err:/opt/sms/spool/alarms-error"
-    networks:
-      default:
-        aliases:
-          - "msa_alarm"
-
-  msa-monitoring:
-    restart: unless-stopped
-    container_name: msa_monitoring
-    image: openmsa/openmsa:msa2-monitoring-2.8.13.3-4a53269fe0fffc572809b964230bb6084de6d49a
-    healthcheck:
-      test: ["CMD-SHELL", "/etc/init.d/ubi-poll status | grep -q 'service seems UP' || exit 1"]
-    depends_on:
-      db:
-        condition: service_healthy
-      msa-es:
-        condition: service_started
-      msa-dev:
-        condition: service_started
-      msa-sms:
-        condition: service_started
-    environment:
-      # ES_MON
-      # "yes" : ES + RRD
-      # "only" : ES only (no RRD)
-      # any other values ("no" is recommended!) RRD only (no ES)
-      ES_MON: "no"
-      <<: *es-configuration
-    logging:
-      <<: *logging
-    volumes:
-      - "msa_dev:/opt/devops/"
-      - "msa_entities:/opt/fmc_entities"
-      - "msa_repository:/opt/fmc_repository"
-      - "rrd_repository:/opt/rrd"
-      - "msa_sms_logs:/opt/sms/logs"
-      - "msa_monitbulkfiles:/opt/sms/spool/parser"
-      - "msa_monitbulkfiles_err:/opt/sms/spool/parser-error"
-    networks:
-      default:
-        aliases:
-          - "msa_monitoring"
-
-  msa-rsyslog:
-    restart: unless-stopped
-    container_name: msa_rsyslog
-    depends_on:
-      - msa-parse
-      - kafka
-    image: openmsa/openmsa:msa2-rsyslog-2.8.13.3-ff52e9cdfb5452b114e94eb76bfb8679d380fa03
-    environment:
-      # ACTIONTYPE: omudpspoof or omkafka
-      # configure a specific port for TLS. Default is 6514
-      # TLS_SYSLOG_PORT: 6514
-      ACTIONTYPE: "omkafka"
-      <<: *kafka-syslogs    
-    ports:
-      - target: 514
-        published: 514
-        protocol: udp
-        mode: host
-      - target: 514
-        published: 514
-        protocol: tcp
-        mode: host
-      - target: 6514
-        published: 6514
-        protocol: tcp
-        mode: host
-    networks:
-      default:
-        aliases:
-          - "msa_rsyslog"
-    logging:
-      <<: *logging
-
-  kafka:
-    restart: unless-stopped
-    image: bitnami/kafka:3.5
-    ports:
-      - "9094:9094"
-    environment:
-      - KAFKA_CFG_NODE_ID=0
-      - KAFKA_CFG_PROCESS_ROLES=controller,broker
-      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092,EXTERNAL://kafka:9094
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
-      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
-      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
-      - KAFKA_CFG_LOG_CLEANER_ENABLE=true
-      - KAFKA_CFG_LOG_CLEANUP_POLICY=delete
-      - KAFKA_CFG_LOG_RETENTION_BYTES=2000000000
-      - KAFKA_CFG_LOG_RETENTION_MS=86400000
-      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
-      - KAFKA_CFG_MESSAGE_MAX_BYTES=1048576
-    logging:
-      <<: *logging
-    volumes:
-      - "kafka_data:/bitnami"
-
+      start_period: 1m
+      test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8080'
+      timeout: 10s
+    image: ubiqube/msa2-auth:sha-723debb0624d729ce34b585b649e25489932c67f
   msa-broker:
-    restart: unless-stopped
-    container_name: msa_broker
-    image: openmsa/openmsa:msa2-broker-2.8.13.3-a637ce7b1d31f9da37a22b0fdaad954dcdf0870e
-    depends_on:
-      - db
     environment:
       ARTEMIS_PASSWORD: simetraehcapa
       ARTEMIS_USER: artemis
+      EXTRA_ARGS: --http-host 0.0.0.0 --relax-jolokia --clustered --addresses core-engine.syslog:anycast,core-engine.monitoring:anycast --queues core-engine.syslog:anycast,core-engine.monitoring:anycast
+    healthcheck:
+      test: ./bin/artemis check node --user=$${ARTEMIS_USER} --password=$${ARTEMIS_PASSWORD} --silent &>/dev/null
+    image: docker.io/ubiqube/msa2-broker:sha-4736bedde8b4ab508f6f4efd26537a7b19beb956
     logging:
       <<: *logging
     volumes:
-      - "msa_broker:/var/lib/artemis-instance"
-
-  camunda:
-    restart: unless-stopped
-    container_name: msa_camunda
+      - msa_broker:/var/lib/artemis-instance
+  msa-bud:
     depends_on:
-      db:
+      msa-db:
         condition: service_healthy
-    image: openmsa/openmsa:msa2-camunda-2.8.13.3-0f60a3c018c1b7dcde68259c9dadf71862373510
+    healthcheck:
+      interval: 10s
+      retries: 10
+      start_period: 30s
+      test:
+        - CMD-SHELL
+        - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
+      timeout: 5s
+    image: ubiqube/msa2-bud:sha-5014ee5aca6ae16f3202e70c526ddc2af9d28d95
+    logging:
+      <<: *logging
+    volumes:
+      - msa_bud_logs:/opt/bud/logs/
+  msa-camunda:
+    depends_on:
+      msa-db:
+        condition: service_healthy
     environment:
       DB_DRIVER: org.postgresql.Driver
-      DB_URL: 'jdbc:postgresql://db:5432/process-engine'
-      DB_USERNAME: camunda
       DB_PASSWORD: camunda
-      DB_VALIDATION_QUERY: 'SELECT 1'
-      DB_VALIDATE_ON_BORROW: 'true'
-      WAIT_FOR: 'db:5432'
+      DB_URL: jdbc:postgresql://msa-db:5432/process-engine
+      DB_USERNAME: camunda
+      DB_VALIDATE_ON_BORROW: "true"
+      DB_VALIDATION_QUERY: SELECT 1
+      WAIT_FOR: msa-db:5432
       WAIT_FOR_TIMEOUT: 60
-    logging:
-      <<: *logging
-
-  msa-es:
-    restart: unless-stopped
-    container_name: msa_es
-    image: openmsa/openmsa:msa2-es-2.8.13.3-50ac3642b0dec278fb7855f3ee092ecd59362bf6
     healthcheck:
-      test: ["CMD-SHELL", "test -f /home/install/init-done && curl -s -XGET -H 'Authorization: Basic c3VwZXJ1c2VyOnheWnl1R002fnU9K2ZZMkc='  'http://localhost:9200/_cluster/health?pretty' | grep -q 'status.*green' || exit 1"]
-      timeout: 2s
-      retries: 10
       interval: 10s
-      start_period: 30s
-    environment:
-      discovery.type: "single-node"
-      script.painless.regex.enabled: "true"
-      bootstrap.memory_lock: "true"
-      ES_JAVA_OPTS: "-Xms512m -Xmx1024m"
-      <<: *es-configuration
+      retries: 3
+      start_period: 90s
+      test:
+        - CMD-SHELL
+        - curl -s --fail http://localhost:8080/actuator/health |jq -r '.status' |grep '^UP$$'
+      timeout: 5s
+    image: ubiqube/msa2-camunda:sha-096bd9c6c1e97adc8431a2c78f9ad03ea49f24d0
     logging:
       <<: *logging
-    volumes:
-      - "msa_es:/usr/share/elasticsearch/data"
-      - "msa_es_config:/usr/share/elasticsearch/config"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    ports:
-      - "9300:9300"
-      - "9200:9200"
-      - "9300:9300/udp"
-      - "9200:9200/udp"
-    networks:
-      default:
-        aliases:
-          - "msa_es"
-
   msa-cerebro:
-    restart: unless-stopped
-    container_name: msa_cerebro
-    image: openmsa/openmsa:msa2-cerebro-2.8.13.3-8374160f95e2349711204189a3bf8a385f7252b5
-    environment:
-      AUTH_TYPE: basic
-      BASIC_AUTH_USER: cerebro
-      BASIC_AUTH_PWD: "N@X{M4tfw'5%)+35"
+    depends_on:
+      msa-es:
+        condition: service_started
     entrypoint:
       - /opt/cerebro/bin/cerebro
-      - -Dhosts.0.host=http://msa_es:9200
-    depends_on:
-      msa-es:
-        condition: service_started
-    logging:
-      <<: *logging
-    ports:
-    - "9000:9000"
-    networks:
-      default:
-        aliases:
-          - "msa_cerebro"
-
-  msa-kibana:
-    restart: unless-stopped
-    container_name: msa_kibana
-    image: openmsa/openmsa:msa2-kibana-2.8.13.3-54e81a717d1f9aa7acc372643c6966e23b8b66fe
-    depends_on:
-      msa-es:
-        condition: service_started
-    ports:
-      - "5601:5601"
+      - -Dhosts.0.host=http://msa-es:9200
     environment:
-      ELASTICSEARCH_URL: "http://msa_es:9200"
-      ELASTICSEARCH_HOSTS: "http://msa_es:9200"
-      <<: *es-configuration
+      AUTH_TYPE: basic
+      BASIC_AUTH_PWD: N@X{M4tfw'5%)+35
+      BASIC_AUTH_USER: cerebro
+    healthcheck:
+      test: curl --fail http://localhost:9000/
+    image: ubiqube/msa2-cerebro:sha-96543f8572e5ff100650967fa2fda2af5dc41d58
     logging:
       <<: *logging
-    networks:
-      default:
-        aliases:
-          - "msa_kibana"
-
-  msa-dev:
-    restart: unless-stopped
-    container_name: msa_dev
-    image: openmsa/openmsa:msa2-linuxdev-2.8.13.3-f03103c0845b97ec88434fdb52744aef3c54c976
+    ports:
+      - 9000:9000
+  msa-db:
+    environment:
+      CAMUNDA_DB: process-engine
+      CAMUNDA_PASSWORD: camunda
+      CAMUNDA_USER: camunda
+      KEY_VAULT_DB: key_vault
+      KEY_VAULT_USER: key_vault
+      MAX_CONNECTIONS: 1600
+      PG_DATABASE: POSTGRESQL
+      PG_MODE: primary
+      PG_PASSWORD: my_db_password
+      PG_PRIMARY_PASSWORD: my_db_password
+      PG_PRIMARY_PORT: 5432
+      PG_PRIMARY_USER: postgres
+      PG_ROOT_PASSWORD: my_db_password
+      PG_USER: postgres
+    healthcheck:
+      interval: 30s
+      retries: 5
+      test:
+        - CMD-SHELL
+        - /usr/pgsql-12/bin/pg_isready -h localhost
+      timeout: 20s
+    image: ubiqube/msa2-db:sha-5de344dbbbb7085fc637385b383d378c268ad5ff
+    logging:
+      <<: *logging
+    shm_size: 1g
     volumes:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-      - "msa_entities:/opt/fmc_entities"
-      - "msa_repository:/opt/fmc_repository"
-      - "msa_dev:/opt/devops/"
-      - "msa_front_conf:/etc/nginx/custom_conf.d"
-    networks:
-      default:
-        aliases:
-          - "msa_dev"
+      - msa_db:/pgsqldata/pgsql
+  msa-dev:
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - test -f /usr/bin/install_libraries.sh || echo false
+    image: ubiqube/msa2-linuxdev:sha-b319e9c9791d1659a31128a964a5ad7c7f958296
     logging:
       <<: *logging
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - msa_entities:/opt/fmc_entities
+      - msa_repository:/opt/fmc_repository
+      - msa_dev:/opt/devops/
+  msa-es:
+    environment:
+      <<: *es-configuration
+      ES_JAVA_OPTS: -Xms512m -Xmx1024m
+      bootstrap.memory_lock: "true"
+      discovery.type: single-node
+      script.painless.regex.enabled: "true"
+    healthcheck:
+      interval: 10s
+      retries: 10
+      start_period: 30s
+      test: |
+        curl -s -H "Authorization: Basic $${ES_CREDENTIALS}" 'http://localhost:9200/_cluster/health?pretty' |jq -e '.status == "green"'
+      timeout: 2s
+    image: ubiqube/msa2-es:sha-589156fb258a4ff4080853b77b5bdc74cae04b9c
+    logging:
+      <<: *logging
+    ulimits:
+      memlock:
+        hard: -1
+        soft: -1
+    volumes:
+      - msa_es:/usr/share/elasticsearch/data
+      - msa_es_config:/usr/share/elasticsearch/config
+  msa-front:
+    depends_on:
+      msa-api:
+        condition: service_started
+      msa-camunda:
+        condition: service_started
+      msa-es:
+        condition: service_started
+      msa-ui:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -sk --fail https://localhost/version/ | grep -E '^\{"jira_version":"\d\.\d\.\d","msa_version":"\d\.\d\.\d","ccla_version":"\d\.\d\.\d","build":"\d+"\}$'
+    image: ubiqube/msa2-front:sha-40701935e9cf8044b0dff5b367706753c506b5c7
+    logging:
+      <<: *logging
+    # uncomment one of the 2 sections below when installing a custom certificate
+    # - Docker standard standalone installation
+    # volumes:
+    #    - "msa_front:/etc/nginx/ssl"
+    # - Docker Swarm HA installation
+    # volumes:
+    #    - "/mnt/NASVolume/msa_front:/etc/nginx/ssl"
 
-  linux-me:
-    restart: unless-stopped
-    container_name: linux_me
-    # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.8.13.3-21e09d27af8951349a7a3f8117d8042b6ff28304
-    #build: ./lab/linux.me
+    ports:
+      - mode: host
+        protocol: tcp
+        published: 80
+        target: 80
+      - mode: host
+        protocol: tcp
+        published: 443
+        target: 443
+    volumes:
+      - msa_front_conf:/etc/nginx/custom_conf.d
+      - ./front/version.html:/app/version/index.html
+  msa-kibana:
+    depends_on:
+      msa-es:
+        condition: service_started
+    environment:
+      <<: *es-configuration
+      ELASTICSEARCH_HOSTS: http://msa-es:9200
+      ELASTICSEARCH_URL: http://msa-es:9200
+    healthcheck:
+      test: curl -k --fail http://localhost:5601/kibana/
+    image: ubiqube/msa2-kibana:sha-bd9289fbf2190aeace32555da429164a029435d0
+    logging:
+      <<: *logging
+    ports:
+      - 5601:5601
+  msa-linux-me:
     cap_add:
       - NET_ADMIN
       - NET_RAW
       - DAC_READ_SEARCH
       - sys_rawio
-    ports:
-      - "2224:22"
-    devices:                     # required for dmidecode used by polld/asset
-      - "/dev/mem:/dev/mem"
+    devices: # required for dmidecode used by polld/asset
+      - /dev/mem:/dev/mem
     hostname: linux-me
-    privileged: true
-    networks:
-      default:
-        aliases:
-          - "linux_me"
-        ipv4_address: 172.20.0.101
+    image: ubiqube/msa2-linuxme:sha-6e0f726ef379de675437ebb3f9ed8f7ca3e26177
     logging:
       <<: *logging
-
-  linux-me-2:
-    restart: unless-stopped
-    container_name: linux_me_2
-    # use local image for quickstart dev => for release: make sure the changes are ported to msa-docker and uncomment the line below
-    image: openmsa/openmsa:msa2-linuxme-2.8.13.3-21e09d27af8951349a7a3f8117d8042b6ff28304
-    #build: ./lab/linux.me
-    cap_add:
-      - NET_ADMIN
-      - NET_RAW
-      - DAC_READ_SEARCH
-      - sys_rawio
     ports:
-      - "2225:22"
-    devices:                     # required for dmidecode used by polld/asset
-      - "/dev/mem:/dev/mem"
-    hostname: linux-me-2
-    privileged: true
-    networks:
-      default:
-        aliases:
-          - "linux_me_2"
-        ipv4_address: 172.20.0.102
+      - 2224:22
+  msa-mongodb:
+    env_file:
+      - .env
+    #      ccla must match user created in mongo-init.js
+    environment:
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-my_db_password}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh mongodb://${DB_USER:-msaUser}:${DB_PASSWORD:-ubiqube38}@localhost:${DB_PORT:-27017}/${DB_NAME:-msa} --quiet
+    image: ubiqube/msa2-mongodb:sha-924d5606f57364918ed14c9810d0e43b880bb90a
+    ports:
+      - 27017:27017
+    restart: unless-stopped
+    volumes:
+      - msa_mongodb_data:/data/db
+      - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+  msa-monitor-writer:
+    depends_on:
+      msa-broker:
+        condition: service_started
+      msa-mongodb:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -s --fail http://localhost:9099/mon-writer/actuator/health |jq -r '.status' |grep '^UP$$'
+    image: ubiqube/msa2-monitor-writer:sha-4eb3dd6373dd2df965aeca8d3146f89627a40e9b
+  msa-monitoring:
+    depends_on:
+      msa-broker:
+        condition: service_started
+      msa-db:
+        condition: service_healthy
+      msa-dev:
+        condition: service_started
+      msa-es:
+        condition: service_started
+      msa-sms:
+        condition: service_started
+    environment:
+      <<:
+        - *es-configuration
+        - *amqp-monitoring
+      TARGET_MON: RRD
+      #   possible values RRD, ES, AMQP
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
+    image: ubiqube/msa2-monitoring:sha-d0084df2f656c78609701637266bee1821c8676e
     logging:
       <<: *logging
-
-
+    volumes:
+      - msa_dev:/opt/devops/
+      - msa_entities:/opt/fmc_entities
+      - msa_repository:/opt/fmc_repository
+      - rrd_repository:/opt/rrd
+      - msa_sms_logs:/opt/sms/logs
+      - msa_monitbulkfiles:/opt/sms/spool/parser
+      - msa_monitbulkfiles_err:/opt/sms/spool/parser-error
+  msa-parse:
+    depends_on:
+      msa-broker:
+        condition: service_started
+      msa-db:
+        condition: service_healthy
+      msa-dev:
+        condition: service_started
+      msa-es:
+        condition: service_started
+      msa-sms:
+        condition: service_healthy
+    environment:
+      <<:
+        - *es-configuration
+        - *amqp-syslog
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
+    image: ubiqube/msa2-parse:sha-ac6528ce462f570508db535bdd8540a892d4d67e
+    logging:
+      <<: *logging
+    volumes:
+      - msa_dev:/opt/devops/
+      - msa_parsebulkfiles:/opt/sms/spool/parser
+      - msa_parsebulkfiles_err:/opt/sms/spool/parser-error
+  msa-rsyslog:
+    depends_on:
+      msa-broker:
+        condition: service_started
+    environment:
+      <<: *amqp-syslog
+      ACTIONTYPE: omamqp1
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - ps -p 1 -h -o%cpu | awk '{if ($$1 > 99) exit 1; else exit 0;}'
+    image: ubiqube/msa2-rsyslog:sha-e11fa7964fcb98181241ec7bd28709fe570142c2
+    logging:
+      <<: *logging
+    ports:
+      - mode: host
+        protocol: udp
+        published: 514
+        target: 514
+      - mode: host
+        protocol: tcp
+        published: 514
+        target: 514
+      - mode: host
+        protocol: tcp
+        published: 6514
+        target: 6514
+  msa-sms:
+    depends_on:
+      msa-db:
+        condition: service_healthy
+      msa-dev:
+        condition: service_started
+      msa-es:
+        condition: service_started
+    environment:
+      <<: *es-configuration
+    healthcheck:
+      interval: 10s
+      retries: 10
+      start_period: 30s
+      test:
+        - CMD-SHELL
+        - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
+      timeout: 5s
+    image: ubiqube/msa2-sms:sha-b2bc82575eac18f6e7c9beb4568e8336d9af76d1
+    logging:
+      <<: *logging
+    ports:
+      - mode: host
+        protocol: udp
+        published: 69
+        target: 69
+      - mode: host
+        protocol: udp
+        published: 5200
+        target: 5200
+    volumes:
+      - msa_dev:/opt/devops/
+      - msa_entities:/opt/fmc_entities
+      - msa_repository:/opt/fmc_repository
+      - msa_sms_logs:/opt/sms/logs
+      - msa_svn_ws:/opt/sms/spool/routerconfigs
+      - msa_bulkfiles:/opt/sms/spool/parser
+      - msa_bulkfiles_err:/opt/sms/spool/parser-error
+      - ./sms/etc/ssh/ssh_config.d/90-ubiqube.conf:/etc/ssh/ssh_config.d/90-ubiqube.conf
+  msa-smtp:
+    environment:
+      ALLOWED_SENDER_DOMAINS: ""
+      ALLOW_EMPTY_SENDER_DOMAINS: "true"
+      HOSTNAME: msa-smtp
+      # RELAYHOST: <MTA ip>:25
+      POSTFIX_message_size_limit: 2097152
+    image: boky/postfix:4.2.1-alpine
+  msa-snmptrap:
+    depends_on:
+      msa-db:
+        condition: service_healthy
+      msa-dev:
+        condition: service_started
+      msa-es:
+        condition: service_started
+    environment:
+      <<: *es-configuration
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - /opt/sms/bin/sms -e ISALIVE -t 1 | grep -q OK || exit 1
+    image: ubiqube/msa2-snmptrap:sha-7fbf58ec13581f37a8c9523e35d8e73f73049456
+    logging:
+      <<: *logging
+    ports:
+      - mode: host
+        protocol: udp
+        published: 162
+        target: 162
+    volumes:
+      - msa_dev:/opt/devops/
+      - msa_repository:/opt/fmc_repository
+      - msa_snmptrapbulkfiles:/opt/sms/spool/parser
+      - msa_snmptrapbulkfiles_err:/opt/sms/spool/parser-error
+  msa-svn:
+    environment:
+      - SVN_USERNAME=ubisvn
+      - SVN_PASSWORD=UB1s5n
+    healthcheck:
+      interval: 30s
+      retries: 5
+      start_period: 1m
+      test: timeout 10s bash -c 'pgrep svnserve'
+      timeout: 10s
+    image: ubiqube/msa2-svn:sha-442074be16f111ed569f4c245f90b02699d182bf
+    volumes:
+      - msa_svn:/var/svn
+  msa-ui:
+    depends_on:
+      msa-api:
+        condition: service_started
+    environment:
+      - FEATURE_ADMIN=true
+      - FEATURE_REPOSITORY=true
+      - FEATURE_CONNECTION_STATUS=true
+      - FEATURE_ALARMS=true
+      - FEATURE_LICENCE=true
+      - FEATURE_TOPOLOGY=true
+      - FEATURE_MONITORING_PROFILES=true
+      - FEATURE_PROFILE_AUDIT_LOGS=true
+      - FEATURE_PERMISSION_PROFILES=true
+      - FEATURE_AI_ML=false
+      - FEATURE_MICROSERVICE_BULK_OPERATION=false
+      - FEATURE_EDIT_VARIABLES_IN_MICROSERVICE_CONSOLE=true
+      - FEATURE_WORKFLOW_OWNER=false
+      - FEATURE_PERMISSION_PROFILE_LABELS=false
+      - FEATURE_BPM=true
+      - UBIQUBE_ES_SECURITY_DISABLED=false
+      - FEATURE_ALARMS_AUTO_CLEARANCE=false
+      - FEATURE_IMPORT_WITH_SAME_AND_UPPERRANK=true
+      - FEATURE_REPOFOLDERLIST=[\"Datafiles\", \"Shared\"]
+      - FEATURE_ALARM_TROUBLE_TICKET=false
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl --fail http://localhost:8080
+    image: ubiqube/msa2-ui:de66eeec8fe037062997347ef80677e146825bd0
+    logging:
+      <<: *logging
   msa2-es-ilm:
-    image: openmsa/openmsa:msa2-es-ilm-2.8.13.3-9931c196f7c08839feea13e1426fc92b953ef311
     container_name: msa2_es-ilm
-    tty: true
-    init: true
-    restart: unless-stopped
-    networks:
-      default:
-        aliases:
-          - "msa2_es-ilm"
-    #healthcheck:
+    # healthcheck:
     #  test: ["CMD-SHELL", "find /opt/msa2-es-ilm/log/log_retention.log -type f -mmin -10"]
     depends_on:
       msa-es:
         condition: service_started
     environment:
-
-      ELASTICSEARCH_URL: "msa_es:9200"
-      #For elasticsearch scripts /opt/ubi-es-ilm/log_retention_management.php
-      #UBI_ES_INDEX_MULTIPLE_TTL:        "type:traffic|7d,type:event|30d,*|90d"
-      UBI_ES_INDEX_MULTIPLE_TTL:         "*|90d"
-      UBI_ES_AUDIT_INDEX_MULTIPLE_TTL:   "*|90d"
-      UBI_ES_LOG_SEARCH_INDEX_LIST:      "ubilogs"
-      UBI_ES_RETENTION_INDEX_NAME:       "ubilogs*"
-      UBI_ES_RETENTION_AUDIT_INDEX_NAME: "ubiaudit*"
-      UBI_ES_RETENTION_ALARM_INDEX_NAME: "ubialarm*"
-      UBI_ES_ALARM_INDEX_MULTIPLE_TTL:   "*|90d"
-      UBI_ES_CACHE_INDEX_DEFAULT_TTL:    "1w"
-      UBI_ES_DELETE_SCROLL_SIZE:         "4000"
-      UBI_ES_MAX_DOCS:                   ""
-      UBI_ES_LOG_DETENTION_DELETE:       "true"
-      UBI_ES_ILM_LOG_CRONTAB:            "# */2 * * * *  php /opt/ubi-es-ilm/log_retention_management.php --verbose=3 > /proc/1/fd/1 2>&1"
-
       <<: *es-configuration
-
+      ELASTICSEARCH_URL: msa_es:9200
+      UBI_ES_ALARM_INDEX_MULTIPLE_TTL: '*|90d'
+      UBI_ES_AUDIT_INDEX_MULTIPLE_TTL: '*|90d'
+      UBI_ES_CACHE_INDEX_DEFAULT_TTL: 1w
+      UBI_ES_DELETE_SCROLL_SIZE: "4000"
+      UBI_ES_ILM_LOG_CRONTAB: '# */2 * * * * root php /opt/ubi-es-ilm/log_retention_management.php --verbose=3 > /proc/1/fd/1 2>&1'
+      # For elasticsearch scripts /opt/ubi-es-ilm/log_retention_management.php
+      # UBI_ES_INDEX_MULTIPLE_TTL:        "type:traffic|7d,type:event|30d,*|90d"
+      UBI_ES_INDEX_MULTIPLE_TTL: '*|90d'
+      UBI_ES_LOG_DETENTION_DELETE: "true"
+      UBI_ES_LOG_SEARCH_INDEX_LIST: ubilogs
+      UBI_ES_MAX_DOCS: ""
+      UBI_ES_RETENTION_ALARM_INDEX_NAME: ubialarm*
+      UBI_ES_RETENTION_AUDIT_INDEX_NAME: ubiaudit*
+      UBI_ES_RETENTION_INDEX_NAME: ubilogs*
+    image: ubiqube/msa2-es-ilm:sha-e503133a1ced46b84d0044b92dfe7b2edad312df
+    restart: unless-stopped
     volumes:
-      - "msa2_es-ilm:/opt/msa2-es-ilm"
-
+      - msa2_es-ilm:/opt/msa2-es-ilm
 volumes:
-  kafka_data:
+  msa2_es-ilm:
+  msa_ai_ml_db:
+  msa_alarmbulkfiles:
+  msa_alarmbulkfiles_err:
+  msa_api_keystore:
+  msa_api_logs:
   msa_broker:
+  msa_bud_logs:
+  msa_bulkfiles:
+  msa_bulkfiles_err:
   msa_db:
   msa_dev:
   msa_entities:
-  msa_repository:
   msa_es:
   msa_es_config:
-  rrd_repository:
-  msa_api_logs:
-  msa_api_keystore:
-  msa_sms_logs:
-  msa_bud_logs:
   msa_front:
   msa_front_conf:
-  msa_svn:
-  msa_svn_ws:
-  msa_ai_ml_db:
-  rsyslog_conf:
-  msa_bulkfiles:
-  msa_bulkfiles_err:
-  msa_parsebulkfiles:
-  msa_parsebulkfiles_err:
-  msa_snmptrapbulkfiles:
-  msa_snmptrapbulkfiles_err:
+  msa_mongodb_data:
   msa_monitbulkfiles:
   msa_monitbulkfiles_err:
-  msa_alarmbulkfiles:
-  msa_alarmbulkfiles_err:
-  msa2_es-ilm:
-
-networks:
-  default:
-    name: quickstart_default
-    ipam:
-      config:
-        - subnet: 172.20.0.0/24
-    driver_opts:
-      encrypted: "true"
+  msa_parsebulkfiles:
+  msa_parsebulkfiles_err:
+  msa_repository:
+  msa_sms_logs:
+  msa_snmptrapbulkfiles:
+  msa_snmptrapbulkfiles_err:
+  msa_svn:
+  msa_svn_ws:
+  rrd_repository:
+  rsyslog_conf:

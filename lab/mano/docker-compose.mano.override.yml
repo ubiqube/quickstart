@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  mano-auth:
+    restart: unless-stopped
+    image: docker.io/ubiqube/mano-keycloak:latest
+    volumes:
+      - ./lab/mano/config/keycloak:/opt/keycloak/data/import
+    entrypoint: ["/opt/keycloak/bin/kc.sh", "start", "--import-realm", "--optimized", "--http-enabled=true", "--hostname-strict=false", "--hostname-strict-backchannel=true", "--log-console-color=true"]
+
+
+  
+

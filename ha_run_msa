@@ -1,0 +1,60 @@
+#!/bin/bash
+set -e
+
+PROJECT="devmsaha"
+RUN_OPTIONS=(
+    deploy
+    --with-registry-auth
+)
+YML_DEFAULT_FILE=(
+    -c
+    docker-compose.ha.yml
+)
+YML_FILES=()
+
+INFO_MSG=''
+
+show_help() {
+            echo "Usage: $0 [-h] [-p <PROJECT_NAME>] [-k]"
+            echo '-h: this Help'
+            echo '-p PROJECT_NAME: Prefix name of all containers'
+            echo '-k: Kill services'
+            echo '-f <YML file>: Yaml configuration file'
+}
+
+while getopts ":hp:kf:" opt; do
+    case ${opt} in
+        h) # show help
+            show_help
+            exit 0
+            ;;
+        f) # yaml file
+            YML_FILES=(
+                ${YML_FILES[@]}
+                -c
+                $OPTARG
+            )
+            ;;
+        p) # project name
+            PROJECT=$OPTARG
+            ;;
+        k) # kill all containers
+            RUN_OPTIONS=('rm')
+            YML_DEFAULT_FILE=()
+            ;;
+        \?)
+            show_help
+            exit 1
+            ;;
+    esac
+done
+
+[ ${#YML_FILES[@]} -eq 0 ] && YML_FILES="${YML_DEFAULT_FILE[@]}"
+
+docker stack "${RUN_OPTIONS[@]}" "${YML_FILES[@]}" "${PROJECT}"
+
+if [ ! -z "${INFO_MSG}" ]; then
+    echo "==========="
+    echo "${INFO_MSG}"
+    echo "==========="
+fi

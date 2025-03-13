@@ -1,0 +1,100 @@
+#!/bin/bash
+set -e
+
+PROJECT="dev-msa"
+PROFILES=()
+BACKGROUND=(
+    --build
+    -d
+)
+RUN_OPTIONS=(
+    up
+    --remove-orphans
+)
+INFO_MSG=''
+
+show_help() {
+            echo 'Usage: ./run_msa [-h] [-d] [-p <PROJECT_NAME>] [-s] [-k] [-l] [-c]'
+            echo '-h: this Help'
+            echo '-l: Show logs from all containers'
+            echo '-p PROJECT_NAME: Profix name of all containers'
+            echo '-k: kill all containers'
+            echo '-s: stop all containers'
+            echo '-d: debug mode for API'
+            echo '-e: e2e setup'
+            echo '-f <YML file>: Yaml configuration file '
+            echo '-c: run with cloudclapp'
+}
+
+while getopts ":hstop:lp:kedf:c" opt; do
+    case ${opt} in
+        h) # show help
+            show_help
+            exit 0
+            ;;
+        f) # yaml file
+            RUN_OPTIONS=(
+                -f
+                $OPTARG
+                up
+                --remove-orphans
+            )
+            ;;
+        l) # show all logs
+            BACKGROUND=(
+                --build
+            )
+            ;;
+        p) # project name
+            PROJECT=$OPTARG
+            ;;
+        k) # kill all containers
+            RUN_OPTIONS=(
+                down
+                --remove-orphans
+            )
+            BACKGROUND=()
+            ;;
+        d) # run debug mode
+            RUN_OPTIONS=(
+                -f
+                docker-compose.debug.yml
+                up
+                -d
+                --remove-orphans
+            )
+            BACKGROUND=()
+            ;;
+        e) # e2e mode
+            RUN_OPTIONS=(
+                -f
+                docker-compose.e2e.yml
+                up
+                --remove-orphans
+            )
+            INFO_MSG='Dont forget to run ./e2e/base_data/load_data.sh'
+            ;;
+        s) # kill all containers
+            RUN_OPTIONS=('stop')
+            BACKGROUND=()
+            ;;
+        c) # run with cloudclapp
+            PROFILES=(
+                -c
+                docker-compose.ccla.yml
+            )
+            ;;
+        \?)
+            show_help
+            exit 1
+            ;;
+    esac
+done
+
+docker compose --compatibility -p "${PROJECT}" "${PROFILES[@]}" "${RUN_OPTIONS[@]}" "${BACKGROUND[@]}"
+
+if [ ! -z "${INFO_MSG}" ]; then
+    echo "==========="
+    echo "${INFO_MSG}"
+    echo "==========="
+fi

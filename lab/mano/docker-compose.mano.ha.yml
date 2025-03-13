@@ -1,43 +1,49 @@
+---
 # vim:noai:ts=2:sw=2
 version: "3.8"
 
 x-placement: &placement
   replicas: 1
-  placement:	
+  placement:
     max_replicas_per_node: 1
-    constraints:	
+    constraints:
       - "node.labels.worker==app"
 
 x-es-config: &es-config
   MANAGEMENT_ELASTIC_METRICS_EXPORT_USER_NAME: superuser
   MANAGEMENT_ELASTIC_METRICS_EXPORT_PASSWORD: x^ZyuGM6~u=+fY2G
   MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://mano-zipkin:9411/api/v2/spans
-                    
+
+configs:
+  customer-mano.sql:
+    file: ./lab/mano/config/msa-db/100-customer-mano.sql
+  logstash_pipeline:
+    file: ./lab/mano/config/logstash/pipeline
+  logstash_yaml:
+    file: ./lab/mano/config/logstash/config/logstash.yml
+
 services:
-  db:
+  msa-db:
+    configs:
+      - source: customer-mano.sql
+        target: /db_schemas/100-customer-mano.sql
+    restart: unless-stopped
     networks:
       default:
         aliases:
           - "mano-db"
-    environment:
-      MANO_USER: mano
-      MANO_PASSWORD: mano
-      MANOVNFM_USER: mano_vnfm
-      MANOVNFM_PASSWORD: mano
-      MANONFVO_USER: mano_nfvo
-      MANONFVO_PASSWORD: mano
-      MANOEM_USER: mano_em
-      MANOEM_PASSWORD: mano
-      KEYCLOAK_USER: keycloak
-      KEYCLOAK_PASSWORD: keycloak
-      KEYCLOAK_DB: keycloak
 
   mano-alarm:
     restart: unless-stopped
-    image: docker.io/openmsa/mano-alarm:3.2.1
+    image: nexus.ubiqube.com/openmsa/mano-alarm-oci-ci:latest
     depends_on:
-      - db
+      - msa-db
     environment:
+      SPRING_DATASOURCE_USERNAME: mano_alarm
+      SPRING_DATASOURCE_PASSWORD: mano
+      SPRING_DATASOURCE_URL: jdbc:postgresql://mano-db/mano_alarm?ApplicationName=mano-alarm
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
       <<: *es-config
     healthcheck:
       test: curl --fail http://localhost:8080/actuator/health
@@ -66,30 +72,11 @@ services:
         protocol: tcp
         mode: ingress
 
-  mano-artemis:
-    image: openmsa/artemis:2.19.0
-    deploy:
-      replicas: 1
-      placement:	
-        max_replicas_per_node: 1
-        constraints:	
-          - "node.labels.worker==app"
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 2048M
-        reservations:
-          cpus: '0.50'
-          memory: 2048M
-
   mano-auth:
-    image: docker.io/ubiqube/mano-keycloak:3.2.0.1
+    restart: unless-stopped
+    image: docker.io/openmsa/mano-keycloak:latest
     deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - "node.labels.worker==app"
+      <<: *placement
       resources:
         limits:
           cpus: '0.50'
@@ -128,23 +115,24 @@ services:
           - "mano-es"
 
   mano-helm3:
-    image: ubiqube/helm3-webapp
+    image: docker.io/ubiqube/helm3-webapp
     deploy:
-      replicas: 1
-      placement:
-        max_replicas_per_node: 1
-        constraints:
-          - node.role==worker
+      <<: *placement
       resources:
         limits:
-          cpus: '0.25'
-          memory: 1022M
+          cpus: '0.50'
+          memory: 2048M
         reservations:
-          cpus: '0.25'
-          memory: 1024M
+          cpus: '0.50'
+          memory: 2048M
 
   mano-logstash:
     image: docker.elastic.co/logstash/logstash:7.17.9
+    configs:
+      - source: logstash_pipeline
+        target: /usr/share/logstash/pipeline
+      - source: logstash_yaml
+        target: /usr/share/logstash/config/logstash.yml
     healthcheck:
       test: curl --fail http://localhost:9600/
       interval: 1m
@@ -153,26 +141,39 @@ services:
       start_period: 1m
     ports:
       - "5000:5000"
-    volumes:
-      - "./lab/mano/logstash/pipeline:/usr/share/logstash/pipeline"
-      - "./lab/mano/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml"
+
+  mano-mon:
+    image: nexus.ubiqube.com/openmsa/mano-mon-oci-ci:latest
+    depends_on:
+      - msa-db
+    environment:
+      <<: *es-config
+      _JAVA_OPTIONS: -Xmx512m
+    healthcheck:
+      test: curl --fail http://localhost:8080/actuator/health
+      interval: 1m
+      timeout: 10s
+      retries: 5
+      start_period: 1m
 
   mano-nfvo:
     restart: unless-stopped
     image: nexus.ubiqube.com/openmsa/mano-nfvo-oci-ci
     depends_on:
-      - db
+      - msa-db
     environment:
       <<: *es-config
       _JAVA_OPTIONS: -Xmx4g
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://mano-zipkin:9411/api/v2/spans
       SPRING_DATASOURCE_USERNAME: mano_nfvo
       SPRING_DATASOURCE_PASSWORD: mano
-      SPRING_DATASOURCE_URL: jdbc:postgresql://mano-db/mano_nfvo
-      MANO_FRONTEND_URL: http://mano-nfvo:8080/nfvo-webapp/sol003
-#      KEYCLOAK_CREDENTIALS_SECRET=YYYY
+      SPRING_DATASOURCE_URL: jdbc:postgresql://mano-db/mano_nfvo?ApplicationName=mano-nfvo
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      MANO_FRONTEND_URL: http://mano-nfvo:8100/nfvo-webapp/sol003
+      # KEYCLOAK_CREDENTIALS_SECRET=YYYY
     healthcheck:
-      test: curl --fail http://localhost:8080/nfvo-webapp/actuator/health
+      test: curl --fail http://localhost:8100/nfvo-webapp/actuator/health
       interval: 1m
       timeout: 10s
       retries: 5
@@ -182,30 +183,29 @@ services:
     deploy:
       <<: *placement
     ports:
-      - target: 8080
+      - target: 8100
         published: 8100
         protocol: tcp
         mode: ingress
-    secrets:
-      - source: vnfm.keycloak.credentials.secret
-        target: keycloak.credentials.secret
 
   mano-vnfm:
     restart: unless-stopped
     image: nexus.ubiqube.com/openmsa/mano-vnfm-oci-ci
     depends_on:
-      - db
+      - msa-db
     environment:
       <<: *es-config
       _JAVA_OPTIONS: -Xmx4g
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://mano-zipkin:9411/api/v2/spans
       SPRING_DATASOURCE_USERNAME: mano_vnfm
       SPRING_DATASOURCE_PASSWORD: mano
-      SPRING_DATASOURCE_URL: jdbc:postgresql://mano-db/mano_vnfm
-      MANO_FRONTEND_URL: http://mano-vnfm:8080/vnfm-webapp/sol003
-#      KEYCLOAK_CREDENTIALS_SECRET: XXXX
+      SPRING_DATASOURCE_URL: jdbc:postgresql://mano-db/mano_vnfm?ApplicationName=mano-vnfm
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      MANO_FRONTEND_URL: http://mano-vnfm:8090/vnfm-webapp/sol003
+      # KEYCLOAK_CREDENTIALS_SECRET: XXXX
     healthcheck:
-      test: curl --fail http://localhost:8080/vnfm-webapp/actuator/health
+      test: curl --fail http://localhost:8090/vnfm-webapp/actuator/health
       interval: 1m
       timeout: 10s
       retries: 5
@@ -215,13 +215,10 @@ services:
     deploy:
       <<: *placement
     ports:
-      - target: 8080
+      - target: 8090
         published: 8090
         protocol: tcp
         mode: ingress
-    secrets:
-      - source: nfvo.keycloak.credentials.secret
-        target: keycloak.credentials.secret
 
   mano-zipkin:
     image: docker.io/openzipkin/zipkin
@@ -235,8 +232,3 @@ services:
         published: 9411
         protocol: tcp
         mode: ingress
-secrets:
-  vnfm.keycloak.credentials.secret:
-    external: true
-  nfvo.keycloak.credentials.secret:
-    external: true

@@ -1,8 +1,0 @@
-# installed by lab/ansible/Dockerfile in MSA-2 quickstart
-[linux_me]
-172.20.0.101
-
-[linux_me:vars]
-ansible_connection=ssh
-ansible_user=msa
-ansible_ssh_pass=ubiqube
